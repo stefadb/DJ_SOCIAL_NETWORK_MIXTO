@@ -1,0 +1,206 @@
+APPUNTI API DEEZER
+
+ORA DEVI FAR FUNZIONARE QUESTE API, ALTRIMENTI NON PUOI SVILUPPARE IL RESTO!!
+
+DA IMPLEMENTARE:
+1) - PER OTTENERE UN SINGOLO ALBUM DATO IL SUO ID - OK
+
+https://api.deezer.com/album/302127
+
+Restituisce tutto sull'album, gli [id, nomi e le immagini] di tutti i generi e gli [id, nomi, immagini] di tutti i brani
+
+PASSI:
+Upsert dell'album e caricamento foto
+Upsert di tutti i generi e caricamento delle loro foto
+Upsert delle associazioni genere/album 
+
+Usa sempre limit e index per la paginazione
+
+2) - PER OTTENERE TUTTI GLI ALBUM DI UN ARTISTA - OK
+
+https://api.deezer.com/artist/5359276/albums
+
+(Prima di fare questa chiamata API, si prendono tutte le info dell'artista con la chiamata a https://api.deezer.com/artist/5359276 e le si mettono nel db (solo se non esistono già))
+
+Restituisce tutti gli album dell'artista e il primo genere, quello più importante.
+PASSI:
+Upsert dell'album e caricamento foto
+upsert del genere principale e caricamento foto
+upsert della associazione album/genere
+
+IMPORTANTE: Se deezer nella risposta restituisce il next, significa che ci sono altri album da caricare
+
+Usa sempre limit e index per la paginazione
+
+3) - PER OTTENERE TUTTE LE TRACCE CHE CORRISPONDONO A UNA PAROLA/FRASE DI RICERCA (query) - OK
+
+https://api.deezer.com/search/track?q=Parola%20Chiave
+
+Per ogni traccia restituita, restituisce tutte le info necessarie sulla traccia, tutte le informazioni necessarie sull'artista PRINCIPALE (non tutti gli artisti) e tutte le informazioni necessarie sull'album (ad eccezione del genere)
+
+PASSI per ogni traccia trovata:
+Upsert dell'artista principale e caricamento foto,
+Upsert dell'album e caricamento foto,
+Upsert del brano,
+Upsert dell'associazione brano/artista
+
+IMPORTANTE: Se deezer nella risposta restituisce il next, significa che ci sono altri brani da caricare
+
+Usa sempre limit e index per la paginazione
+
+4) - PER OTTENERE TUTTI I BRANI DI UN ARTISTA - OK
+
+https://api.deezer.com/artist/5359276/top
+
+Per ogni traccia restituita, restituisce tutte le info necessarie sulla traccia, tutte le informazioni necessarie su tutti gli artisti e tutte le informazioni necessarie sull'album (ad eccezione del genere)
+
+PASSI per ogni traccia trovata:
+Upsert degli artisti e caricamento foto,
+Upsert dell'album e caricamento foto,
+Upsert del brano,
+Upsert delle associazioni brano/artista
+
+IMPORTANTE: Se deezer nella risposta restituisce il next, significa che ci sono altri brani da caricare
+
+Usa sempre limit e index per la paginazione
+
+TODO: implementa questo e scrivi il test
+5) - PER OTTENERE GLI ARTISTI SIMILI A UNO SU DEEZER - OK
+
+https://api.deezer.com/artist/5359276/related
+
+Per ogni artista restituito, restituisce tutte le info necessarie sull'artista
+
+PASSI:
+Upsert degli artisti e caricamento foto
+
+Usa sempre limit e index per la paginazione
+
+TODO: implementa questo e scrivi il test
+6) - PER OTTENERE GLI ARTISTI APPARTENENTI A UN GENERE MUSICALE - OK
+
+https://api.deezer.com/genre/106/artists
+
+Per ogni artista restituito, restituisce tutte le info necessarie sull'artista
+
+PASSI:
+Upsert degli artisti e caricamento foto
+
+Usa sempre limit e index per la paginazione
+
+7) - PER OTTENERE I BRANI PIù FAMOSI APPARTENENTI A UN GENERE MUSICALE - OK
+
+https://api.deezer.com/chart/106/tracks
+
+Per ogni traccia restituita, restituisce tutte le info necessarie sulla traccia, tutte le informazioni necessarie sull'artista PRINCIPALE (non tutti gli artisti) e tutte le informazioni necessarie sull'album (ad eccezione del genere)
+
+PASSI per ogni traccia trovata:
+Upsert dell'artista principale e caricamento foto,
+Upsert dell'album e caricamento foto,
+Upsert dell'associazione brano/artista
+Upsert del brano
+
+IMPORTANTE: Se deezer nella risposta restituisce il next, significa che ci sono altri brani da caricare
+
+Usa sempre limit e index per la paginazione
+
+8) - PER OTTENERE UN SINGOLO BRANO - OK
+
+https://api.deezer.com/track/3135556
+
+Per la traccia restituita, restituisce tutte le info necessarie sulla traccia, tutte le informazioni necessarie su tutti gli artisti e tutte le informazioni necessarie sull'album (ad eccezione del genere)
+
+PASSI per ogni traccia trovata:
+Upsert degli artisti e caricamento foto,
+Upsert dell'album e caricamento foto,
+Upsert delle associazioni brano/artista
+Upsert del brano
+
+TODO: implementa questo e scrivi il test
+9) - PER OTTENERE I BRANI DI UN ALBUM - OK
+
+https://api.deezer.com/album/486048505/tracks
+
+PASSI per ogni traccia trovata:
+
+Upsert del brano
+
+TODO: implementa questo e scrivi il test
+10) - PER OTTENERE TUTTI GLI ALBUM CHE CORRISPONDONO A UNA PAROLA/FRASE DI RICERCA (query) - OK
+
+https://api.deezer.com/search/album?q=eminem
+
+Restitusice tutte le info sull'Album
+
+PASSI per ogni album trovato:
+
+Upsert dell'album e caricamento foto
+
+Usa sempre limit e index per la paginazione
+
+11) - PER OTTENERE GLI ARTISTI DI UN ALBUM DATO IL SUO ID - OK
+
+Gli artisti si ottengono solo ottenendo le tracce dell'album e unendo tutti gli artisti di ogni traccia
+
+Questa API dovrà ottenere tutti gli artisti dell'album, restituirli e ovviamente upsertarli sul db con le loro foto
+
+Crea un array contributors, inizialmente vuoto, che andrà riempito
+
+API 1: https://api.deezer.com/album/221700932
+
+API 2: Per ogni id traccia trovato: https://api.deezer.com/track/1334599202
+
+A ogni chiamata della API 2, ottieni i contributors, cioè la lista completa degli artisti della traccia. 
+
+Per ogni contributor trovato, fai l'upsert dell'artista e il caricamento foto, poi lo aggiungi all'array contributors se ancora manca, rispettando il formato sul db
+
+Alla fine, restituisci l'array contributors al frontend
+
+Chiamate API complessive: 1 + N, dove N è il numero di tracce dell'album
+
+IMPLEMENTATO E TESTATO!!
+12) - PER OTTENERE GLI ARTISTI CHE CORRISPONDONO A UNA PAROLA/FRASE DI RICERCA (query) - OK
+
+https://api.deezer.com/search/artist?q=eminem
+
+Restitusice tutte le info sull'artista
+
+PASSI per ogni artista trovato:
+
+Upsert dell'artista e caricamento foto
+
+Usa sempre limit e index per la paginazione
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

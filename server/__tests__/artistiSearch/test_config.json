@@ -1,0 +1,8 @@
+{
+  "picturesFolder": "artisti_pictures",
+  "deezerApiCallUrl": "https://api.deezer.com/search/artist?q=eminem&limit=5&index=0",
+  "apiName": "/artisti/search",
+  "testApiCallUrl": "/artisti/search?query=eminem&limit=5&index=0",
+  "entityName": "artists",
+  "upsertTestSqlQuery": "SELECT * FROM artista ORDER BY id ASC"
+}

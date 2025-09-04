@@ -1,0 +1,106 @@
+[
+    {
+        "id": 0,
+        "nome": "Tutti"
+    },
+    {
+        "id": 132,
+        "nome": "Pop"
+    },
+    {
+        "id": 116,
+        "nome": "Rap/Hip Hop"
+    },
+    {
+        "id": 122,
+        "nome": "Reggaeton"
+    },
+    {
+        "id": 152,
+        "nome": "Rock"
+    },
+    {
+        "id": 113,
+        "nome": "Dance"
+    },
+    {
+        "id": 165,
+        "nome": "R&B"
+    },
+    {
+        "id": 85,
+        "nome": "Alternative"
+    },
+    {
+        "id": 106,
+        "nome": "Electro"
+    },
+    {
+        "id": 466,
+        "nome": "Folk"
+    },
+    {
+        "id": 144,
+        "nome": "Reggae"
+    },
+    {
+        "id": 129,
+        "nome": "Jazz"
+    },
+    {
+        "id": 84,
+        "nome": "Country"
+    },
+    {
+        "id": 67,
+        "nome": "Salsa"
+    },
+    {
+        "id": 98,
+        "nome": "Classica"
+    },
+    {
+        "id": 173,
+        "nome": "Film/Videogiochi"
+    },
+    {
+        "id": 464,
+        "nome": "Metal"
+    },
+    {
+        "id": 169,
+        "nome": "Soul & Funk"
+    },
+    {
+        "id": 95,
+        "nome": "Bambini"
+    },
+    {
+        "id": 153,
+        "nome": "Blues"
+    },
+    {
+        "id": 71,
+        "nome": "Cumbia"
+    },
+    {
+        "id": 2,
+        "nome": "Musica Africana"
+    },
+    {
+        "id": 16,
+        "nome": "Musica Asiatica"
+    },
+    {
+        "id": 75,
+        "nome": "Musica Brasiliana"
+    },
+    {
+        "id": 81,
+        "nome": "Musica Indiana"
+    },
+    {
+        "id": 197,
+        "nome": "Musica latina"
+    }
+]

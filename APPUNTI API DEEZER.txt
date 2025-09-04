@@ -1,0 +1,150 @@
+APPUNTI API DEEZER
+
+1) - PER OTTENERE UN SINGOLO ALBUM DATO IL SUO ID
+
+https://api.deezer.com/album/302127
+
+Restituisce tutto sull'album, gli id, nomi e le immagini di tutti i generi e gli id, nomi e le immagini di tutti gli artisti che contribuiscono.
+PASSI:
+Upsert dell'album e caricamento foto
+Upsert di tutti gli artisti che hanno contribuito e caricamento delle loro foto
+Upsert di tutti i generi e caricamento delle loro foto
+Upsert delle associazioni genere/album 
+Upsert delle associazioni artista/album
+
+Usa sempre limit e index per la paginazione
+
+
+2) - PER OTTENERE TUTTI GLI ALBUM DI UN ARTISTA
+
+https://api.deezer.com/artist/5359276/albums
+
+(Prima di fare questa chiamata API, si prendono tutte le info dell'artista con la chiamata a https://api.deezer.com/artist/5359276 e le si mettono nel db (solo se non esistono già))
+
+Restituisce tutti gli album dell'artista e il primo genere, quello più importante.
+PASSI:
+Upsert dell'album e caricamento foto
+upsert del genere principale e caricamento foto
+upsert della associazione album/genere
+
+IMPORTANTE: Se deezer nella risposta restituisce il next, significa che ci sono altri album da caricare
+
+Usa sempre limit e index per la paginazione
+
+3) - PER OTTENERE TUTTE LE TRACCE CHE CORRISPONDONO A UNA PAROLA/FRASE DI RICERCA (query)
+
+https://api.deezer.com/search/track?q=Parola%20Chiave
+
+Per ogni traccia restituita, restituisce tutte le info necessarie sulla traccia, tutte le informazioni necessarie sull'artista PRINCIPALE (non tutti gli artisti) e tutte le informazioni necessarie sull'album (ad eccezione del genere)
+
+PASSI per ogni traccia trovata:
+Upsert dell'artista principale e caricamento foto,
+Upsert dell'album e caricamento foto,
+Upsert dell'associazione album/artista
+Upsert del brano
+
+IMPORTANTE: Se deezer nella risposta restituisce il next, significa che ci sono altri brani da caricare
+
+Usa sempre limit e index per la paginazione
+
+4) - PER OTTENERE TUTTI I BRANI DI UN ARTISTA (Solo i top 10 su Deezer, ma volendo si può andare anche avanti)
+
+https://api.deezer.com/artist/5359276/top?limit=10
+
+Per ogni traccia restituita, restituisce tutte le info necessarie sulla traccia, tutte le informazioni necessarie su tutti gli artisti e tutte le informazioni necessarie sull'album (ad eccezione del genere)
+
+PASSI per ogni traccia trovata:
+Upsert degli artisti e caricamento foto,
+Upsert dell'album e caricamento foto,
+Upsert delle associazioni album/artista
+Upsert del brano
+
+IMPORTANTE: Se deezer nella risposta restituisce il next, significa che ci sono altri brani da caricare
+
+Usa sempre limit e index per la paginazione
+
+5) - PER OTTENERE GLI ARTISTI SIMILI A UNO SU DEEZER
+
+https://api.deezer.com/artist/5359276/related
+
+Per ogni artista restituito, restituisce tutte le info necessarie sull'artista
+
+PASSI:
+Upsert degli artisti e caricamento foto
+
+Usa sempre limit e index per la paginazione
+
+6) - PER OTTENERE GLI ARTISTI APPARTENENTI A UN GENERE MUSICALE
+
+https://api.deezer.com/genre/106/artists
+
+Per ogni artista restituito, restituisce tutte le info necessarie sull'artista
+
+PASSI:
+Upsert degli artisti e caricamento foto
+
+Usa sempre limit e index per la paginazione
+
+7) - PER OTTENERE I BRANI PIù FAMOSI APPARTENENTI A UN GENERE MUSICALE
+
+https://api.deezer.com/chart/106/tracks
+
+Per ogni traccia restituita, restituisce tutte le info necessarie sulla traccia, tutte le informazioni necessarie sull'artista PRINCIPALE (non tutti gli artisti) e tutte le informazioni necessarie sull'album (ad eccezione del genere)
+
+PASSI per ogni traccia trovata:
+Upsert dell'artista principale e caricamento foto,
+Upsert dell'album e caricamento foto,
+Upsert dell'associazione album/artista
+Upsert del brano
+
+IMPORTANTE: Se deezer nella risposta restituisce il next, significa che ci sono altri brani da caricare
+
+Usa sempre limit e index per la paginazione
+
+8) - PER OTTENERE UN SINGOLO BRANO
+
+https://api.deezer.com/track/3135556
+
+Per la traccia restituita, restituisce tutte le info necessarie sulla traccia, tutte le informazioni necessarie su tutti gli artisti e tutte le informazioni necessarie sull'album (ad eccezione del genere)
+
+PASSI per ogni traccia trovata:
+Upsert degli artisti e caricamento foto,
+Upsert dell'album e caricamento foto,
+Upsert delle associazioni album/artista
+Upsert del brano
+
+9) - PER OTTENERE I BRANI DI UN ALBUM
+
+https://api.deezer.com/album/486048505/tracks
+
+PASSI per ogni traccia trovata:
+
+Upsert del brano
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

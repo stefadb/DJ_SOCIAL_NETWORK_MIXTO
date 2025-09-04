@@ -1,0 +1,31 @@
+SCHEDA ALBUM O RELEASE
+
+-------------------------------------------------
+| 🎵 Cover Album         Titolo Album           |
+|                       Nome Artista (link)    |
+|       Genere · Data di uscita · Etichetta    |
+|  [⭐ Salva album] [Segui artista]             |
+-------------------------------------------------
+
+[Lista Brani dell'Album – Ordinabile]
+[Filtro/Ordina: Popolarità nei passaggi ↑↓ | Durata ↑↓ | Ordine nell'album ↑↓]
+
+1. Brano A (durata) → link scheda brano
+2. Brano B (durata) → link scheda brano
+3. Brano C (durata) → link scheda brano
+...
+-------------------------------------------------
+
+[Lista Passaggi che includono brani dell'album]
+[Filtro: Tutti | Primo | Secondo]  [Ordina: Popolarità ↑↓ | Data ↑↓]
+
+👉 Brano A → Brano X
+   DJ Mario · ❤️ 23 · 💬 5
+
+👉 Brano Y → Brano B
+   DJ Sara · ❤️ 45 · 💬 12
+
+👉 Brano C → Brano Z
+   DJ Luca · ❤️ 10 · 💬 2
+[Mostra altri...]
+-------------------------------------------------

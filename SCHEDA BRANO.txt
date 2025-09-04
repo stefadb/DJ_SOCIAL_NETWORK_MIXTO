@@ -1,0 +1,37 @@
+SCHEDA BRANO:
+
+-------------------------------------------------
+| 🎵 Cover del brano       Titolo Brano         |
+|                         Nome Artista (link)  |
+|                         Album (link)         |
+|       Genere · Anno · Durata                  |
+|  [⭐ Preferiti]   [➕ Crea Passaggio]          |
+-------------------------------------------------
+
+[📊 Grafico a torta – Panoramica Passaggi]
+- Torta “Brani più usati PRIMA del brano” 
+   (Top 5 brani)
+- Torta “Brani più usati DOPO il brano” 
+   (Top 5 brani)
+*Hover → nome brano + numero passaggi
+*Click → vai alla scheda brano selezionato
+
+-------------------------------------------------
+[Lista Passaggi]
+[Filtro: Tutti | Primo | Secondo]  [Ordina: Popolarità ↑↓ | Data ↑↓]
+
+👉 Brano Attuale → Altro Brano
+   DJ Mario · ❤️ 23 · 💬 5
+
+👉 Altro Brano → Brano Attuale
+   DJ Sara · ❤️ 45 · 💬 12
+
+👉 Brano Attuale → Altro Brano
+   DJ Luca · ❤️ 10 · 💬 2
+
+👉 Altro Brano → Brano Attuale
+   DJ Anna · ❤️ 7 · 💬 1
+
+(Questa lista, prende TUTTI i passaggi pubblicati dove questo brano è coinvolto e li filtra) 
+[Mostra altri...]
+-------------------------------------------------

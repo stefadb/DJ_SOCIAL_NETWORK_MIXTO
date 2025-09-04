@@ -1,0 +1,8 @@
+{
+  "picturesFolder": "generi_pictures",
+  "deezerApiCallUrl": "https://api.deezer.com/genre",
+  "apiName": "/generi",
+  "testApiCallUrl": "/generi",
+  "entityName": "genres",
+  "upsertTestSqlQuery": "SELECT * FROM genere"
+}

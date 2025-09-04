@@ -1,0 +1,10 @@
+{
+    "id": 106,
+    "name": "Electro",
+    "picture": "https://api.deezer.com/genre/106/image",
+    "picture_small": "https://cdn-images.dzcdn.net/images/misc/15df4502c1c58137dae5bdd1cc6f0251/56x56-000000-80-0-0.jpg",
+    "picture_medium": "https://cdn-images.dzcdn.net/images/misc/15df4502c1c58137dae5bdd1cc6f0251/250x250-000000-80-0-0.jpg",
+    "picture_big": "https://cdn-images.dzcdn.net/images/misc/15df4502c1c58137dae5bdd1cc6f0251/500x500-000000-80-0-0.jpg",
+    "picture_xl": "https://cdn-images.dzcdn.net/images/misc/15df4502c1c58137dae5bdd1cc6f0251/1000x1000-000000-80-0-0.jpg",
+    "type": "genre"
+}
