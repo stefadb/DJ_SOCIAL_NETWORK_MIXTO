@@ -64,7 +64,7 @@ IMPORTANTE: Se deezer nella risposta restituisce il next, significa che ci sono 
 
 Usa sempre limit e index per la paginazione
 
-TODO: implementa questo e scrivi il test
+IMPLEMENTATO E TESTATO!!
 5) - PER OTTENERE GLI ARTISTI SIMILI A UNO SU DEEZER - OK
 
 https://api.deezer.com/artist/5359276/related
@@ -76,7 +76,7 @@ Upsert degli artisti e caricamento foto
 
 Usa sempre limit e index per la paginazione
 
-TODO: implementa questo e scrivi il test
+IMPLEMENTATO E TESTATO!!
 6) - PER OTTENERE GLI ARTISTI APPARTENENTI A UN GENERE MUSICALE - OK
 
 https://api.deezer.com/genre/106/artists
@@ -125,7 +125,7 @@ PASSI per ogni traccia trovata:
 
 Upsert del brano
 
-TODO: implementa questo e scrivi il test
+-> TODO: implementa questo e scrivi il test
 10) - PER OTTENERE TUTTI GLI ALBUM CHE CORRISPONDONO A UNA PAROLA/FRASE DI RICERCA (query) - OK
 
 https://api.deezer.com/search/album?q=eminem

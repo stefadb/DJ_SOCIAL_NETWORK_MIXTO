@@ -1,4 +1,4 @@
-import { artistiSearch, deleteCommento, deletePassaggio, deleteScalette, deleteUtente, deleteValutazione, getAlbumPassaggi, getArtistaPassaggi, getBranoPassaggi, getCommenti, getCommento, getGenere, getGeneri, getGeneriPassaggi, getPassaggi, getPassaggio, getScaletta, getScalette, getUtente, getUtentePassaggi, getUtenti, getValutazione, getValutazioni, postCommento, postLogin, postPassaggio, postScalette, postUtente, postValutazione, postVisualizzazione, putCommento, putPassaggio, putScalette, putUtente, putValutazione } from "./apiroutes";
+import { albumApi, artistiApi, deleteCommento, deletePassaggio, deleteScalette, deleteUtente, deleteValutazione, getAlbumPassaggi, getArtistaPassaggi, getBranoPassaggi, getCommenti, getCommento, getGenere, getGeneri, getGeneriPassaggi, getPassaggi, getPassaggio, getScaletta, getScalette, getUtente, getUtentePassaggi, getUtenti, getValutazione, getValutazioni, postCommento, postLogin, postPassaggio, postScalette, postUtente, postValutazione, postVisualizzazione, putCommento, putPassaggio, putScalette, putUtente, putValutazione } from "./apiroutes";
 
 import express from "express";
 const app = express();
@@ -19,8 +19,11 @@ app.get("/generi/:id", getGenere); //FUNZIONA
 //ARTISTI
 
 // Cerca su Deezer gli artisti che l'utente ha cercato e, per ognuno, fa upsert sul db e download della foto.
-app.get("/artisti/search", artistiSearch);
+app.get("/artisti/search", (req, res) => { artistiApi("search", req, res) });
+app.get("/artisti/related", (req, res) => { artistiApi("related", req, res) });
+app.get("/artisti/genere", (req, res) => { artistiApi("genre", req, res) });
 //--------------------------------------------------------
+app.get("/album/search", (req, res) => { albumApi("search", req, res) });
 //PASSAGGI
 app.get("/brani/:id/passaggi", getBranoPassaggi);
 app.get("/album/:id/passaggi", getAlbumPassaggi);

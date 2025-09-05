@@ -21,8 +21,11 @@ app.get("/generi/:id", apiroutes_1.getGenere); //FUNZIONA
 //TODO: Aggiungere le API per gli album, gli artisti e i brani
 //ARTISTI
 // Cerca su Deezer gli artisti che l'utente ha cercato e, per ognuno, fa upsert sul db e download della foto.
-app.get("/artisti/search", apiroutes_1.artistiSearch);
+app.get("/artisti/search", (req, res) => { (0, apiroutes_1.artistiApi)("search", req, res); });
+app.get("/artisti/related", (req, res) => { (0, apiroutes_1.artistiApi)("related", req, res); });
+app.get("/artisti/genere", (req, res) => { (0, apiroutes_1.artistiApi)("genre", req, res); });
 //--------------------------------------------------------
+app.get("/album/search", (req, res) => { (0, apiroutes_1.albumApi)("search", req, res); });
 //PASSAGGI
 app.get("/brani/:id/passaggi", apiroutes_1.getBranoPassaggi);
 app.get("/album/:id/passaggi", apiroutes_1.getAlbumPassaggi);

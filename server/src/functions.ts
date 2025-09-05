@@ -42,6 +42,8 @@ export async function makeDeezerApiCall(res: import("express").Response, urlFirs
           res.status(404).json({ error: "Deezer non ha trovato quello che si sta cercando" });
           resolve(-1);
         } else {
+          console.log("Ecco l'errore");
+          console.log(error);
           res.status(500).json({ error: "Errore nella chiamata a Deezer" });
           resolve(-1);
         }

@@ -9,9 +9,7 @@ module.exports = {
     ...tsJestTransformCfg,
   },
   testMatch: [
-    "**/__tests__/getGenere/.test.ts",
-    "**/__tests__/getGeneri/.test.ts",
-    "**/__tests__/artistiSearch/.test.ts"
+    "**/__tests__/**/*.test.ts"
   ],
   testPathIgnorePatterns: [
     "/node_modules/",

@@ -48,6 +48,8 @@ async function makeDeezerApiCall(res, urlFirstPart, urlParameter, urlSecondPart,
                 resolve(-1);
             }
             else {
+                console.log("Ecco l'errore");
+                console.log(error);
                 res.status(500).json({ error: "Errore nella chiamata a Deezer" });
                 resolve(-1);
             }

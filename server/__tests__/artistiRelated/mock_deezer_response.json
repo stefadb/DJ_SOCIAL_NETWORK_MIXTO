@@ -1,0 +1,81 @@
+{
+  "data": [
+    {
+      "id": 6164532,
+      "name": "Kolter",
+      "link": "https://www.deezer.com/artist/6164532",
+      "picture": "https://api.deezer.com/artist/6164532/image",
+      "picture_small": "https://cdn-images.dzcdn.net/images/artist/8427b95e0f78fdc0779a5f5f777fa6f6/56x56-000000-80-0-0.jpg",
+      "picture_medium": "https://cdn-images.dzcdn.net/images/artist/8427b95e0f78fdc0779a5f5f777fa6f6/250x250-000000-80-0-0.jpg",
+      "picture_big": "https://cdn-images.dzcdn.net/images/artist/8427b95e0f78fdc0779a5f5f777fa6f6/500x500-000000-80-0-0.jpg",
+      "picture_xl": "https://cdn-images.dzcdn.net/images/artist/8427b95e0f78fdc0779a5f5f777fa6f6/1000x1000-000000-80-0-0.jpg",
+      "nb_album": 119,
+      "nb_fan": 1795,
+      "radio": true,
+      "tracklist": "https://api.deezer.com/artist/6164532/top?limit=50",
+      "type": "artist"
+    },
+    {
+      "id": 11389,
+      "name": "Kerri Chandler",
+      "link": "https://www.deezer.com/artist/11389",
+      "picture": "https://api.deezer.com/artist/11389/image",
+      "picture_small": "https://cdn-images.dzcdn.net/images/artist/03e419d90076baed9b7934dd043873b2/56x56-000000-80-0-0.jpg",
+      "picture_medium": "https://cdn-images.dzcdn.net/images/artist/03e419d90076baed9b7934dd043873b2/250x250-000000-80-0-0.jpg",
+      "picture_big": "https://cdn-images.dzcdn.net/images/artist/03e419d90076baed9b7934dd043873b2/500x500-000000-80-0-0.jpg",
+      "picture_xl": "https://cdn-images.dzcdn.net/images/artist/03e419d90076baed9b7934dd043873b2/1000x1000-000000-80-0-0.jpg",
+      "nb_album": 99,
+      "nb_fan": 13196,
+      "radio": true,
+      "tracklist": "https://api.deezer.com/artist/11389/top?limit=50",
+      "type": "artist"
+    },
+    {
+      "id": 203478207,
+      "name": "Across Boundaries",
+      "link": "https://www.deezer.com/artist/203478207",
+      "picture": "https://api.deezer.com/artist/203478207/image",
+      "picture_small": "https://cdn-images.dzcdn.net/images/artist/299d36c22e0ca3207ea1ab23115bca01/56x56-000000-80-0-0.jpg",
+      "picture_medium": "https://cdn-images.dzcdn.net/images/artist/299d36c22e0ca3207ea1ab23115bca01/250x250-000000-80-0-0.jpg",
+      "picture_big": "https://cdn-images.dzcdn.net/images/artist/299d36c22e0ca3207ea1ab23115bca01/500x500-000000-80-0-0.jpg",
+      "picture_xl": "https://cdn-images.dzcdn.net/images/artist/299d36c22e0ca3207ea1ab23115bca01/1000x1000-000000-80-0-0.jpg",
+      "nb_album": 2,
+      "nb_fan": 201,
+      "radio": true,
+      "tracklist": "https://api.deezer.com/artist/203478207/top?limit=50",
+      "type": "artist"
+    },
+    {
+      "id": 12263646,
+      "name": "Robbie Doherty",
+      "link": "https://www.deezer.com/artist/12263646",
+      "picture": "https://api.deezer.com/artist/12263646/image",
+      "picture_small": "https://cdn-images.dzcdn.net/images/artist/5da30e6440037d2eb6065ee511e527c5/56x56-000000-80-0-0.jpg",
+      "picture_medium": "https://cdn-images.dzcdn.net/images/artist/5da30e6440037d2eb6065ee511e527c5/250x250-000000-80-0-0.jpg",
+      "picture_big": "https://cdn-images.dzcdn.net/images/artist/5da30e6440037d2eb6065ee511e527c5/500x500-000000-80-0-0.jpg",
+      "picture_xl": "https://cdn-images.dzcdn.net/images/artist/5da30e6440037d2eb6065ee511e527c5/1000x1000-000000-80-0-0.jpg",
+      "nb_album": 53,
+      "nb_fan": 557,
+      "radio": true,
+      "tracklist": "https://api.deezer.com/artist/12263646/top?limit=50",
+      "type": "artist"
+    },
+    {
+      "id": 1613691,
+      "name": "PRUNK",
+      "link": "https://www.deezer.com/artist/1613691",
+      "picture": "https://api.deezer.com/artist/1613691/image",
+      "picture_small": "https://cdn-images.dzcdn.net/images/artist/5a33727d5ce02e410f3e9b2c89bfd019/56x56-000000-80-0-0.jpg",
+      "picture_medium": "https://cdn-images.dzcdn.net/images/artist/5a33727d5ce02e410f3e9b2c89bfd019/250x250-000000-80-0-0.jpg",
+      "picture_big": "https://cdn-images.dzcdn.net/images/artist/5a33727d5ce02e410f3e9b2c89bfd019/500x500-000000-80-0-0.jpg",
+      "picture_xl": "https://cdn-images.dzcdn.net/images/artist/5a33727d5ce02e410f3e9b2c89bfd019/1000x1000-000000-80-0-0.jpg",
+      "nb_album": 29,
+      "nb_fan": 1407,
+      "radio": true,
+      "tracklist": "https://api.deezer.com/artist/1613691/top?limit=50",
+      "type": "artist"
+    }
+  ],
+  "total": 20,
+  "next": "https://api.deezer.com/artist/5359276/related?limit=5&index=5"
+}

@@ -26,10 +26,6 @@ exports.postValutazione = postValutazione;
 exports.putValutazione = putValutazione;
 exports.deleteValutazione = deleteValutazione;
 exports.postVisualizzazione = postVisualizzazione;
-exports.upsertGenere = upsertGenere;
-exports.upsertArtista = upsertArtista;
-exports.upsertAlbum = upsertAlbum;
-exports.upsertBrano = upsertBrano;
 exports.getBranoPassaggi = getBranoPassaggi;
 exports.getAlbumPassaggi = getAlbumPassaggi;
 exports.getArtistaPassaggi = getArtistaPassaggi;
@@ -42,12 +38,14 @@ exports.deleteScalette = deleteScalette;
 exports.getGeneriPassaggi = getGeneriPassaggi;
 exports.getGeneri = getGeneri;
 exports.getGenere = getGenere;
-exports.artistiSearch = artistiSearch;
+exports.artistiApi = artistiApi;
+exports.albumApi = albumApi;
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const promise_1 = __importDefault(require("mysql2/promise"));
 const types_1 = require("./types");
 const dotenv_1 = __importDefault(require("dotenv"));
 const functions_1 = require("./functions");
+const upserts_1 = require("./upserts");
 // Decidi quale file .env usare in base a NODE_ENV
 const envFile = process.env.NODE_ENV === "test" ? ".env.test" : ".env";
 dotenv_1.default.config({ path: envFile });
@@ -245,74 +243,6 @@ async function postVisualizzazione(req, res) {
     await con.end();
     res.json({ id: result.insertId });
 }
-// Funzioni di utilità per upsert
-async function upsertGenere(con, genere) {
-    const [rows] = await con.execute("SELECT id FROM Genere WHERE id = ?", [
-        genere.id,
-    ]);
-    if (rows.length === 0) {
-        await con.execute("INSERT INTO Genere (id, nome) VALUES (?, ?)", [
-            genere.id,
-            genere.nome,
-        ]);
-    }
-    else {
-        await con.execute("UPDATE Genere SET nome = ? WHERE id = ?", [
-            genere.nome,
-            genere.id,
-        ]);
-    }
-}
-async function upsertArtista(con, artista) {
-    const [rows] = await con.execute("SELECT id FROM Artista WHERE id = ?", [
-        artista.id,
-    ]);
-    if (rows.length === 0) {
-        await con.execute("INSERT INTO Artista (id, nome) VALUES (?, ?)", [
-            artista.id,
-            artista.name,
-        ]);
-    }
-    else {
-        await con.execute("UPDATE Artista SET nome = ? WHERE id = ?", [
-            artista.name,
-            artista.id,
-        ]);
-    }
-}
-async function upsertAlbum(con, album) {
-    const [rows] = await con.execute("SELECT id FROM Album WHERE id = ?", [
-        album.id,
-    ]);
-    const id_genere = album.id_genere || null;
-    if (rows.length === 0) {
-        await con.execute("INSERT INTO Album (id, titolo, data_uscita, id_genere) VALUES (?, ?, ?, ?)", [album.id, album.titolo, album.data_uscita || null, id_genere]);
-    }
-    else {
-        await con.execute("UPDATE Album SET titolo = ?, data_uscita = ?, id_genere = ? WHERE id = ?", [album.titolo, album.data_uscita || null, id_genere, album.id]);
-    }
-}
-async function upsertBrano(con, brano) {
-    const [rows] = await con.execute("SELECT id FROM Brano WHERE id = ?", [
-        brano.id,
-    ]);
-    if (rows.length === 0) {
-        await con.execute("INSERT INTO Brano (id, titolo, durata, id_album) VALUES (?, ?, ?, ?)", [
-            brano.id,
-            brano.titolo,
-            brano.durata,
-            brano.id_album,
-        ]);
-    }
-    else {
-        await con.execute("UPDATE Brano SET titolo = ?, durata = ?, id_album = ? WHERE id = ?", [
-            brano.titolo,
-            brano.durata,
-            brano.id_album,
-            brano.id,
-        ]);
-    }
-}
 function getPagination(page, pageSize) {
     const offset = (page - 1) * pageSize;
     return { pageSize, offset };
@@ -492,7 +422,7 @@ async function getGeneri(req, res) {
         //UPSERT DEI GENERI SUL DB
         const con = await getConnection();
         for (const genere of generiDb) {
-            await upsertGenere(con, genere);
+            await (0, upserts_1.upsertGenere)(con, genere);
         }
         //CARICAMENTO FOTO DEI GENERI
         for (const genere of generi) {
@@ -527,7 +457,7 @@ async function getGenere(req, res) {
         const genereDb = { id: genere.id, nome: genere.name };
         //UPSERT DEL GENERE SUL DB
         const con = await getConnection();
-        await upsertGenere(con, genereDb);
+        await (0, upserts_1.upsertGenere)(con, genereDb);
         //CARICAMENTO FOTO DEL GENERE
         await (0, functions_1.uploadPhoto)("generi_pictures", genere.id, genere.picture_big);
         //RECUPERO E RESTITUZIONE GENERE DAL DB
@@ -537,18 +467,38 @@ async function getGenere(req, res) {
         res.status(500).json({ error: "Errore nel recupero del genere Deezer o dal database" });
     }
 }
+const artistiAPIsConfig = {
+    search: {
+        paramName: "query",
+        deezerAPICallback: (res, param, limit, index) => (0, functions_1.makeDeezerApiCall)(res, "search", null, "artist", { q: param, limit: limit.toString(), index: index.toString() })
+    },
+    related: {
+        paramName: "artistId",
+        deezerAPICallback: (res, param, limit, index) => (0, functions_1.makeDeezerApiCall)(res, "artist", param, "related", { limit: limit.toString(), index: index.toString() })
+    },
+    genre: {
+        paramName: "genreId",
+        deezerAPICallback: (res, param, limit, index) => (0, functions_1.makeDeezerApiCall)(res, "genre", param, "artists", { limit: limit.toString(), index: index.toString() })
+    }
+};
 //FUNZIONE GIA ADATTATA A TYPESCRIPT
-async function artistiSearch(req, res) {
+async function artistiApi(apiName, req, res) {
+    if (artistiAPIsConfig[apiName] === undefined) {
+        res.status(400).json({ error: 'API non valida' });
+        return;
+    }
+    const paramName = artistiAPIsConfig[apiName].paramName; //nome del parametro di ricerca
     //CONTROLLO CHE I PARAMETRI query, limit e index SIANO STATI PASSATI E SIANO VALIDI
-    const query = typeof req.query.query === "string" ? req.query.query : undefined;
+    const param = typeof req.query[paramName] === "string" ? req.query[paramName] : undefined;
     const limit = typeof req.query.limit === "string" ? Number(req.query.limit) : undefined;
     const index = typeof req.query.index === "string" ? Number(req.query.index) : undefined;
-    if (!query || limit === undefined || index === undefined || isNaN(limit) || isNaN(index)) {
-        return res.status(400).json({ error: 'Parametri "query", "limit" e "index" obbligatori e devono essere validi' });
+    if (!param || limit === undefined || index === undefined || isNaN(limit) || isNaN(index)) {
+        return res.status(400).json({ error: 'Parametri "' + paramName + '", "limit" e "index" obbligatori e devono essere validi' });
     }
     try {
         //CHIAMATA API A DEEZER
-        const responseData = await (0, functions_1.makeDeezerApiCall)(res, "search", null, "artist", { q: query, limit: limit.toString(), index: index.toString() });
+        const responseData = await artistiAPIsConfig[apiName].deezerAPICallback(res, param, limit.toString(), index.toString());
+        //DA QUI IN GIU, TUTTO IDENTICO
         if (responseData === -1) {
             return; //Errore già gestito in makeDeezerApiCall
         }
@@ -562,7 +512,7 @@ async function artistiSearch(req, res) {
         //RIPETI PER OGNI ARTISTA...
         for (const artista of artisti) {
             //UPSERT ARTISTA SUL DB
-            await upsertArtista(con, artista); //conversione possibile perchè ArtistaDeezerBasic e ArtistaDb hanno gli stessi campi
+            await (0, upserts_1.upsertArtista)(con, artista); //conversione possibile perchè ArtistaDeezerBasic e ArtistaDb hanno gli stessi campi
             //CARICAMENTO FOTO DELL'ARTISTA
             await (0, functions_1.uploadPhoto)("artisti_pictures", artista.id, artista.picture_big);
         }
@@ -571,6 +521,54 @@ async function artistiSearch(req, res) {
     }
     catch (err) {
         res.status(500).json({ error: "Errore nella ricerca artisti Deezer" });
+    }
+}
+const albumAPIsConfig = {
+    search: {
+        paramName: "query",
+        deezerAPICallback: (res, param, limit, index) => (0, functions_1.makeDeezerApiCall)(res, "search", null, "album", { q: param, limit: limit.toString(), index: index.toString() })
+    },
+};
+//FUNZIONE GIA ADATTATA A TYPESCRIPT
+async function albumApi(apiName, req, res) {
+    if (albumAPIsConfig[apiName] === undefined) {
+        res.status(400).json({ error: 'API non valida' });
+        return;
+    }
+    const paramName = albumAPIsConfig[apiName].paramName; //nome del parametro di ricerca
+    //CONTROLLO CHE I PARAMETRI query, limit e index SIANO STATI PASSATI E SIANO VALIDI
+    const param = typeof req.query[paramName] === "string" ? req.query[paramName] : undefined;
+    const limit = typeof req.query.limit === "string" ? Number(req.query.limit) : undefined;
+    const index = typeof req.query.index === "string" ? Number(req.query.index) : undefined;
+    if (!param || limit === undefined || index === undefined || isNaN(limit) || isNaN(index)) {
+        return res.status(400).json({ error: 'Parametri "' + paramName + '", "limit" e "index" obbligatori e devono essere validi' });
+    }
+    try {
+        //CHIAMATA API A DEEZER
+        const responseData = await albumAPIsConfig[apiName].deezerAPICallback(res, param, limit.toString(), index.toString());
+        //DA QUI IN GIU, TUTTO IDENTICO
+        if (responseData === -1) {
+            return; //Errore già gestito in makeDeezerApiCall
+        }
+        //VALIDAZIONE DELL'ARRAY DEGLI ALBUM RESTITUITO DA DEEZER
+        if (!(0, functions_1.isValidDeezerObject)(res, responseData.data, types_1.AlbumDeezerBasicSchema, true)) {
+            return;
+        }
+        const albums = responseData.data;
+        //SE NON ESISTE, CREA LA CARTELLA PER LE FOTO DEGLI ALBUM
+        const con = await getConnection();
+        //RIPETI PER OGNI ALBUM...
+        for (const album of albums) {
+            //UPSERT ALBUM SUL DB
+            await (0, upserts_1.upsertAlbum)(con, { id: album.id, titolo: album.title }); //conversione possibile perchè AlbumDeezerBasic e AlbumDb hanno gli stessi campi
+            //CARICAMENTO FOTO DELL'ALBUM
+            await (0, functions_1.uploadPhoto)("album_pictures", album.id, album.cover_big);
+        }
+        await con.end();
+        res.json(albums.map((album) => { return { id: album.id, titolo: album.title }; }));
+    }
+    catch (err) {
+        res.status(500).json({ error: "Errore nella ricerca album Deezer" });
     }
 }
 //# sourceMappingURL=apiroutes.js.map

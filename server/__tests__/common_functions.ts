@@ -28,10 +28,10 @@ export function getImageUrlToFileMappingFromDeezerResponse(mockDeezerResponseRaw
     }
     let toReturn: ImageUrlFileNameMapping[] = "data" in mockDeezerResponse ? /* Deeezer ha restituito un array*/
         mockDeezerResponse.data.map((item) => {
-            return { url: item.picture_big, fileName: `${item.id}.jpg` };
+            return { url: "picture_big" in item ? item.picture_big : item.cover_big, fileName: `${item.id}.jpg` };
         })
         :
-        [{ url: mockDeezerResponse.picture_big, fileName: `${mockDeezerResponse.id}.jpg` }];
+        [{ url: "picture_big" in mockDeezerResponse ? mockDeezerResponse.picture_big : mockDeezerResponse.cover_big, fileName: `${mockDeezerResponse.id}.jpg` }];
     //Restituisci l'array dei mapping
     //TODO: valuta un modo più efficiente per fare questa roba, senza usare la push
     return toReturn;

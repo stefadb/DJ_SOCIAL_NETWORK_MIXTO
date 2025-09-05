@@ -19,6 +19,15 @@ export const GenereDeezerBasicSchema = z.object({
 
 export type GenereDeezerBasic = z.infer<typeof GenereDeezerBasicSchema>;
 
+//Contiene le informazioni di base sugli album di Deezer
+export const AlbumDeezerBasicSchema = z.object({
+    id: z.number(),
+    title: z.string(),
+    cover_big: z.string(),
+});
+
+export type AlbumDeezerBasic = z.infer<typeof AlbumDeezerBasicSchema>;
+
 //Tipi di dati legati al db
 
 //Mostra come sono memorizzati gli artisti nel database
@@ -42,9 +51,7 @@ export type BranoDb = z.infer<typeof BranoDbSchema>;
 //Mostra come sono memorizzati gli album nel database
 export const AlbumDbSchema = z.object({
     id: z.number(),
-    titolo: z.string(),
-    data_uscita: z.string(),
-    id_genere: z.number()
+    titolo: z.string()
 });
 
 export type AlbumDb = z.infer<typeof AlbumDbSchema>;
@@ -59,10 +66,16 @@ export type GenereDb = z.infer<typeof GenereDbSchema>;
 
 export type QueryParams = Record<string, string>;
 
-export const DeezerResponseSingleItemSchema = z.object({
-    id: z.number(),
-    picture_big: z.string(),
-});
+export const DeezerResponseSingleItemSchema = z.union([
+    z.object({
+        id: z.number(),
+        picture_big: z.string(),
+    }),
+    z.object({
+        id: z.number(),
+        cover_big: z.string(),
+    }),
+]);
 
 export type DeezerResponseSingleItem = z.infer<typeof DeezerResponseSingleItemSchema>;
 
