@@ -422,7 +422,7 @@ async function getGeneri(req, res) {
         //UPSERT DEI GENERI SUL DB
         const con = await getConnection();
         for (const genere of generiDb) {
-            await (0, upserts_1.upsertGenere)(con, genere);
+            await (0, upserts_1.upsertEntitaDeezer)(con, genere, "Genere");
         }
         //CARICAMENTO FOTO DEI GENERI
         for (const genere of generi) {
@@ -457,7 +457,7 @@ async function getGenere(req, res) {
         const genereDb = { id: genere.id, nome: genere.name };
         //UPSERT DEL GENERE SUL DB
         const con = await getConnection();
-        await (0, upserts_1.upsertGenere)(con, genereDb);
+        await (0, upserts_1.upsertEntitaDeezer)(con, genereDb, "Genere");
         //CARICAMENTO FOTO DEL GENERE
         await (0, functions_1.uploadPhoto)("generi_pictures", genere.id, genere.picture_big);
         //RECUPERO E RESTITUZIONE GENERE DAL DB
@@ -512,7 +512,7 @@ async function artistiApi(apiName, req, res) {
         //RIPETI PER OGNI ARTISTA...
         for (const artista of artisti) {
             //UPSERT ARTISTA SUL DB
-            await (0, upserts_1.upsertArtista)(con, artista); //conversione possibile perchè ArtistaDeezerBasic e ArtistaDb hanno gli stessi campi
+            await (0, upserts_1.upsertEntitaDeezer)(con, artista, "Artista"); //conversione possibile perchè ArtistaDeezerBasic e ArtistaDb hanno gli stessi campi
             //CARICAMENTO FOTO DELL'ARTISTA
             await (0, functions_1.uploadPhoto)("artisti_pictures", artista.id, artista.picture_big);
         }
@@ -560,7 +560,7 @@ async function albumApi(apiName, req, res) {
         //RIPETI PER OGNI ALBUM...
         for (const album of albums) {
             //UPSERT ALBUM SUL DB
-            await (0, upserts_1.upsertAlbum)(con, { id: album.id, titolo: album.title }); //conversione possibile perchè AlbumDeezerBasic e AlbumDb hanno gli stessi campi
+            await (0, upserts_1.upsertEntitaDeezer)(con, { id: album.id, titolo: album.title }, "Album"); //conversione possibile perchè AlbumDeezerBasic e AlbumDb hanno gli stessi campi
             //CARICAMENTO FOTO DELL'ALBUM
             await (0, functions_1.uploadPhoto)("album_pictures", album.id, album.cover_big);
         }
