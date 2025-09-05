@@ -9,7 +9,7 @@ import { AlbumDb, AlbumDeezerBasic, AlbumDeezerBasicSchema, ArtistaDb, ArtistaDe
 import { ZodObject } from 'zod';
 import dotenv from "dotenv";
 import { isValidDeezerObject, makeDeezerApiCall, uploadPhoto } from './functions';
-import { upsertAlbum, upsertArtista, upsertGenere, upsertBrano } from './upserts';
+import { upsertEntitaDeezer } from './upserts';
 
 // Extend express-session to include user property
 declare module 'express-session' {
@@ -496,7 +496,7 @@ export async function getGeneri(req: import("express").Request, res: import("exp
     //UPSERT DEI GENERI SUL DB
     const con = await getConnection();
     for (const genere of generiDb) {
-      await upsertGenere(con, genere);
+      await upsertEntitaDeezer(con, genere, "Genere");
     }
     //CARICAMENTO FOTO DEI GENERI
     for (const genere of generi) {
@@ -531,7 +531,7 @@ export async function getGenere(req: import("express").Request, res: import("exp
     const genereDb = { id: genere.id, nome: genere.name } as GenereDb;
     //UPSERT DEL GENERE SUL DB
     const con = await getConnection();
-    await upsertGenere(con, genereDb);
+    await upsertEntitaDeezer(con, genereDb, "Genere");
     //CARICAMENTO FOTO DEL GENERE
     await uploadPhoto("generi_pictures", genere.id, genere.picture_big);
     //RECUPERO E RESTITUZIONE GENERE DAL DB
@@ -594,7 +594,7 @@ export async function artistiApi(apiName: string, req: import("express").Request
     //RIPETI PER OGNI ARTISTA...
     for (const artista of artisti) {
       //UPSERT ARTISTA SUL DB
-      await upsertArtista(con, artista as ArtistaDb); //conversione possibile perchè ArtistaDeezerBasic e ArtistaDb hanno gli stessi campi
+      await upsertEntitaDeezer(con, {id: artista.id, nome: artista.name} as ArtistaDb, "Artista"); //conversione possibile perchè ArtistaDeezerBasic e ArtistaDb hanno gli stessi campi
       //CARICAMENTO FOTO DELL'ARTISTA
       await uploadPhoto("artisti_pictures", artista.id, artista.picture_big);
     }
@@ -643,7 +643,7 @@ export async function albumApi(apiName: string, req: import("express").Request, 
     //RIPETI PER OGNI ALBUM...
     for (const album of albums) {
       //UPSERT ALBUM SUL DB
-      await upsertAlbum(con, {id: album.id, titolo: album.title} as AlbumDb); //conversione possibile perchè AlbumDeezerBasic e AlbumDb hanno gli stessi campi
+      await upsertEntitaDeezer(con, {id: album.id, titolo: album.title} as AlbumDb, "Album"); //conversione possibile perchè AlbumDeezerBasic e AlbumDb hanno gli stessi campi
       //CARICAMENTO FOTO DELL'ALBUM
       await uploadPhoto("album_pictures", album.id, album.cover_big);
     }

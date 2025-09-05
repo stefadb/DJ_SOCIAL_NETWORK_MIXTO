@@ -33,7 +33,7 @@ export type AlbumDeezerBasic = z.infer<typeof AlbumDeezerBasicSchema>;
 //Mostra come sono memorizzati gli artisti nel database
 export const ArtistaDbSchema = z.object({
     id: z.number(),
-    name: z.string(),
+    nome: z.string(),
 });
 
 export type ArtistaDb = z.infer<typeof ArtistaDbSchema>;

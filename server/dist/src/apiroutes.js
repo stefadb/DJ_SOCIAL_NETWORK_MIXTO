@@ -512,7 +512,7 @@ async function artistiApi(apiName, req, res) {
         //RIPETI PER OGNI ARTISTA...
         for (const artista of artisti) {
             //UPSERT ARTISTA SUL DB
-            await (0, upserts_1.upsertEntitaDeezer)(con, artista, "Artista"); //conversione possibile perchè ArtistaDeezerBasic e ArtistaDb hanno gli stessi campi
+            await (0, upserts_1.upsertEntitaDeezer)(con, { id: artista.id, nome: artista.name }, "Artista"); //conversione possibile perchè ArtistaDeezerBasic e ArtistaDb hanno gli stessi campi
             //CARICAMENTO FOTO DELL'ARTISTA
             await (0, functions_1.uploadPhoto)("artisti_pictures", artista.id, artista.picture_big);
         }

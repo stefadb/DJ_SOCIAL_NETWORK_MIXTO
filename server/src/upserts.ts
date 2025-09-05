@@ -1,6 +1,5 @@
 import mysql from "mysql2/promise";
-import { AlbumDb, ArtistaDb, BranoDb, GenereDb } from "./types";
-
+/*
 // Funzioni di utilità per upsert
 export async function upsertGenere(con: mysql.Connection, genere: GenereDb) {
     const [rows] = await con.execute("SELECT id FROM Genere WHERE id = ?", [
@@ -79,6 +78,7 @@ export async function upsertBrano(con: mysql.Connection, brano: BranoDb) {
         );
     }
 }
+*/
 
 export async function upsertEntitaDeezer(con: mysql.Connection, entita: { id: number } & Record<string, string | number>, nomeEntita: string) {
     const [rows] = await con.execute(
@@ -90,14 +90,14 @@ export async function upsertEntitaDeezer(con: mysql.Connection, entita: { id: nu
     let valuesUpdate = Object.entries(entita).filter(([key, _]) => key !== "id").map(([_, val]) => val).concat([entita.id]);
     let columnsUpdate = Object.entries(entita).filter(([key, _]) => key !== "id").map(([key, _]) => `${key} = ?`).join(", ");
     if ((rows as any[]).length === 0) {
-        await con.execute(
-            `INSERT INTO ${nomeEntita} (${columnsInsert}) VALUES (${valuesInsert})`,
-            Object.values(entita)
-        );
+        let query = `INSERT INTO ${nomeEntita} (${columnsInsert}) VALUES (${valuesInsert})`;
+        let values = Object.values(entita);
+        console.log("QUERY DI INSERT:", query, values);
+        await con.execute(query, values);
     } else {
-        await con.execute(
-            `UPDATE ${nomeEntita} SET ${columnsUpdate} WHERE id = ?`,
-            valuesUpdate
-        );
+        let query = `UPDATE ${nomeEntita} SET ${columnsUpdate} WHERE id = ?`;
+        let values = valuesUpdate;
+        console.log("QUERY DI UPDATE:", query, values);
+        await con.execute(query, values);
     }
 }

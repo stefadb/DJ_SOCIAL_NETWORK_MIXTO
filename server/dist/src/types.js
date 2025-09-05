@@ -24,7 +24,7 @@ exports.AlbumDeezerBasicSchema = zod_1.z.object({
 //Mostra come sono memorizzati gli artisti nel database
 exports.ArtistaDbSchema = zod_1.z.object({
     id: zod_1.z.number(),
-    name: zod_1.z.string(),
+    nome: zod_1.z.string(),
 });
 //Mostra come sono memorizzati i brani nel database
 exports.BranoDbSchema = zod_1.z.object({
