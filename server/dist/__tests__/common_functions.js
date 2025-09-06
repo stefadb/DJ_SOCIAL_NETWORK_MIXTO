@@ -127,7 +127,9 @@ async function createOrDeleteTablesOnTestDb(queriesAfterDbInit, createTables) {
                 user: process.env.USER || "root",
                 password: process.env.PASSWORD || "5vhpS8!2xxS88s4rbT8m7j"
             });
-            if (!createTables) {
+            if (createTables) {
+                await connection.query(`DROP DATABASE IF EXISTS \`${testDB}\``);
+                await connection.query(`CREATE DATABASE \`${testDB}\``);
                 // 2️⃣ disabilita temporaneamente le foreign key
                 await connection.query(`SET FOREIGN_KEY_CHECKS = 0`);
                 // 3️⃣ ottieni la lista delle tabelle dal database originale
@@ -135,10 +137,13 @@ async function createOrDeleteTablesOnTestDb(queriesAfterDbInit, createTables) {
                 // 4️⃣ crea tutte le tabelle nel db di test
                 for (const row of tables) {
                     const tableName = row.TABLE_NAME;
-                    await connection.query(`DELETE FROM \`${testDB}\`.\`${tableName}\``);
+                    await connection.query(`CREATE TABLE \`${testDB}\`.\`${tableName}\` LIKE \`${originalDB}\`.\`${tableName}\``);
                 }
                 // 5️⃣ riabilita le foreign key
                 await connection.query(`SET FOREIGN_KEY_CHECKS = 1`);
+            }
+            else {
+                await connection.query(`DROP DATABASE IF EXISTS \`${testDB}\``);
             }
             if (queriesAfterDbInit) {
                 await connection.query(`USE \`${testDB}\``);
@@ -151,10 +156,10 @@ async function createOrDeleteTablesOnTestDb(queriesAfterDbInit, createTables) {
                 }
             }
             await connection.end();
-            resolve("Database di test modificato correttamente!");
+            resolve("Database di test " + (createTables ? "creato" : "eliminato") + " correttamente!");
         }
         catch (error) {
-            console.error("Errore nella modifica del database di test:", error);
+            console.error("Errore nella " + (createTables ? "creazione" : "eliminazione") + " del database di test:", error);
             reject(error);
         }
     });
