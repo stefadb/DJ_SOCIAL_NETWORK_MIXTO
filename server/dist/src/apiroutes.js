@@ -36,12 +36,9 @@ exports.postScalette = postScalette;
 exports.putScalette = putScalette;
 exports.deleteScalette = deleteScalette;
 exports.getGeneriPassaggi = getGeneriPassaggi;
-exports.getGeneri = getGeneri;
-exports.getGenere = getGenere;
 exports.deezerEntityApi = deezerEntityApi;
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const promise_1 = __importDefault(require("mysql2/promise"));
-const deezer_types_1 = require("./deezer_types");
 const dotenv_1 = __importDefault(require("dotenv"));
 const functions_1 = require("./functions");
 const upserts_1 = require("./upserts");
@@ -402,156 +399,6 @@ async function getGeneriPassaggi(req, res) {
 }
 //DA QUI IN GIU, LE FUNZIONI GIA ADATTATE A TYPESCRIPT
 //-------------------------------------------------------------------------------
-// ====== GENERI ======
-//FUNZIONE GIA ADATTATA A TYPESCRIPT
-//TODO: valuta se la funzione getGeneri e la funzione getGenere possono essere unite
-async function getGeneri(req, res) {
-    try {
-        //CHIAMATA API A DEEZER
-        const responseData = await (0, functions_1.makeDeezerApiCall)(res, "genre", null, null, null);
-        if (responseData === -1) {
-            return; //Errore già gestito in makeDeezerApiCall
-        }
-        //VALIDAZIONE DEI GENERI RESTITUITI DA DEEZER
-        if (!(0, functions_1.isValidDeezerObject)(res, responseData.data, deezer_types_1.GenereDeezerBasicSchema, true)) {
-            return;
-        }
-        const generi = responseData.data;
-        const generiDb = generi.map(genere => ({ id: genere.id, nome: genere.name }));
-        //UPSERT DEI GENERI SUL DB
-        const con = await getConnection();
-        for (const genere of generiDb) {
-            await (0, upserts_1.upsertEntitaDeezer)(con, genere, "Genere");
-        }
-        //CARICAMENTO FOTO DEI GENERI
-        for (const genere of generi) {
-            await (0, functions_1.uploadPhoto)("generi_pictures", genere.id, genere.picture_big);
-        }
-        //RECUPERO E RESTITUZIONE GENERI DAL DB
-        res.json(generiDb);
-    }
-    catch (err) {
-        res.status(500).json({ error: "Errore nel recupero del genere Deezer o dal database" });
-    }
-}
-//FUNZIONE GIA ADATTATA A TYPESCRIPT
-async function getGenere(req, res) {
-    try {
-        //CONTROLLO PARAMETRO ID SU URL
-        const id = req.params.id;
-        if (id == undefined || isNaN(Number(id))) {
-            res.status(400).json({ error: "ID genere non valido" });
-            return;
-        }
-        //CHIAMATA API A DEEZER
-        const responseData = await (0, functions_1.makeDeezerApiCall)(res, "genre", id, null, null);
-        if (responseData === -1) {
-            return; //Errore già gestito in makeDeezerApiCall
-        }
-        //VALIDAZIONE GENERE RESTITUITO DA DEEZER
-        if (!(0, functions_1.isValidDeezerObject)(res, responseData, deezer_types_1.GenereDeezerBasicSchema, false)) {
-            return;
-        }
-        const genere = responseData;
-        const genereDb = { id: genere.id, nome: genere.name };
-        //UPSERT DEL GENERE SUL DB
-        const con = await getConnection();
-        await (0, upserts_1.upsertEntitaDeezer)(con, genereDb, "Genere");
-        //CARICAMENTO FOTO DEL GENERE
-        await (0, functions_1.uploadPhoto)("generi_pictures", genere.id, genere.picture_big);
-        //RECUPERO E RESTITUZIONE GENERE DAL DB
-        res.json(genereDb);
-    }
-    catch (err) {
-        res.status(500).json({ error: "Errore nel recupero del genere Deezer o dal database" });
-    }
-}
-/*
-//FUNZIONE GIA ADATTATA A TYPESCRIPT
-export async function artistiApi(apiName: string, req: import("express").Request, res: import("express").Response) {
-  if (artistiAPIsConfig[apiName] === undefined) {
-    res.status(400).json({ error: 'API non valida' });
-    return;
-  }
-  const paramName = artistiAPIsConfig[apiName].paramName; //nome del parametro di ricerca
-  //CONTROLLO CHE I PARAMETRI query, limit e index SIANO STATI PASSATI E SIANO VALIDI
-  const param = typeof req.query[paramName] === "string" ? req.query[paramName] : undefined;
-  const limit = typeof req.query.limit === "string" ? Number(req.query.limit) : undefined;
-  const index = typeof req.query.index === "string" ? Number(req.query.index) : undefined;
-  if (!param || limit === undefined || index === undefined || isNaN(limit) || isNaN(index)) {
-    return res.status(400).json({ error: 'Parametri "' + paramName + '", "limit" e "index" obbligatori e devono essere validi' });
-  }
-  try {
-    //CHIAMATA API A DEEZER
-    const responseData: any = await artistiAPIsConfig[apiName].deezerAPICallback(res, param, limit.toString(), index.toString());
-    //DA QUI IN GIU, TUTTO IDENTICO
-    if (responseData === -1) {
-      return; //Errore già gestito in makeDeezerApiCall
-    }
-    //VALIDAZIONE DELL'ARRAY DEGLI ARTISTI RESTITUITO DA DEEZER
-    if (!isValidDeezerObject(res, responseData.data, ArtistaDeezerBasicSchema, true)) {
-      return;
-    }
-    const artisti: ArtistaDeezerBasic[] = responseData.data as ArtistaDeezerBasic[];
-    //SE NON ESISTE, CREA LA CARTELLA PER LE FOTO DEGLI ARTISTI
-    const con = await getConnection();
-    //RIPETI PER OGNI ARTISTA...
-    for (const artista of artisti) {
-      //UPSERT ARTISTA SUL DB
-      await upsertEntitaDeezer(con, { id: artista.id, nome: artista.name } as ArtistaDb, "Artista"); //conversione possibile perchè ArtistaDeezerBasic e ArtistaDb hanno gli stessi campi
-      //CARICAMENTO FOTO DELL'ARTISTA
-      await uploadPhoto("artisti_pictures", artista.id, artista.picture_big);
-    }
-    await con.end();
-    res.json(artisti.map((artista) => { return { id: artista.id, nome: artista.name } }));
-  } catch (err) {
-    res.status(500).json({ error: "Errore nella ricerca artisti Deezer" });
-  }
-}
-*/
-/*
-//FUNZIONE GIA ADATTATA A TYPESCRIPT
-export async function albumApi(apiName: string, req: import("express").Request, res: import("express").Response) {
-  if (albumAPIsConfig[apiName] === undefined) {
-    res.status(400).json({ error: 'API non valida' });
-    return;
-  }
-  const paramName = albumAPIsConfig[apiName].paramName; //nome del parametro di ricerca
-  //CONTROLLO CHE I PARAMETRI query, limit e index SIANO STATI PASSATI E SIANO VALIDI
-  const param = typeof req.query[paramName] === "string" ? req.query[paramName] : undefined;
-  const limit = typeof req.query.limit === "string" ? Number(req.query.limit) : undefined;
-  const index = typeof req.query.index === "string" ? Number(req.query.index) : undefined;
-  if (!param || limit === undefined || index === undefined || isNaN(limit) || isNaN(index)) {
-    return res.status(400).json({ error: 'Parametri "' + paramName + '", "limit" e "index" obbligatori e devono essere validi' });
-  }
-  try {
-    //CHIAMATA API A DEEZER
-    const responseData: any = await albumAPIsConfig[apiName].deezerAPICallback(res, param, limit.toString(), index.toString());
-    //DA QUI IN GIU, TUTTO IDENTICO
-    if (responseData === -1) {
-      return; //Errore già gestito in makeDeezerApiCall
-    }
-    //VALIDAZIONE DELL'ARRAY DEGLI ALBUM RESTITUITO DA DEEZER
-    if (!isValidDeezerObject(res, responseData.data, AlbumDeezerBasicSchema, true)) {
-      return;
-    }
-    const albums: AlbumDeezerBasic[] = responseData.data as AlbumDeezerBasic[];
-    //SE NON ESISTE, CREA LA CARTELLA PER LE FOTO DEGLI ALBUM
-    const con = await getConnection();
-    //RIPETI PER OGNI ALBUM...
-    for (const album of albums) {
-      //UPSERT ALBUM SUL DB
-      await upsertEntitaDeezer(con, { id: album.id, titolo: album.title } as AlbumDb, "Album"); //conversione possibile perchè AlbumDeezerBasic e AlbumDb hanno gli stessi campi
-      //CARICAMENTO FOTO DELL'ALBUM
-      await uploadPhoto("album_pictures", album.id, album.cover_big);
-    }
-    await con.end();
-    res.json(albums.map((album) => { return { id: album.id, titolo: album.title } }));
-  } catch (err) {
-    res.status(500).json({ error: "Errore nella ricerca album Deezer" });
-  }
-}
-*/
 // Overloads for type-safe mapping from Deezer entity to DB entity
 function fromDeezerEntityToDbEntity(entity, tableName) {
     switch (tableName) {

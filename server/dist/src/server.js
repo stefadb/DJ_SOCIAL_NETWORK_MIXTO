@@ -29,6 +29,16 @@ const albumAPIsConfig = {
         deezerAPICallback: (res, param, limit, index) => (0, functions_1.makeDeezerApiCall)(res, "search", null, "album", { q: param, limit: limit.toString(), index: index.toString() })
     },
 };
+const generiAPIsConfig = {
+    getSingle: {
+        paramName: "genreId",
+        deezerAPICallback: (res, param, limit, index) => (0, functions_1.makeDeezerApiCall)(res, "genre", param, null, null)
+    },
+    getAll: {
+        paramName: "uselessParam",
+        deezerAPICallback: (res, param, limit, index) => (0, functions_1.makeDeezerApiCall)(res, "genre", null, null, null)
+    }
+};
 //API ROUTES'
 //SCALETTE
 app.get("/scalette/:id", apiroutes_1.getScaletta);
@@ -38,8 +48,8 @@ app.put("/scalette/:id", apiroutes_1.putScalette);
 app.delete("/scalette/:id", apiroutes_1.deleteScalette);
 //API DEEZER---------------------------------------------
 //GENERI
-app.get("/generi", apiroutes_1.getGeneri); //FUNZIONA
-app.get("/generi/:id", apiroutes_1.getGenere); //FUNZIONA
+app.get("/generi", (req, res) => { (0, apiroutes_1.deezerEntityApi)(true, generiAPIsConfig["getAll"], deezer_types_1.GenereDeezerBasicSchema, "Genere", req, res); });
+app.get("/genere", (req, res) => { (0, apiroutes_1.deezerEntityApi)(false, generiAPIsConfig["getSingle"], deezer_types_1.GenereDeezerBasicSchema, "Genere", req, res); });
 //TODO: Aggiungere le API per gli album, gli artisti e i brani
 //ARTISTI
 /*

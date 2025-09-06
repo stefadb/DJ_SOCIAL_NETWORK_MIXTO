@@ -2,7 +2,7 @@
   "picturesFolder": "generi_pictures",
   "deezerApiCallUrl": "https://api.deezer.com/genre",
   "apiName": "/generi",
-  "testApiCallUrl": "/generi",
+  "testApiCallUrl": "/generi?uselessParam=uselessValue&limit=0&index=0",
   "entityName": "genres",
   "upsertTestSqlQuery": "SELECT * FROM genere"
 }

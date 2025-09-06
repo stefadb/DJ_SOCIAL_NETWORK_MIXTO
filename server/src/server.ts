@@ -1,9 +1,9 @@
-import { deezerEntityApi, deleteCommento, deletePassaggio, deleteScalette, deleteUtente, deleteValutazione, getAlbumPassaggi, getArtistaPassaggi, getBranoPassaggi, getCommenti, getCommento, getGenere, getGeneri, getGeneriPassaggi, getPassaggi, getPassaggio, getScaletta, getScalette, getUtente, getUtentePassaggi, getUtenti, getValutazione, getValutazioni, postCommento, postLogin, postPassaggio, postScalette, postUtente, postValutazione, postVisualizzazione, putCommento, putPassaggio, putScalette, putUtente, putValutazione } from "./apiroutes";
+import { deezerEntityApi, deleteCommento, deletePassaggio, deleteScalette, deleteUtente, deleteValutazione, getAlbumPassaggi, getArtistaPassaggi, getBranoPassaggi, getCommenti, getCommento, getGeneriPassaggi, getPassaggi, getPassaggio, getScaletta, getScalette, getUtente, getUtentePassaggi, getUtenti, getValutazione, getValutazioni, postCommento, postLogin, postPassaggio, postScalette, postUtente, postValutazione, postVisualizzazione, putCommento, putPassaggio, putScalette, putUtente, putValutazione } from "./apiroutes";
 
 import express from "express";
 import { makeDeezerApiCall } from "./functions";
 import { DeezerEntityAPIConfig, DeezerEntityAPIsConfig } from "./types";
-import { GenericDeezerEntityBasic, AlbumDeezerBasic, AlbumDeezerBasicSchema, ArtistaDeezerBasic, ArtistaDeezerBasicSchema } from "./deezer_types";
+import { GenericDeezerEntityBasic, AlbumDeezerBasic, AlbumDeezerBasicSchema, ArtistaDeezerBasic, ArtistaDeezerBasicSchema, GenereDeezerBasicSchema } from "./deezer_types";
 import { AlbumDb, ArtistaDb } from "./db_types";
 const app = express();
 const port = 3000;
@@ -40,6 +40,21 @@ const albumAPIsConfig: AlbumAPIsConfig = {
   },
 }
 
+type GeneriAPIsConfig = {
+  getSingle: DeezerEntityAPIConfig;
+  getAll: DeezerEntityAPIConfig;
+}
+
+const generiAPIsConfig: GeneriAPIsConfig = {
+  getSingle: {
+    paramName: "genreId",
+    deezerAPICallback: (res: import("express").Response, param: string, limit: string, index: string) => makeDeezerApiCall(res, "genre", param, null, null)
+  },
+  getAll: {
+    paramName: "uselessParam",
+    deezerAPICallback: (res: import("express").Response, param: string, limit: string, index: string) => makeDeezerApiCall(res, "genre", null, null, null)
+  }
+}
 
 //API ROUTES'
 //SCALETTE
@@ -50,8 +65,8 @@ app.put("/scalette/:id", putScalette);
 app.delete("/scalette/:id", deleteScalette);
 //API DEEZER---------------------------------------------
 //GENERI
-app.get("/generi", getGeneri); //FUNZIONA
-app.get("/generi/:id", getGenere); //FUNZIONA
+app.get("/generi", (req, res) => { deezerEntityApi(true,generiAPIsConfig["getAll"],GenereDeezerBasicSchema,"Genere",req,res)});
+app.get("/genere", (req, res) => { deezerEntityApi(false,generiAPIsConfig["getSingle"],GenereDeezerBasicSchema,"Genere",req,res)});
 
 
 
