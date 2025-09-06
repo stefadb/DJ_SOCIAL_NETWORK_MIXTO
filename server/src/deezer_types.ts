@@ -11,6 +11,10 @@ export const GenericDeezerEntityBasicSchema = z.union([
         cover_big: z.string(),
     }),
     z.object({
+        id: z.number(),
+        picture: z.string(),
+    }),
+    z.object({
         id: z.number()
     })
 ]);
@@ -35,6 +39,15 @@ export const GenereDeezerBasicSchema = GenericDeezerEntityBasicSchema.and(
 );
 
 export type GenereDeezerBasic = z.infer<typeof GenereDeezerBasicSchema>;
+
+export const GenereDeezerSemplificatoSchema = GenericDeezerEntityBasicSchema.and(
+    z.object({
+        name: z.string(),
+        picture: z.string(),
+    })
+);
+
+export type GenereDeezerSemplificato = z.infer<typeof GenereDeezerSemplificatoSchema>;
 
 //Contiene le informazioni di base sugli album di Deezer
 export const AlbumDeezerBasicSchema = GenericDeezerEntityBasicSchema.and(
@@ -77,6 +90,10 @@ export const DeezerResponseSingleItemSchema = z.union([
     z.object({
         id: z.number(),
         cover_big: z.string(),
+    }),
+    z.object({
+        id: z.number(),
+        picture: z.string(),
     }),
     z.object({
         id: z.number()

@@ -15,6 +15,8 @@ import {
   BranoDeezerBasicSchema,
   GenereDeezerBasic,
   GenereDeezerBasicSchema,
+  GenereDeezerSemplificato,
+  GenereDeezerSemplificatoSchema,
   GenericDeezerEntityBasic,
   GenericDeezerEntityBasicSchema
 } from './deezer_types';

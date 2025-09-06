@@ -51,7 +51,10 @@ export async function makeDeezerApiCall(res: import("express").Response, urlFirs
 }
 
 //FUNZIONE GIA ADATTATA A TYPESCRIPT
-export async function uploadPhoto(dirName: string, id: number, pictureUrl: string) {
+export async function uploadPhoto(dirName: string, id: number, pictureUrl: string | undefined) {
+  if(!pictureUrl){
+    return; //Non succederà mai
+  }
   //c'è qualcosa che non va in questa funzione
   //Problema: non finisce il download
   const picturesDir = path.join(__dirname, dirName);

@@ -56,6 +56,9 @@ async function makeDeezerApiCall(res, urlFirstPart, urlParameter, urlSecondPart,
 }
 //FUNZIONE GIA ADATTATA A TYPESCRIPT
 async function uploadPhoto(dirName, id, pictureUrl) {
+    if (!pictureUrl) {
+        return; //Non succederà mai
+    }
     //c'è qualcosa che non va in questa funzione
     //Problema: non finisce il download
     const picturesDir = path_1.default.join(__dirname, dirName);
