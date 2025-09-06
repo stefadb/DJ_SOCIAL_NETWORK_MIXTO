@@ -5,8 +5,28 @@ import fs from "fs";
 import path from "path";
 import bcrypt from "bcrypt";
 import mysql from "mysql2/promise";
-import { AlbumDb, AlbumDeezerBasic, AlbumDeezerBasicSchema, ArtistaDb, ArtistaDeezerBasic, ArtistaDeezerBasicSchema, BranoDb, GenereDb, GenereDeezerBasic, GenereDeezerBasicSchema } from './types';
-import { ZodObject } from 'zod';
+import { 
+  AlbumDeezerBasic, 
+  AlbumDeezerBasicSchema, 
+  AnyDeezerEntityBasic, 
+  ArtistaDeezerBasic, 
+  ArtistaDeezerBasicSchema, 
+  GenereDeezerBasic, 
+  GenereDeezerBasicSchema, 
+  GenericDeezerEntityBasic, 
+  GenericDeezerEntityBasicSchema 
+} from './deezer_types';
+import { 
+  AlbumDb, 
+  ArtistaDb, 
+  GenereDb, 
+  DbEntity 
+} from './db_types';
+import { 
+  DeezerEntityAPIConfig, 
+  DeezerEntityAPIsConfig 
+} from './types';
+import { ZodIntersection, ZodObject } from 'zod';
 import dotenv from "dotenv";
 import { isValidDeezerObject, makeDeezerApiCall, uploadPhoto } from './functions';
 import { upsertEntitaDeezer } from './upserts';
@@ -541,31 +561,10 @@ export async function getGenere(req: import("express").Request, res: import("exp
   }
 }
 
-type ArtistiAlbumAPIConfig = {
-  paramName: string;
-  deezerAPICallback: (res: import("express").Response, param: string, limit: string, index: string) => Promise<any>;
-}
-
-type ArtistiAlbumAPIsConfig = Record<string, ArtistiAlbumAPIConfig>;
-
-const artistiAPIsConfig: ArtistiAlbumAPIsConfig = {
-  search: {
-    paramName: "query",
-    deezerAPICallback: (res, param, limit, index) => makeDeezerApiCall(res, "search", null, "artist", { q: param, limit: limit.toString(), index: index.toString() })
-  },
-  related: {
-    paramName: "artistId",
-    deezerAPICallback: (res, param, limit, index) => makeDeezerApiCall(res, "artist", param, "related", { limit: limit.toString(), index: index.toString() })
-  },
-  genre: {
-    paramName: "genreId",
-    deezerAPICallback: (res, param, limit, index) => makeDeezerApiCall(res, "genre", param, "artists", { limit: limit.toString(), index: index.toString() })
-  }
-}
-
+/*
 //FUNZIONE GIA ADATTATA A TYPESCRIPT
 export async function artistiApi(apiName: string, req: import("express").Request, res: import("express").Response) {
-    if(artistiAPIsConfig[apiName] === undefined){
+  if (artistiAPIsConfig[apiName] === undefined) {
     res.status(400).json({ error: 'API non valida' });
     return;
   }
@@ -594,7 +593,7 @@ export async function artistiApi(apiName: string, req: import("express").Request
     //RIPETI PER OGNI ARTISTA...
     for (const artista of artisti) {
       //UPSERT ARTISTA SUL DB
-      await upsertEntitaDeezer(con, {id: artista.id, nome: artista.name} as ArtistaDb, "Artista"); //conversione possibile perchè ArtistaDeezerBasic e ArtistaDb hanno gli stessi campi
+      await upsertEntitaDeezer(con, { id: artista.id, nome: artista.name } as ArtistaDb, "Artista"); //conversione possibile perchè ArtistaDeezerBasic e ArtistaDb hanno gli stessi campi
       //CARICAMENTO FOTO DELL'ARTISTA
       await uploadPhoto("artisti_pictures", artista.id, artista.picture_big);
     }
@@ -604,17 +603,12 @@ export async function artistiApi(apiName: string, req: import("express").Request
     res.status(500).json({ error: "Errore nella ricerca artisti Deezer" });
   }
 }
+*/
 
-const albumAPIsConfig: ArtistiAlbumAPIsConfig = {
-  search: {
-    paramName: "query",
-    deezerAPICallback: (res, param, limit, index) => makeDeezerApiCall(res, "search", null, "album", { q: param, limit: limit.toString(), index: index.toString() })
-  },
-}
-
+/*
 //FUNZIONE GIA ADATTATA A TYPESCRIPT
 export async function albumApi(apiName: string, req: import("express").Request, res: import("express").Response) {
-  if(albumAPIsConfig[apiName] === undefined){
+  if (albumAPIsConfig[apiName] === undefined) {
     res.status(400).json({ error: 'API non valida' });
     return;
   }
@@ -643,7 +637,7 @@ export async function albumApi(apiName: string, req: import("express").Request, 
     //RIPETI PER OGNI ALBUM...
     for (const album of albums) {
       //UPSERT ALBUM SUL DB
-      await upsertEntitaDeezer(con, {id: album.id, titolo: album.title} as AlbumDb, "Album"); //conversione possibile perchè AlbumDeezerBasic e AlbumDb hanno gli stessi campi
+      await upsertEntitaDeezer(con, { id: album.id, titolo: album.title } as AlbumDb, "Album"); //conversione possibile perchè AlbumDeezerBasic e AlbumDb hanno gli stessi campi
       //CARICAMENTO FOTO DELL'ALBUM
       await uploadPhoto("album_pictures", album.id, album.cover_big);
     }
@@ -651,6 +645,83 @@ export async function albumApi(apiName: string, req: import("express").Request, 
     res.json(albums.map((album) => { return { id: album.id, titolo: album.title } }));
   } catch (err) {
     res.status(500).json({ error: "Errore nella ricerca album Deezer" });
+  }
+}
+*/
+
+// Overloads for type-safe mapping from Deezer entity to DB entity
+function fromDeezerEntityToDbEntity(entity: GenericDeezerEntityBasic, tableName: string): DbEntity {
+  switch (tableName) {
+    case "Artista":
+      return { id: entity.id, nome: (entity as ArtistaDeezerBasic).name } as ArtistaDb;
+    case "Album":
+      return { id: entity.id, titolo: (entity as AlbumDeezerBasic).title } as AlbumDb;
+    case "Genere":
+      return { id: entity.id, nome: (entity as GenereDeezerBasic).name } as GenereDb;
+    default:
+      throw new Error("Tabella non supportata");
+  }
+}
+
+//FUNZIONE GIA ADATTATA A TYPESCRIPT
+export async function deezerEntityApi<T extends ZodObject<any>>(
+  apiName: string,
+  multiple: boolean,
+  apisConfig: DeezerEntityAPIsConfig,
+  deezerObjectBasicSchema: ZodIntersection<typeof GenericDeezerEntityBasicSchema, T>,
+  dbTableName: string,
+  picturesFolder: string,
+  req: import("express").Request,
+  res: import("express").Response
+) {
+  if (apisConfig[apiName] === undefined) {
+    res.status(400).json({ error: 'API non valida' });
+    return;
+  }
+  const paramName = apisConfig[apiName].paramName; //nome del parametro di ricerca
+  //CONTROLLO CHE I PARAMETRI query, limit e index SIANO STATI PASSATI E SIANO VALIDI
+  const param = typeof req.query[paramName] === "string" ? req.query[paramName] : undefined;
+  const limit = typeof req.query.limit === "string" ? Number(req.query.limit) : undefined;
+  const index = typeof req.query.index === "string" ? Number(req.query.index) : undefined;
+  if (!param || limit === undefined || index === undefined || isNaN(limit) || isNaN(index)) {
+    return res.status(400).json({ error: 'Parametri "' + paramName + '", "limit" e "index" obbligatori e devono essere validi' });
+  }
+  try {
+    //CHIAMATA API A DEEZER
+    const responseData: any = await apisConfig[apiName].deezerAPICallback(res, param, limit.toString(), index.toString());
+    //DA QUI IN GIU, TUTTO IDENTICO
+    if (responseData === -1) {
+      return; //Errore già gestito in makeDeezerApiCall
+    }
+    //VALIDAZIONE DELL'OGGETTO RESTITUITO DA DEEZER
+    if (!isValidDeezerObject(res, multiple ? responseData.data : responseData, deezerObjectBasicSchema, multiple)) {
+      return;
+    }
+    const entities: GenericDeezerEntityBasic[] = multiple ? responseData.data as GenericDeezerEntityBasic[] : new Array(1).fill(responseData as GenericDeezerEntityBasic) as GenericDeezerEntityBasic[];
+    //SE NON ESISTE, CREA LA CARTELLA PER LE FOTO
+    const con = await getConnection();
+    //RIPETI PER OGNI ENTITA...
+    for (const entity of entities) {
+      //UPSERT ENTITA SUL DB
+      await upsertEntitaDeezer(con, fromDeezerEntityToDbEntity(entity, dbTableName), dbTableName);
+      //CARICAMENTO FOTO DELL'ENTITA
+      if ("picture_big" in entity || "cover_big" in entity) {
+        await uploadPhoto(picturesFolder, entity.id, "picture_big" in entity ? entity.picture_big : entity.cover_big);
+      }
+    }
+    await con.end();
+    if (multiple) {
+      res.json(entities.map((entity) => { return fromDeezerEntityToDbEntity(entity, dbTableName) }));
+    } else {
+      const entity = entities[0];
+      if (entity) {
+        res.json(fromDeezerEntityToDbEntity(entity, dbTableName));
+      } else {
+        res.status(500).json({ error: "Errore strano che non dovrebbe mai verificarsi. Controlla."});
+      }
+    }
+  } catch (err) {
+    res.status(500).json({ error: "Errore su questa Api legata a Deezer" });
   }
 }
 

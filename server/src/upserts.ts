@@ -12,12 +12,10 @@ export async function upsertEntitaDeezer(con: mysql.Connection, entita: { id: nu
     if ((rows as any[]).length === 0) {
         let query = `INSERT INTO ${nomeEntita} (${columnsInsert}) VALUES (${valuesInsert})`;
         let values = Object.values(entita);
-        console.log("QUERY DI INSERT:", query, values);
         await con.execute(query, values);
     } else {
         let query = `UPDATE ${nomeEntita} SET ${columnsUpdate} WHERE id = ?`;
         let values = valuesUpdate;
-        console.log("QUERY DI UPDATE:", query, values);
         await con.execute(query, values);
     }
 }

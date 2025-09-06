@@ -2,7 +2,8 @@ import axios from "axios";
 import { QueryParams } from "./types";
 import path from "path";
 import fs from "fs";
-import { ZodObject } from "zod";
+import { ZodIntersection, ZodObject } from "zod";
+import { GenericDeezerEntityBasicSchema } from "./deezer_types";
 
 const deezerAPIUrl = "https://api.deezer.com";
 
@@ -42,8 +43,6 @@ export async function makeDeezerApiCall(res: import("express").Response, urlFirs
           res.status(404).json({ error: "Deezer non ha trovato quello che si sta cercando" });
           resolve(-1);
         } else {
-          console.log("Ecco l'errore");
-          console.log(error);
           res.status(500).json({ error: "Errore nella chiamata a Deezer" });
           resolve(-1);
         }
@@ -83,7 +82,7 @@ export async function uploadPhoto(dirName: string, id: number, pictureUrl: strin
  * Restituisce true se l'oggetto Deezer è valido, false altrimenti
  */
 //FUNZIONE GIA ADATTATA A TYPESCRIPT
-export function isValidDeezerObject<T>(res: import("express").Response, obj: T, schema: ZodObject<any>, isArray: boolean) {
+export function isValidDeezerObject<T extends ZodObject<any>>(res: import("express").Response, obj: T, schema: ZodIntersection<typeof GenericDeezerEntityBasicSchema, T>, isArray: boolean) {
   if (!isArray) {
     const safeParseResult = schema.safeParse(obj);
     if (!safeParseResult.success) {

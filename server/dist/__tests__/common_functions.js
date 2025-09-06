@@ -11,7 +11,7 @@ exports.testPicturesDownload = testPicturesDownload;
 exports.createOrDeleteTablesOnTestDb = createOrDeleteTablesOnTestDb;
 exports.checkDbUpsert = checkDbUpsert;
 exports.checkApiSuccessResponse = checkApiSuccessResponse;
-const types_1 = require("../src/types");
+const deezer_types_1 = require("../src/deezer_types");
 const fs_1 = __importDefault(require("fs"));
 const path_1 = __importDefault(require("path"));
 const supertest_1 = __importDefault(require("supertest"));
@@ -24,12 +24,12 @@ const promise_1 = __importDefault(require("mysql2/promise"));
 function getImageUrlToFileMappingFromDeezerResponse(mockDeezerResponseRaw) {
     let mockDeezerResponse;
     //Fai il safeParse della mockDeezerResponse
-    const safeParse1 = types_1.DeezerResponseSingleItemSchema.safeParse(mockDeezerResponseRaw);
+    const safeParse1 = deezer_types_1.DeezerResponseSingleItemSchema.safeParse(mockDeezerResponseRaw);
     if (safeParse1.success) {
         mockDeezerResponse = safeParse1.data;
     }
     else {
-        const safeParse2 = types_1.DeezerResponseMultipleItemsSchema.safeParse(mockDeezerResponseRaw);
+        const safeParse2 = deezer_types_1.DeezerResponseMultipleItemsSchema.safeParse(mockDeezerResponseRaw);
         if (safeParse2.success) {
             mockDeezerResponse = safeParse2.data;
         }
@@ -38,11 +38,16 @@ function getImageUrlToFileMappingFromDeezerResponse(mockDeezerResponseRaw) {
         }
     }
     let toReturn = "data" in mockDeezerResponse ? /* Deeezer ha restituito un array*/
-        mockDeezerResponse.data.map((item) => {
+        mockDeezerResponse.data.filter((item) => "picture_big" in item || "cover_big" in item).map((item) => {
             return { url: "picture_big" in item ? item.picture_big : item.cover_big, fileName: `${item.id}.jpg` };
         })
         :
-            [{ url: "picture_big" in mockDeezerResponse ? mockDeezerResponse.picture_big : mockDeezerResponse.cover_big, fileName: `${mockDeezerResponse.id}.jpg` }];
+            /* Deezer ha restituito un singolo oggetto. Potrebbe sia avere che non avere l'immagine*/
+            ("picture_big" in mockDeezerResponse || "cover_big" in mockDeezerResponse) ? /* Deezer ha restituito un singolo oggetto con immagine */
+                [{ url: "picture_big" in mockDeezerResponse ? mockDeezerResponse.picture_big : mockDeezerResponse.cover_big, fileName: `${mockDeezerResponse.id}.jpg` }]
+                :
+                    /* Deezer ha restituito un singolo oggetto senza immagine */
+                    [];
     //Restituisci l'array dei mapping
     //TODO: valuta un modo più efficiente per fare questa roba, senza usare la push
     return toReturn;

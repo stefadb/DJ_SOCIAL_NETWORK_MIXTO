@@ -1,8 +1,35 @@
-import { albumApi, artistiApi, deleteCommento, deletePassaggio, deleteScalette, deleteUtente, deleteValutazione, getAlbumPassaggi, getArtistaPassaggi, getBranoPassaggi, getCommenti, getCommento, getGenere, getGeneri, getGeneriPassaggi, getPassaggi, getPassaggio, getScaletta, getScalette, getUtente, getUtentePassaggi, getUtenti, getValutazione, getValutazioni, postCommento, postLogin, postPassaggio, postScalette, postUtente, postValutazione, postVisualizzazione, putCommento, putPassaggio, putScalette, putUtente, putValutazione } from "./apiroutes";
+import { deezerEntityApi, deleteCommento, deletePassaggio, deleteScalette, deleteUtente, deleteValutazione, getAlbumPassaggi, getArtistaPassaggi, getBranoPassaggi, getCommenti, getCommento, getGenere, getGeneri, getGeneriPassaggi, getPassaggi, getPassaggio, getScaletta, getScalette, getUtente, getUtentePassaggi, getUtenti, getValutazione, getValutazioni, postCommento, postLogin, postPassaggio, postScalette, postUtente, postValutazione, postVisualizzazione, putCommento, putPassaggio, putScalette, putUtente, putValutazione } from "./apiroutes";
 
 import express from "express";
+import { makeDeezerApiCall } from "./functions";
+import { DeezerEntityAPIsConfig } from "./types";
+import { GenericDeezerEntityBasic, AlbumDeezerBasic, AlbumDeezerBasicSchema, ArtistaDeezerBasic, ArtistaDeezerBasicSchema } from "./deezer_types";
+import { AlbumDb, ArtistaDb } from "./db_types";
 const app = express();
 const port = 3000;
+
+const artistiAPIsConfig: DeezerEntityAPIsConfig = {
+  search: {
+    paramName: "query",
+    deezerAPICallback: (res: import("express").Response, param: string, limit: string, index: string) => makeDeezerApiCall(res, "search", null, "artist", { q: param, limit: limit.toString(), index: index.toString() })
+  },
+  related: {
+    paramName: "artistId",
+    deezerAPICallback: (res: import("express").Response, param: string, limit: string, index: string) => makeDeezerApiCall(res, "artist", param, "related", { limit: limit.toString(), index: index.toString() })
+  },
+  genre: {
+    paramName: "genreId",
+    deezerAPICallback: (res: import("express").Response, param: string, limit: string, index: string) => makeDeezerApiCall(res, "genre", param, "artists", { limit: limit.toString(), index: index.toString() })
+  }
+}
+
+const albumAPIsConfig: DeezerEntityAPIsConfig = {
+  search: {
+    paramName: "query",
+    deezerAPICallback: (res: import("express").Response, param: string, limit: string, index: string) => makeDeezerApiCall(res, "search", null, "album", { q: param, limit: limit.toString(), index: index.toString() })
+  },
+}
+
 
 //API ROUTES'
 //SCALETTE
@@ -15,15 +42,28 @@ app.delete("/scalette/:id", deleteScalette);
 //GENERI
 app.get("/generi", getGeneri); //FUNZIONA
 app.get("/generi/:id", getGenere); //FUNZIONA
+
+
+
 //TODO: Aggiungere le API per gli album, gli artisti e i brani
 //ARTISTI
 
+/*
 // Cerca su Deezer gli artisti che l'utente ha cercato e, per ognuno, fa upsert sul db e download della foto.
 app.get("/artisti/search", (req, res) => { artistiApi("search", req, res) });
 app.get("/artisti/related", (req, res) => { artistiApi("related", req, res) });
 app.get("/artisti/genere", (req, res) => { artistiApi("genre", req, res) });
 //--------------------------------------------------------
 app.get("/album/search", (req, res) => { albumApi("search", req, res) });
+*/
+// Cerca su Deezer gli artisti che l'utente ha cercato e, per ognuno, fa upsert sul db e download della foto.
+app.get("/artisti/search", (req, res) => { deezerEntityApi("search",true,artistiAPIsConfig,ArtistaDeezerBasicSchema,"Artista","artisti_pictures",req,res)});
+app.get("/artisti/related", (req, res) => { deezerEntityApi("related",true,artistiAPIsConfig,ArtistaDeezerBasicSchema,"Artista","artisti_pictures",req,res)});
+app.get("/artisti/genere", (req, res) => { deezerEntityApi("genre",true,artistiAPIsConfig,ArtistaDeezerBasicSchema,"Artista","artisti_pictures",req,res)});
+//--------------------------------------------------------
+app.get("/album/search", (req, res) => { deezerEntityApi("search",true,albumAPIsConfig,AlbumDeezerBasicSchema,"Album","album_pictures",req,res)});
+
+
 //PASSAGGI
 app.get("/brani/:id/passaggi", getBranoPassaggi);
 app.get("/album/:id/passaggi", getAlbumPassaggi);

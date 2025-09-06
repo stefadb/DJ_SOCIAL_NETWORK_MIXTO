@@ -1,4 +1,4 @@
-import { DeezerResponseMultipleItems, DeezerResponseMultipleItemsSchema, DeezerResponseSingleItem, DeezerResponseSingleItemSchema } from "../src/types";
+import { DeezerResponseMultipleItems, DeezerResponseMultipleItemsSchema, DeezerResponseSingleItem, DeezerResponseSingleItemSchema } from "../src/deezer_types";
 import fs from "fs";
 import path from "path";
 import axios from "axios";
@@ -27,11 +27,16 @@ export function getImageUrlToFileMappingFromDeezerResponse(mockDeezerResponseRaw
         }
     }
     let toReturn: ImageUrlFileNameMapping[] = "data" in mockDeezerResponse ? /* Deeezer ha restituito un array*/
-        mockDeezerResponse.data.map((item) => {
+        mockDeezerResponse.data.filter((item) => "picture_big" in item || "cover_big" in item).map((item) => {
             return { url: "picture_big" in item ? item.picture_big : item.cover_big, fileName: `${item.id}.jpg` };
         })
         :
-        [{ url: "picture_big" in mockDeezerResponse ? mockDeezerResponse.picture_big : mockDeezerResponse.cover_big, fileName: `${mockDeezerResponse.id}.jpg` }];
+        /* Deezer ha restituito un singolo oggetto. Potrebbe sia avere che non avere l'immagine*/
+        ("picture_big" in mockDeezerResponse || "cover_big" in mockDeezerResponse) ? /* Deezer ha restituito un singolo oggetto con immagine */
+            [{ url: "picture_big" in mockDeezerResponse ? mockDeezerResponse.picture_big : mockDeezerResponse.cover_big, fileName: `${mockDeezerResponse.id}.jpg` }]
+            :
+            /* Deezer ha restituito un singolo oggetto senza immagine */
+            [];
     //Restituisci l'array dei mapping
     //TODO: valuta un modo più efficiente per fare questa roba, senza usare la push
     return toReturn;
