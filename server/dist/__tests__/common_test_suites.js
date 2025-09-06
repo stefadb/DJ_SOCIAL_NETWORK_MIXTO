@@ -31,7 +31,9 @@ function commonDeezerGetTestSuite(testConfig, mockDeezerResponseRaw, expectedApi
         it(`should upsert to the db the same ${entityName} that Deezer returns`, async () => {
             await (0, common_functions_1.checkDbUpsert)(upsertTestSqlQuery, testApiCallUrl, server_1.default, expectedDbUpsertResult);
         });
-        it(`should upload the photo/photos of the same ${entityName} that Deezer returns`, async () => { await (0, common_functions_1.testPicturesDownload)(picturesFolder, mockDeezerResponseRaw, testApiCallUrl, server_1.default); });
+        if (picturesFolder) {
+            it(`should upload the photo/photos of the same ${entityName} that Deezer returns`, async () => { await (0, common_functions_1.testPicturesDownload)(picturesFolder, mockDeezerResponseRaw, testApiCallUrl, server_1.default); });
+        }
     });
 }
 //# sourceMappingURL=common_test_suites.js.map

@@ -59,11 +59,13 @@ async function prepareMocksForDeezerResponseAndImages(mockDeezerResponseRaw, pic
         if (url === deezerApiCallUrl) {
             return Promise.resolve({ status: 200, data: mockDeezerResponseRaw });
         }
-        //Mock delle immagini
-        for (let mapping of imageUrlToFileNameMappings) {
-            if (mapping.url === url) {
-                const imgPath = path_1.default.join(__dirname, `./mock_deezer_pictures/${picturesFolder}`, mapping.fileName);
-                return Promise.resolve({ status: 200, data: fs_1.default.createReadStream(imgPath) });
+        if (picturesFolder) {
+            //Mock delle immagini
+            for (let mapping of imageUrlToFileNameMappings) {
+                if (mapping.url === url) {
+                    const imgPath = path_1.default.join(__dirname, `./mock_deezer_pictures/${picturesFolder}`, mapping.fileName);
+                    return Promise.resolve({ status: 200, data: fs_1.default.createReadStream(imgPath) });
+                }
             }
         }
         //E se ci sono URL inattesi...

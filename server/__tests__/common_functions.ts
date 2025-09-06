@@ -42,18 +42,20 @@ export function getImageUrlToFileMappingFromDeezerResponse(mockDeezerResponseRaw
     return toReturn;
 }
 
-export async function prepareMocksForDeezerResponseAndImages(mockDeezerResponseRaw: any, picturesFolder: string, deezerApiCallUrl: string, mockedAxios: jest.Mocked<typeof axios>) {
+export async function prepareMocksForDeezerResponseAndImages(mockDeezerResponseRaw: any, picturesFolder: string | undefined, deezerApiCallUrl: string, mockedAxios: jest.Mocked<typeof axios>) {
     mockedAxios.get.mockImplementation((url: string) => {
         const imageUrlToFileNameMappings: ImageUrlFileNameMapping[] = getImageUrlToFileMappingFromDeezerResponse(mockDeezerResponseRaw);
         //Mock della risposta principale di Deezer
         if (url === deezerApiCallUrl) {
             return Promise.resolve({ status: 200, data: mockDeezerResponseRaw });
         }
-        //Mock delle immagini
-        for (let mapping of imageUrlToFileNameMappings) {
-            if (mapping.url === url) {
-                const imgPath = path.join(__dirname, `./mock_deezer_pictures/${picturesFolder}`, mapping.fileName);
-                return Promise.resolve({ status: 200, data: fs.createReadStream(imgPath) });
+        if (picturesFolder) {
+            //Mock delle immagini
+            for (let mapping of imageUrlToFileNameMappings) {
+                if (mapping.url === url) {
+                    const imgPath = path.join(__dirname, `./mock_deezer_pictures/${picturesFolder}`, mapping.fileName);
+                    return Promise.resolve({ status: 200, data: fs.createReadStream(imgPath) });
+                }
             }
         }
         //E se ci sono URL inattesi...

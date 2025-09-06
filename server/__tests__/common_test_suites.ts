@@ -33,7 +33,8 @@ export default function commonDeezerGetTestSuite(testConfig: DeezerGetTestSuiteT
         it(`should upsert to the db the same ${entityName} that Deezer returns`, async () => {
             await checkDbUpsert(upsertTestSqlQuery, testApiCallUrl, app, expectedDbUpsertResult);
         });
-
-        it(`should upload the photo/photos of the same ${entityName} that Deezer returns`, async () => { await testPicturesDownload(picturesFolder, mockDeezerResponseRaw, testApiCallUrl, app) });
+        if (picturesFolder) {
+            it(`should upload the photo/photos of the same ${entityName} that Deezer returns`, async () => { await testPicturesDownload(picturesFolder, mockDeezerResponseRaw, testApiCallUrl, app) });
+        }
     });
 }
