@@ -39,6 +39,7 @@ exports.getGeneriPassaggi = getGeneriPassaggi;
 exports.deezerEntityApi = deezerEntityApi;
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const promise_1 = __importDefault(require("mysql2/promise"));
+const deezer_types_1 = require("./deezer_types");
 const dotenv_1 = __importDefault(require("dotenv"));
 const functions_1 = require("./functions");
 const upserts_1 = require("./upserts");
@@ -424,8 +425,20 @@ function getPicturesFolder(tableName) {
             throw new Error("Tabella non supportata");
     }
 }
+function getDeezerObjectBasicSchema(tableName) {
+    switch (tableName) {
+        case "Artista":
+            return deezer_types_1.ArtistaDeezerBasicSchema;
+        case "Album":
+            return deezer_types_1.AlbumDeezerBasicSchema;
+        case "Genere":
+            return deezer_types_1.GenereDeezerBasicSchema;
+        default:
+            throw new Error("Tabella non supportata");
+    }
+}
 //FUNZIONE GIA ADATTATA A TYPESCRIPT
-async function deezerEntityApi(multiple, apisConfig, deezerObjectBasicSchema, dbTableName, req, res) {
+async function deezerEntityApi(req, res, multiple, apisConfig, dbTableName) {
     const paramName = apisConfig.paramName; //nome del parametro di ricerca
     //CONTROLLO CHE I PARAMETRI query, limit e index SIANO STATI PASSATI E SIANO VALIDI
     const param = typeof req.query[paramName] === "string" ? req.query[paramName] : undefined;
@@ -442,7 +455,7 @@ async function deezerEntityApi(multiple, apisConfig, deezerObjectBasicSchema, db
             return; //Errore già gestito in makeDeezerApiCall
         }
         //VALIDAZIONE DELL'OGGETTO RESTITUITO DA DEEZER
-        if (!(0, functions_1.isValidDeezerObject)(res, multiple ? responseData.data : responseData, deezerObjectBasicSchema, multiple)) {
+        if (!(0, functions_1.isValidDeezerObject)(res, multiple ? responseData.data : responseData, getDeezerObjectBasicSchema(dbTableName), multiple)) {
             return;
         }
         const entities = multiple ? responseData.data : new Array(1).fill(responseData);

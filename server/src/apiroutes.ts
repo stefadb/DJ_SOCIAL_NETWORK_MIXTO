@@ -5,26 +5,26 @@ import fs from "fs";
 import path from "path";
 import bcrypt from "bcrypt";
 import mysql from "mysql2/promise";
-import { 
-  AlbumDeezerBasic, 
-  AlbumDeezerBasicSchema, 
-  AnyDeezerEntityBasic, 
-  ArtistaDeezerBasic, 
-  ArtistaDeezerBasicSchema, 
-  GenereDeezerBasic, 
-  GenereDeezerBasicSchema, 
-  GenericDeezerEntityBasic, 
-  GenericDeezerEntityBasicSchema 
+import {
+  AlbumDeezerBasic,
+  AlbumDeezerBasicSchema,
+  AnyDeezerEntityBasic,
+  ArtistaDeezerBasic,
+  ArtistaDeezerBasicSchema,
+  GenereDeezerBasic,
+  GenereDeezerBasicSchema,
+  GenericDeezerEntityBasic,
+  GenericDeezerEntityBasicSchema
 } from './deezer_types';
-import { 
-  AlbumDb, 
-  ArtistaDb, 
-  GenereDb, 
-  DbEntity 
+import {
+  AlbumDb,
+  ArtistaDb,
+  GenereDb,
+  DbEntity
 } from './db_types';
-import { 
-  DeezerEntityAPIConfig, 
-  DeezerEntityAPIsConfig, 
+import {
+  DeezerEntityAPIConfig,
+  DeezerEntityAPIsConfig,
   DeezerEntityTableName
 } from './types';
 import { ZodIntersection, ZodObject } from 'zod';
@@ -512,7 +512,7 @@ function fromDeezerEntityToDbEntity(entity: GenericDeezerEntityBasic, tableName:
   }
 }
 
-function getPicturesFolder(tableName: DeezerEntityTableName): string{
+function getPicturesFolder(tableName: DeezerEntityTableName): string {
   switch (tableName) {
     case "Artista":
       return "artisti_pictures";
@@ -525,14 +525,26 @@ function getPicturesFolder(tableName: DeezerEntityTableName): string{
   }
 }
 
+function getDeezerObjectBasicSchema(tableName: DeezerEntityTableName): ZodIntersection<typeof GenericDeezerEntityBasicSchema, any> {
+  switch (tableName) {
+    case "Artista":
+      return ArtistaDeezerBasicSchema;
+    case "Album":
+      return AlbumDeezerBasicSchema;
+    case "Genere":
+      return GenereDeezerBasicSchema;
+    default:
+      throw new Error("Tabella non supportata");
+  }
+}
+
 //FUNZIONE GIA ADATTATA A TYPESCRIPT
-export async function deezerEntityApi<T extends ZodObject<any>>(
+export async function deezerEntityApi(
+  req: import("express").Request,
+  res: import("express").Response,
   multiple: boolean,
   apisConfig: DeezerEntityAPIConfig,
-  deezerObjectBasicSchema: ZodIntersection<typeof GenericDeezerEntityBasicSchema, T>,
-  dbTableName: DeezerEntityTableName,
-  req: import("express").Request,
-  res: import("express").Response
+  dbTableName: DeezerEntityTableName
 ) {
   const paramName = apisConfig.paramName; //nome del parametro di ricerca
   //CONTROLLO CHE I PARAMETRI query, limit e index SIANO STATI PASSATI E SIANO VALIDI
@@ -550,7 +562,7 @@ export async function deezerEntityApi<T extends ZodObject<any>>(
       return; //Errore già gestito in makeDeezerApiCall
     }
     //VALIDAZIONE DELL'OGGETTO RESTITUITO DA DEEZER
-    if (!isValidDeezerObject(res, multiple ? responseData.data : responseData, deezerObjectBasicSchema, multiple)) {
+    if (!isValidDeezerObject(res, multiple ? responseData.data : responseData, getDeezerObjectBasicSchema(dbTableName), multiple)) {
       return;
     }
     const entities: GenericDeezerEntityBasic[] = multiple ? responseData.data as GenericDeezerEntityBasic[] : new Array(1).fill(responseData as GenericDeezerEntityBasic) as GenericDeezerEntityBasic[];
@@ -573,7 +585,7 @@ export async function deezerEntityApi<T extends ZodObject<any>>(
       if (entity) {
         res.json(fromDeezerEntityToDbEntity(entity, dbTableName));
       } else {
-        res.status(500).json({ error: "Errore strano che non dovrebbe mai verificarsi. Controlla."});
+        res.status(500).json({ error: "Errore strano che non dovrebbe mai verificarsi. Controlla." });
       }
     }
   } catch (err) {

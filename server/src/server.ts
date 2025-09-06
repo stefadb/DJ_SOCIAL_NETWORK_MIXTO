@@ -76,14 +76,14 @@ app.put("/scalette/:id", putScalette);
 app.delete("/scalette/:id", deleteScalette);
 //API DEEZER---------------------------------------------
 //GENERI
-app.get("/generi", (req, res) => { deezerEntityApi(true,generiAPIsConfig["getAll"],GenereDeezerBasicSchema,"Genere",req,res)});
-app.get("/genere", (req, res) => { deezerEntityApi(false,generiAPIsConfig["getSingle"],GenereDeezerBasicSchema,"Genere",req,res)});
+app.get("/generi", (req, res) => { deezerEntityApi(req,res,true,generiAPIsConfig["getAll"],"Genere")});
+app.get("/genere", (req, res) => { deezerEntityApi(req,res,false,generiAPIsConfig["getSingle"],"Genere")});
 //ARTISTI
-app.get("/artisti/search", (req, res) => { deezerEntityApi(true,artistiAPIsConfig["search"],ArtistaDeezerBasicSchema,"Artista",req,res)});
-app.get("/artisti/related", (req, res) => { deezerEntityApi(true,artistiAPIsConfig["related"],ArtistaDeezerBasicSchema,"Artista",req,res)});
-app.get("/artisti/genere", (req, res) => { deezerEntityApi(true,artistiAPIsConfig["genre"],ArtistaDeezerBasicSchema,"Artista",req,res)});
+app.get("/artisti/search", (req, res) => { deezerEntityApi(req,res,true,artistiAPIsConfig["search"],"Artista")});
+app.get("/artisti/related", (req, res) => { deezerEntityApi(req,res,true,artistiAPIsConfig["related"],"Artista")});
+app.get("/artisti/genere", (req, res) => { deezerEntityApi(req,res,true,artistiAPIsConfig["genre"],"Artista")});
 //ALBUM--------------------------------------------------------
-app.get("/album/search", (req, res) => { deezerEntityApi(true,albumAPIsConfig["search"],AlbumDeezerBasicSchema,"Album",req,res)});
+app.get("/album/search", (req, res) => { deezerEntityApi(req,res,true,albumAPIsConfig["search"],"Album")});
 
 
 //PASSAGGI

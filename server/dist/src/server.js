@@ -6,7 +6,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const apiroutes_1 = require("./apiroutes");
 const express_1 = __importDefault(require("express"));
 const functions_1 = require("./functions");
-const deezer_types_1 = require("./deezer_types");
 const app = (0, express_1.default)();
 const port = 3000;
 const artistiAPIsConfig = {
@@ -54,14 +53,14 @@ app.put("/scalette/:id", apiroutes_1.putScalette);
 app.delete("/scalette/:id", apiroutes_1.deleteScalette);
 //API DEEZER---------------------------------------------
 //GENERI
-app.get("/generi", (req, res) => { (0, apiroutes_1.deezerEntityApi)(true, generiAPIsConfig["getAll"], deezer_types_1.GenereDeezerBasicSchema, "Genere", req, res); });
-app.get("/genere", (req, res) => { (0, apiroutes_1.deezerEntityApi)(false, generiAPIsConfig["getSingle"], deezer_types_1.GenereDeezerBasicSchema, "Genere", req, res); });
+app.get("/generi", (req, res) => { (0, apiroutes_1.deezerEntityApi)(req, res, true, generiAPIsConfig["getAll"], "Genere"); });
+app.get("/genere", (req, res) => { (0, apiroutes_1.deezerEntityApi)(req, res, false, generiAPIsConfig["getSingle"], "Genere"); });
 //ARTISTI
-app.get("/artisti/search", (req, res) => { (0, apiroutes_1.deezerEntityApi)(true, artistiAPIsConfig["search"], deezer_types_1.ArtistaDeezerBasicSchema, "Artista", req, res); });
-app.get("/artisti/related", (req, res) => { (0, apiroutes_1.deezerEntityApi)(true, artistiAPIsConfig["related"], deezer_types_1.ArtistaDeezerBasicSchema, "Artista", req, res); });
-app.get("/artisti/genere", (req, res) => { (0, apiroutes_1.deezerEntityApi)(true, artistiAPIsConfig["genre"], deezer_types_1.ArtistaDeezerBasicSchema, "Artista", req, res); });
+app.get("/artisti/search", (req, res) => { (0, apiroutes_1.deezerEntityApi)(req, res, true, artistiAPIsConfig["search"], "Artista"); });
+app.get("/artisti/related", (req, res) => { (0, apiroutes_1.deezerEntityApi)(req, res, true, artistiAPIsConfig["related"], "Artista"); });
+app.get("/artisti/genere", (req, res) => { (0, apiroutes_1.deezerEntityApi)(req, res, true, artistiAPIsConfig["genre"], "Artista"); });
 //ALBUM--------------------------------------------------------
-app.get("/album/search", (req, res) => { (0, apiroutes_1.deezerEntityApi)(true, albumAPIsConfig["search"], deezer_types_1.AlbumDeezerBasicSchema, "Album", req, res); });
+app.get("/album/search", (req, res) => { (0, apiroutes_1.deezerEntityApi)(req, res, true, albumAPIsConfig["search"], "Album"); });
 //PASSAGGI
 app.get("/brani/:id/passaggi", apiroutes_1.getBranoPassaggi);
 app.get("/album/:id/passaggi", apiroutes_1.getAlbumPassaggi);
