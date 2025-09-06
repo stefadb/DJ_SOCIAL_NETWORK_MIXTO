@@ -73,14 +73,6 @@ app.get("/genere", (req, res) => { deezerEntityApi(false,generiAPIsConfig["getSi
 //TODO: Aggiungere le API per gli album, gli artisti e i brani
 //ARTISTI
 
-/*
-// Cerca su Deezer gli artisti che l'utente ha cercato e, per ognuno, fa upsert sul db e download della foto.
-app.get("/artisti/search", (req, res) => { artistiApi("search", req, res) });
-app.get("/artisti/related", (req, res) => { artistiApi("related", req, res) });
-app.get("/artisti/genere", (req, res) => { artistiApi("genre", req, res) });
-//--------------------------------------------------------
-app.get("/album/search", (req, res) => { albumApi("search", req, res) });
-*/
 // Cerca su Deezer gli artisti che l'utente ha cercato e, per ognuno, fa upsert sul db e download della foto.
 app.get("/artisti/search", (req, res) => { deezerEntityApi(true,artistiAPIsConfig["search"],ArtistaDeezerBasicSchema,"Artista",req,res)});
 app.get("/artisti/related", (req, res) => { deezerEntityApi(true,artistiAPIsConfig["related"],ArtistaDeezerBasicSchema,"Artista",req,res)});
