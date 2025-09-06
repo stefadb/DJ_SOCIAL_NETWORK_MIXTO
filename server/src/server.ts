@@ -56,6 +56,17 @@ const generiAPIsConfig: GeneriAPIsConfig = {
   }
 }
 
+type BraniAPIsConfig = {
+  album: DeezerEntityAPIConfig;
+}
+
+const braniAPIsConfig: BraniAPIsConfig = {
+  album: {
+    paramName: "albumId",
+    deezerAPICallback: (res: import("express").Response, param: string, limit: string, index: string) => makeDeezerApiCall(res, "album", param, "tracks", { limit: limit.toString(), index: index.toString() })
+  },
+}
+
 //API ROUTES'
 //SCALETTE
 app.get("/scalette/:id", getScaletta);
