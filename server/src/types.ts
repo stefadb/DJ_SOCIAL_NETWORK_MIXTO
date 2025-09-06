@@ -10,3 +10,5 @@ export type DeezerEntityAPIConfig = {
 }
 
 export type DeezerEntityAPIsConfig = Record<string, DeezerEntityAPIConfig>;
+
+export type DeezerEntityTableName = "Artista" | "Album" | "Genere";

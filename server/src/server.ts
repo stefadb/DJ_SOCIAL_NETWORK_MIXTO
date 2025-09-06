@@ -2,13 +2,19 @@ import { deezerEntityApi, deleteCommento, deletePassaggio, deleteScalette, delet
 
 import express from "express";
 import { makeDeezerApiCall } from "./functions";
-import { DeezerEntityAPIsConfig } from "./types";
+import { DeezerEntityAPIConfig, DeezerEntityAPIsConfig } from "./types";
 import { GenericDeezerEntityBasic, AlbumDeezerBasic, AlbumDeezerBasicSchema, ArtistaDeezerBasic, ArtistaDeezerBasicSchema } from "./deezer_types";
 import { AlbumDb, ArtistaDb } from "./db_types";
 const app = express();
 const port = 3000;
 
-const artistiAPIsConfig: DeezerEntityAPIsConfig = {
+type ArtistiAPIsConfig = {
+  search: DeezerEntityAPIConfig;
+  related: DeezerEntityAPIConfig;
+  genre: DeezerEntityAPIConfig;
+}
+
+const artistiAPIsConfig: ArtistiAPIsConfig = {
   search: {
     paramName: "query",
     deezerAPICallback: (res: import("express").Response, param: string, limit: string, index: string) => makeDeezerApiCall(res, "search", null, "artist", { q: param, limit: limit.toString(), index: index.toString() })
@@ -23,7 +29,11 @@ const artistiAPIsConfig: DeezerEntityAPIsConfig = {
   }
 }
 
-const albumAPIsConfig: DeezerEntityAPIsConfig = {
+type AlbumAPIsConfig = {
+  search: DeezerEntityAPIConfig;
+}
+
+const albumAPIsConfig: AlbumAPIsConfig = {
   search: {
     paramName: "query",
     deezerAPICallback: (res: import("express").Response, param: string, limit: string, index: string) => makeDeezerApiCall(res, "search", null, "album", { q: param, limit: limit.toString(), index: index.toString() })
@@ -57,11 +67,11 @@ app.get("/artisti/genere", (req, res) => { artistiApi("genre", req, res) });
 app.get("/album/search", (req, res) => { albumApi("search", req, res) });
 */
 // Cerca su Deezer gli artisti che l'utente ha cercato e, per ognuno, fa upsert sul db e download della foto.
-app.get("/artisti/search", (req, res) => { deezerEntityApi("search",true,artistiAPIsConfig,ArtistaDeezerBasicSchema,"Artista","artisti_pictures",req,res)});
-app.get("/artisti/related", (req, res) => { deezerEntityApi("related",true,artistiAPIsConfig,ArtistaDeezerBasicSchema,"Artista","artisti_pictures",req,res)});
-app.get("/artisti/genere", (req, res) => { deezerEntityApi("genre",true,artistiAPIsConfig,ArtistaDeezerBasicSchema,"Artista","artisti_pictures",req,res)});
+app.get("/artisti/search", (req, res) => { deezerEntityApi(true,artistiAPIsConfig["search"],ArtistaDeezerBasicSchema,"Artista",req,res)});
+app.get("/artisti/related", (req, res) => { deezerEntityApi(true,artistiAPIsConfig["related"],ArtistaDeezerBasicSchema,"Artista",req,res)});
+app.get("/artisti/genere", (req, res) => { deezerEntityApi(true,artistiAPIsConfig["genre"],ArtistaDeezerBasicSchema,"Artista",req,res)});
 //--------------------------------------------------------
-app.get("/album/search", (req, res) => { deezerEntityApi("search",true,albumAPIsConfig,AlbumDeezerBasicSchema,"Album","album_pictures",req,res)});
+app.get("/album/search", (req, res) => { deezerEntityApi(true,albumAPIsConfig["search"],AlbumDeezerBasicSchema,"Album",req,res)});
 
 
 //PASSAGGI

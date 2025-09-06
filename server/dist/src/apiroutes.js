@@ -565,13 +565,21 @@ function fromDeezerEntityToDbEntity(entity, tableName) {
             throw new Error("Tabella non supportata");
     }
 }
-//FUNZIONE GIA ADATTATA A TYPESCRIPT
-async function deezerEntityApi(apiName, multiple, apisConfig, deezerObjectBasicSchema, dbTableName, picturesFolder, req, res) {
-    if (apisConfig[apiName] === undefined) {
-        res.status(400).json({ error: 'API non valida' });
-        return;
+function getPicturesFolder(tableName) {
+    switch (tableName) {
+        case "Artista":
+            return "artisti_pictures";
+        case "Album":
+            return "album_pictures";
+        case "Genere":
+            return "generi_pictures";
+        default:
+            throw new Error("Tabella non supportata");
     }
-    const paramName = apisConfig[apiName].paramName; //nome del parametro di ricerca
+}
+//FUNZIONE GIA ADATTATA A TYPESCRIPT
+async function deezerEntityApi(multiple, apisConfig, deezerObjectBasicSchema, dbTableName, req, res) {
+    const paramName = apisConfig.paramName; //nome del parametro di ricerca
     //CONTROLLO CHE I PARAMETRI query, limit e index SIANO STATI PASSATI E SIANO VALIDI
     const param = typeof req.query[paramName] === "string" ? req.query[paramName] : undefined;
     const limit = typeof req.query.limit === "string" ? Number(req.query.limit) : undefined;
@@ -581,7 +589,7 @@ async function deezerEntityApi(apiName, multiple, apisConfig, deezerObjectBasicS
     }
     try {
         //CHIAMATA API A DEEZER
-        const responseData = await apisConfig[apiName].deezerAPICallback(res, param, limit.toString(), index.toString());
+        const responseData = await apisConfig.deezerAPICallback(res, param, limit.toString(), index.toString());
         //DA QUI IN GIU, TUTTO IDENTICO
         if (responseData === -1) {
             return; //Errore già gestito in makeDeezerApiCall
@@ -599,7 +607,7 @@ async function deezerEntityApi(apiName, multiple, apisConfig, deezerObjectBasicS
             await (0, upserts_1.upsertEntitaDeezer)(con, fromDeezerEntityToDbEntity(entity, dbTableName), dbTableName);
             //CARICAMENTO FOTO DELL'ENTITA
             if ("picture_big" in entity || "cover_big" in entity) {
-                await (0, functions_1.uploadPhoto)(picturesFolder, entity.id, "picture_big" in entity ? entity.picture_big : entity.cover_big);
+                await (0, functions_1.uploadPhoto)(getPicturesFolder(dbTableName), entity.id, "picture_big" in entity ? entity.picture_big : entity.cover_big);
             }
         }
         await con.end();

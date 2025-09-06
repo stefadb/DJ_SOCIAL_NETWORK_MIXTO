@@ -24,7 +24,8 @@ import {
 } from './db_types';
 import { 
   DeezerEntityAPIConfig, 
-  DeezerEntityAPIsConfig 
+  DeezerEntityAPIsConfig, 
+  DeezerEntityTableName
 } from './types';
 import { ZodIntersection, ZodObject } from 'zod';
 import dotenv from "dotenv";
@@ -663,22 +664,29 @@ function fromDeezerEntityToDbEntity(entity: GenericDeezerEntityBasic, tableName:
   }
 }
 
+function getPicturesFolder(tableName: DeezerEntityTableName): string{
+  switch (tableName) {
+    case "Artista":
+      return "artisti_pictures";
+    case "Album":
+      return "album_pictures";
+    case "Genere":
+      return "generi_pictures";
+    default:
+      throw new Error("Tabella non supportata");
+  }
+}
+
 //FUNZIONE GIA ADATTATA A TYPESCRIPT
 export async function deezerEntityApi<T extends ZodObject<any>>(
-  apiName: string,
   multiple: boolean,
-  apisConfig: DeezerEntityAPIsConfig,
+  apisConfig: DeezerEntityAPIConfig,
   deezerObjectBasicSchema: ZodIntersection<typeof GenericDeezerEntityBasicSchema, T>,
-  dbTableName: string,
-  picturesFolder: string,
+  dbTableName: DeezerEntityTableName,
   req: import("express").Request,
   res: import("express").Response
 ) {
-  if (apisConfig[apiName] === undefined) {
-    res.status(400).json({ error: 'API non valida' });
-    return;
-  }
-  const paramName = apisConfig[apiName].paramName; //nome del parametro di ricerca
+  const paramName = apisConfig.paramName; //nome del parametro di ricerca
   //CONTROLLO CHE I PARAMETRI query, limit e index SIANO STATI PASSATI E SIANO VALIDI
   const param = typeof req.query[paramName] === "string" ? req.query[paramName] : undefined;
   const limit = typeof req.query.limit === "string" ? Number(req.query.limit) : undefined;
@@ -688,7 +696,7 @@ export async function deezerEntityApi<T extends ZodObject<any>>(
   }
   try {
     //CHIAMATA API A DEEZER
-    const responseData: any = await apisConfig[apiName].deezerAPICallback(res, param, limit.toString(), index.toString());
+    const responseData: any = await apisConfig.deezerAPICallback(res, param, limit.toString(), index.toString());
     //DA QUI IN GIU, TUTTO IDENTICO
     if (responseData === -1) {
       return; //Errore già gestito in makeDeezerApiCall
@@ -706,7 +714,7 @@ export async function deezerEntityApi<T extends ZodObject<any>>(
       await upsertEntitaDeezer(con, fromDeezerEntityToDbEntity(entity, dbTableName), dbTableName);
       //CARICAMENTO FOTO DELL'ENTITA
       if ("picture_big" in entity || "cover_big" in entity) {
-        await uploadPhoto(picturesFolder, entity.id, "picture_big" in entity ? entity.picture_big : entity.cover_big);
+        await uploadPhoto(getPicturesFolder(dbTableName), entity.id, "picture_big" in entity ? entity.picture_big : entity.cover_big);
       }
     }
     await con.end();

@@ -51,11 +51,11 @@ app.get("/artisti/genere", (req, res) => { artistiApi("genre", req, res) });
 app.get("/album/search", (req, res) => { albumApi("search", req, res) });
 */
 // Cerca su Deezer gli artisti che l'utente ha cercato e, per ognuno, fa upsert sul db e download della foto.
-app.get("/artisti/search", (req, res) => { (0, apiroutes_1.deezerEntityApi)("search", true, artistiAPIsConfig, deezer_types_1.ArtistaDeezerBasicSchema, "Artista", "artisti_pictures", req, res); });
-app.get("/artisti/related", (req, res) => { (0, apiroutes_1.deezerEntityApi)("related", true, artistiAPIsConfig, deezer_types_1.ArtistaDeezerBasicSchema, "Artista", "artisti_pictures", req, res); });
-app.get("/artisti/genere", (req, res) => { (0, apiroutes_1.deezerEntityApi)("genre", true, artistiAPIsConfig, deezer_types_1.ArtistaDeezerBasicSchema, "Artista", "artisti_pictures", req, res); });
+app.get("/artisti/search", (req, res) => { (0, apiroutes_1.deezerEntityApi)(true, artistiAPIsConfig["search"], deezer_types_1.ArtistaDeezerBasicSchema, "Artista", req, res); });
+app.get("/artisti/related", (req, res) => { (0, apiroutes_1.deezerEntityApi)(true, artistiAPIsConfig["related"], deezer_types_1.ArtistaDeezerBasicSchema, "Artista", req, res); });
+app.get("/artisti/genere", (req, res) => { (0, apiroutes_1.deezerEntityApi)(true, artistiAPIsConfig["genre"], deezer_types_1.ArtistaDeezerBasicSchema, "Artista", req, res); });
 //--------------------------------------------------------
-app.get("/album/search", (req, res) => { (0, apiroutes_1.deezerEntityApi)("search", true, albumAPIsConfig, deezer_types_1.AlbumDeezerBasicSchema, "Album", "album_pictures", req, res); });
+app.get("/album/search", (req, res) => { (0, apiroutes_1.deezerEntityApi)(true, albumAPIsConfig["search"], deezer_types_1.AlbumDeezerBasicSchema, "Album", req, res); });
 //PASSAGGI
 app.get("/brani/:id/passaggi", apiroutes_1.getBranoPassaggi);
 app.get("/album/:id/passaggi", apiroutes_1.getAlbumPassaggi);
