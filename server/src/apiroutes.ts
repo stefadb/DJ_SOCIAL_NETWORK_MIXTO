@@ -542,9 +542,7 @@ function getDeezerObjectBasicSchema(tableName: DeezerEntityTableName): ZodInters
 export async function deezerEntityApi(
   req: import("express").Request,
   res: import("express").Response,
-  multiple: boolean,
-  apisConfig: DeezerEntityAPIConfig,
-  dbTableName: DeezerEntityTableName
+  apisConfig: DeezerEntityAPIConfig
 ) {
   const paramName = apisConfig.paramName; //nome del parametro di ricerca
   //CONTROLLO CHE I PARAMETRI query, limit e index SIANO STATI PASSATI E SIANO VALIDI
@@ -562,28 +560,28 @@ export async function deezerEntityApi(
       return; //Errore già gestito in makeDeezerApiCall
     }
     //VALIDAZIONE DELL'OGGETTO RESTITUITO DA DEEZER
-    if (!isValidDeezerObject(res, multiple ? responseData.data : responseData, getDeezerObjectBasicSchema(dbTableName), multiple)) {
+    if (!isValidDeezerObject(res, apisConfig.multiple ? responseData.data : responseData, getDeezerObjectBasicSchema(apisConfig.tableName), apisConfig.multiple)) {
       return;
     }
-    const entities: GenericDeezerEntityBasic[] = multiple ? responseData.data as GenericDeezerEntityBasic[] : new Array(1).fill(responseData as GenericDeezerEntityBasic) as GenericDeezerEntityBasic[];
+    const entities: GenericDeezerEntityBasic[] = apisConfig.multiple ? responseData.data as GenericDeezerEntityBasic[] : new Array(1).fill(responseData as GenericDeezerEntityBasic) as GenericDeezerEntityBasic[];
     //SE NON ESISTE, CREA LA CARTELLA PER LE FOTO
     const con = await getConnection();
     //RIPETI PER OGNI ENTITA...
     for (const entity of entities) {
       //UPSERT ENTITA SUL DB
-      await upsertEntitaDeezer(con, fromDeezerEntityToDbEntity(entity, dbTableName), dbTableName);
+      await upsertEntitaDeezer(con, fromDeezerEntityToDbEntity(entity, apisConfig.tableName), apisConfig.tableName);
       //CARICAMENTO FOTO DELL'ENTITA
       if ("picture_big" in entity || "cover_big" in entity) {
-        await uploadPhoto(getPicturesFolder(dbTableName), entity.id, "picture_big" in entity ? entity.picture_big : entity.cover_big);
+        await uploadPhoto(getPicturesFolder(apisConfig.tableName), entity.id, "picture_big" in entity ? entity.picture_big : entity.cover_big);
       }
     }
     await con.end();
-    if (multiple) {
-      res.json(entities.map((entity) => { return fromDeezerEntityToDbEntity(entity, dbTableName) }));
+    if (apisConfig.multiple) {
+      res.json(entities.map((entity) => { return fromDeezerEntityToDbEntity(entity, apisConfig.tableName) }));
     } else {
       const entity = entities[0];
       if (entity) {
-        res.json(fromDeezerEntityToDbEntity(entity, dbTableName));
+        res.json(fromDeezerEntityToDbEntity(entity, apisConfig.tableName));
       } else {
         res.status(500).json({ error: "Errore strano che non dovrebbe mai verificarsi. Controlla." });
       }

@@ -7,8 +7,10 @@ export type QueryParams = Record<string, string>;
 export type DeezerEntityAPIConfig = {
   paramName: string;
   deezerAPICallback: (res: import("express").Response, param: string, limit: string, index: string) => Promise<any>;
+  multiple: boolean,
+  tableName: DeezerEntityTableName
 }
 
 export type DeezerEntityAPIsConfig = Record<string, DeezerEntityAPIConfig>;
 
-export type DeezerEntityTableName = "Artista" | "Album" | "Genere";
+export type DeezerEntityTableName = "Artista" | "Album" | "Genere" | "Brano";

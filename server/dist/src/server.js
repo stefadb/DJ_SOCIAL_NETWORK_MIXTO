@@ -11,37 +11,51 @@ const port = 3000;
 const artistiAPIsConfig = {
     search: {
         paramName: "query",
-        deezerAPICallback: (res, param, limit, index) => (0, functions_1.makeDeezerApiCall)(res, "search", null, "artist", { q: param, limit: limit.toString(), index: index.toString() })
+        deezerAPICallback: (res, param, limit, index) => (0, functions_1.makeDeezerApiCall)(res, "search", null, "artist", { q: param, limit: limit.toString(), index: index.toString() }),
+        multiple: true,
+        tableName: "Artista"
     },
     related: {
         paramName: "artistId",
-        deezerAPICallback: (res, param, limit, index) => (0, functions_1.makeDeezerApiCall)(res, "artist", param, "related", { limit: limit.toString(), index: index.toString() })
+        deezerAPICallback: (res, param, limit, index) => (0, functions_1.makeDeezerApiCall)(res, "artist", param, "related", { limit: limit.toString(), index: index.toString() }),
+        multiple: true,
+        tableName: "Artista"
     },
     genre: {
         paramName: "genreId",
-        deezerAPICallback: (res, param, limit, index) => (0, functions_1.makeDeezerApiCall)(res, "genre", param, "artists", { limit: limit.toString(), index: index.toString() })
+        deezerAPICallback: (res, param, limit, index) => (0, functions_1.makeDeezerApiCall)(res, "genre", param, "artists", { limit: limit.toString(), index: index.toString() }),
+        multiple: true,
+        tableName: "Artista"
     }
 };
 const albumAPIsConfig = {
     search: {
         paramName: "query",
-        deezerAPICallback: (res, param, limit, index) => (0, functions_1.makeDeezerApiCall)(res, "search", null, "album", { q: param, limit: limit.toString(), index: index.toString() })
+        deezerAPICallback: (res, param, limit, index) => (0, functions_1.makeDeezerApiCall)(res, "search", null, "album", { q: param, limit: limit.toString(), index: index.toString() }),
+        multiple: true,
+        tableName: "Album"
     },
 };
 const generiAPIsConfig = {
     getSingle: {
         paramName: "genreId",
-        deezerAPICallback: (res, param, limit, index) => (0, functions_1.makeDeezerApiCall)(res, "genre", param, null, null)
+        deezerAPICallback: (res, param, limit, index) => (0, functions_1.makeDeezerApiCall)(res, "genre", param, null, null),
+        multiple: false,
+        tableName: "Genere"
     },
     getAll: {
         paramName: "uselessParam",
-        deezerAPICallback: (res, param, limit, index) => (0, functions_1.makeDeezerApiCall)(res, "genre", null, null, null)
+        deezerAPICallback: (res, param, limit, index) => (0, functions_1.makeDeezerApiCall)(res, "genre", null, null, null),
+        multiple: true,
+        tableName: "Genere"
     }
 };
 const braniAPIsConfig = {
     album: {
         paramName: "albumId",
-        deezerAPICallback: (res, param, limit, index) => (0, functions_1.makeDeezerApiCall)(res, "album", param, "tracks", { limit: limit.toString(), index: index.toString() })
+        deezerAPICallback: (res, param, limit, index) => (0, functions_1.makeDeezerApiCall)(res, "album", param, "tracks", { limit: limit.toString(), index: index.toString() }),
+        multiple: true,
+        tableName: "Brano"
     },
 };
 //API ROUTES'
@@ -53,14 +67,14 @@ app.put("/scalette/:id", apiroutes_1.putScalette);
 app.delete("/scalette/:id", apiroutes_1.deleteScalette);
 //API DEEZER---------------------------------------------
 //GENERI
-app.get("/generi", (req, res) => { (0, apiroutes_1.deezerEntityApi)(req, res, true, generiAPIsConfig["getAll"], "Genere"); });
-app.get("/genere", (req, res) => { (0, apiroutes_1.deezerEntityApi)(req, res, false, generiAPIsConfig["getSingle"], "Genere"); });
+app.get("/generi", (req, res) => { (0, apiroutes_1.deezerEntityApi)(req, res, generiAPIsConfig["getAll"]); });
+app.get("/genere", (req, res) => { (0, apiroutes_1.deezerEntityApi)(req, res, generiAPIsConfig["getSingle"]); });
 //ARTISTI
-app.get("/artisti/search", (req, res) => { (0, apiroutes_1.deezerEntityApi)(req, res, true, artistiAPIsConfig["search"], "Artista"); });
-app.get("/artisti/related", (req, res) => { (0, apiroutes_1.deezerEntityApi)(req, res, true, artistiAPIsConfig["related"], "Artista"); });
-app.get("/artisti/genere", (req, res) => { (0, apiroutes_1.deezerEntityApi)(req, res, true, artistiAPIsConfig["genre"], "Artista"); });
+app.get("/artisti/search", (req, res) => { (0, apiroutes_1.deezerEntityApi)(req, res, artistiAPIsConfig["search"]); });
+app.get("/artisti/related", (req, res) => { (0, apiroutes_1.deezerEntityApi)(req, res, artistiAPIsConfig["related"]); });
+app.get("/artisti/genere", (req, res) => { (0, apiroutes_1.deezerEntityApi)(req, res, artistiAPIsConfig["genre"]); });
 //ALBUM--------------------------------------------------------
-app.get("/album/search", (req, res) => { (0, apiroutes_1.deezerEntityApi)(req, res, true, albumAPIsConfig["search"], "Album"); });
+app.get("/album/search", (req, res) => { (0, apiroutes_1.deezerEntityApi)(req, res, albumAPIsConfig["search"]); });
 //PASSAGGI
 app.get("/brani/:id/passaggi", apiroutes_1.getBranoPassaggi);
 app.get("/album/:id/passaggi", apiroutes_1.getAlbumPassaggi);

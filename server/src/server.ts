@@ -17,15 +17,21 @@ type ArtistiAPIsConfig = {
 const artistiAPIsConfig: ArtistiAPIsConfig = {
   search: {
     paramName: "query",
-    deezerAPICallback: (res: import("express").Response, param: string, limit: string, index: string) => makeDeezerApiCall(res, "search", null, "artist", { q: param, limit: limit.toString(), index: index.toString() })
+    deezerAPICallback: (res: import("express").Response, param: string, limit: string, index: string) => makeDeezerApiCall(res, "search", null, "artist", { q: param, limit: limit.toString(), index: index.toString() }),
+    multiple: true,
+    tableName: "Artista"
   },
   related: {
     paramName: "artistId",
-    deezerAPICallback: (res: import("express").Response, param: string, limit: string, index: string) => makeDeezerApiCall(res, "artist", param, "related", { limit: limit.toString(), index: index.toString() })
+    deezerAPICallback: (res: import("express").Response, param: string, limit: string, index: string) => makeDeezerApiCall(res, "artist", param, "related", { limit: limit.toString(), index: index.toString() }),
+    multiple: true,
+    tableName: "Artista"
   },
   genre: {
     paramName: "genreId",
-    deezerAPICallback: (res: import("express").Response, param: string, limit: string, index: string) => makeDeezerApiCall(res, "genre", param, "artists", { limit: limit.toString(), index: index.toString() })
+    deezerAPICallback: (res: import("express").Response, param: string, limit: string, index: string) => makeDeezerApiCall(res, "genre", param, "artists", { limit: limit.toString(), index: index.toString() }),
+    multiple: true,
+    tableName: "Artista"
   }
 }
 
@@ -36,7 +42,9 @@ type AlbumAPIsConfig = {
 const albumAPIsConfig: AlbumAPIsConfig = {
   search: {
     paramName: "query",
-    deezerAPICallback: (res: import("express").Response, param: string, limit: string, index: string) => makeDeezerApiCall(res, "search", null, "album", { q: param, limit: limit.toString(), index: index.toString() })
+    deezerAPICallback: (res: import("express").Response, param: string, limit: string, index: string) => makeDeezerApiCall(res, "search", null, "album", { q: param, limit: limit.toString(), index: index.toString() }),
+    multiple: true,
+    tableName: "Album"
   },
 }
 
@@ -48,11 +56,15 @@ type GeneriAPIsConfig = {
 const generiAPIsConfig: GeneriAPIsConfig = {
   getSingle: {
     paramName: "genreId",
-    deezerAPICallback: (res: import("express").Response, param: string, limit: string, index: string) => makeDeezerApiCall(res, "genre", param, null, null)
+    deezerAPICallback: (res: import("express").Response, param: string, limit: string, index: string) => makeDeezerApiCall(res, "genre", param, null, null),
+    multiple: false,
+    tableName: "Genere"
   },
   getAll: {
     paramName: "uselessParam",
-    deezerAPICallback: (res: import("express").Response, param: string, limit: string, index: string) => makeDeezerApiCall(res, "genre", null, null, null)
+    deezerAPICallback: (res: import("express").Response, param: string, limit: string, index: string) => makeDeezerApiCall(res, "genre", null, null, null),
+    multiple: true,
+    tableName: "Genere"
   }
 }
 
@@ -63,7 +75,9 @@ type BraniAPIsConfig = {
 const braniAPIsConfig: BraniAPIsConfig = {
   album: {
     paramName: "albumId",
-    deezerAPICallback: (res: import("express").Response, param: string, limit: string, index: string) => makeDeezerApiCall(res, "album", param, "tracks", { limit: limit.toString(), index: index.toString() })
+    deezerAPICallback: (res: import("express").Response, param: string, limit: string, index: string) => makeDeezerApiCall(res, "album", param, "tracks", { limit: limit.toString(), index: index.toString() }),
+    multiple: true,
+    tableName: "Brano"
   },
 }
 
@@ -76,14 +90,14 @@ app.put("/scalette/:id", putScalette);
 app.delete("/scalette/:id", deleteScalette);
 //API DEEZER---------------------------------------------
 //GENERI
-app.get("/generi", (req, res) => { deezerEntityApi(req,res,true,generiAPIsConfig["getAll"],"Genere")});
-app.get("/genere", (req, res) => { deezerEntityApi(req,res,false,generiAPIsConfig["getSingle"],"Genere")});
+app.get("/generi", (req, res) => { deezerEntityApi(req,res,generiAPIsConfig["getAll"])});
+app.get("/genere", (req, res) => { deezerEntityApi(req,res,generiAPIsConfig["getSingle"])});
 //ARTISTI
-app.get("/artisti/search", (req, res) => { deezerEntityApi(req,res,true,artistiAPIsConfig["search"],"Artista")});
-app.get("/artisti/related", (req, res) => { deezerEntityApi(req,res,true,artistiAPIsConfig["related"],"Artista")});
-app.get("/artisti/genere", (req, res) => { deezerEntityApi(req,res,true,artistiAPIsConfig["genre"],"Artista")});
+app.get("/artisti/search", (req, res) => { deezerEntityApi(req,res,artistiAPIsConfig["search"])});
+app.get("/artisti/related", (req, res) => { deezerEntityApi(req,res,artistiAPIsConfig["related"])});
+app.get("/artisti/genere", (req, res) => { deezerEntityApi(req,res,artistiAPIsConfig["genre"])});
 //ALBUM--------------------------------------------------------
-app.get("/album/search", (req, res) => { deezerEntityApi(req,res,true,albumAPIsConfig["search"],"Album")});
+app.get("/album/search", (req, res) => { deezerEntityApi(req,res,albumAPIsConfig["search"])});
 
 
 //PASSAGGI
