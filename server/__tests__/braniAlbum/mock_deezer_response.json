@@ -1,0 +1,131 @@
+{
+  "data": [
+    {
+      "id": 3405992021,
+      "readable": true,
+      "title": "Sakura",
+      "title_short": "Sakura",
+      "title_version": "",
+      "isrc": "UKU932581530",
+      "link": "https://www.deezer.com/track/3405992021",
+      "duration": 384,
+      "track_position": 1,
+      "disk_number": 1,
+      "rank": 307568,
+      "explicit_lyrics": false,
+      "explicit_content_lyrics": 0,
+      "explicit_content_cover": 2,
+      "preview": "https://cdnt-preview.dzcdn.net/api/1/1/6/d/8/0/6d868c0d30039026dcf6a5ce241c63dc.mp3?hdnea=exp=1757163722~acl=/api/1/1/6/d/8/0/6d868c0d30039026dcf6a5ce241c63dc.mp3*~data=user_id=0,application_id=42~hmac=c1e8e843ba31079bef774cb3f3f92db3c7f4f8a69250cb9bcb13c5cde39e1436",
+      "md5_image": "a19691d854608dcb3af1adf1dbf72e95",
+      "artist": {
+        "id": 203478207,
+        "name": "Across Boundaries",
+        "tracklist": "https://api.deezer.com/artist/203478207/top?limit=50",
+        "type": "artist"
+      },
+      "type": "track"
+    },
+    {
+      "id": 3405992031,
+      "readable": true,
+      "title": "The Funktion",
+      "title_short": "The Funktion",
+      "title_version": "",
+      "isrc": "UKU932581531",
+      "link": "https://www.deezer.com/track/3405992031",
+      "duration": 369,
+      "track_position": 2,
+      "disk_number": 1,
+      "rank": 226470,
+      "explicit_lyrics": false,
+      "explicit_content_lyrics": 0,
+      "explicit_content_cover": 2,
+      "preview": "https://cdnt-preview.dzcdn.net/api/1/1/8/4/d/0/84d9a78c8c7707be2f65e22dff34c95f.mp3?hdnea=exp=1757163722~acl=/api/1/1/8/4/d/0/84d9a78c8c7707be2f65e22dff34c95f.mp3*~data=user_id=0,application_id=42~hmac=4b7ea971fc31b87181c93b2b494083835f66fdf65e9e8291235e518d7b701e16",
+      "md5_image": "a19691d854608dcb3af1adf1dbf72e95",
+      "artist": {
+        "id": 203478207,
+        "name": "Across Boundaries",
+        "tracklist": "https://api.deezer.com/artist/203478207/top?limit=50",
+        "type": "artist"
+      },
+      "type": "track"
+    },
+    {
+      "id": 3405992041,
+      "readable": true,
+      "title": "Rendevouz",
+      "title_short": "Rendevouz",
+      "title_version": "",
+      "isrc": "UKU932581532",
+      "link": "https://www.deezer.com/track/3405992041",
+      "duration": 358,
+      "track_position": 3,
+      "disk_number": 1,
+      "rank": 187842,
+      "explicit_lyrics": false,
+      "explicit_content_lyrics": 0,
+      "explicit_content_cover": 2,
+      "preview": "https://cdnt-preview.dzcdn.net/api/1/1/a/5/a/0/a5aa6da1e4a0d3dbefa855ff666f7270.mp3?hdnea=exp=1757163722~acl=/api/1/1/a/5/a/0/a5aa6da1e4a0d3dbefa855ff666f7270.mp3*~data=user_id=0,application_id=42~hmac=ebe8a1c54536527726fb808768fd513d9f28d9689a5eeef04e8a44e61770c5d8",
+      "md5_image": "a19691d854608dcb3af1adf1dbf72e95",
+      "artist": {
+        "id": 203478207,
+        "name": "Across Boundaries",
+        "tracklist": "https://api.deezer.com/artist/203478207/top?limit=50",
+        "type": "artist"
+      },
+      "type": "track"
+    },
+    {
+      "id": 3405992051,
+      "readable": true,
+      "title": "Mindtrippin'",
+      "title_short": "Mindtrippin'",
+      "title_version": "",
+      "isrc": "UKU932581533",
+      "link": "https://www.deezer.com/track/3405992051",
+      "duration": 367,
+      "track_position": 4,
+      "disk_number": 1,
+      "rank": 162090,
+      "explicit_lyrics": false,
+      "explicit_content_lyrics": 0,
+      "explicit_content_cover": 2,
+      "preview": "https://cdnt-preview.dzcdn.net/api/1/1/d/5/7/0/d5724c047b9fbc875453048377444bb1.mp3?hdnea=exp=1757163722~acl=/api/1/1/d/5/7/0/d5724c047b9fbc875453048377444bb1.mp3*~data=user_id=0,application_id=42~hmac=155ccb808ed9b379ae2b31c3553a2ad8f949b550350a5794970a499cf329b001",
+      "md5_image": "a19691d854608dcb3af1adf1dbf72e95",
+      "artist": {
+        "id": 203478207,
+        "name": "Across Boundaries",
+        "tracklist": "https://api.deezer.com/artist/203478207/top?limit=50",
+        "type": "artist"
+      },
+      "type": "track"
+    },
+    {
+      "id": 3405992061,
+      "readable": true,
+      "title": "E-Motion",
+      "title_short": "E-Motion",
+      "title_version": "",
+      "isrc": "UKU932581534",
+      "link": "https://www.deezer.com/track/3405992061",
+      "duration": 425,
+      "track_position": 5,
+      "disk_number": 1,
+      "rank": 100000,
+      "explicit_lyrics": false,
+      "explicit_content_lyrics": 0,
+      "explicit_content_cover": 2,
+      "preview": "https://cdnt-preview.dzcdn.net/api/1/1/a/2/7/0/a2703f3247238c608559e25697b83eb4.mp3?hdnea=exp=1757163722~acl=/api/1/1/a/2/7/0/a2703f3247238c608559e25697b83eb4.mp3*~data=user_id=0,application_id=42~hmac=3b9e1630b380db1853acc97e4d69ac6d7dc867fb0625636fd3f671a704bbc8d6",
+      "md5_image": "a19691d854608dcb3af1adf1dbf72e95",
+      "artist": {
+        "id": 203478207,
+        "name": "Across Boundaries",
+        "tracklist": "https://api.deezer.com/artist/203478207/top?limit=50",
+        "type": "artist"
+      },
+      "type": "track"
+    }
+  ],
+  "total": 8,
+  "next": "https://api.deezer.com/album/769758471/tracks?limit=5&index=5"
+}

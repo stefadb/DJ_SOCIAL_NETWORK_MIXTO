@@ -400,8 +400,13 @@ async function getGeneriPassaggi(req, res) {
 }
 //DA QUI IN GIU, LE FUNZIONI GIA ADATTATE A TYPESCRIPT
 //-------------------------------------------------------------------------------
+function fromSecondsToTime(seconds) {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+}
 // Overloads for type-safe mapping from Deezer entity to DB entity
-function fromDeezerEntityToDbEntity(entity, tableName) {
+function fromDeezerEntityToDbEntity(entity, tableName, param) {
     switch (tableName) {
         case "Artista":
             return { id: entity.id, nome: entity.name };
@@ -409,6 +414,14 @@ function fromDeezerEntityToDbEntity(entity, tableName) {
             return { id: entity.id, titolo: entity.title };
         case "Genere":
             return { id: entity.id, nome: entity.name };
+        case "Brano":
+            const brano = entity;
+            return {
+                id: brano.id,
+                titolo: brano.title,
+                durata: fromSecondsToTime(brano.duration),
+                id_album: Number(param)
+            };
         default:
             throw new Error("Tabella non supportata");
     }
@@ -433,6 +446,8 @@ function getDeezerObjectBasicSchema(tableName) {
             return deezer_types_1.AlbumDeezerBasicSchema;
         case "Genere":
             return deezer_types_1.GenereDeezerBasicSchema;
+        case "Brano":
+            return deezer_types_1.BranoDeezerBasicSchema;
         default:
             throw new Error("Tabella non supportata");
     }
@@ -464,7 +479,7 @@ async function deezerEntityApi(req, res, apisConfig) {
         //RIPETI PER OGNI ENTITA...
         for (const entity of entities) {
             //UPSERT ENTITA SUL DB
-            await (0, upserts_1.upsertEntitaDeezer)(con, fromDeezerEntityToDbEntity(entity, apisConfig.tableName), apisConfig.tableName);
+            await (0, upserts_1.upsertEntitaDeezer)(con, fromDeezerEntityToDbEntity(entity, apisConfig.tableName, param), apisConfig.tableName);
             //CARICAMENTO FOTO DELL'ENTITA
             if ("picture_big" in entity || "cover_big" in entity) {
                 await (0, functions_1.uploadPhoto)(getPicturesFolder(apisConfig.tableName), entity.id, "picture_big" in entity ? entity.picture_big : entity.cover_big);
@@ -472,12 +487,12 @@ async function deezerEntityApi(req, res, apisConfig) {
         }
         await con.end();
         if (apisConfig.multiple) {
-            res.json(entities.map((entity) => { return fromDeezerEntityToDbEntity(entity, apisConfig.tableName); }));
+            res.json(entities.map((entity) => { return fromDeezerEntityToDbEntity(entity, apisConfig.tableName, param); }));
         }
         else {
             const entity = entities[0];
             if (entity) {
-                res.json(fromDeezerEntityToDbEntity(entity, apisConfig.tableName));
+                res.json(fromDeezerEntityToDbEntity(entity, apisConfig.tableName, param));
             }
             else {
                 res.status(500).json({ error: "Errore strano che non dovrebbe mai verificarsi. Controlla." });
@@ -485,6 +500,7 @@ async function deezerEntityApi(req, res, apisConfig) {
         }
     }
     catch (err) {
+        console.log(err);
         res.status(500).json({ error: "Errore su questa Api legata a Deezer" });
     }
 }

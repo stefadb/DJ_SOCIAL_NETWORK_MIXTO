@@ -46,10 +46,24 @@ export const AlbumDeezerBasicSchema = GenericDeezerEntityBasicSchema.and(
 
 export type AlbumDeezerBasic = z.infer<typeof AlbumDeezerBasicSchema>;
 
+//Contiene le informazioni di base sugli album di Deezer
+export const BranoDeezerBasicSchema = GenericDeezerEntityBasicSchema.and(
+    z.object({
+        title: z.string(),
+        duration: z.number(),
+        album: z.object({
+            id: z.number()
+        }).optional()
+    })
+);
+
+export type BranoDeezerBasic = z.infer<typeof BranoDeezerBasicSchema>;
+
 export const AnyDeezerEntityBasicSchema = z.union([
     AlbumDeezerBasicSchema,
     ArtistaDeezerBasicSchema,
-    GenereDeezerBasicSchema
+    GenereDeezerBasicSchema,
+    BranoDeezerBasicSchema
 ]);
 export type AnyDeezerEntityBasic = z.infer<typeof AnyDeezerEntityBasicSchema>;
 

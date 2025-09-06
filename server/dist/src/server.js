@@ -75,6 +75,8 @@ app.get("/artisti/related", (req, res) => { (0, apiroutes_1.deezerEntityApi)(req
 app.get("/artisti/genere", (req, res) => { (0, apiroutes_1.deezerEntityApi)(req, res, artistiAPIsConfig["genre"]); });
 //ALBUM--------------------------------------------------------
 app.get("/album/search", (req, res) => { (0, apiroutes_1.deezerEntityApi)(req, res, albumAPIsConfig["search"]); });
+//BRANI--------------------------------------------------------
+app.get("/brani/album", (req, res) => { (0, apiroutes_1.deezerEntityApi)(req, res, braniAPIsConfig["album"]); });
 //PASSAGGI
 app.get("/brani/:id/passaggi", apiroutes_1.getBranoPassaggi);
 app.get("/album/:id/passaggi", apiroutes_1.getAlbumPassaggi);

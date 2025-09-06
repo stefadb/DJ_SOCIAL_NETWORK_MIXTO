@@ -111,7 +111,7 @@ export async function testPicturesDownload(picturesFolder: string, mockDeezerRes
 }
 
 
-export async function createOrDeleteTablesOnTestDb(addRowsToTables: boolean, createTables: boolean): Promise<string> {
+export async function createOrDeleteTablesOnTestDb(queriesAfterDbInit: string[] | undefined, createTables: boolean): Promise<string> {
     return new Promise(async (resolve, reject) => {
         try {
             //Questo metodo deve partire da uno schema mixto_test completamente pulito e senza tabelle, altrimenti non va
@@ -138,8 +138,15 @@ export async function createOrDeleteTablesOnTestDb(addRowsToTables: boolean, cre
                 // 5️⃣ riabilita le foreign key
                 await connection.query(`SET FOREIGN_KEY_CHECKS = 1`);
             }
-            if (addRowsToTables) {
+            if (queriesAfterDbInit) {
+                await connection.query(`USE \`${testDB}\``);
                 //Qui esegui altre query per popolare il database di test con dati fittizi
+                for (let i = 0; i < queriesAfterDbInit.length; i++) {
+                    const query = queriesAfterDbInit[i];
+                    if (typeof query === "string") {
+                        await connection.query(query);
+                    }
+                }
             }
             await connection.end();
             resolve("Database di test modificato correttamente!");

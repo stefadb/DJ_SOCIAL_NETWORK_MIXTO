@@ -16,12 +16,12 @@ function commonDeezerGetTestSuite(testConfig, mockDeezerResponseRaw, expectedApi
     describe(`GET ${apiName}`, () => {
         //Configurazione dei mock delle API
         beforeEach(async () => {
-            await (0, common_functions_1.createOrDeleteTablesOnTestDb)(false, false);
-            await (0, common_functions_1.createOrDeleteTablesOnTestDb)(true, true);
+            await (0, common_functions_1.createOrDeleteTablesOnTestDb)(undefined, false);
+            await (0, common_functions_1.createOrDeleteTablesOnTestDb)(testConfig.queriesAfterDbInit, true);
             await (0, common_functions_1.prepareMocksForDeezerResponseAndImages)(mockDeezerResponseRaw, picturesFolder, deezerApiCallUrl, mockedAxios);
         });
         afterEach(async () => {
-            await (0, common_functions_1.createOrDeleteTablesOnTestDb)(false, false);
+            await (0, common_functions_1.createOrDeleteTablesOnTestDb)(undefined, false);
             await jest.clearAllMocks();
         });
         //Descrizioni dei test

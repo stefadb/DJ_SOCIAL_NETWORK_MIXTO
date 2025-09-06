@@ -1,0 +1,10 @@
+{
+  "deezerApiCallUrl": "https://api.deezer.com/album/769758471/tracks?limit=5&index=0",
+  "apiName": "/brani/album",
+  "testApiCallUrl": "/brani/album?albumId=769758471&limit=5&index=0",
+  "entityName": "tracks",
+  "upsertTestSqlQuery": "SELECT * FROM brano ORDER BY id ASC",
+  "queriesAfterDbInit": [
+    "INSERT INTO album (id, titolo, data_uscita) VALUES (769758471, 'Sakura', '2025-09-05')"
+  ]
+}

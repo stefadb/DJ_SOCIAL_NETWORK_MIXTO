@@ -98,6 +98,8 @@ app.get("/artisti/related", (req, res) => { deezerEntityApi(req,res,artistiAPIsC
 app.get("/artisti/genere", (req, res) => { deezerEntityApi(req,res,artistiAPIsConfig["genre"])});
 //ALBUM--------------------------------------------------------
 app.get("/album/search", (req, res) => { deezerEntityApi(req,res,albumAPIsConfig["search"])});
+//BRANI--------------------------------------------------------
+app.get("/brani/album", (req, res) => { deezerEntityApi(req,res,braniAPIsConfig["album"])});
 
 
 //PASSAGGI

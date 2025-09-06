@@ -14,9 +14,13 @@ export const ArtistaDbSchema = DbEntitySchema.extend({
 export type ArtistaDb = z.infer<typeof ArtistaDbSchema>;
 
 //Mostra come sono memorizzati i brani nel database
+export const DurataSchema = z.string().regex(/^\d{2}:\d{2}$/, "Invalid duration format, expected mm:ss");
+
+export type Durata = z.infer<typeof DurataSchema>;
+
 export const BranoDbSchema = DbEntitySchema.extend({
     titolo: z.string(),
-    durata: z.string().regex(/^\d{2}:\d{2}$/, "Invalid duration format, expected mm:ss"),
+    durata: DurataSchema,
     id_album: z.number()
 });
 
