@@ -123,9 +123,12 @@ https://api.deezer.com/album/486048505/tracks
 
 PASSI per ogni traccia trovata:
 
-Upsert del brano
+Upsert del brano (senza caricamento foto)
 
--> TODO: implementa questo e scrivi il test
+ATTENZIONE: Questa API, prima di essere eseguita, richiede che l'album sia già nel db!! Infatti, per tutti i file test_config.json, devi prevedere un parametro facoltativo, cioè la query da eseguire dopo la creazione delle tabelle nel db. Anche picturesFolder di test_config.json deve essere facoltativo, perchè per i brani non c'è!
+è inoltre necessaria una piccola modifica alla funzione deezerEntityApi: devi aggiungere una callback facoltativa che può essere passata, che prende in input il param e fa cose (return void) prima di fare tutto il resto. Può anche decidere di interrompere l'esecuzione con uno status 404 per esempio
+
+IMPLEMENTATO E TESTATO!!
 10) - PER OTTENERE TUTTI GLI ALBUM CHE CORRISPONDONO A UNA PAROLA/FRASE DI RICERCA (query) - OK
 
 https://api.deezer.com/search/album?q=eminem
