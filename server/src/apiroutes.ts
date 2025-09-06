@@ -581,10 +581,13 @@ export async function deezerEntityApi(
     if (responseData === -1) {
       return; //Errore già gestito in makeDeezerApiCall
     }
+    //TODO: permettere di validare più di un oggetto Deezer, perchè la risposta potrebbe averne di più
     //VALIDAZIONE DELL'OGGETTO RESTITUITO DA DEEZER
     if (!isValidDeezerObject(res, apisConfig.multiple ? responseData.data : responseData, getDeezerObjectBasicSchema(apisConfig.tableName), apisConfig.multiple)) {
       return;
     }
+    //TODO: Ripeti queste righe per ogni entità, di cui eseguire upsert e caricamento foto
+    //------------------------------------
     const entities: GenericDeezerEntityBasic[] = apisConfig.multiple ? responseData.data as GenericDeezerEntityBasic[] : new Array(1).fill(responseData as GenericDeezerEntityBasic) as GenericDeezerEntityBasic[];
     //SE NON ESISTE, CREA LA CARTELLA PER LE FOTO
     const con = await getConnection();
@@ -598,6 +601,7 @@ export async function deezerEntityApi(
       }
     }
     await con.end();
+    //-----------------------------------
     if (apisConfig.multiple) {
       res.json(entities.map((entity) => { return fromDeezerEntityToDbEntity(entity, apisConfig.tableName, param) }));
     } else {
