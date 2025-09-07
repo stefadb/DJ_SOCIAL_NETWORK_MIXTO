@@ -15,7 +15,10 @@ const artistiAPIsConfig = {
         entities: [{
                 multiple: true,
                 tableName: "Artista",
-                keyOfDeezerResponse: ""
+                keyOfDeezerResponse: "",
+                getObjectsFromResponse: (response) => {
+                    return response.data.data;
+                }
             }]
     },
     related: {
@@ -24,7 +27,10 @@ const artistiAPIsConfig = {
         entities: [{
                 multiple: true,
                 tableName: "Artista",
-                keyOfDeezerResponse: ""
+                keyOfDeezerResponse: "",
+                getObjectsFromResponse: (response) => {
+                    return response.data.data;
+                }
             }]
     },
     genre: {
@@ -33,7 +39,10 @@ const artistiAPIsConfig = {
         entities: [{
                 multiple: true,
                 tableName: "Artista",
-                keyOfDeezerResponse: ""
+                keyOfDeezerResponse: "",
+                getObjectsFromResponse: (response) => {
+                    return response.data.data;
+                }
             }]
     }
 };
@@ -44,7 +53,10 @@ const albumAPIsConfig = {
         entities: [{
                 multiple: true,
                 tableName: "Album",
-                keyOfDeezerResponse: ""
+                keyOfDeezerResponse: "",
+                getObjectsFromResponse: (response) => {
+                    return response.data.data;
+                }
             }]
     }
 };
@@ -55,7 +67,10 @@ const generiAPIsConfig = {
         entities: [{
                 multiple: false,
                 tableName: "Genere",
-                keyOfDeezerResponse: ""
+                keyOfDeezerResponse: "",
+                getObjectsFromResponse: (response) => {
+                    return [response.data];
+                }
             }]
     },
     getAll: {
@@ -64,7 +79,10 @@ const generiAPIsConfig = {
         entities: [{
                 multiple: true,
                 tableName: "Genere",
-                keyOfDeezerResponse: ""
+                keyOfDeezerResponse: "",
+                getObjectsFromResponse: (response) => {
+                    return response.data.data;
+                }
             }]
     }
 };
@@ -75,7 +93,10 @@ const braniAPIsConfig = {
         entities: [{
                 multiple: true,
                 tableName: "Brano",
-                keyOfDeezerResponse: ""
+                keyOfDeezerResponse: "",
+                getObjectsFromResponse: (response) => {
+                    return response.data.data;
+                }
             }]
     },
 };

@@ -585,11 +585,8 @@ export async function deezerEntityApi(
     }
     //PER OGNI OGGETTO RESTITUITO DA DEEZER, UPSERT SUL DB E CARICAMENTO FOTO (SE PREVISTO)
     for (const entityConfig of apisConfig.entities) {
-      let entityInResponseData = entityConfig.keyOfDeezerResponse != "" ? response.data[entityConfig.keyOfDeezerResponse] : response.data;
-      const entities: GenericDeezerEntityBasic[] = "data" in entityInResponseData ? entityInResponseData.data as GenericDeezerEntityBasic[] : (Array.isArray(entityInResponseData) ? entityInResponseData as GenericDeezerEntityBasic[] : new Array(1).fill(entityInResponseData as GenericDeezerEntityBasic) as GenericDeezerEntityBasic[]);
-      //TODO: è il modo di recuperare gli oggetti che deve cambiare
+      const entities: GenericDeezerEntityBasic[] = entityConfig.getObjectsFromResponse(response);
       const con = await getConnection();
-      //RIPETI PER OGNI ENTITA TROVATA...VALIDAZIONE, UPSERT E CARICAMENTO FOTO
       for (const entity of entities) {
         if (!isValidDeezerObject(res, entity, getDeezerObjectBasicSchema(entityConfig.tableName))) {
           return;
@@ -600,9 +597,8 @@ export async function deezerEntityApi(
       await con.end();
     }
     //TODO: aggiungere il supporto alle associazioni tra due entità Deezer (es. Album_Artista)
-    let entityInResponseData = apisConfig.entities[0].keyOfDeezerResponse != "" ? response.data[apisConfig.entities[0].keyOfDeezerResponse] : response.data;
-    const mainEntity: GenericDeezerEntityBasic[] = "data" in entityInResponseData ? entityInResponseData.data as GenericDeezerEntityBasic[] : (Array.isArray(entityInResponseData) ? entityInResponseData as GenericDeezerEntityBasic[] : new Array(1).fill(entityInResponseData as GenericDeezerEntityBasic) as GenericDeezerEntityBasic[]);
-    res.json(mainEntity.map((entity) => { return fromDeezerEntityToDbEntity(entity, apisConfig.entities[0].tableName, param) }));
+    const mainEntityObjects: GenericDeezerEntityBasic[] = apisConfig.entities[0].getObjectsFromResponse(response);
+    res.json(mainEntityObjects.map((obj) => { return fromDeezerEntityToDbEntity(obj, apisConfig.entities[0].tableName, param) }));
   } catch (err) {
     console.log(err);
     res.status(500).json({ error: "Errore su questa Api legata a Deezer" });
