@@ -579,13 +579,13 @@ export async function deezerEntityApi(
   }
   try {
     //CHIAMATA API A DEEZER
-    const responseData: any = await apisConfig.deezerAPICallback(res, param, limit.toString(), index.toString());
-    if (responseData === -1) {
+    const response = await apisConfig.deezerAPICallback(res, param, limit.toString(), index.toString());
+    if (response === -1) {
       return; //Errore già gestito in makeDeezerApiCall
     }
     //PER OGNI OGGETTO RESTITUITO DA DEEZER, UPSERT SUL DB E CARICAMENTO FOTO (SE PREVISTO)
     for (const entityConfig of apisConfig.entities) {
-      let entityInResponseData = entityConfig.keyOfDeezerResponse != "" ? responseData[entityConfig.keyOfDeezerResponse] : responseData;
+      let entityInResponseData = entityConfig.keyOfDeezerResponse != "" ? response.data[entityConfig.keyOfDeezerResponse] : response.data;
       const entities: GenericDeezerEntityBasic[] = "data" in entityInResponseData ? entityInResponseData.data as GenericDeezerEntityBasic[] : (Array.isArray(entityInResponseData) ? entityInResponseData as GenericDeezerEntityBasic[] : new Array(1).fill(entityInResponseData as GenericDeezerEntityBasic) as GenericDeezerEntityBasic[]);
       //TODO: è il modo di recuperare gli oggetti che deve cambiare
       const con = await getConnection();
@@ -600,7 +600,7 @@ export async function deezerEntityApi(
       await con.end();
     }
     //TODO: aggiungere il supporto alle associazioni tra due entità Deezer (es. Album_Artista)
-    let entityInResponseData = apisConfig.entities[0].keyOfDeezerResponse != "" ? responseData[apisConfig.entities[0].keyOfDeezerResponse] : responseData;
+    let entityInResponseData = apisConfig.entities[0].keyOfDeezerResponse != "" ? response.data[apisConfig.entities[0].keyOfDeezerResponse] : response.data;
     const mainEntity: GenericDeezerEntityBasic[] = "data" in entityInResponseData ? entityInResponseData.data as GenericDeezerEntityBasic[] : (Array.isArray(entityInResponseData) ? entityInResponseData as GenericDeezerEntityBasic[] : new Array(1).fill(entityInResponseData as GenericDeezerEntityBasic) as GenericDeezerEntityBasic[]);
     res.json(mainEntity.map((entity) => { return fromDeezerEntityToDbEntity(entity, apisConfig.entities[0].tableName, param) }));
   } catch (err) {

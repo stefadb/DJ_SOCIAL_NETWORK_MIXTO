@@ -3,7 +3,7 @@ import { QueryParams } from "./types";
 import path from "path";
 import fs from "fs";
 import { ZodIntersection, ZodObject } from "zod";
-import { GenericDeezerEntityBasicSchema } from "./deezer_types";
+import { GenericDeezerEntityBasic, GenericDeezerEntityBasicSchema } from "./deezer_types";
 
 const deezerAPIUrl = "https://api.deezer.com";
 
@@ -13,7 +13,7 @@ const deezerAPIUrl = "https://api.deezer.com";
  * @param res L'oggetto che la funzione può usare per rispondere direttamente in caso di errori
  * @param queryParams Tutti i query params della chiamata API rappresentati come oggetto JSON
  */
-export async function makeDeezerApiCall(res: import("express").Response, urlFirstPart: string | null, urlParameter: string | number | null, urlSecondPart: string | null, queryParams: QueryParams | null) {
+export async function makeDeezerApiCall(res: import("express").Response, urlFirstPart: string | null, urlParameter: string | number | null, urlSecondPart: string | null, queryParams: QueryParams | null) : Promise<axios.AxiosResponse<any, any> | -1> {
   return new Promise((resolve) => {
     let url = deezerAPIUrl;
     if (urlFirstPart) {
@@ -32,7 +32,7 @@ export async function makeDeezerApiCall(res: import("express").Response, urlFirs
     axios.get(url)
       .then((response) => {
         if (response.status == 200) {
-          resolve(response.data);
+          resolve(response);
         } else {
           res.status(response.status).json({ error: `Errore nella chiamata a Deezer: ${response.statusText}` });
           resolve(-1);
@@ -51,11 +51,12 @@ export async function makeDeezerApiCall(res: import("express").Response, urlFirs
 }
 
 //FUNZIONE GIA ADATTATA A TYPESCRIPT
-export async function uploadPhoto(dirName: string, entity: any) {
+export async function uploadPhoto(dirName: string, entity: GenericDeezerEntityBasic) {
   let pictureUrl: string;
   if ("picture_big" in entity || "cover_big" in entity || "picture" in entity) {
     pictureUrl = "picture_big" in entity ? entity.picture_big : "cover_big" in entity ? entity.cover_big : entity.picture;
   } else {
+    //Nessuna immagine da caricare
     return;
   }
   const picturesDir = path.join(__dirname, dirName);

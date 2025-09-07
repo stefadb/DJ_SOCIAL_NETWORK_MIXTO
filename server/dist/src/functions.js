@@ -35,7 +35,7 @@ async function makeDeezerApiCall(res, urlFirstPart, urlParameter, urlSecondPart,
         axios_1.default.get(url)
             .then((response) => {
             if (response.status == 200) {
-                resolve(response.data);
+                resolve(response);
             }
             else {
                 res.status(response.status).json({ error: `Errore nella chiamata a Deezer: ${response.statusText}` });
@@ -61,6 +61,7 @@ async function uploadPhoto(dirName, entity) {
         pictureUrl = "picture_big" in entity ? entity.picture_big : "cover_big" in entity ? entity.cover_big : entity.picture;
     }
     else {
+        //Nessuna immagine da caricare
         return;
     }
     const picturesDir = path_1.default.join(__dirname, dirName);
