@@ -55,19 +55,21 @@ async function makeDeezerApiCall(res, urlFirstPart, urlParameter, urlSecondPart,
     });
 }
 //FUNZIONE GIA ADATTATA A TYPESCRIPT
-async function uploadPhoto(dirName, id, pictureUrl) {
-    if (!pictureUrl) {
-        return; //Non succederà mai
+async function uploadPhoto(dirName, entity) {
+    let pictureUrl;
+    if ("picture_big" in entity || "cover_big" in entity || "picture" in entity) {
+        pictureUrl = "picture_big" in entity ? entity.picture_big : "cover_big" in entity ? entity.cover_big : entity.picture;
     }
-    //c'è qualcosa che non va in questa funzione
-    //Problema: non finisce il download
+    else {
+        return;
+    }
     const picturesDir = path_1.default.join(__dirname, dirName);
     if (!fs_1.default.existsSync(picturesDir)) {
         fs_1.default.mkdirSync(picturesDir);
     }
     return new Promise((resolve, reject) => {
         const picturesDir = path_1.default.join(__dirname, dirName);
-        const imgPath = path_1.default.join(picturesDir, `${id}.jpg`);
+        const imgPath = path_1.default.join(picturesDir, `${entity.id}.jpg`);
         try {
             axios_1.default.get(pictureUrl, { responseType: "stream" })
                 .then((imgResponse) => {
@@ -90,39 +92,10 @@ async function uploadPhoto(dirName, id, pictureUrl) {
  */
 //FUNZIONE GIA ADATTATA A TYPESCRIPT
 function isValidDeezerObject(res, obj, schema) {
-    if (!Array.isArray(obj)) {
-        if (!("data" in obj)) {
-            //Non è nè un array nè contiene l'array in "data"
-            const safeParseResult = schema.safeParse(obj);
-            if (!safeParseResult.success) {
-                res.status(500).json({ error: "L'oggetto restituito da Deezer non segue lo schema.", details: safeParseResult.error });
-            }
-            return safeParseResult.success;
-        }
-        else {
-            //Non è un array ma contiene l'array in "data"
-            const array = obj.data;
-            for (const item of array) {
-                const safeParseResult = schema.safeParse(item);
-                if (!safeParseResult.success) {
-                    res.status(500).json({ error: "L'oggetto restituito da Deezer non segue lo schema.", details: safeParseResult.error });
-                    return false;
-                }
-            }
-            return true;
-        }
+    const safeParseResult = schema.safeParse(obj);
+    if (!safeParseResult.success) {
+        res.status(500).json({ error: "L'oggetto restituito da Deezer non segue lo schema.", details: safeParseResult.error });
     }
-    else {
-        //È un array
-        const array = obj;
-        for (const item of array) {
-            const safeParseResult = schema.safeParse(item);
-            if (!safeParseResult.success) {
-                res.status(500).json({ error: "L'oggetto restituito da Deezer non segue lo schema.", details: safeParseResult.error });
-                return false;
-            }
-        }
-        return true;
-    }
+    return safeParseResult.success;
 }
 //# sourceMappingURL=functions.js.map

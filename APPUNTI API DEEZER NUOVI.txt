@@ -23,7 +23,6 @@ Usa sempre limit e index per la paginazione
 
 https://api.deezer.com/artist/5359276/albums
 
-
 Restituisce tutti gli album dell'artista e il primo genere, quello più importante.
 
 Upsert: album

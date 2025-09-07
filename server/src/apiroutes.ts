@@ -541,6 +541,8 @@ function getPicturesFolder(tableName: DeezerEntityTableName): string {
       return "album_pictures";
     case "Genere":
       return "generi_pictures";
+    case "Brano":
+      return ""; //I brani non hanno immagini
     default:
       throw new Error("Tabella non supportata");
   }
@@ -581,27 +583,19 @@ export async function deezerEntityApi(
     if (responseData === -1) {
       return; //Errore già gestito in makeDeezerApiCall
     }
-    //VALIDAZIONE DEGLI OGGETTI RESTITUITI DA DEEZER
-    //TODO: Invece di partire da responseData e prendere solo l'oggetto keyOfDeezerResponse, devi anche dare la possibilità di prendere oggetti annidati (ES: tutti gli artisti dentro ogni album)
-    for (const entityConfig of apisConfig.entities) {
-      let entityInResponseData = entityConfig.keyOfDeezerResponse != "" ? responseData[entityConfig.keyOfDeezerResponse] : responseData;
-      if (!isValidDeezerObject(res, entityInResponseData, getDeezerObjectBasicSchema(entityConfig.tableName))) {
-        return;
-      }
-    }
     //PER OGNI OGGETTO RESTITUITO DA DEEZER, UPSERT SUL DB E CARICAMENTO FOTO (SE PREVISTO)
     for (const entityConfig of apisConfig.entities) {
       let entityInResponseData = entityConfig.keyOfDeezerResponse != "" ? responseData[entityConfig.keyOfDeezerResponse] : responseData;
       const entities: GenericDeezerEntityBasic[] = "data" in entityInResponseData ? entityInResponseData.data as GenericDeezerEntityBasic[] : (Array.isArray(entityInResponseData) ? entityInResponseData as GenericDeezerEntityBasic[] : new Array(1).fill(entityInResponseData as GenericDeezerEntityBasic) as GenericDeezerEntityBasic[]);
+      //TODO: è il modo di recuperare gli oggetti che deve cambiare
       const con = await getConnection();
-      //RIPETI PER OGNI ENTITA...
+      //RIPETI PER OGNI ENTITA TROVATA...VALIDAZIONE, UPSERT E CARICAMENTO FOTO
       for (const entity of entities) {
-        //UPSERT ENTITA SUL DB
-        await upsertEntitaDeezer(con, fromDeezerEntityToDbEntity(entity, entityConfig.tableName, param), entityConfig.tableName);
-        //CARICAMENTO FOTO DELL'ENTITA
-        if ("picture_big" in entity || "cover_big" in entity || "picture" in entity) {
-          await uploadPhoto(getPicturesFolder(entityConfig.tableName), entity.id, "picture_big" in entity ? entity.picture_big : "cover_big" in entity ? entity.cover_big : entity.picture);
+        if (!isValidDeezerObject(res, entity, getDeezerObjectBasicSchema(entityConfig.tableName))) {
+          return;
         }
+        await upsertEntitaDeezer(con, fromDeezerEntityToDbEntity(entity, entityConfig.tableName, param), entityConfig.tableName);
+        await uploadPhoto(getPicturesFolder(entityConfig.tableName), entity);
       }
       await con.end();
     }
