@@ -578,12 +578,12 @@ export async function deezerEntityApi(
     return res.status(400).json({ error: 'Parametri "' + paramName + '", "limit" e "index" obbligatori e devono essere validi' });
   }
   try {
-    //CHIAMATA API A DEEZER
+    //FAI LA CHIAMATA API A DEEZER E OTTIENI LA RISPOSTA
     const response = await apisConfig.deezerAPICallback(res, param, limit.toString(), index.toString());
     if (response === -1) {
       return; //Errore già gestito in makeDeezerApiCall
     }
-    //PER OGNI OGGETTO RESTITUITO DA DEEZER, UPSERT SUL DB E CARICAMENTO FOTO (SE PREVISTO)
+    //PER OGNI OGGETTO RESTITUITO DA DEEZER, VALIDAZIONE, UPSERT SUL DB E CARICAMENTO FOTO (SE PREVISTO)
     for (const entityConfig of apisConfig.entities) {
       const entityObjects: GenericDeezerEntityBasic[] = entityConfig.getEntityObjectsFromResponse(response);
       const con = await getConnection();
