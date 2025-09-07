@@ -4,11 +4,14 @@ import { DbEntity } from "./db_types";
 
 export type QueryParams = Record<string, string>;
 
+type DeezerEntityConfigs = [{ multiple: boolean; tableName: DeezerEntityTableName; keyOfDeezerResponse: "" }, ...{ multiple: boolean; tableName: DeezerEntityTableName; keyOfDeezerResponse: string }[]];
+
+export type DeezerEntityConfig = { multiple: boolean; tableName: DeezerEntityTableName; keyOfDeezerResponse: string };
+
 export type DeezerEntityAPIConfig = {
   paramName: string;
   deezerAPICallback: (res: import("express").Response, param: string, limit: string, index: string) => Promise<any>;
-  multiple: boolean,
-  tableName: DeezerEntityTableName
+  entities: DeezerEntityConfigs;
 }
 
 export type DeezerEntityAPIsConfig = Record<string, DeezerEntityAPIConfig>;

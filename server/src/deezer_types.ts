@@ -102,8 +102,12 @@ export const DeezerResponseSingleItemSchema = z.union([
 
 export type DeezerResponseSingleItem = z.infer<typeof DeezerResponseSingleItemSchema>;
 
-export const DeezerResponseMultipleItemsSchema = z.object({
+export const DeezerResponseDataItemsArraySchema = z.object({
     data: z.array(DeezerResponseSingleItemSchema),
 });
 
-export type DeezerResponseMultipleItems = z.infer<typeof DeezerResponseMultipleItemsSchema>;
+export type DeezerResponseDataItemsArray = z.infer<typeof DeezerResponseDataItemsArraySchema>;
+
+export const DeezerResponseItemsArraySchema = z.array(DeezerResponseSingleItemSchema);
+
+export type DeezerResponseItemsArray = z.infer<typeof DeezerResponseItemsArraySchema>;

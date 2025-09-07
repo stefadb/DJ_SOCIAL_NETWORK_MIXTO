@@ -12,50 +12,71 @@ const artistiAPIsConfig = {
     search: {
         paramName: "query",
         deezerAPICallback: (res, param, limit, index) => (0, functions_1.makeDeezerApiCall)(res, "search", null, "artist", { q: param, limit: limit.toString(), index: index.toString() }),
-        multiple: true,
-        tableName: "Artista"
+        entities: [{
+                multiple: true,
+                tableName: "Artista",
+                keyOfDeezerResponse: ""
+            }]
     },
     related: {
         paramName: "artistId",
         deezerAPICallback: (res, param, limit, index) => (0, functions_1.makeDeezerApiCall)(res, "artist", param, "related", { limit: limit.toString(), index: index.toString() }),
-        multiple: true,
-        tableName: "Artista"
+        entities: [{
+                multiple: true,
+                tableName: "Artista",
+                keyOfDeezerResponse: ""
+            }]
     },
     genre: {
         paramName: "genreId",
         deezerAPICallback: (res, param, limit, index) => (0, functions_1.makeDeezerApiCall)(res, "genre", param, "artists", { limit: limit.toString(), index: index.toString() }),
-        multiple: true,
-        tableName: "Artista"
+        entities: [{
+                multiple: true,
+                tableName: "Artista",
+                keyOfDeezerResponse: ""
+            }]
     }
 };
 const albumAPIsConfig = {
     search: {
         paramName: "query",
         deezerAPICallback: (res, param, limit, index) => (0, functions_1.makeDeezerApiCall)(res, "search", null, "album", { q: param, limit: limit.toString(), index: index.toString() }),
-        multiple: true,
-        tableName: "Album"
-    },
+        entities: [{
+                multiple: true,
+                tableName: "Album",
+                keyOfDeezerResponse: ""
+            }]
+    }
 };
 const generiAPIsConfig = {
     getSingle: {
         paramName: "genreId",
         deezerAPICallback: (res, param, limit, index) => (0, functions_1.makeDeezerApiCall)(res, "genre", param, null, null),
-        multiple: false,
-        tableName: "Genere"
+        entities: [{
+                multiple: false,
+                tableName: "Genere",
+                keyOfDeezerResponse: ""
+            }]
     },
     getAll: {
         paramName: "uselessParam",
         deezerAPICallback: (res, param, limit, index) => (0, functions_1.makeDeezerApiCall)(res, "genre", null, null, null),
-        multiple: true,
-        tableName: "Genere"
+        entities: [{
+                multiple: true,
+                tableName: "Genere",
+                keyOfDeezerResponse: ""
+            }]
     }
 };
 const braniAPIsConfig = {
     album: {
         paramName: "albumId",
         deezerAPICallback: (res, param, limit, index) => (0, functions_1.makeDeezerApiCall)(res, "album", param, "tracks", { limit: limit.toString(), index: index.toString() }),
-        multiple: true,
-        tableName: "Brano"
+        entities: [{
+                multiple: true,
+                tableName: "Brano",
+                keyOfDeezerResponse: ""
+            }]
     },
 };
 //API ROUTES'

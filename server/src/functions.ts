@@ -52,7 +52,7 @@ export async function makeDeezerApiCall(res: import("express").Response, urlFirs
 
 //FUNZIONE GIA ADATTATA A TYPESCRIPT
 export async function uploadPhoto(dirName: string, id: number, pictureUrl: string | undefined) {
-  if(!pictureUrl){
+  if (!pictureUrl) {
     return; //Non succederà mai
   }
   //c'è qualcosa che non va in questa funzione
@@ -85,18 +85,29 @@ export async function uploadPhoto(dirName: string, id: number, pictureUrl: strin
  * Restituisce true se l'oggetto Deezer è valido, false altrimenti
  */
 //FUNZIONE GIA ADATTATA A TYPESCRIPT
-export function isValidDeezerObject<T extends ZodObject<any>>(res: import("express").Response, obj: T, schema: ZodIntersection<typeof GenericDeezerEntityBasicSchema, T>, isArray: boolean) {
-  if (!isArray) {
-    const safeParseResult = schema.safeParse(obj);
-    if (!safeParseResult.success) {
-      res.status(500).json({ error: "L'oggetto restituito da Deezer non segue lo schema.", details: safeParseResult.error });
+export function isValidDeezerObject<T extends ZodObject<any>>(res: import("express").Response, obj: T, schema: ZodIntersection<typeof GenericDeezerEntityBasicSchema, T>) {
+  if (!Array.isArray(obj)) {
+    if (!("data" in obj)) {
+      //Non è nè un array nè contiene l'array in "data"
+      const safeParseResult = schema.safeParse(obj);
+      if (!safeParseResult.success) {
+        res.status(500).json({ error: "L'oggetto restituito da Deezer non segue lo schema.", details: safeParseResult.error });
+      }
+      return safeParseResult.success;
+    }else{
+      //Non è un array ma contiene l'array in "data"
+      const array = obj.data as any[];
+    for (const item of array) {
+      const safeParseResult = schema.safeParse(item);
+      if (!safeParseResult.success) {
+        res.status(500).json({ error: "L'oggetto restituito da Deezer non segue lo schema.", details: safeParseResult.error });
+        return false;
+      }
     }
-    return safeParseResult.success;
+    return true;
+    }
   } else {
-    if (!Array.isArray(obj)) {
-      res.status(500).json({ error: "L'oggetto restituito da Deezer non è un array come previsto." });
-      return false;
-    }
+    //È un array
     const array = obj as any[];
     for (const item of array) {
       const safeParseResult = schema.safeParse(item);

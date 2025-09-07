@@ -18,7 +18,7 @@ const supertest_1 = __importDefault(require("supertest"));
 const promise_1 = __importDefault(require("mysql2/promise"));
 /**
  * Dalla risposta di Deezer, ricava tutti gli url delle immagini che l'API deve scaricare e li mappa ai nomi dei file corrispondenti
- * @param mockDeezerResponseRaw deve essere di tipo DeezerResponseSingleItem | DeezerResponseMultipleItems, altrimenti il safeParse restituisce errore
+ * @param mockDeezerResponseRaw deve essere di tipo DeezerResponseSingleItem | DeezerResponseDataItemsArray, altrimenti il safeParse restituisce errore
  * @returns Un oggetto che mappa gli url delle immagini ai nomi dei file
  */
 function getImageUrlToFileMappingFromDeezerResponse(mockDeezerResponseRaw) {
@@ -29,7 +29,7 @@ function getImageUrlToFileMappingFromDeezerResponse(mockDeezerResponseRaw) {
         mockDeezerResponse = safeParse1.data;
     }
     else {
-        const safeParse2 = deezer_types_1.DeezerResponseMultipleItemsSchema.safeParse(mockDeezerResponseRaw);
+        const safeParse2 = deezer_types_1.DeezerResponseDataItemsArraySchema.safeParse(mockDeezerResponseRaw);
         if (safeParse2.success) {
             mockDeezerResponse = safeParse2.data;
         }

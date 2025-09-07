@@ -1,10 +1,10 @@
 import app from "../src/server";
 import { checkApiSuccessResponse, checkDbUpsert, createOrDeleteTablesOnTestDb, prepareMocksForDeezerResponseAndImages, testPicturesDownload } from "./common_functions";
 import { DeezerGetTestSuiteTestConfig } from "./types";
-import { DeezerResponseMultipleItems, DeezerResponseSingleItem } from "../src/deezer_types";
+import { DeezerResponseDataItemsArray, DeezerResponseSingleItem } from "../src/deezer_types";
 import axios from "axios";
 
-export default function commonDeezerGetTestSuite(testConfig: DeezerGetTestSuiteTestConfig, mockDeezerResponseRaw: DeezerResponseSingleItem | DeezerResponseMultipleItems, expectedApiSuccessResponse: Object, expectedDbUpsertResult: Record<string, any>[], mockedAxios: jest.Mocked<typeof axios>) {
+export default function commonDeezerGetTestSuite(testConfig: DeezerGetTestSuiteTestConfig, mockDeezerResponseRaw: DeezerResponseSingleItem | DeezerResponseDataItemsArray, expectedApiSuccessResponse: Object, expectedDbUpsertResult: Record<string, any>[], mockedAxios: jest.Mocked<typeof axios>) {
     const picturesFolder = testConfig.picturesFolder;
     const deezerApiCallUrl = testConfig.deezerApiCallUrl;
     const apiName = testConfig.apiName;

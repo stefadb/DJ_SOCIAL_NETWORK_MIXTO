@@ -11,8 +11,11 @@ https://api.deezer.com/album/302127
 
 Restituisce tutto sull'album, gli [id, nomi e le immagini] di tutti i generi e gli [id, nomi, immagini] di tutti i brani
 
-Upsert: album, genere, album_genere
+album è l'entità principale, mentre l'array di generi è dentro la chiave genres
+
+Upsert: album, genere
 Caricamento foto: album, genere
+Associazioni: album_genere (TODO: per ogni album, elimina e ricrea tutte le associazioni tra l'album e i vari generi)
 
 Usa sempre limit e index per la paginazione
 
@@ -20,10 +23,11 @@ Usa sempre limit e index per la paginazione
 
 https://api.deezer.com/artist/5359276/albums
 
+
 Restituisce tutti gli album dell'artista e il primo genere, quello più importante.
 
-Upsert: album, genere, album_genere
-Caricamento foto: album, genere
+Upsert: album
+Caricamento foto: album
 
 Usa sempre limit e index per la paginazione
 
@@ -35,8 +39,12 @@ https://api.deezer.com/search/track?q=Parola%20Chiave
 
 Per ogni traccia restituita, restituisce tutte le info necessarie sulla traccia, tutte le informazioni necessarie sull'artista PRINCIPALE (non tutti gli artisti) e tutte le informazioni necessarie sull'album (ad eccezione del genere)
 
-Upsert: artista, album, brano, brano_artista
+L'artista è nell'oggetto artist di ogni brano
+L'album è nell'oggetto album di ogni brano
+
+Upsert: artista, album, brano
 Caricamento foto: artista, album
+Associazioni: brano_artista (TODO: per ogni brano, aggiunge, se non esiste già, l'associazione tra il brano e l'artista principale)
 
 Usa sempre limit e index per la paginazione
 
@@ -46,8 +54,9 @@ https://api.deezer.com/artist/5359276/top
 
 Per ogni traccia restituita, restituisce tutte le info necessarie sulla traccia, tutte le informazioni necessarie su tutti gli artisti e tutte le informazioni necessarie sull'album (ad eccezione del genere)
 
-Upsert: artista, album, brano, brano_artista
+Upsert: artista, album, brano
 Caricamento foto: artista, album
+Associazioni: brano_artista (TODO: per ogni brano, elimina e ricrea tutte le associazioni tra questo brano e i vari artisti)
 
 Usa sempre limit e index per la paginazione
 
@@ -57,8 +66,9 @@ https://api.deezer.com/chart/106/tracks
 
 Per ogni traccia restituita, restituisce tutte le info necessarie sulla traccia, tutte le informazioni necessarie sull'artista PRINCIPALE (non tutti gli artisti) e tutte le informazioni necessarie sull'album (ad eccezione del genere)
 
-Upsert: artista, album, brano, brano_artista
+Upsert: artista, album, brano
 Caricamento foto: artista, album
+Associazioni: brano_artista (TODO: per ogni brano, aggiunge, se non esiste già, l'associazione tra il brano e l'artista principale)
 
 Usa sempre limit e index per la paginazione
 
@@ -68,8 +78,9 @@ https://api.deezer.com/track/3135556
 
 Per la traccia restituita, restituisce tutte le info necessarie sulla traccia, tutte le informazioni necessarie su tutti gli artisti e tutte le informazioni necessarie sull'album (ad eccezione del genere)
 
-Upsert: artista, album, brano, brano_artista
+Upsert: artista, album, brano
 Caricamento foto: artista, album
+Associazioni: brano_artista (TODO: per ogni brano, elimina e ricrea tutte le associazioni tra questo brano e i vari artisti)
 
 Usa sempre limit e index per la paginazione
 

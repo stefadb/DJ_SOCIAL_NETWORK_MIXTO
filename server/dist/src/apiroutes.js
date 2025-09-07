@@ -465,39 +465,37 @@ async function deezerEntityApi(req, res, apisConfig) {
     try {
         //CHIAMATA API A DEEZER
         const responseData = await apisConfig.deezerAPICallback(res, param, limit.toString(), index.toString());
-        //DA QUI IN GIU, TUTTO IDENTICO
         if (responseData === -1) {
             return; //Errore già gestito in makeDeezerApiCall
         }
-        //VALIDAZIONE DELL'OGGETTO RESTITUITO DA DEEZER
-        if (!(0, functions_1.isValidDeezerObject)(res, apisConfig.multiple ? responseData.data : responseData, getDeezerObjectBasicSchema(apisConfig.tableName), apisConfig.multiple)) {
-            return;
-        }
-        const entities = apisConfig.multiple ? responseData.data : new Array(1).fill(responseData);
-        //SE NON ESISTE, CREA LA CARTELLA PER LE FOTO
-        const con = await getConnection();
-        //RIPETI PER OGNI ENTITA...
-        for (const entity of entities) {
-            //UPSERT ENTITA SUL DB
-            await (0, upserts_1.upsertEntitaDeezer)(con, fromDeezerEntityToDbEntity(entity, apisConfig.tableName, param), apisConfig.tableName);
-            //CARICAMENTO FOTO DELL'ENTITA
-            if ("picture_big" in entity || "cover_big" in entity) {
-                await (0, functions_1.uploadPhoto)(getPicturesFolder(apisConfig.tableName), entity.id, "picture_big" in entity ? entity.picture_big : entity.cover_big);
+        //VALIDAZIONE DEGLI OGGETTI RESTITUITI DA DEEZER
+        //TODO: Invece di partire da responseData e prendere solo l'oggetto keyOfDeezerResponse, devi anche dare la possibilità di prendere oggetti annidati (ES: tutti gli artisti dentro ogni album)
+        for (const entityConfig of apisConfig.entities) {
+            let entityInResponseData = entityConfig.keyOfDeezerResponse != "" ? responseData[entityConfig.keyOfDeezerResponse] : responseData;
+            if (!(0, functions_1.isValidDeezerObject)(res, entityInResponseData, getDeezerObjectBasicSchema(entityConfig.tableName))) {
+                return;
             }
         }
-        await con.end();
-        if (apisConfig.multiple) {
-            res.json(entities.map((entity) => { return fromDeezerEntityToDbEntity(entity, apisConfig.tableName, param); }));
-        }
-        else {
-            const entity = entities[0];
-            if (entity) {
-                res.json(fromDeezerEntityToDbEntity(entity, apisConfig.tableName, param));
+        //PER OGNI OGGETTO RESTITUITO DA DEEZER, UPSERT SUL DB E CARICAMENTO FOTO (SE PREVISTO)
+        for (const entityConfig of apisConfig.entities) {
+            let entityInResponseData = entityConfig.keyOfDeezerResponse != "" ? responseData[entityConfig.keyOfDeezerResponse] : responseData;
+            const entities = "data" in entityInResponseData ? entityInResponseData.data : (Array.isArray(entityInResponseData) ? entityInResponseData : new Array(1).fill(entityInResponseData));
+            const con = await getConnection();
+            //RIPETI PER OGNI ENTITA...
+            for (const entity of entities) {
+                //UPSERT ENTITA SUL DB
+                await (0, upserts_1.upsertEntitaDeezer)(con, fromDeezerEntityToDbEntity(entity, entityConfig.tableName, param), entityConfig.tableName);
+                //CARICAMENTO FOTO DELL'ENTITA
+                if ("picture_big" in entity || "cover_big" in entity || "picture" in entity) {
+                    await (0, functions_1.uploadPhoto)(getPicturesFolder(entityConfig.tableName), entity.id, "picture_big" in entity ? entity.picture_big : "cover_big" in entity ? entity.cover_big : entity.picture);
+                }
             }
-            else {
-                res.status(500).json({ error: "Errore strano che non dovrebbe mai verificarsi. Controlla." });
-            }
+            await con.end();
         }
+        //TODO: aggiungere il supporto alle associazioni tra due entità Deezer (es. Album_Artista)
+        let entityInResponseData = apisConfig.entities[0].keyOfDeezerResponse != "" ? responseData[apisConfig.entities[0].keyOfDeezerResponse] : responseData;
+        const mainEntity = "data" in entityInResponseData ? entityInResponseData.data : (Array.isArray(entityInResponseData) ? entityInResponseData : new Array(1).fill(entityInResponseData));
+        res.json(mainEntity.map((entity) => { return fromDeezerEntityToDbEntity(entity, apisConfig.entities[0].tableName, param); }));
     }
     catch (err) {
         console.log(err);

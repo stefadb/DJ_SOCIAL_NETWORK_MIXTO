@@ -19,3 +19,6 @@ export async function upsertEntitaDeezer(con: mysql.Connection, entita: { id: nu
         await con.execute(query, values);
     }
 }
+
+export async function upsertAssociazioneEntitaDeezer(con: mysql.Connection, entita: Record<string, number>, nomeEntita: string) {
+}

@@ -1,4 +1,4 @@
-import { DeezerResponseMultipleItems, DeezerResponseMultipleItemsSchema, DeezerResponseSingleItem, DeezerResponseSingleItemSchema } from "../src/deezer_types";
+import { DeezerResponseDataItemsArray, DeezerResponseDataItemsArraySchema, DeezerResponseSingleItem, DeezerResponseSingleItemSchema } from "../src/deezer_types";
 import fs from "fs";
 import path from "path";
 import axios from "axios";
@@ -9,19 +9,19 @@ import { ImageUrlFileNameMapping } from "./types";
 
 /**
  * Dalla risposta di Deezer, ricava tutti gli url delle immagini che l'API deve scaricare e li mappa ai nomi dei file corrispondenti
- * @param mockDeezerResponseRaw deve essere di tipo DeezerResponseSingleItem | DeezerResponseMultipleItems, altrimenti il safeParse restituisce errore
+ * @param mockDeezerResponseRaw deve essere di tipo DeezerResponseSingleItem | DeezerResponseDataItemsArray, altrimenti il safeParse restituisce errore
  * @returns Un oggetto che mappa gli url delle immagini ai nomi dei file
  */
 export function getImageUrlToFileMappingFromDeezerResponse(mockDeezerResponseRaw: any): ImageUrlFileNameMapping[] {
-    let mockDeezerResponse: DeezerResponseSingleItem | DeezerResponseMultipleItems;
+    let mockDeezerResponse: DeezerResponseSingleItem | DeezerResponseDataItemsArray;
     //Fai il safeParse della mockDeezerResponse
     const safeParse1 = DeezerResponseSingleItemSchema.safeParse(mockDeezerResponseRaw);
     if (safeParse1.success) {
         mockDeezerResponse = safeParse1.data as DeezerResponseSingleItem;
     } else {
-        const safeParse2 = DeezerResponseMultipleItemsSchema.safeParse(mockDeezerResponseRaw);
+        const safeParse2 = DeezerResponseDataItemsArraySchema.safeParse(mockDeezerResponseRaw);
         if (safeParse2.success) {
-            mockDeezerResponse = safeParse2.data as DeezerResponseMultipleItems;
+            mockDeezerResponse = safeParse2.data as DeezerResponseDataItemsArray;
         } else {
             throw new Error("mockDeezerResponseRaw does not match any of the expected schemas");
         }

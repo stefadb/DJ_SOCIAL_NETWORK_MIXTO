@@ -18,20 +18,29 @@ const artistiAPIsConfig: ArtistiAPIsConfig = {
   search: {
     paramName: "query",
     deezerAPICallback: (res: import("express").Response, param: string, limit: string, index: string) => makeDeezerApiCall(res, "search", null, "artist", { q: param, limit: limit.toString(), index: index.toString() }),
-    multiple: true,
-    tableName: "Artista"
+    entities: [{
+      multiple: true,
+      tableName: "Artista",
+      keyOfDeezerResponse: ""
+    }]
   },
   related: {
     paramName: "artistId",
     deezerAPICallback: (res: import("express").Response, param: string, limit: string, index: string) => makeDeezerApiCall(res, "artist", param, "related", { limit: limit.toString(), index: index.toString() }),
-    multiple: true,
-    tableName: "Artista"
+    entities: [{
+      multiple: true,
+      tableName: "Artista",
+      keyOfDeezerResponse: ""
+    }]
   },
   genre: {
     paramName: "genreId",
     deezerAPICallback: (res: import("express").Response, param: string, limit: string, index: string) => makeDeezerApiCall(res, "genre", param, "artists", { limit: limit.toString(), index: index.toString() }),
-    multiple: true,
-    tableName: "Artista"
+    entities: [{
+      multiple: true,
+      tableName: "Artista",
+      keyOfDeezerResponse: ""
+    }]
   }
 }
 
@@ -43,9 +52,12 @@ const albumAPIsConfig: AlbumAPIsConfig = {
   search: {
     paramName: "query",
     deezerAPICallback: (res: import("express").Response, param: string, limit: string, index: string) => makeDeezerApiCall(res, "search", null, "album", { q: param, limit: limit.toString(), index: index.toString() }),
-    multiple: true,
-    tableName: "Album"
-  },
+    entities: [{
+      multiple: true,
+      tableName: "Album",
+      keyOfDeezerResponse: ""
+    }]
+  }
 }
 
 type GeneriAPIsConfig = {
@@ -57,14 +69,20 @@ const generiAPIsConfig: GeneriAPIsConfig = {
   getSingle: {
     paramName: "genreId",
     deezerAPICallback: (res: import("express").Response, param: string, limit: string, index: string) => makeDeezerApiCall(res, "genre", param, null, null),
-    multiple: false,
-    tableName: "Genere"
+    entities: [{
+      multiple: false,
+      tableName: "Genere",
+      keyOfDeezerResponse: ""
+    }]
   },
   getAll: {
     paramName: "uselessParam",
     deezerAPICallback: (res: import("express").Response, param: string, limit: string, index: string) => makeDeezerApiCall(res, "genre", null, null, null),
-    multiple: true,
-    tableName: "Genere"
+    entities: [{
+      multiple: true,
+      tableName: "Genere",
+      keyOfDeezerResponse: ""
+    }]
   }
 }
 
@@ -76,8 +94,11 @@ const braniAPIsConfig: BraniAPIsConfig = {
   album: {
     paramName: "albumId",
     deezerAPICallback: (res: import("express").Response, param: string, limit: string, index: string) => makeDeezerApiCall(res, "album", param, "tracks", { limit: limit.toString(), index: index.toString() }),
-    multiple: true,
-    tableName: "Brano"
+    entities: [{
+      multiple: true,
+      tableName: "Brano",
+      keyOfDeezerResponse: ""
+    }]
   },
 }
 

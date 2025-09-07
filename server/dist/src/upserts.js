@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.upsertEntitaDeezer = upsertEntitaDeezer;
+exports.upsertAssociazioneEntitaDeezer = upsertAssociazioneEntitaDeezer;
 async function upsertEntitaDeezer(con, entita, nomeEntita) {
     const [rows] = await con.execute(`SELECT id FROM ${nomeEntita} WHERE id = ?`, [entita.id]);
     let columnsInsert = Object.keys(entita).join(", ");
@@ -17,5 +18,7 @@ async function upsertEntitaDeezer(con, entita, nomeEntita) {
         let values = valuesUpdate;
         await con.execute(query, values);
     }
+}
+async function upsertAssociazioneEntitaDeezer(con, entita, nomeEntita) {
 }
 //# sourceMappingURL=upserts.js.map

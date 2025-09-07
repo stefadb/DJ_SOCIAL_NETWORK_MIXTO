@@ -89,19 +89,31 @@ async function uploadPhoto(dirName, id, pictureUrl) {
  * Restituisce true se l'oggetto Deezer è valido, false altrimenti
  */
 //FUNZIONE GIA ADATTATA A TYPESCRIPT
-function isValidDeezerObject(res, obj, schema, isArray) {
-    if (!isArray) {
-        const safeParseResult = schema.safeParse(obj);
-        if (!safeParseResult.success) {
-            res.status(500).json({ error: "L'oggetto restituito da Deezer non segue lo schema.", details: safeParseResult.error });
+function isValidDeezerObject(res, obj, schema) {
+    if (!Array.isArray(obj)) {
+        if (!("data" in obj)) {
+            //Non è nè un array nè contiene l'array in "data"
+            const safeParseResult = schema.safeParse(obj);
+            if (!safeParseResult.success) {
+                res.status(500).json({ error: "L'oggetto restituito da Deezer non segue lo schema.", details: safeParseResult.error });
+            }
+            return safeParseResult.success;
         }
-        return safeParseResult.success;
+        else {
+            //Non è un array ma contiene l'array in "data"
+            const array = obj.data;
+            for (const item of array) {
+                const safeParseResult = schema.safeParse(item);
+                if (!safeParseResult.success) {
+                    res.status(500).json({ error: "L'oggetto restituito da Deezer non segue lo schema.", details: safeParseResult.error });
+                    return false;
+                }
+            }
+            return true;
+        }
     }
     else {
-        if (!Array.isArray(obj)) {
-            res.status(500).json({ error: "L'oggetto restituito da Deezer non è un array come previsto." });
-            return false;
-        }
+        //È un array
         const array = obj;
         for (const item of array) {
             const safeParseResult = schema.safeParse(item);
