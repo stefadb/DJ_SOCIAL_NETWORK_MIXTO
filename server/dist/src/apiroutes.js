@@ -472,19 +472,19 @@ async function deezerEntityApi(req, res, apisConfig) {
         }
         //PER OGNI OGGETTO RESTITUITO DA DEEZER, UPSERT SUL DB E CARICAMENTO FOTO (SE PREVISTO)
         for (const entityConfig of apisConfig.entities) {
-            const entities = entityConfig.getObjectsFromResponse(response);
+            const entityObjects = entityConfig.getEntityObjectsFromResponse(response);
             const con = await getConnection();
-            for (const entity of entities) {
-                if (!(0, functions_1.isValidDeezerObject)(res, entity, getDeezerObjectBasicSchema(entityConfig.tableName))) {
+            for (const obj of entityObjects) {
+                if (!(0, functions_1.isValidDeezerObject)(res, obj, getDeezerObjectBasicSchema(entityConfig.tableName))) {
                     return;
                 }
-                await (0, upserts_1.upsertEntitaDeezer)(con, fromDeezerEntityToDbEntity(entity, entityConfig.tableName, param), entityConfig.tableName);
-                await (0, functions_1.uploadPhoto)(getPicturesFolder(entityConfig.tableName), entity);
+                await (0, upserts_1.upsertEntitaDeezer)(con, fromDeezerEntityToDbEntity(obj, entityConfig.tableName, param), entityConfig.tableName);
+                await (0, functions_1.uploadPhoto)(getPicturesFolder(entityConfig.tableName), obj);
             }
             await con.end();
         }
-        //TODO: aggiungere il supporto alle associazioni tra due entità Deezer (es. Album_Artista)
-        const mainEntityObjects = apisConfig.entities[0].getObjectsFromResponse(response);
+        //TODO: aggiungere il supporto alle associazioni tra due entità Deezer (es. Brano_Artista e Album_Genere)
+        const mainEntityObjects = apisConfig.entities[0].getEntityObjectsFromResponse(response);
         res.json(mainEntityObjects.map((obj) => { return fromDeezerEntityToDbEntity(obj, apisConfig.entities[0].tableName, param); }));
     }
     catch (err) {

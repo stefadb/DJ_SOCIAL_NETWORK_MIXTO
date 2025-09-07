@@ -9,12 +9,12 @@ type DeezerEntityConfigs = [
   { multiple: boolean; 
     tableName: DeezerEntityTableName; 
     keyOfDeezerResponse: "";
-    getObjectsFromResponse: (response: axios.AxiosResponse<any, any>) => GenericDeezerEntityBasic[];
+    getEntityObjectsFromResponse: (response: axios.AxiosResponse<any, any>) => GenericDeezerEntityBasic[];
   }, ...{
     multiple: boolean;
     tableName: DeezerEntityTableName;
     keyOfDeezerResponse: string,
-    getObjectsFromResponse: (response: axios.AxiosResponse<any, any>) => GenericDeezerEntityBasic[];
+    getEntityObjectsFromResponse: (response: axios.AxiosResponse<any, any>) => GenericDeezerEntityBasic[];
   }[]];
 
 export type DeezerEntityConfig = { multiple: boolean; tableName: DeezerEntityTableName; keyOfDeezerResponse: string };

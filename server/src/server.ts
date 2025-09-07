@@ -23,7 +23,7 @@ const artistiAPIsConfig: ArtistiAPIsConfig = {
       multiple: true,
       tableName: "Artista",
       keyOfDeezerResponse: "",
-      getObjectsFromResponse: (response: axios.AxiosResponse<any, any>) => {
+      getEntityObjectsFromResponse: (response: axios.AxiosResponse<any, any>) => {
         return response.data.data as GenericDeezerEntityBasic[];
       }
     }]
@@ -35,7 +35,7 @@ const artistiAPIsConfig: ArtistiAPIsConfig = {
       multiple: true,
       tableName: "Artista",
       keyOfDeezerResponse: "",
-      getObjectsFromResponse: (response: axios.AxiosResponse<any, any>) => {
+      getEntityObjectsFromResponse: (response: axios.AxiosResponse<any, any>) => {
         return response.data.data as GenericDeezerEntityBasic[];
       }
     }]
@@ -47,7 +47,7 @@ const artistiAPIsConfig: ArtistiAPIsConfig = {
       multiple: true,
       tableName: "Artista",
       keyOfDeezerResponse: "",
-      getObjectsFromResponse: (response: axios.AxiosResponse<any, any>) => {
+      getEntityObjectsFromResponse: (response: axios.AxiosResponse<any, any>) => {
         return response.data.data as GenericDeezerEntityBasic[];
       }
     }]
@@ -66,7 +66,7 @@ const albumAPIsConfig: AlbumAPIsConfig = {
       multiple: true,
       tableName: "Album",
       keyOfDeezerResponse: "",
-      getObjectsFromResponse: (response: axios.AxiosResponse<any, any>) => {
+      getEntityObjectsFromResponse: (response: axios.AxiosResponse<any, any>) => {
         return response.data.data as GenericDeezerEntityBasic[];
       }
     }]
@@ -86,7 +86,7 @@ const generiAPIsConfig: GeneriAPIsConfig = {
       multiple: false,
       tableName: "Genere",
       keyOfDeezerResponse: "",
-      getObjectsFromResponse: (response: axios.AxiosResponse<any, any>) => {
+      getEntityObjectsFromResponse: (response: axios.AxiosResponse<any, any>) => {
         return [response.data] as GenericDeezerEntityBasic[];
       }
     }]
@@ -98,7 +98,7 @@ const generiAPIsConfig: GeneriAPIsConfig = {
       multiple: true,
       tableName: "Genere",
       keyOfDeezerResponse: "",
-      getObjectsFromResponse: (response: axios.AxiosResponse<any, any>) => {
+      getEntityObjectsFromResponse: (response: axios.AxiosResponse<any, any>) => {
         return response.data.data as GenericDeezerEntityBasic[];
       }
     }]
@@ -117,7 +117,7 @@ const braniAPIsConfig: BraniAPIsConfig = {
       multiple: true,
       tableName: "Brano",
       keyOfDeezerResponse: "",
-      getObjectsFromResponse: (response: axios.AxiosResponse<any, any>) => {
+      getEntityObjectsFromResponse: (response: axios.AxiosResponse<any, any>) => {
         return response.data.data as GenericDeezerEntityBasic[];
       }
     }]
