@@ -4,7 +4,6 @@
   "apiName": "/artisti/genere",
   "testApiCallUrl": "/artisti/genere?genreId=106&limit=5&index=0",
   "entityName": "artists",
-  "upsertTestSqlQuery": "SELECT * FROM artista ORDER BY id ASC",
   "photosIdToDownload": {
     "artisti_pictures": [
       5992092, 282118, 5767206, 1000956, 6032634, 493, 4830457, 262271, 87910,
@@ -13,5 +12,189 @@
       90516, 1645, 9055824, 7912872, 1336257, 4105090, 5254467, 7790364, 2456,
       13570, 134340032, 6404, 2042, 174083, 3187, 4913080
     ]
-  }
+  },
+  "dbUpsertTests": [
+    {
+      "sqlQuery": "SELECT * FROM artista ORDER BY id ASC",
+      "entityName": "artists",
+      "expectedResult": [
+        {
+          "id": 81,
+          "nome": "The Chemical Brothers"
+        },
+        {
+          "id": 85,
+          "nome": "The Prodigy"
+        },
+        {
+          "id": 366,
+          "nome": "Thievery Corporation"
+        },
+        {
+          "id": 369,
+          "nome": "Air"
+        },
+        {
+          "id": 493,
+          "nome": "Moby"
+        },
+        {
+          "id": 612,
+          "nome": "Massive Attack"
+        },
+        {
+          "id": 1645,
+          "nome": "Gotan Project"
+        },
+        {
+          "id": 2042,
+          "nome": "Brian Eno"
+        },
+        {
+          "id": 2456,
+          "nome": "Erasure"
+        },
+        {
+          "id": 3187,
+          "nome": "The Cinematic Orchestra"
+        },
+        {
+          "id": 3878,
+          "nome": "M.I.A."
+        },
+        {
+          "id": 6377,
+          "nome": "Paul Kalkbrenner"
+        },
+        {
+          "id": 6404,
+          "nome": "Justice"
+        },
+        {
+          "id": 10170,
+          "nome": "Oliver Koletzki"
+        },
+        {
+          "id": 13570,
+          "nome": "Metronomy"
+        },
+        {
+          "id": 87910,
+          "nome": "Ohm Guru"
+        },
+        {
+          "id": 90516,
+          "nome": "Klaas"
+        },
+        {
+          "id": 103103,
+          "nome": "Mabel"
+        },
+        {
+          "id": 174083,
+          "nome": "David Penn"
+        },
+        {
+          "id": 262271,
+          "nome": "Dimitri Vegas & Like Mike"
+        },
+        {
+          "id": 282118,
+          "nome": "Major Lazer"
+        },
+        {
+          "id": 409796,
+          "nome": "Disclosure"
+        },
+        {
+          "id": 419254,
+          "nome": "Kina"
+        },
+        {
+          "id": 827176,
+          "nome": "Mauvé"
+        },
+        {
+          "id": 1000956,
+          "nome": "Clean Bandit"
+        },
+        {
+          "id": 1336257,
+          "nome": "Somma"
+        },
+        {
+          "id": 2810121,
+          "nome": "IU"
+        },
+        {
+          "id": 4105090,
+          "nome": "Tinlicker"
+        },
+        {
+          "id": 4830457,
+          "nome": "LIBERATO"
+        },
+        {
+          "id": 4913080,
+          "nome": "Hippie Sabotage"
+        },
+        {
+          "id": 5254467,
+          "nome": "Elderbrook"
+        },
+        {
+          "id": 5283366,
+          "nome": "The Avener"
+        },
+        {
+          "id": 5400149,
+          "nome": "Polo & Pan"
+        },
+        {
+          "id": 5551124,
+          "nome": "Jimmy Sax"
+        },
+        {
+          "id": 5767206,
+          "nome": "Shouse"
+        },
+        {
+          "id": 5992092,
+          "nome": "Kungs"
+        },
+        {
+          "id": 6032634,
+          "nome": "Ofenbach"
+        },
+        {
+          "id": 7537078,
+          "nome": "SG Lewis"
+        },
+        {
+          "id": 7790364,
+          "nome": "Ehrling"
+        },
+        {
+          "id": 7912872,
+          "nome": "Petit Biscuit"
+        },
+        {
+          "id": 9055824,
+          "nome": "Quarterhead"
+        },
+        {
+          "id": 76053262,
+          "nome": "Fred again.."
+        },
+        {
+          "id": 101793092,
+          "nome": "The Blessed Madonna"
+        },
+        {
+          "id": 134340032,
+          "nome": "Nu Genea"
+        }
+      ]
+    }
+  ]
 }

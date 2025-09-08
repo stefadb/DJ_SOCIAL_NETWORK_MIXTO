@@ -6,12 +6,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = commonDeezerGetTestSuite;
 const server_1 = __importDefault(require("../src/server"));
 const common_functions_1 = require("./common_functions");
-function commonDeezerGetTestSuite(testConfig, mockDeezerResponseRaw, expectedApiSuccessResponse, expectedDbUpsertResult, mockedAxios) {
+function commonDeezerGetTestSuite(testConfig, mockDeezerResponseRaw, expectedApiSuccessResponse, mockedAxios) {
     const deezerApiCallUrl = testConfig.deezerApiCallUrl;
     const apiName = testConfig.apiName;
     const testApiCallUrl = testConfig.testApiCallUrl;
     const entityName = testConfig.entityName;
-    const upsertTestSqlQuery = testConfig.upsertTestSqlQuery;
     describe(`GET ${apiName}`, () => {
         //Configurazione dei mock delle API
         beforeEach(async () => {
@@ -27,9 +26,11 @@ function commonDeezerGetTestSuite(testConfig, mockDeezerResponseRaw, expectedApi
         it(`should return the same ${entityName} that Deezer returns`, async () => {
             await (0, common_functions_1.checkApiSuccessResponse)(testApiCallUrl, server_1.default, expectedApiSuccessResponse);
         });
-        it(`should upsert to the db the same ${entityName} that Deezer returns`, async () => {
-            await (0, common_functions_1.checkDbUpsert)(upsertTestSqlQuery, testApiCallUrl, server_1.default, expectedDbUpsertResult);
-        });
+        for (const dbUpsertTest of testConfig.dbUpsertTests) {
+            it(`should upsert to the db the same ${dbUpsertTest.entityName} that Deezer returns`, async () => {
+                await (0, common_functions_1.checkDbUpsert)(dbUpsertTest.sqlQuery, testApiCallUrl, server_1.default, dbUpsertTest.expectedResult);
+            });
+        }
         if (testConfig.photosIdToDownload !== undefined) {
             it(`should upload the photo/photos that Deezer returns`, async () => { await (0, common_functions_1.testPicturesDownload)(testConfig.photosIdToDownload, testApiCallUrl, server_1.default); });
         }

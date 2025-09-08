@@ -4,6 +4,35 @@
   "apiName": "/artisti/search",
   "testApiCallUrl": "/artisti/search?query=eminem&limit=5&index=0",
   "entityName": "artists",
-  "upsertTestSqlQuery": "SELECT * FROM artista ORDER BY id ASC",
-  "photosIdToDownload": { "artisti_pictures": [ 13, 5478540, 763, 417645, 335647671 ]}
+  "photosIdToDownload": {
+    "artisti_pictures": [13, 5478540, 763, 417645, 335647671]
+  },
+  "dbUpsertTests": [
+    {
+      "sqlQuery": "SELECT * FROM artista ORDER BY id ASC",
+      "entityName": "artists",
+      "expectedResult": [
+        {
+          "id": 13,
+          "nome": "Eminem"
+        },
+        {
+          "id": 763,
+          "nome": "Dr. Dre"
+        },
+        {
+          "id": 417645,
+          "nome": "D12"
+        },
+        {
+          "id": 5478540,
+          "nome": "Emine'm"
+        },
+        {
+          "id": 335647671,
+          "nome": "Eminem-Gospel"
+        }
+      ]
+    }
+  ]
 }

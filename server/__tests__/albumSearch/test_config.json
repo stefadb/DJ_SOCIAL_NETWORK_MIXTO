@@ -4,6 +4,35 @@
   "apiName": "/album/search",
   "testApiCallUrl": "/album/search?query=eminem&limit=5&index=0",
   "entityName": "albums",
-  "upsertTestSqlQuery": "SELECT id, titolo FROM album ORDER BY id ASC",
-  "photosIdToDownload": { "album_pictures": [ 194219042, 103248, 641646351, 810703161, 72000342 ] }
+  "dbUpsertTests": [
+    {
+      "sqlQuery": "SELECT id, titolo FROM album ORDER BY id ASC",
+      "entityName": "albums",
+      "expectedResult": [
+        {
+          "id": 103248,
+          "titolo": "The Eminem Show"
+        },
+        {
+          "id": 72000342,
+          "titolo": "Kamikaze"
+        },
+        {
+          "id": 194219042,
+          "titolo": "Music To Be Murdered By - Side B (Deluxe Edition)"
+        },
+        {
+          "id": 641646351,
+          "titolo": "The Death of Slim Shady (Coup De Grâce): Expanded Mourner’s Edition"
+        },
+        {
+          "id": 810703161,
+          "titolo": "STANS (The Official Soundtrack)"
+        }
+      ]
+    }
+  ],
+  "photosIdToDownload": {
+    "album_pictures": [194219042, 103248, 641646351, 810703161, 72000342]
+  }
 }

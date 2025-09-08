@@ -4,12 +4,11 @@ import { DeezerGetTestSuiteTestConfig } from "./types";
 import { DeezerResponseDataItemsArray, DeezerResponseSingleItem } from "../src/deezer_types";
 import axios from "axios";
 
-export default function commonDeezerGetTestSuite(testConfig: DeezerGetTestSuiteTestConfig, mockDeezerResponseRaw: DeezerResponseSingleItem | DeezerResponseDataItemsArray, expectedApiSuccessResponse: Object, expectedDbUpsertResult: Record<string, any>[], mockedAxios: jest.Mocked<typeof axios>) {    const deezerApiCallUrl = testConfig.deezerApiCallUrl;
+export default function commonDeezerGetTestSuite(testConfig: DeezerGetTestSuiteTestConfig, mockDeezerResponseRaw: DeezerResponseSingleItem | DeezerResponseDataItemsArray, expectedApiSuccessResponse: Object, mockedAxios: jest.Mocked<typeof axios>) {
+    const deezerApiCallUrl = testConfig.deezerApiCallUrl;
     const apiName = testConfig.apiName;
     const testApiCallUrl = testConfig.testApiCallUrl;
     const entityName = testConfig.entityName;
-    const upsertTestSqlQuery = testConfig.upsertTestSqlQuery;
-
     describe(`GET ${apiName}`, () => {
         //Configurazione dei mock delle API
         beforeEach(async () => {
@@ -23,19 +22,21 @@ export default function commonDeezerGetTestSuite(testConfig: DeezerGetTestSuiteT
         });
 
         //Descrizioni dei test
-        
+
         it(`should return the same ${entityName} that Deezer returns`, async () => {
             await checkApiSuccessResponse(testApiCallUrl, app, expectedApiSuccessResponse);
         });
 
-        it(`should upsert to the db the same ${entityName} that Deezer returns`, async () => {
-            await checkDbUpsert(upsertTestSqlQuery, testApiCallUrl, app, expectedDbUpsertResult);
-        });
-        
-        
+        for (const dbUpsertTest of testConfig.dbUpsertTests) {
+            it(`should upsert to the db the same ${dbUpsertTest.entityName} that Deezer returns`, async () => {
+                await checkDbUpsert(dbUpsertTest.sqlQuery, testApiCallUrl, app, dbUpsertTest.expectedResult);
+            });
+        }
+
+
         if (testConfig.photosIdToDownload !== undefined) {
             it(`should upload the photo/photos that Deezer returns`, async () => { await testPicturesDownload(testConfig.photosIdToDownload, testApiCallUrl, app) });
         }
-        
+
     });
 }

@@ -4,6 +4,35 @@
   "apiName": "/artisti/related",
   "testApiCallUrl": "/artisti/related?artistId=5359276&limit=5&index=0",
   "entityName": "artists",
-  "upsertTestSqlQuery": "SELECT * FROM artista ORDER BY id ASC",
-  "photosIdToDownload": { "artisti_pictures": [ 6164532, 11389, 203478207, 12263646, 1613691 ]}
+  "photosIdToDownload": {
+    "artisti_pictures": [6164532, 11389, 203478207, 12263646, 1613691]
+  },
+  "dbUpsertTests": [
+    {
+      "sqlQuery": "SELECT * FROM artista ORDER BY id ASC",
+      "entityName": "artists",
+      "expectedResult": [
+        {
+          "id": 11389,
+          "nome": "Kerri Chandler"
+        },
+        {
+          "id": 1613691,
+          "nome": "PRUNK"
+        },
+        {
+          "id": 6164532,
+          "nome": "Kolter"
+        },
+        {
+          "id": 12263646,
+          "nome": "Robbie Doherty"
+        },
+        {
+          "id": 203478207,
+          "nome": "Across Boundaries"
+        }
+      ]
+    }
+  ]
 }

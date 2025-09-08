@@ -3,8 +3,45 @@
   "apiName": "/brani/album",
   "testApiCallUrl": "/brani/album?albumId=769758471&limit=5&index=0",
   "entityName": "tracks",
-  "upsertTestSqlQuery": "SELECT * FROM brano ORDER BY id ASC",
   "queriesAfterDbInit": [
     "INSERT INTO album (id, titolo, data_uscita) VALUES (769758471, 'Sakura', '2025-09-05')"
+  ],
+  "dbUpsertTests": [
+    {
+      "sqlQuery": "SELECT * FROM brano ORDER BY id ASC",
+      "entityName": "tracks",
+      "expectedResult": [
+        {
+          "id": 3405992021,
+          "titolo": "Sakura",
+          "durata": "06:24:00",
+          "id_album": 769758471
+        },
+        {
+          "id": 3405992031,
+          "titolo": "The Funktion",
+          "durata": "06:09:00",
+          "id_album": 769758471
+        },
+        {
+          "id": 3405992041,
+          "titolo": "Rendevouz",
+          "durata": "05:58:00",
+          "id_album": 769758471
+        },
+        {
+          "id": 3405992051,
+          "titolo": "Mindtrippin'",
+          "durata": "06:07:00",
+          "id_album": 769758471
+        },
+        {
+          "id": 3405992061,
+          "titolo": "E-Motion",
+          "durata": "07:05:00",
+          "id_album": 769758471
+        }
+      ]
+    }
   ]
 }

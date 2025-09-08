@@ -4,6 +4,17 @@
   "apiName": "/genere",
   "testApiCallUrl": "/genere?genreId=106&limit=1&index=0",
   "entityName": "genre",
-  "upsertTestSqlQuery": "SELECT * FROM genere WHERE id = 106",
-  "photosIdToDownload": { "generi_pictures": [106]}
+  "photosIdToDownload": { "generi_pictures": [106] },
+  "dbUpsertTests": [
+    {
+      "sqlQuery": "SELECT * FROM genere WHERE id = 106",
+      "entityName": "genres",
+      "expectedResult": [
+        {
+          "id": 106,
+          "nome": "Electro"
+        }
+      ]
+    }
+  ]
 }
