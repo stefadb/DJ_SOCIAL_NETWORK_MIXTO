@@ -181,9 +181,7 @@ app.get("/artisti/related", (req, res) => { deezerEntityApi(req, res, artistiAPI
 app.get("/artisti/genere", (req, res) => { deezerEntityApi(req, res, artistiAPIsConfig["genre"]) });
 //ALBUM--------------------------------------------------------
 app.get("/album/search", (req, res) => { deezerEntityApi(req, res, albumAPIsConfig["search"]) });
-//TODO scrivere il test per questa API
 app.get("/album", (req, res) => { deezerEntityApi(req, res, albumAPIsConfig["getSingle"]) });
-//TODO scrivere il test per questa API
 app.get("/album/artista", (req, res) => { deezerEntityApi(req, res, albumAPIsConfig["artist"]) });
 //BRANI--------------------------------------------------------
 app.get("/brani/album", (req, res) => { deezerEntityApi(req, res, braniAPIsConfig["album"]) });

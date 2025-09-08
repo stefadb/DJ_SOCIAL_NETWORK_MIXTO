@@ -1,0 +1,71 @@
+{
+  "picturesFolder": "album_pictures",
+  "deezerApiCallUrl": "https://api.deezer.com/artist/5359276/albums?limit=10&index=0",
+  "apiName": "/album/artista",
+  "testApiCallUrl": "/album/artista?artistId=5359276&limit=10&index=0",
+  "entityName": "albums",
+  "dbUpsertTests": [
+    {
+      "sqlQuery": "SELECT * FROM album ORDER BY id ASC",
+      "entityName": "albums",
+      "expectedResult": [
+        {
+          "id": 199007422,
+          "titolo": "Take A Leap Of Faith",
+          "data_uscita": "2021-01-25"
+        },
+        {
+          "id": 221700932,
+          "titolo": "Get Together",
+          "data_uscita": "2021-06-04"
+        },
+        {
+          "id": 249350442,
+          "titolo": "A Glimmer of Hope EP",
+          "data_uscita": "2021-09-03"
+        },
+        {
+          "id": 298097512,
+          "titolo": "Mysteries of the Universe",
+          "data_uscita": "2022-06-03"
+        },
+        {
+          "id": 412232537,
+          "titolo": "Sense of Future",
+          "data_uscita": "2023-08-11"
+        },
+        {
+          "id": 465945475,
+          "titolo": "The Way It Goes (Track 1) (Chris Stussy Remix)",
+          "data_uscita": "2020-06-19"
+        },
+        {
+          "id": 486048505,
+          "titolo": "Midtown Playground EP",
+          "data_uscita": "2023-10-06"
+        },
+        {
+          "id": 504321061,
+          "titolo": "Across Ocean",
+          "data_uscita": "2020-10-12"
+        },
+        {
+          "id": 558742112,
+          "titolo": "Synergy",
+          "data_uscita": "2024-06-07"
+        },
+        {
+          "id": 769758471,
+          "titolo": "Sakura",
+          "data_uscita": "2025-09-05"
+        }
+      ]
+    }
+  ],
+  "photosIdToDownload": {
+    "album_pictures": [
+      199007422, 221700932, 249350442, 298097512, 412232537, 465945475,
+      486048505, 504321061, 558742112, 769758471
+    ]
+  }
+}
