@@ -2,18 +2,6 @@ APPUNTI API DEEZER
 
 ORA DEVI FAR FUNZIONARE QUESTE API, ALTRIMENTI NON PUOI SVILUPPARE IL RESTO!!
 
-
-2) - PER OTTENERE TUTTI GLI ALBUM DI UN ARTISTA - OK
-
-https://api.deezer.com/artist/5359276/albums
-
-Restituisce tutti gli album dell'artista e il primo genere, quello più importante.
-
-Upsert: album
-Caricamento foto: album
-
-Usa sempre limit e index per la paginazione
-
 3) - PER OTTENERE TUTTI I BRANI CHE CORRISPONDONO A UNA PAROLA/FRASE DI RICERCA (query) - OK
 
 https://api.deezer.com/search/track?q=Parola%20Chiave
