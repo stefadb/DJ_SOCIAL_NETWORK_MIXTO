@@ -4,5 +4,6 @@
   "apiName": "/generi",
   "testApiCallUrl": "/generi?uselessParam=uselessValue&limit=0&index=0",
   "entityName": "genres",
-  "upsertTestSqlQuery": "SELECT * FROM genere"
+  "upsertTestSqlQuery": "SELECT * FROM genere",
+  "photosIdToDownload": { "generi_pictures": [0, 132, 116, 122, 152, 113, 165, 85, 106, 466, 144, 129,  84,  67, 98, 173, 464, 169,  95, 153,  71, 2,  16,  75,  81, 197]}
 }

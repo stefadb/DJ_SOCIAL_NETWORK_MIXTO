@@ -7,7 +7,6 @@ exports.default = commonDeezerGetTestSuite;
 const server_1 = __importDefault(require("../src/server"));
 const common_functions_1 = require("./common_functions");
 function commonDeezerGetTestSuite(testConfig, mockDeezerResponseRaw, expectedApiSuccessResponse, expectedDbUpsertResult, mockedAxios) {
-    const picturesFolder = testConfig.picturesFolder;
     const deezerApiCallUrl = testConfig.deezerApiCallUrl;
     const apiName = testConfig.apiName;
     const testApiCallUrl = testConfig.testApiCallUrl;
@@ -18,7 +17,7 @@ function commonDeezerGetTestSuite(testConfig, mockDeezerResponseRaw, expectedApi
         beforeEach(async () => {
             await (0, common_functions_1.createOrDeleteTablesOnTestDb)(undefined, false);
             await (0, common_functions_1.createOrDeleteTablesOnTestDb)(testConfig.queriesAfterDbInit, true);
-            await (0, common_functions_1.prepareMocksForDeezerResponseAndImages)(mockDeezerResponseRaw, picturesFolder, deezerApiCallUrl, mockedAxios);
+            await (0, common_functions_1.prepareMocksForDeezerResponseAndImages)(mockDeezerResponseRaw, deezerApiCallUrl, mockedAxios);
         });
         afterEach(async () => {
             await (0, common_functions_1.createOrDeleteTablesOnTestDb)(undefined, false);
@@ -31,8 +30,8 @@ function commonDeezerGetTestSuite(testConfig, mockDeezerResponseRaw, expectedApi
         it(`should upsert to the db the same ${entityName} that Deezer returns`, async () => {
             await (0, common_functions_1.checkDbUpsert)(upsertTestSqlQuery, testApiCallUrl, server_1.default, expectedDbUpsertResult);
         });
-        if (picturesFolder) {
-            it(`should upload the photo/photos of the same ${entityName} that Deezer returns`, async () => { await (0, common_functions_1.testPicturesDownload)(picturesFolder, mockDeezerResponseRaw, testApiCallUrl, server_1.default); });
+        if (testConfig.photosIdToDownload !== undefined) {
+            it(`should upload the photo/photos that Deezer returns`, async () => { await (0, common_functions_1.testPicturesDownload)(testConfig.photosIdToDownload, testApiCallUrl, server_1.default); });
         }
     });
 }

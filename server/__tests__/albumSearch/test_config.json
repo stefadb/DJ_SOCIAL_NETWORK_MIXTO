@@ -4,5 +4,6 @@
   "apiName": "/album/search",
   "testApiCallUrl": "/album/search?query=eminem&limit=5&index=0",
   "entityName": "albums",
-  "upsertTestSqlQuery": "SELECT id, titolo FROM album ORDER BY id ASC"
+  "upsertTestSqlQuery": "SELECT id, titolo FROM album ORDER BY id ASC",
+  "photosIdToDownload": { "album_pictures": [ 194219042, 103248, 641646351, 810703161, 72000342 ] }
 }

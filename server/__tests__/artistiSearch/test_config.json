@@ -4,5 +4,6 @@
   "apiName": "/artisti/search",
   "testApiCallUrl": "/artisti/search?query=eminem&limit=5&index=0",
   "entityName": "artists",
-  "upsertTestSqlQuery": "SELECT * FROM artista ORDER BY id ASC"
+  "upsertTestSqlQuery": "SELECT * FROM artista ORDER BY id ASC",
+  "photosIdToDownload": { "artisti_pictures": [ 13, 5478540, 763, 417645, 335647671 ]}
 }

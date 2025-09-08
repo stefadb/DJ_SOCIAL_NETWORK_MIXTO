@@ -4,5 +4,14 @@
   "apiName": "/artisti/genere",
   "testApiCallUrl": "/artisti/genere?genreId=106&limit=5&index=0",
   "entityName": "artists",
-  "upsertTestSqlQuery": "SELECT * FROM artista ORDER BY id ASC"
+  "upsertTestSqlQuery": "SELECT * FROM artista ORDER BY id ASC",
+  "photosIdToDownload": {
+    "artisti_pictures": [
+      5992092, 282118, 5767206, 1000956, 6032634, 493, 4830457, 262271, 87910,
+      2810121, 85, 6377, 612, 409796, 5400149, 103103, 366, 10170, 81, 3878,
+      7537078, 419254, 76053262, 5551124, 369, 5283366, 827176, 101793092,
+      90516, 1645, 9055824, 7912872, 1336257, 4105090, 5254467, 7790364, 2456,
+      13570, 134340032, 6404, 2042, 174083, 3187, 4913080
+    ]
+  }
 }

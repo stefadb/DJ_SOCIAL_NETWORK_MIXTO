@@ -6,6 +6,7 @@ export type DeezerGetTestSuiteTestConfig = {
     entityName: string;
     upsertTestSqlQuery: string;
     queriesAfterDbInit?: string[];
+    photosIdToDownload?: { [picturesFolder: string]: number[]};
 }
 
 export type ImageUrlFileNameMapping = {

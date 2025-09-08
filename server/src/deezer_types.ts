@@ -26,6 +26,7 @@ export const ArtistaDeezerBasicSchema = GenericDeezerEntityBasicSchema.and(
     z.object({
         name: z.string(),
         picture_big: z.string(),
+        type: z.literal("artist")
     })
 );
 
@@ -35,6 +36,7 @@ export const GenereDeezerBasicSchema = GenericDeezerEntityBasicSchema.and(
     z.object({
         name: z.string(),
         picture_big: z.string(),
+        type: z.literal("genre")
     })
 );
 
@@ -44,6 +46,7 @@ export const GenereDeezerSemplificatoSchema = GenericDeezerEntityBasicSchema.and
     z.object({
         name: z.string(),
         picture: z.string(),
+        type: z.literal("genre")
     })
 );
 
@@ -54,6 +57,7 @@ export const AlbumDeezerBasicSchema = GenericDeezerEntityBasicSchema.and(
     z.object({
         title: z.string(),
         cover_big: z.string(),
+        type: z.literal("album")
     })
 );
 
@@ -65,8 +69,10 @@ export const BranoDeezerBasicSchema = GenericDeezerEntityBasicSchema.and(
         title: z.string(),
         duration: z.number(),
         album: z.object({
-            id: z.number()
-        }).optional()
+            id: z.number(),
+            type: z.literal("album")
+        }).optional(),
+        type: z.literal("track")
     })
 );
 

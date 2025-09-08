@@ -1,4 +1,4 @@
-import { DeezerResponseDataItemsArray, DeezerResponseDataItemsArraySchema, DeezerResponseSingleItem, DeezerResponseSingleItemSchema } from "../src/deezer_types";
+import { AlbumDeezerBasic, AlbumDeezerBasicSchema, ArtistaDeezerBasic, ArtistaDeezerBasicSchema, BranoDeezerBasicSchema, DeezerResponseDataItemsArray, DeezerResponseDataItemsArraySchema, DeezerResponseSingleItem, DeezerResponseSingleItemSchema, GenereDeezerBasic, GenereDeezerBasicSchema, GenereDeezerSemplificato, GenereDeezerSemplificatoSchema } from "../src/deezer_types";
 import fs from "fs";
 import path from "path";
 import axios from "axios";
@@ -7,55 +7,54 @@ import { Express } from "express";
 import mysql from "mysql2/promise";
 import { ImageUrlFileNameMapping } from "./types";
 
-/**
- * Dalla risposta di Deezer, ricava tutti gli url delle immagini che l'API deve scaricare e li mappa ai nomi dei file corrispondenti
- * @param mockDeezerResponseRaw deve essere di tipo DeezerResponseSingleItem | DeezerResponseDataItemsArray, altrimenti il safeParse restituisce errore
- * @returns Un oggetto che mappa gli url delle immagini ai nomi dei file
- */
-export function getImageUrlToFileMappingFromDeezerResponse(mockDeezerResponseRaw: any): ImageUrlFileNameMapping[] {
-    let mockDeezerResponse: DeezerResponseSingleItem | DeezerResponseDataItemsArray;
-    //Fai il safeParse della mockDeezerResponse
-    const safeParse1 = DeezerResponseSingleItemSchema.safeParse(mockDeezerResponseRaw);
-    if (safeParse1.success) {
-        mockDeezerResponse = safeParse1.data as DeezerResponseSingleItem;
-    } else {
-        const safeParse2 = DeezerResponseDataItemsArraySchema.safeParse(mockDeezerResponseRaw);
-        if (safeParse2.success) {
-            mockDeezerResponse = safeParse2.data as DeezerResponseDataItemsArray;
-        } else {
-            throw new Error("mockDeezerResponseRaw does not match any of the expected schemas");
-        }
+function extractImageUrlsFromDeezerResponse(obj: any, imageUrlToFileNameMappings: ImageUrlFileNameMapping[]) {
+    //C'è un problema qui dentro!!
+    if (typeof obj !== "object" || obj === null) {
+        return;
     }
-    let toReturn: ImageUrlFileNameMapping[] = "data" in mockDeezerResponse ? /* Deeezer ha restituito un array*/
-        mockDeezerResponse.data.filter((item) => "picture_big" in item || "cover_big" in item).map((item) => {
-            return { url: "picture_big" in item ? item.picture_big : item.cover_big, fileName: `${item.id}.jpg` };
-        })
-        :
-        /* Deezer ha restituito un singolo oggetto. Potrebbe sia avere che non avere l'immagine*/
-        ("picture_big" in mockDeezerResponse || "cover_big" in mockDeezerResponse) ? /* Deezer ha restituito un singolo oggetto con immagine */
-            [{ url: "picture_big" in mockDeezerResponse ? mockDeezerResponse.picture_big : mockDeezerResponse.cover_big, fileName: `${mockDeezerResponse.id}.jpg` }]
-            :
-            /* Deezer ha restituito un singolo oggetto senza immagine */
-            [];
-    //Restituisci l'array dei mapping
-    //TODO: valuta un modo più efficiente per fare questa roba, senza usare la push
-    return toReturn;
+    if (GenereDeezerBasicSchema.safeParse(obj).success) {
+        let genere = obj as GenereDeezerBasic;
+        const fileName = path.join(__dirname, `./mock_deezer_pictures/generi_pictures`, genere.id + ".jpg");
+        imageUrlToFileNameMappings.push({ url: genere.picture_big, fileName: fileName });
+    } else if (AlbumDeezerBasicSchema.safeParse(obj).success) {
+        let album = obj as AlbumDeezerBasic;
+        const fileName = path.join(__dirname, `./mock_deezer_pictures/album_pictures`, album.id + ".jpg");
+        imageUrlToFileNameMappings.push({ url: album.cover_big, fileName: fileName });
+    } else if (ArtistaDeezerBasicSchema.safeParse(obj).success) {
+        let artista = obj as ArtistaDeezerBasic;
+        const fileName = path.join(__dirname, `./mock_deezer_pictures/artisti_pictures`, artista.id + ".jpg");
+        imageUrlToFileNameMappings.push({ url: artista.picture_big, fileName: fileName });
+    } else if (GenereDeezerSemplificatoSchema.safeParse(obj).success) {
+        let genere = obj as GenereDeezerSemplificato;
+        const fileName = path.join(__dirname, `./mock_deezer_pictures/generi_pictures`, genere.id + ".jpg");
+        imageUrlToFileNameMappings.push({ url: genere.picture, fileName: fileName });
+    }
+    let keys = Object.keys(obj);
+    for (const key of keys) {
+        extractImageUrlsFromDeezerResponse(obj[key], imageUrlToFileNameMappings);
+    }
 }
 
-export async function prepareMocksForDeezerResponseAndImages(mockDeezerResponseRaw: any, picturesFolder: string | undefined, deezerApiCallUrl: string, mockedAxios: jest.Mocked<typeof axios>) {
+export async function prepareMocksForDeezerResponseAndImages(mockDeezerResponseRaw: any, deezerApiCallUrl: string, mockedAxios: jest.Mocked<typeof axios>) {
+    const imageUrlToFileNameMappings: ImageUrlFileNameMapping[] = [];
+    extractImageUrlsFromDeezerResponse(mockDeezerResponseRaw, imageUrlToFileNameMappings);
+    let notFoundFiles: ImageUrlFileNameMapping[] = [];
+    for (let mapping of imageUrlToFileNameMappings) {
+        if (!fs.existsSync(mapping.fileName)) {
+            notFoundFiles.push({ url: mapping.url, fileName: mapping.fileName });
+        }
+    }
+    if (notFoundFiles.length > 0) {
+        throw new Error(`File dell'immagine non trovati:\n${notFoundFiles.map(mapping => "{\"fileName\": \"" + mapping.fileName.replace(/\\/g, "\\\\") + "\", \"url\": \"" + mapping.url + "\"},").join("\n")}.\nMettili nella cartella dei mock!`);
+    }
     mockedAxios.get.mockImplementation((url: string) => {
-        const imageUrlToFileNameMappings: ImageUrlFileNameMapping[] = getImageUrlToFileMappingFromDeezerResponse(mockDeezerResponseRaw);
         //Mock della risposta principale di Deezer
         if (url === deezerApiCallUrl) {
             return Promise.resolve({ status: 200, data: mockDeezerResponseRaw });
         }
-        if (picturesFolder) {
-            //Mock delle immagini
-            for (let mapping of imageUrlToFileNameMappings) {
-                if (mapping.url === url) {
-                    const imgPath = path.join(__dirname, `./mock_deezer_pictures/${picturesFolder}`, mapping.fileName);
-                    return Promise.resolve({ status: 200, data: fs.createReadStream(imgPath) });
-                }
+        for (let mapping of imageUrlToFileNameMappings) {
+            if (mapping.url === url) {
+                return Promise.resolve({ status: 200, data: fs.createReadStream(mapping.fileName) });
             }
         }
         //E se ci sono URL inattesi...
@@ -69,13 +68,15 @@ export async function prepareMocksForDeezerResponseAndImages(mockDeezerResponseR
  * @param picturesFolder 
  * @param imageUrlToFile 
  */
-export async function deletePicturesToBeDownloaded(picturesFolder: string, imageUrlToFileNameMappings: ImageUrlFileNameMapping[]) {
+export async function deletePicturesToBeDownloaded(photosIdToDownload: { [picturesFolder: string]: number[] }) {
     return new Promise((resolve) => {
-        const picturesDir = path.join(__dirname, "../src/" + picturesFolder);
-        for (let mapping of imageUrlToFileNameMappings) {
-            const filePath = path.join(picturesDir, mapping.fileName);
-            if (fs.existsSync(filePath)) {
-                fs.unlinkSync(filePath);
+        for (const picturesFolder in photosIdToDownload) {
+            const picturesDir = path.join(__dirname, "../src/" + picturesFolder);
+            for (let id of picturesFolder) {
+                const filePath = path.join(picturesDir, `${id}.jpg`);
+                if (fs.existsSync(filePath)) {
+                    fs.unlinkSync(filePath);
+                }
             }
         }
         resolve("OK");
@@ -87,27 +88,34 @@ export async function deletePicturesToBeDownloaded(picturesFolder: string, image
  * @param picturesFolder 
  * @param imageUrlToFile 
  */
-export async function checkThatPicturesWereDownloaded(picturesFolder: string, imageUrlToFileNameMappings: ImageUrlFileNameMapping[]) {
+export async function checkThatPicturesWereDownloaded(photosIdToDownload: { [picturesFolder: string]: number[] }) {
     return new Promise((resolve) => {
-        const picturesDir = path.join(__dirname, "../src/" + picturesFolder);
-        const mocksDir = path.join(__dirname, "./mock_deezer_pictures/" + picturesFolder);
-        for (let mapping of imageUrlToFileNameMappings) {
-            const mockFilePath = path.join(mocksDir, mapping.fileName);
-            const actualFilePath = path.join(picturesDir, mapping.fileName);
-            expect(fs.existsSync(actualFilePath)).toBe(true);
-            expect(fs.readFileSync(actualFilePath)).toEqual(fs.readFileSync(mockFilePath));
+        for (const picturesFolder in photosIdToDownload) {
+            const picturesDir = path.join(__dirname, "../src/" + picturesFolder);
+            const mocksDir = path.join(__dirname, "./mock_deezer_pictures/" + picturesFolder);
+            if (photosIdToDownload[picturesFolder] !== undefined) {
+                for (let id of photosIdToDownload[picturesFolder]) {
+                    const mockFilePath = path.join(mocksDir, `${id}.jpg`);
+                    const actualFilePath = path.join(picturesDir, `${id}.jpg`);
+                    expect(fs.existsSync(actualFilePath)).toBe(true);
+                    expect(fs.readFileSync(actualFilePath).length).toBe(fs.readFileSync(mockFilePath).length);
+                    expect(fs.readFileSync(actualFilePath)).toEqual(fs.readFileSync(mockFilePath));
+                }
+            }
         }
         resolve("OK");
     });
 }
 
 //FA CHIAMATE API
-export async function testPicturesDownload(picturesFolder: string, mockDeezerResponseRaw: any, testApiCallUrl: string, app: Express) {
-    const imageUrlToFileNameMappings: ImageUrlFileNameMapping[] = getImageUrlToFileMappingFromDeezerResponse(mockDeezerResponseRaw);
-    await deletePicturesToBeDownloaded(picturesFolder, imageUrlToFileNameMappings);
+export async function testPicturesDownload(photosIdToDownload: { [picturesFolder: string]: number[] } | undefined, testApiCallUrl: string, app: Express) {
+    if (photosIdToDownload === undefined) {
+        return;
+    }
+    await deletePicturesToBeDownloaded(photosIdToDownload);
     const res = await request(app).get(testApiCallUrl);
     expect(res.status).toBe(200);
-    await checkThatPicturesWereDownloaded(picturesFolder, imageUrlToFileNameMappings);
+    await checkThatPicturesWereDownloaded(photosIdToDownload);
 }
 
 
@@ -139,7 +147,7 @@ export async function createOrDeleteTablesOnTestDb(queriesAfterDbInit: string[] 
                 }
                 // 5️⃣ riabilita le foreign key
                 await connection.query(`SET FOREIGN_KEY_CHECKS = 1`);
-            }else{
+            } else {
                 await connection.query(`DROP DATABASE IF EXISTS \`${testDB}\``);
             }
             if (queriesAfterDbInit) {
@@ -153,9 +161,9 @@ export async function createOrDeleteTablesOnTestDb(queriesAfterDbInit: string[] 
                 }
             }
             await connection.end();
-            resolve("Database di test "+(createTables ? "creato" : "eliminato")+" correttamente!");
+            resolve("Database di test " + (createTables ? "creato" : "eliminato") + " correttamente!");
         } catch (error) {
-            console.error("Errore nella "+(createTables ? "creazione" : "eliminazione")+" del database di test:", error);
+            console.error("Errore nella " + (createTables ? "creazione" : "eliminazione") + " del database di test:", error);
             reject(error);
         }
     });
