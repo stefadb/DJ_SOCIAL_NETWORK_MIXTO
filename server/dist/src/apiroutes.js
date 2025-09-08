@@ -454,6 +454,73 @@ function getDeezerObjectBasicSchema(tableName) {
             throw new Error("Tabella non supportata");
     }
 }
+async function upsertAssociations(tableName, associations) {
+    //TODO: implementare
+    //Questa funzione deve eseguire l'upsert di tutte le associazioni passate in associations, sulla tabella album_genere o brano_artista
+    //Per ogni associazione, se non esiste, va inserita
+    //Se esiste già, non va fatto nulla (non ci sono altri campi da aggiornare)
+    if (associations[0] !== undefined) {
+        const con = await getConnection();
+        await con.beginTransaction();
+        try {
+            for (let assoc of associations) {
+                if (tableName === "album_genere") {
+                    assoc = assoc;
+                    const [rows] = await con.execute(`SELECT * FROM ${tableName} WHERE id_album = ? AND id_genere = ?`, [assoc.id_album, assoc.id_genere]);
+                    if (rows.length === 0) {
+                        await con.execute(`INSERT INTO ${tableName} (id_album, id_genere) VALUES (?, ?)`, [assoc.id_album, assoc.id_genere]);
+                    }
+                }
+                else if (tableName === "brano_artista") {
+                    assoc = assoc;
+                    const [rows] = await con.execute(`SELECT * FROM ${tableName} WHERE id_brano = ? AND id_artista = ?`, [assoc.id_brano, assoc.id_artista]);
+                    if (rows.length === 0) {
+                        await con.execute(`INSERT INTO ${tableName} (id_brano, id_artista) VALUES (?, ?)`, [assoc.id_brano, assoc.id_artista]);
+                    }
+                }
+            }
+            await con.commit();
+        }
+        catch (error) {
+            await con.rollback();
+            throw error;
+        }
+        finally {
+            await con.end();
+        }
+    }
+}
+async function deleteOldAssociations(tableName, associations) {
+    //TODO: implementare
+    //Se tableName è album_genere:
+    //Per ogni association dentro associations, la funzione deve eliminare tutte le righe della tabella album_genere dove id_album è uguale a association.id_album
+    //Se tableName è brano_artista:
+    //Per ogni association dentro associations, la funzione deve eliminare tutte le righe della tabella brano_artista dove id_brano è uguale a association.id_brano
+    if (associations[0] !== undefined) {
+        const con = await getConnection();
+        await con.beginTransaction();
+        try {
+            for (let assoc of associations) {
+                if (tableName === "album_genere") {
+                    assoc = assoc;
+                    await con.execute(`DELETE FROM ${tableName} WHERE id_album = ?`, [assoc.id_album]);
+                }
+                else if (tableName === "brano_artista") {
+                    assoc = assoc;
+                    await con.execute(`DELETE FROM ${tableName} WHERE id_brano = ?`, [assoc.id_brano]);
+                }
+            }
+            await con.commit();
+        }
+        catch (error) {
+            await con.rollback();
+            throw error;
+        }
+        finally {
+            await con.end();
+        }
+    }
+}
 //FUNZIONE GIA ADATTATA A TYPESCRIPT
 async function deezerEntityApi(req, res, apisConfig) {
     const paramName = apisConfig.paramName; //nome del parametro di ricerca
@@ -465,17 +532,17 @@ async function deezerEntityApi(req, res, apisConfig) {
         return res.status(400).json({ error: 'Parametri "' + paramName + '", "limit" e "index" obbligatori e devono essere validi' });
     }
     try {
-        //CHIAMATA API A DEEZER
+        //FAI LA CHIAMATA API A DEEZER E OTTIENI LA RISPOSTA
         const response = await apisConfig.deezerAPICallback(res, param, limit.toString(), index.toString());
         if (response === -1) {
             return; //Errore già gestito in makeDeezerApiCall
         }
-        //PER OGNI OGGETTO RESTITUITO DA DEEZER, UPSERT SUL DB E CARICAMENTO FOTO (SE PREVISTO)
+        //PER OGNI OGGETTO RESTITUITO DA DEEZER, VALIDAZIONE, UPSERT SUL DB E CARICAMENTO FOTO (SE PREVISTO)
         for (const entityConfig of apisConfig.entities) {
             const entityObjects = entityConfig.getEntityObjectsFromResponse(response);
             const con = await getConnection();
             for (const obj of entityObjects) {
-                if (!(0, functions_1.isValidDeezerObject)(res, obj, getDeezerObjectBasicSchema(entityConfig.tableName))) {
+                if (!(0, functions_1.isValidDeezerObject)(res, obj, entityConfig.deezerEntitySchema)) {
                     return;
                 }
                 await (0, upserts_1.upsertEntitaDeezer)(con, fromDeezerEntityToDbEntity(obj, entityConfig.tableName, param), entityConfig.tableName);
@@ -483,7 +550,14 @@ async function deezerEntityApi(req, res, apisConfig) {
             }
             await con.end();
         }
-        //TODO: aggiungere il supporto alle associazioni tra due entità Deezer (es. Brano_Artista e Album_Genere)
+        //E ORA OCCUPATI DELLE ASSOCIAZIONI (SE PREVISTE)
+        if (apisConfig.association) {
+            const associations = apisConfig.association.getAssociationsFromResponse(response);
+            if (apisConfig.association.deleteOldAssociations) {
+                await deleteOldAssociations(apisConfig.association.tableName, associations);
+            }
+            await upsertAssociations(apisConfig.association.tableName, associations);
+        }
         const mainEntityObjects = apisConfig.entities[0].getEntityObjectsFromResponse(response);
         res.json(mainEntityObjects.map((obj) => { return fromDeezerEntityToDbEntity(obj, apisConfig.entities[0].tableName, param); }));
     }

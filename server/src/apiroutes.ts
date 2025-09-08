@@ -26,7 +26,9 @@ import {
   GenereDb,
   BranoDb,
   DbEntity,
-  Durata
+  Durata,
+  AssocBranoArtistaDb,
+  AssocAlbumGenereDb
 } from './db_types';
 import {
   DeezerEntityAPIConfig,
@@ -563,6 +565,87 @@ function getDeezerObjectBasicSchema(tableName: DeezerEntityTableName): ZodInters
   }
 }
 
+
+async function upsertAssociations(tableName: "album_genere" | "brano_artista", associations: AssocAlbumGenereDb[] | AssocBranoArtistaDb[]) {
+  //TODO: implementare
+  //Questa funzione deve eseguire l'upsert di tutte le associazioni passate in associations, sulla tabella album_genere o brano_artista
+  //Per ogni associazione, se non esiste, va inserita
+  //Se esiste già, non va fatto nulla (non ci sono altri campi da aggiornare)
+  if (associations[0] !== undefined) {
+    const con = await getConnection();
+    await con.beginTransaction();
+    try {
+      for (let assoc of associations) {
+        if (tableName === "album_genere") {
+          assoc = assoc as AssocAlbumGenereDb;
+          const [rows] = await con.execute(
+            `SELECT * FROM ${tableName} WHERE id_album = ? AND id_genere = ?`,
+            [assoc.id_album, assoc.id_genere]
+          );
+          if ((rows as any[]).length === 0) {
+            await con.execute(
+              `INSERT INTO ${tableName} (id_album, id_genere) VALUES (?, ?)`,
+              [assoc.id_album, assoc.id_genere]
+            );
+          }
+        } else if (tableName === "brano_artista") {
+          assoc = assoc as AssocBranoArtistaDb;
+          const [rows] = await con.execute(
+            `SELECT * FROM ${tableName} WHERE id_brano = ? AND id_artista = ?`,
+            [assoc.id_brano, assoc.id_artista]
+          );
+          if ((rows as any[]).length === 0) {
+            await con.execute(
+              `INSERT INTO ${tableName} (id_brano, id_artista) VALUES (?, ?)`,
+              [assoc.id_brano, assoc.id_artista]
+            );
+          }
+        }
+      }
+      await con.commit();
+    } catch (error) {
+      await con.rollback();
+      throw error;
+    } finally {
+      await con.end();
+    }
+  }
+}
+async function deleteOldAssociations(tableName: "album_genere" | "brano_artista", associations: AssocAlbumGenereDb[] | AssocBranoArtistaDb[]) {
+  //TODO: implementare
+  //Se tableName è album_genere:
+  //Per ogni association dentro associations, la funzione deve eliminare tutte le righe della tabella album_genere dove id_album è uguale a association.id_album
+  //Se tableName è brano_artista:
+  //Per ogni association dentro associations, la funzione deve eliminare tutte le righe della tabella brano_artista dove id_brano è uguale a association.id_brano
+  if (associations[0] !== undefined) {
+    const con = await getConnection();
+    await con.beginTransaction();
+    try {
+      for (let assoc of associations) {
+        if (tableName === "album_genere") {
+          assoc = assoc as AssocAlbumGenereDb;
+          await con.execute(
+            `DELETE FROM ${tableName} WHERE id_album = ?`,
+            [assoc.id_album]
+          );
+        } else if (tableName === "brano_artista") {
+          assoc = assoc as AssocBranoArtistaDb;
+          await con.execute(
+            `DELETE FROM ${tableName} WHERE id_brano = ?`,
+            [assoc.id_brano]
+          );
+        }
+      }
+      await con.commit();
+    } catch (error) {
+      await con.rollback();
+      throw error;
+    } finally {
+      await con.end();
+    }
+  }
+}
+
 //FUNZIONE GIA ADATTATA A TYPESCRIPT
 export async function deezerEntityApi(
   req: import("express").Request,
@@ -588,7 +671,7 @@ export async function deezerEntityApi(
       const entityObjects: GenericDeezerEntityBasic[] = entityConfig.getEntityObjectsFromResponse(response);
       const con = await getConnection();
       for (const obj of entityObjects) {
-        if (!isValidDeezerObject(res, obj, getDeezerObjectBasicSchema(entityConfig.tableName))) {
+        if (!isValidDeezerObject(res, obj, entityConfig.deezerEntitySchema)) {
           return;
         }
         await upsertEntitaDeezer(con, fromDeezerEntityToDbEntity(obj, entityConfig.tableName, param), entityConfig.tableName);
@@ -596,7 +679,14 @@ export async function deezerEntityApi(
       }
       await con.end();
     }
-    //TODO: aggiungere il supporto alle associazioni tra due entità Deezer (es. Brano_Artista e Album_Genere)
+    //E ORA OCCUPATI DELLE ASSOCIAZIONI (SE PREVISTE)
+    if (apisConfig.association) {
+      const associations = apisConfig.association.getAssociationsFromResponse(response);
+      if (apisConfig.association.deleteOldAssociations) {
+        await deleteOldAssociations(apisConfig.association.tableName, associations);
+      }
+      await upsertAssociations(apisConfig.association.tableName, associations);
+    }
     const mainEntityObjects: GenericDeezerEntityBasic[] = apisConfig.entities[0].getEntityObjectsFromResponse(response);
     res.json(mainEntityObjects.map((obj) => { return fromDeezerEntityToDbEntity(obj, apisConfig.entities[0].tableName, param) }));
   } catch (err) {

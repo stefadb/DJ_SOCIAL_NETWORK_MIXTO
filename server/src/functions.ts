@@ -90,6 +90,7 @@ export async function uploadPhoto(dirName: string, entity: GenericDeezerEntityBa
 export function isValidDeezerObject<T extends ZodObject<any>>(res: import("express").Response, obj: any, schema: ZodIntersection<typeof GenericDeezerEntityBasicSchema, T>) {
   const safeParseResult = schema.safeParse(obj);
   if (!safeParseResult.success) {
+    console.log(safeParseResult.error);
     res.status(500).json({ error: "L'oggetto restituito da Deezer non segue lo schema.", details: safeParseResult.error });
   }
   return safeParseResult.success;

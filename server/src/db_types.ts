@@ -39,3 +39,17 @@ export const GenereDbSchema = DbEntitySchema.extend({
 });
 
 export type GenereDb = z.infer<typeof GenereDbSchema>;
+
+export const AssocBranoArtistaDbSchema = z.object({
+    id_brano: z.number(),
+    id_artista: z.number(),
+}).strict();
+
+export type AssocBranoArtistaDb = z.infer<typeof AssocBranoArtistaDbSchema>;
+
+export const AssocAlbumGenereDbSchema = z.object({
+    id_album: z.number(),
+    id_genere: z.number(),
+}).strict();
+
+export type AssocAlbumGenereDb = z.infer<typeof AssocAlbumGenereDbSchema>;

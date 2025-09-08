@@ -95,6 +95,7 @@ async function uploadPhoto(dirName, entity) {
 function isValidDeezerObject(res, obj, schema) {
     const safeParseResult = schema.safeParse(obj);
     if (!safeParseResult.success) {
+        console.log(safeParseResult.error);
         res.status(500).json({ error: "L'oggetto restituito da Deezer non segue lo schema.", details: safeParseResult.error });
     }
     return safeParseResult.success;
