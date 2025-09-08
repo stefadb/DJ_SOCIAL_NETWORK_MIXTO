@@ -3,8 +3,6 @@ APPUNTI API DEEZER
 ORA DEVI FAR FUNZIONARE QUESTE API, ALTRIMENTI NON PUOI SVILUPPARE IL RESTO!!
 
 
-API DEGLI ALBUM:
-
 2) - PER OTTENERE TUTTI GLI ALBUM DI UN ARTISTA - OK
 
 https://api.deezer.com/artist/5359276/albums
@@ -15,8 +13,6 @@ Upsert: album
 Caricamento foto: album
 
 Usa sempre limit e index per la paginazione
-
-API DEI BRANI:
 
 3) - PER OTTENERE TUTTI I BRANI CHE CORRISPONDONO A UNA PAROLA/FRASE DI RICERCA (query) - OK
 

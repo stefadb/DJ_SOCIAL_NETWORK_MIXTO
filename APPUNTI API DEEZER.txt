@@ -14,19 +14,14 @@ Associazioni: album_genere (TODO: per ogni album, elimina e ricrea tutte le asso
 
 Usa sempre limit e index per la paginazione
 
-2) - PER OTTENERE TUTTI GLI ALBUM DI UN ARTISTA
+2) - PER OTTENERE TUTTI GLI ALBUM DI UN ARTISTA - OK
 
 https://api.deezer.com/artist/5359276/albums
 
-(Prima di fare questa chiamata API, si prendono tutte le info dell'artista con la chiamata a https://api.deezer.com/artist/5359276 e le si mettono nel db (solo se non esistono già))
-
 Restituisce tutti gli album dell'artista e il primo genere, quello più importante.
-PASSI:
-Upsert dell'album e caricamento foto
-upsert del genere principale e caricamento foto
-upsert della associazione album/genere
 
-IMPORTANTE: Se deezer nella risposta restituisce il next, significa che ci sono altri album da caricare
+Upsert: album
+Caricamento foto: album
 
 Usa sempre limit e index per la paginazione
 
