@@ -1,0 +1,52 @@
+{
+  "picturesFolder": "album_pictures",
+  "deezerApiCallUrl": "https://api.deezer.com/album/769758471",
+  "apiName": "/album",
+  "testApiCallUrl": "/album?albumId=769758471&limit=1&index=0",
+  "entityName": "album",
+  "dbUpsertTests": [
+    {
+      "sqlQuery": "SELECT * FROM genere",
+      "entityName": "genres",
+      "expectedResult": [
+        {
+          "id": 106,
+          "nome": "Electro"
+        },
+        {
+          "id": 113,
+          "nome": "Dance"
+        }
+      ]
+    },
+    {
+      "sqlQuery": "SELECT * FROM album WHERE id = 769758471",
+      "entityName": "album",
+      "expectedResult": [
+        {
+          "id": 769758471,
+          "titolo": "Sakura",
+          "data_uscita": "2025-09-05"
+        }
+      ]
+    },
+    {
+      "sqlQuery": "SELECT * FROM album_genere WHERE id_album = 769758471",
+      "entityName": "album",
+      "expectedResult": [
+        {
+          "id_album": 769758471,
+          "id_genere": 106
+        },
+        {
+          "id_album": 769758471,
+          "id_genere": 113
+        }
+      ]
+    }
+  ],
+  "photosIdToDownload": {
+    "album_pictures": [769758471],
+    "generi_pictures": [106, 113]
+  }
+}

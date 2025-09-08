@@ -11,14 +11,11 @@ export async function upsertEntitaDeezer(con: mysql.Connection, entita: { id: nu
     let columnsUpdate = Object.entries(entita).filter(([key, _]) => key !== "id").map(([key, _]) => `${key} = ?`).join(", ");
     if ((rows as any[]).length === 0) {
         let query = `INSERT INTO ${nomeEntita} (${columnsInsert}) VALUES (${valuesInsert})`;
-        let values = Object.values(entita);
+        let values = Object.values(entita).map((val) => val === undefined ? null : val);
         await con.execute(query, values);
     } else {
         let query = `UPDATE ${nomeEntita} SET ${columnsUpdate} WHERE id = ?`;
-        let values = valuesUpdate;
+        let values = valuesUpdate.map((val) => val === undefined ? null : val);
         await con.execute(query, values);
     }
-}
-
-export async function upsertAssociazioneEntitaDeezer(con: mysql.Connection, entita: Record<string, number>, nomeEntita: string) {
 }

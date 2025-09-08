@@ -133,7 +133,8 @@ async function createOrDeleteTablesOnTestDb(queriesAfterDbInit, createTables) {
             const connection = await promise_1.default.createConnection({
                 host: process.env.HOST || "localhost",
                 user: process.env.USER || "root",
-                password: process.env.PASSWORD || "5vhpS8!2xxS88s4rbT8m7j"
+                password: process.env.PASSWORD || "5vhpS8!2xxS88s4rbT8m7j",
+                dateStrings: true
             });
             if (createTables) {
                 await connection.query(`DROP DATABASE IF EXISTS \`${testDB}\``);
@@ -183,6 +184,7 @@ async function checkDbUpsert(sqlQuery, testApiCallUrl, app, expectedQueryResult)
         user: process.env.USER || "root",
         password: process.env.PASSWORD || "5vhpS8!2xxS88s4rbT8m7j",
         database: process.env.DATABASE || "mixto_test",
+        dateStrings: true
     });
     const [rows] = await con.query(sqlQuery);
     //QUI C'è UN PROBLEMA, O CON LA FUNZIONE STESSA O CON QUELLE CHE LA CHIAMANO!!!

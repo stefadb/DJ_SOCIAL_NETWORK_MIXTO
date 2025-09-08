@@ -128,7 +128,8 @@ export async function createOrDeleteTablesOnTestDb(queriesAfterDbInit: string[] 
             const connection = await mysql.createConnection({
                 host: process.env.HOST || "localhost",
                 user: process.env.USER || "root",
-                password: process.env.PASSWORD || "5vhpS8!2xxS88s4rbT8m7j"
+                password: process.env.PASSWORD || "5vhpS8!2xxS88s4rbT8m7j",
+                dateStrings: true
             });
             if (createTables) {
                 await connection.query(`DROP DATABASE IF EXISTS \`${testDB}\``);
@@ -180,6 +181,7 @@ export async function checkDbUpsert(sqlQuery: string, testApiCallUrl: string, ap
         user: process.env.USER || "root",
         password: process.env.PASSWORD || "5vhpS8!2xxS88s4rbT8m7j",
         database: process.env.DATABASE || "mixto_test",
+        dateStrings: true
     });
     const [rows] = await con.query(sqlQuery);
     //QUI C'è UN PROBLEMA, O CON LA FUNZIONE STESSA O CON QUELLE CHE LA CHIAMANO!!!

@@ -63,6 +63,7 @@ const dbConfig = {
   user: process.env.USER || "root",
   password: process.env.PASSWORD || "5vhpS8!2xxS88s4rbT8m7j",
   database: process.env.DATABASE || "mixto",
+  dateStrings: true
 };
 
 
@@ -518,7 +519,7 @@ function fromDeezerEntityToDbEntity(entity: GenericDeezerEntityBasic, tableName:
     case "Artista":
       return { id: entity.id, nome: (entity as ArtistaDeezerBasic).name } as ArtistaDb;
     case "Album":
-      return { id: entity.id, titolo: (entity as AlbumDeezerBasic).title } as AlbumDb;
+      return { id: entity.id, titolo: (entity as AlbumDeezerBasic).title, data_uscita: (entity as AlbumDeezerBasic).release_date} as AlbumDb;
     case "Genere":
       return { id: entity.id, nome: (entity as GenereDeezerBasic).name } as GenereDb;
     case "Brano":
@@ -689,7 +690,6 @@ export async function deezerEntityApi(
     const mainEntityObjects: GenericDeezerEntityBasic[] = apisConfig.entities[0].getEntityObjectsFromResponse(response);
     res.json(mainEntityObjects.map((obj) => { return fromDeezerEntityToDbEntity(obj, apisConfig.entities[0].tableName, param) }));
   } catch (err) {
-    console.log(err);
     res.status(500).json({ error: "Errore su questa Api legata a Deezer" });
   }
 }

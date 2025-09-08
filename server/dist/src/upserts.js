@@ -1,7 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.upsertEntitaDeezer = upsertEntitaDeezer;
-exports.upsertAssociazioneEntitaDeezer = upsertAssociazioneEntitaDeezer;
 async function upsertEntitaDeezer(con, entita, nomeEntita) {
     const [rows] = await con.execute(`SELECT id FROM ${nomeEntita} WHERE id = ?`, [entita.id]);
     let columnsInsert = Object.keys(entita).join(", ");
@@ -10,15 +9,13 @@ async function upsertEntitaDeezer(con, entita, nomeEntita) {
     let columnsUpdate = Object.entries(entita).filter(([key, _]) => key !== "id").map(([key, _]) => `${key} = ?`).join(", ");
     if (rows.length === 0) {
         let query = `INSERT INTO ${nomeEntita} (${columnsInsert}) VALUES (${valuesInsert})`;
-        let values = Object.values(entita);
+        let values = Object.values(entita).map((val) => val === undefined ? null : val);
         await con.execute(query, values);
     }
     else {
         let query = `UPDATE ${nomeEntita} SET ${columnsUpdate} WHERE id = ?`;
-        let values = valuesUpdate;
+        let values = valuesUpdate.map((val) => val === undefined ? null : val);
         await con.execute(query, values);
     }
-}
-async function upsertAssociazioneEntitaDeezer(con, entita, nomeEntita) {
 }
 //# sourceMappingURL=upserts.js.map

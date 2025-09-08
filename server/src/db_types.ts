@@ -28,7 +28,8 @@ export type BranoDb = z.infer<typeof BranoDbSchema>;
 
 //Mostra come sono memorizzati gli album nel database
 export const AlbumDbSchema = DbEntitySchema.extend({
-    titolo: z.string()
+    titolo: z.string(),
+    data_uscita: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Invalid date format, expected YYYY-MM-DD").optional()
 });
 
 export type AlbumDb = z.infer<typeof AlbumDbSchema>;

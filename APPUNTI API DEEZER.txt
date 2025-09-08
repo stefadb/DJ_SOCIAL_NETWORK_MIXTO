@@ -1,19 +1,18 @@
 APPUNTI API DEEZER
 
-1) - PER OTTENERE UN SINGOLO ALBUM DATO IL SUO ID
+1) - PER OTTENERE UN SINGOLO ALBUM DATO IL SUO ID - OK
 
 https://api.deezer.com/album/302127
 
-Restituisce tutto sull'album, gli id, nomi e le immagini di tutti i generi e gli id, nomi e le immagini di tutti gli artisti che contribuiscono.
-PASSI:
-Upsert dell'album e caricamento foto
-Upsert di tutti gli artisti che hanno contribuito e caricamento delle loro foto
-Upsert di tutti i generi e caricamento delle loro foto
-Upsert delle associazioni genere/album 
-Upsert delle associazioni artista/album
+Restituisce tutto sull'album, gli [id, nomi e le immagini] di tutti i generi e gli [id, nomi, immagini] di tutti i brani
+
+album è l'entità principale, mentre l'array di generi è dentro la chiave genres
+
+Upsert: album, genere
+Caricamento foto: album, genere
+Associazioni: album_genere (TODO: per ogni album, elimina e ricrea tutte le associazioni tra l'album e i vari generi)
 
 Usa sempre limit e index per la paginazione
-
 
 2) - PER OTTENERE TUTTI GLI ALBUM DI UN ARTISTA
 
