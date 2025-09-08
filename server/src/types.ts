@@ -6,18 +6,14 @@ import axios from "axios";
 export type QueryParams = Record<string, string>;
 
 type DeezerEntityConfigs = [
-  { multiple: boolean; 
-    tableName: DeezerEntityTableName; 
+  { tableName: DeezerEntityTableName; 
     deezerEntitySchema: ZodIntersection<typeof GenericDeezerEntityBasicSchema, any>;
     getEntityObjectsFromResponse: (response: axios.AxiosResponse<any, any>) => GenericDeezerEntityBasic[];
   }, ...{
-    multiple: boolean;
     tableName: DeezerEntityTableName;
     deezerEntitySchema: ZodIntersection<typeof GenericDeezerEntityBasicSchema, any>;
     getEntityObjectsFromResponse: (response: axios.AxiosResponse<any, any>) => GenericDeezerEntityBasic[];
   }[]];
-
-export type DeezerEntityConfig = { multiple: boolean; tableName: DeezerEntityTableName; keyOfDeezerResponse: string };
 
 export type DeezerEntityAPIConfig = {
   paramName: string;

@@ -33,7 +33,6 @@ import {
 import {
   DeezerEntityAPIConfig,
   DeezerEntityAPIsConfig,
-  DeezerEntityConfig,
   DeezerEntityTableName
 } from './types';
 import { ZodIntersection, ZodObject } from 'zod';

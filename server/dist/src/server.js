@@ -14,7 +14,6 @@ const artistiAPIsConfig = {
         paramName: "query",
         deezerAPICallback: (res, param, limit, index) => (0, functions_1.makeDeezerApiCall)(res, "search", null, "artist", { q: param, limit: limit.toString(), index: index.toString() }),
         entities: [{
-                multiple: true,
                 tableName: "Artista",
                 deezerEntitySchema: deezer_types_1.ArtistaDeezerBasicSchema,
                 getEntityObjectsFromResponse: (response) => {
@@ -26,7 +25,6 @@ const artistiAPIsConfig = {
         paramName: "artistId",
         deezerAPICallback: (res, param, limit, index) => (0, functions_1.makeDeezerApiCall)(res, "artist", param, "related", { limit: limit.toString(), index: index.toString() }),
         entities: [{
-                multiple: true,
                 tableName: "Artista",
                 deezerEntitySchema: deezer_types_1.ArtistaDeezerBasicSchema,
                 getEntityObjectsFromResponse: (response) => {
@@ -38,7 +36,6 @@ const artistiAPIsConfig = {
         paramName: "genreId",
         deezerAPICallback: (res, param, limit, index) => (0, functions_1.makeDeezerApiCall)(res, "genre", param, "artists", { limit: limit.toString(), index: index.toString() }),
         entities: [{
-                multiple: true,
                 tableName: "Artista",
                 deezerEntitySchema: deezer_types_1.ArtistaDeezerBasicSchema,
                 getEntityObjectsFromResponse: (response) => {
@@ -52,7 +49,6 @@ const albumAPIsConfig = {
         paramName: "query",
         deezerAPICallback: (res, param, limit, index) => (0, functions_1.makeDeezerApiCall)(res, "search", null, "album", { q: param, limit: limit.toString(), index: index.toString() }),
         entities: [{
-                multiple: true,
                 tableName: "Album",
                 deezerEntitySchema: deezer_types_1.AlbumDeezerBasicSchema,
                 getEntityObjectsFromResponse: (response) => {
@@ -65,7 +61,6 @@ const albumAPIsConfig = {
         deezerAPICallback: (res, param, limit, index) => (0, functions_1.makeDeezerApiCall)(res, "album", param, null, null),
         entities: [
             {
-                multiple: false,
                 tableName: "Album",
                 deezerEntitySchema: deezer_types_1.AlbumDeezerBasicSchema,
                 getEntityObjectsFromResponse: (response) => {
@@ -73,21 +68,31 @@ const albumAPIsConfig = {
                 }
             },
             {
-                multiple: true,
                 tableName: "Genere",
                 deezerEntitySchema: deezer_types_1.GenereDeezerSemplificatoSchema,
                 getEntityObjectsFromResponse: (response) => {
                     return response.data.genres.data;
                 }
             }
-        ]
+        ],
+        association: {
+            tableName: "album_genere",
+            deleteOldAssociations: true,
+            getAssociationsFromResponse: (response) => {
+                const albumId = response.data.id;
+                const generi = response.data.genres.data;
+                const associations = generi.map((genere) => {
+                    return { id_album: albumId, id_genere: genere.id };
+                });
+                return associations;
+            }
+        }
     },
     artist: {
         paramName: "artistId",
         deezerAPICallback: (res, param, limit, index) => (0, functions_1.makeDeezerApiCall)(res, "artist", param, "albums", { limit: limit.toString(), index: index.toString() }),
         entities: [
             {
-                multiple: true,
                 tableName: "Album",
                 deezerEntitySchema: deezer_types_1.AlbumDeezerBasicSchema,
                 getEntityObjectsFromResponse: (response) => {
@@ -102,7 +107,6 @@ const generiAPIsConfig = {
         paramName: "genreId",
         deezerAPICallback: (res, param, limit, index) => (0, functions_1.makeDeezerApiCall)(res, "genre", param, null, null),
         entities: [{
-                multiple: false,
                 tableName: "Genere",
                 deezerEntitySchema: deezer_types_1.GenereDeezerBasicSchema,
                 getEntityObjectsFromResponse: (response) => {
@@ -114,7 +118,6 @@ const generiAPIsConfig = {
         paramName: "uselessParam",
         deezerAPICallback: (res, param, limit, index) => (0, functions_1.makeDeezerApiCall)(res, "genre", null, null, null),
         entities: [{
-                multiple: true,
                 tableName: "Genere",
                 deezerEntitySchema: deezer_types_1.GenereDeezerBasicSchema,
                 getEntityObjectsFromResponse: (response) => {
@@ -128,7 +131,6 @@ const braniAPIsConfig = {
         paramName: "albumId",
         deezerAPICallback: (res, param, limit, index) => (0, functions_1.makeDeezerApiCall)(res, "album", param, "tracks", { limit: limit.toString(), index: index.toString() }),
         entities: [{
-                multiple: true,
                 tableName: "Brano",
                 deezerEntitySchema: deezer_types_1.BranoDeezerBasicSchema,
                 getEntityObjectsFromResponse: (response) => {
