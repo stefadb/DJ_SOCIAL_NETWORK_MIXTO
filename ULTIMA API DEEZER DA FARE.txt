@@ -1,11 +1,3 @@
-APPUNTI API DEEZER
-
-ORA DEVI FAR FUNZIONARE QUESTE API, ALTRIMENTI NON PUOI SVILUPPARE IL RESTO!!
-
---------------------------------------------------------------------------------
-
-E QUESTA è L'API PIU PARTICOLARE!!!
-
 11) - PER OTTENERE GLI ARTISTI DI UN ALBUM DATO IL SUO ID - OK
 
 Gli artisti si ottengono solo ottenendo le tracce dell'album e unendo tutti gli artisti di ogni traccia
