@@ -43,6 +43,7 @@ async function makeDeezerApiCall(res, urlFirstPart, urlParameter, urlSecondPart,
             }
         })
             .catch((error) => {
+            console.log(error);
             if (axios_1.default.isAxiosError(error) && error.response && error.response.status === 404) {
                 res.status(404).json({ error: "Deezer non ha trovato quello che si sta cercando" });
                 resolve(-1);
@@ -95,6 +96,7 @@ async function uploadPhoto(dirName, entity) {
 function isValidDeezerObject(res, obj, schema) {
     const safeParseResult = schema.safeParse(obj);
     if (!safeParseResult.success) {
+        console.log(safeParseResult.error);
         res.status(500).json({ error: "L'oggetto restituito da Deezer non segue lo schema.", details: safeParseResult.error });
     }
     return safeParseResult.success;

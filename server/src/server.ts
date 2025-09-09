@@ -3,8 +3,8 @@ import { deezerEntityApi, deleteCommento, deletePassaggio, deleteScalette, delet
 import express from "express";
 import { makeDeezerApiCall } from "./functions";
 import { DeezerEntityAPIConfig, DeezerEntityAPIsConfig } from "./types";
-import { GenericDeezerEntityBasic, AlbumDeezerBasic, AlbumDeezerBasicSchema, ArtistaDeezerBasic, ArtistaDeezerBasicSchema, GenereDeezerBasicSchema, GenereDeezerSemplificatoSchema, BranoDeezerBasicSchema } from "./deezer_types";
-import { AlbumDb, ArtistaDb } from "./db_types";
+import { GenericDeezerEntityBasic, AlbumDeezerBasic, AlbumDeezerBasicSchema, ArtistaDeezerBasic, ArtistaDeezerBasicSchema, GenereDeezerBasicSchema, GenereDeezerSemplificatoSchema, BranoDeezerBasicSchema, BranoDeezerBasic } from "./deezer_types";
+import { AlbumDb, ArtistaDb, AssocBranoArtistaDb } from "./db_types";
 import axios from "axios";
 const app = express();
 const port = 3000;
@@ -12,7 +12,7 @@ const port = 3000;
 type ArtistiAPIsConfig = {
   search: DeezerEntityAPIConfig;
   related: DeezerEntityAPIConfig;
-  genre: DeezerEntityAPIConfig;
+  genere: DeezerEntityAPIConfig;
 }
 
 const artistiAPIsConfig: ArtistiAPIsConfig = {
@@ -24,7 +24,8 @@ const artistiAPIsConfig: ArtistiAPIsConfig = {
       deezerEntitySchema: ArtistaDeezerBasicSchema,
       getEntityObjectsFromResponse: (response: axios.AxiosResponse<any, any>) => {
         return response.data.data as GenericDeezerEntityBasic[];
-      }
+      },
+      showEntityInResponse: true
     }]
   },
   related: {
@@ -35,10 +36,11 @@ const artistiAPIsConfig: ArtistiAPIsConfig = {
       deezerEntitySchema: ArtistaDeezerBasicSchema,
       getEntityObjectsFromResponse: (response: axios.AxiosResponse<any, any>) => {
         return response.data.data as GenericDeezerEntityBasic[];
-      }
+      },
+      showEntityInResponse: true
     }]
   },
-  genre: {
+  genere: {
     paramName: "genreId",
     deezerAPICallback: (res: import("express").Response, param: string, limit: string, index: string) => makeDeezerApiCall(res, "genre", param, "artists", { limit: limit.toString(), index: index.toString() }),
     entities: [{
@@ -46,7 +48,8 @@ const artistiAPIsConfig: ArtistiAPIsConfig = {
       deezerEntitySchema: ArtistaDeezerBasicSchema,
       getEntityObjectsFromResponse: (response: axios.AxiosResponse<any, any>) => {
         return response.data.data as GenericDeezerEntityBasic[];
-      }
+      },
+      showEntityInResponse: true
     }]
   }
 }
@@ -66,7 +69,8 @@ const albumAPIsConfig: AlbumAPIsConfig = {
       deezerEntitySchema: AlbumDeezerBasicSchema,
       getEntityObjectsFromResponse: (response: axios.AxiosResponse<any, any>) => {
         return response.data.data as GenericDeezerEntityBasic[];
-      }
+      },
+      showEntityInResponse: true
     }]
   },
   getSingle: {
@@ -78,14 +82,16 @@ const albumAPIsConfig: AlbumAPIsConfig = {
         deezerEntitySchema: AlbumDeezerBasicSchema,
         getEntityObjectsFromResponse: (response: axios.AxiosResponse<any, any>) => {
           return [response.data] as GenericDeezerEntityBasic[];
-        }
+        },
+        showEntityInResponse: true
       },
       {
         tableName: "Genere",
         deezerEntitySchema: GenereDeezerSemplificatoSchema,
         getEntityObjectsFromResponse: (response: axios.AxiosResponse<any, any>) => {
-        return response.data.genres.data as GenericDeezerEntityBasic[];
-      }
+          return response.data.genres.data as GenericDeezerEntityBasic[];
+        },
+        showEntityInResponse: false
       }
     ],
     association: {
@@ -110,7 +116,8 @@ const albumAPIsConfig: AlbumAPIsConfig = {
         deezerEntitySchema: AlbumDeezerBasicSchema,
         getEntityObjectsFromResponse: (response: axios.AxiosResponse<any, any>) => {
           return response.data.data as GenericDeezerEntityBasic[];
-        }
+        },
+        showEntityInResponse: true
       }
     ]
   }
@@ -130,7 +137,8 @@ const generiAPIsConfig: GeneriAPIsConfig = {
       deezerEntitySchema: GenereDeezerBasicSchema,
       getEntityObjectsFromResponse: (response: axios.AxiosResponse<any, any>) => {
         return [response.data] as GenericDeezerEntityBasic[];
-      }
+      },
+      showEntityInResponse: true
     }]
   },
   getAll: {
@@ -141,13 +149,18 @@ const generiAPIsConfig: GeneriAPIsConfig = {
       deezerEntitySchema: GenereDeezerBasicSchema,
       getEntityObjectsFromResponse: (response: axios.AxiosResponse<any, any>) => {
         return response.data.data as GenericDeezerEntityBasic[];
-      }
+      },
+      showEntityInResponse: true
     }]
   }
 }
 
 type BraniAPIsConfig = {
   album: DeezerEntityAPIConfig;
+  search: DeezerEntityAPIConfig;
+  genere: DeezerEntityAPIConfig;
+  artista: DeezerEntityAPIConfig;
+  single: DeezerEntityAPIConfig;
 }
 
 const braniAPIsConfig: BraniAPIsConfig = {
@@ -159,8 +172,179 @@ const braniAPIsConfig: BraniAPIsConfig = {
       deezerEntitySchema: BranoDeezerBasicSchema,
       getEntityObjectsFromResponse: (response: axios.AxiosResponse<any, any>) => {
         return response.data.data as GenericDeezerEntityBasic[];
-      }
+      },
+      showEntityInResponse: true
     }]
+  },
+  search: {
+    paramName: "query",
+    deezerAPICallback: (res: import("express").Response, param: string, limit: string, index: string) => makeDeezerApiCall(res, "search", null, "track", { q: param, limit: limit.toString(), index: index.toString() }),
+    entities: [
+      {
+        tableName: "Album",
+        deezerEntitySchema: AlbumDeezerBasicSchema,
+        getEntityObjectsFromResponse: (response: axios.AxiosResponse<any, any>) => {
+          return response.data.data.map((track: BranoDeezerBasic) => track.album) as GenericDeezerEntityBasic[];
+        },
+        showEntityInResponse: false
+      },
+      {
+        tableName: "Brano",
+        deezerEntitySchema: BranoDeezerBasicSchema,
+        getEntityObjectsFromResponse: (response: axios.AxiosResponse<any, any>) => {
+          return response.data.data as GenericDeezerEntityBasic[];
+        },
+        showEntityInResponse: true
+      },
+      {
+        tableName: "Artista",
+        deezerEntitySchema: ArtistaDeezerBasicSchema,
+        getEntityObjectsFromResponse: (response: axios.AxiosResponse<any, any>) => {
+          return response.data.data.map((track: BranoDeezerBasic) => track.artist) as GenericDeezerEntityBasic[];
+        },
+        showEntityInResponse: false
+      }
+    ],
+    association: {
+      getAssociationsFromResponse: (response: axios.AxiosResponse<any, any>) => {
+        const tracks: BranoDeezerBasic[] = response.data.data as BranoDeezerBasic[];
+        return tracks
+          .filter((track): track is typeof track & { artist: { id: number } } => track.artist !== undefined)
+          .map((track) => {
+            return { id_brano: track.id, id_artista: track.artist.id };
+          });
+      },
+      tableName: "brano_artista",
+      deleteOldAssociations: false
+    }
+  },
+  genere: {
+    paramName: "genreId",
+    deezerAPICallback: (res: import("express").Response, param: string, limit: string, index: string) => makeDeezerApiCall(res, "chart", param, "tracks", { limit: limit.toString(), index: index.toString() }),
+    entities: [
+      {
+        tableName: "Album",
+        deezerEntitySchema: AlbumDeezerBasicSchema,
+        getEntityObjectsFromResponse: (response: axios.AxiosResponse<any, any>) => {
+          return response.data.data.map((track: BranoDeezerBasic) => track.album) as GenericDeezerEntityBasic[];
+        },
+        showEntityInResponse: false
+      },
+      {
+        tableName: "Brano",
+        deezerEntitySchema: BranoDeezerBasicSchema,
+        getEntityObjectsFromResponse: (response: axios.AxiosResponse<any, any>) => {
+          return response.data.data as GenericDeezerEntityBasic[];
+        },
+        showEntityInResponse: true
+      },
+      {
+        tableName: "Artista",
+        deezerEntitySchema: ArtistaDeezerBasicSchema,
+        getEntityObjectsFromResponse: (response: axios.AxiosResponse<any, any>) => {
+          return response.data.data.map((track: BranoDeezerBasic) => track.artist) as GenericDeezerEntityBasic[];
+        },
+        showEntityInResponse: false
+      },
+    ],
+    association: {
+      getAssociationsFromResponse: (response: axios.AxiosResponse<any, any>) => {
+        const tracks: BranoDeezerBasic[] = response.data.data as BranoDeezerBasic[];
+        return tracks
+          .filter((track): track is typeof track & { artist: { id: number } } => track.artist !== undefined)
+          .map((track) => {
+            return { id_brano: track.id, id_artista: track.artist.id };
+          });
+      },
+      tableName: "brano_artista",
+      deleteOldAssociations: false
+    }
+  },
+  artista: {
+    paramName: "artistId",
+    deezerAPICallback: (res: import("express").Response, param: string, limit: string, index: string) => makeDeezerApiCall(res, "artist", param, "top", { limit: limit.toString(), index: index.toString() }),
+    entities: [
+      {
+        tableName: "Album",
+        deezerEntitySchema: AlbumDeezerBasicSchema,
+        getEntityObjectsFromResponse: (response: axios.AxiosResponse<any, any>) => {
+          return response.data.data.map((track: BranoDeezerBasic) => track.album) as GenericDeezerEntityBasic[];
+        },
+        showEntityInResponse: false
+      },
+      {
+        tableName: "Brano",
+        deezerEntitySchema: BranoDeezerBasicSchema,
+        getEntityObjectsFromResponse: (response: axios.AxiosResponse<any, any>) => {
+          return response.data.data as GenericDeezerEntityBasic[];
+        },
+        showEntityInResponse: true
+      },
+      {
+        tableName: "Artista",
+        deezerEntitySchema: ArtistaDeezerBasicSchema,
+        getEntityObjectsFromResponse: (response: axios.AxiosResponse<any, any>) => {
+          return ([] as ArtistaDeezerBasic[]).concat(...response.data.data.map((track: BranoDeezerBasic) => track.contributors as ArtistaDeezerBasic[] || [])) as GenericDeezerEntityBasic[];
+        },
+        showEntityInResponse: false
+      },
+    ],
+    association: {
+      getAssociationsFromResponse: (response: axios.AxiosResponse<any, any>) => {
+        let associationsCount = 0;
+        let tracks = response.data.data as BranoDeezerBasic[];
+        tracks.forEach((track) => { track.contributors?.forEach((_) => { associationsCount++; }) });
+        let index = 0;
+        let associations: AssocBranoArtistaDb[] = new Array(associationsCount);
+        tracks.forEach((track) => {
+          track.contributors?.forEach((contributor) => {
+            associations[index] = { id_brano: track.id, id_artista: contributor.id };
+            index++;
+          })
+        });
+        return associations;
+      },
+      tableName: "brano_artista",
+      deleteOldAssociations: false
+    }
+  },
+  single: {
+    paramName: "trackId",
+    deezerAPICallback: (res: import("express").Response, param: string, limit: string, index: string) => makeDeezerApiCall(res, "track", param, null, null),
+    entities: [
+      {
+        tableName: "Album",
+        deezerEntitySchema: AlbumDeezerBasicSchema,
+        getEntityObjectsFromResponse: (response: axios.AxiosResponse<any, any>) => {
+          return [response.data.data.album] as GenericDeezerEntityBasic[];
+        },
+        showEntityInResponse: false
+      },
+      {
+        tableName: "Brano",
+        deezerEntitySchema: BranoDeezerBasicSchema,
+        getEntityObjectsFromResponse: (response: axios.AxiosResponse<any, any>) => {
+          return [response.data.data] as GenericDeezerEntityBasic[];
+        },
+        showEntityInResponse: true
+      },
+      {
+        tableName: "Artista",
+        deezerEntitySchema: ArtistaDeezerBasicSchema,
+        getEntityObjectsFromResponse: (response: axios.AxiosResponse<any, any>) => {
+          return response.data.data.contributors as GenericDeezerEntityBasic[];
+        },
+        showEntityInResponse: false
+      },
+    ],
+    association: {
+      getAssociationsFromResponse: (response: axios.AxiosResponse<any, any>) => {
+        let track = response.data.data as BranoDeezerBasic;
+        return track.contributors ? track.contributors.map((contributor) => ({ id_brano: track.id, id_artista: contributor.id })) as AssocBranoArtistaDb[] : [];
+      },
+      tableName: "brano_artista",
+      deleteOldAssociations: false
+    }
   },
 }
 
@@ -178,14 +362,19 @@ app.get("/genere", (req, res) => { deezerEntityApi(req, res, generiAPIsConfig["g
 //ARTISTI
 app.get("/artisti/search", (req, res) => { deezerEntityApi(req, res, artistiAPIsConfig["search"]) });
 app.get("/artisti/related", (req, res) => { deezerEntityApi(req, res, artistiAPIsConfig["related"]) });
-app.get("/artisti/genere", (req, res) => { deezerEntityApi(req, res, artistiAPIsConfig["genre"]) });
+app.get("/artisti/genere", (req, res) => { deezerEntityApi(req, res, artistiAPIsConfig["genere"]) });
+//artisti/brano non serve perchè c'è già brani/single che restituisce anche gli artisti di un brano
+//TODO: implementare artisti/album per ottenere tutti gli artisti dell'album (passando per forza dai brani!)
 //ALBUM--------------------------------------------------------
 app.get("/album/search", (req, res) => { deezerEntityApi(req, res, albumAPIsConfig["search"]) });
-app.get("/album", (req, res) => { deezerEntityApi(req, res, albumAPIsConfig["getSingle"]) });
+app.get("/album/single", (req, res) => { deezerEntityApi(req, res, albumAPIsConfig["getSingle"]) });
 app.get("/album/artista", (req, res) => { deezerEntityApi(req, res, albumAPIsConfig["artist"]) });
 //BRANI--------------------------------------------------------
 app.get("/brani/album", (req, res) => { deezerEntityApi(req, res, braniAPIsConfig["album"]) });
-
+app.get("/brani/search", (req, res) => { deezerEntityApi(req, res, braniAPIsConfig["search"]) });
+app.get("/brani/genere", (req, res) => { deezerEntityApi(req, res, braniAPIsConfig["genere"]) });
+app.get("/brani/artista", (req, res) => { deezerEntityApi(req, res, braniAPIsConfig["artista"]) });
+app.get("/brani/single", (req, res) => { deezerEntityApi(req, res, braniAPIsConfig["single"]) });
 
 //PASSAGGI
 app.get("/brani/:id/passaggi", getBranoPassaggi);

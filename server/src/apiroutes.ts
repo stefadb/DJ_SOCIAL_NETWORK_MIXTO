@@ -519,17 +519,27 @@ function fromDeezerEntityToDbEntity(entity: GenericDeezerEntityBasic, tableName:
     case "Artista":
       return { id: entity.id, nome: (entity as ArtistaDeezerBasic).name } as ArtistaDb;
     case "Album":
-      return { id: entity.id, titolo: (entity as AlbumDeezerBasic).title, data_uscita: (entity as AlbumDeezerBasic).release_date} as AlbumDb;
+      return { id: entity.id, titolo: (entity as AlbumDeezerBasic).title, data_uscita: (entity as AlbumDeezerBasic).release_date } as AlbumDb;
     case "Genere":
       return { id: entity.id, nome: (entity as GenereDeezerBasic).name } as GenereDb;
     case "Brano":
       const brano = entity as BranoDeezerBasic;
-      return {
-        id: brano.id,
-        titolo: brano.title,
-        durata: fromSecondsToTime(brano.duration),
-        id_album: Number(param)
-      } as BranoDb;
+      const album = brano.album;
+      if (album !== undefined) {
+        return {
+          id: brano.id,
+          titolo: brano.title,
+          durata: fromSecondsToTime(brano.duration),
+          id_album: album.id
+        } as BranoDb;
+      } else {
+        return {
+          id: brano.id,
+          titolo: brano.title,
+          durata: fromSecondsToTime(brano.duration),
+          id_album: Number(param)
+        } as BranoDb;
+      }
     default:
       throw new Error("Tabella non supportata");
   }
@@ -687,9 +697,15 @@ export async function deezerEntityApi(
       }
       await upsertAssociations(apisConfig.association.tableName, associations);
     }
-    const mainEntityObjects: GenericDeezerEntityBasic[] = apisConfig.entities[0].getEntityObjectsFromResponse(response);
-    res.json(mainEntityObjects.map((obj) => { return fromDeezerEntityToDbEntity(obj, apisConfig.entities[0].tableName, param) }));
+    for (const entityConfig of apisConfig.entities) {
+      if (entityConfig.showEntityInResponse) {
+        const mainEntityObjects: GenericDeezerEntityBasic[] = entityConfig.getEntityObjectsFromResponse(response);
+        res.json(mainEntityObjects.map((obj) => { return fromDeezerEntityToDbEntity(obj, entityConfig.tableName, param) }));
+        break;
+      }
+    }
   } catch (err) {
+    console.log(err);
     res.status(500).json({ error: "Errore su questa Api legata a Deezer" });
   }
 }

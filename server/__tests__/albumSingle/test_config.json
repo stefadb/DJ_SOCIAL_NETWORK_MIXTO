@@ -1,8 +1,8 @@
 {
   "picturesFolder": "album_pictures",
   "deezerApiCallUrl": "https://api.deezer.com/album/769758471",
-  "apiName": "/album",
-  "testApiCallUrl": "/album?albumId=769758471&limit=1&index=0",
+  "apiName": "/album/single",
+  "testApiCallUrl": "/album/single?albumId=769758471&limit=1&index=0",
   "entityName": "album",
   "dbUpsertTests": [
     {

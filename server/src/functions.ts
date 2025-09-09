@@ -39,6 +39,7 @@ export async function makeDeezerApiCall(res: import("express").Response, urlFirs
         }
       })
       .catch((error) => {
+        console.log(error);
         if (axios.isAxiosError(error) && error.response && error.response.status === 404) {
           res.status(404).json({ error: "Deezer non ha trovato quello che si sta cercando" });
           resolve(-1);
@@ -90,6 +91,7 @@ export async function uploadPhoto(dirName: string, entity: GenericDeezerEntityBa
 export function isValidDeezerObject<T extends ZodObject<any>>(res: import("express").Response, obj: any, schema: ZodIntersection<typeof GenericDeezerEntityBasicSchema, T>) {
   const safeParseResult = schema.safeParse(obj);
   if (!safeParseResult.success) {
+    console.log(safeParseResult.error);
     res.status(500).json({ error: "L'oggetto restituito da Deezer non segue lo schema.", details: safeParseResult.error });
   }
   return safeParseResult.success;

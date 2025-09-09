@@ -41,19 +41,15 @@ IMPORTANTE: Se deezer nella risposta restituisce il next, significa che ci sono 
 
 Usa sempre limit e index per la paginazione
 
-4) - PER OTTENERE TUTTI I BRANI DI UN ARTISTA (Solo i top 10 su Deezer, ma volendo si può andare anche avanti)
+4) - PER OTTENERE TUTTI I BRANI DI UN ARTISTA - OK
 
-https://api.deezer.com/artist/5359276/top?limit=10
+https://api.deezer.com/artist/5359276/top
 
 Per ogni traccia restituita, restituisce tutte le info necessarie sulla traccia, tutte le informazioni necessarie su tutti gli artisti e tutte le informazioni necessarie sull'album (ad eccezione del genere)
 
-PASSI per ogni traccia trovata:
-Upsert degli artisti e caricamento foto,
-Upsert dell'album e caricamento foto,
-Upsert delle associazioni album/artista
-Upsert del brano
-
-IMPORTANTE: Se deezer nella risposta restituisce il next, significa che ci sono altri brani da caricare
+Upsert: artista, album, brano
+Caricamento foto: artista, album
+Associazioni: brano_artista (TODO: per ogni brano, elimina e ricrea tutte le associazioni tra questo brano e i vari artisti)
 
 Usa sempre limit e index per la paginazione
 

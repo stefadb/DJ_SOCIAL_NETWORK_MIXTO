@@ -1,0 +1,90 @@
+{
+  "deezerApiCallUrl": "https://api.deezer.com/artist/5359276/top?limit=5&index=0",
+  "apiName": "/brani/artista",
+  "testApiCallUrl": "/brani/artista?artistId=5359276&limit=5&index=0",
+  "entityName": "tracks",
+  "dbUpsertTests": [
+    {
+      "sqlQuery": "SELECT * FROM brano ORDER BY id ASC",
+      "entityName": "tracks",
+      "expectedResult": [
+        {
+          "id": 493327352,
+          "titolo": "Funk Alive",
+          "durata": "05:35:00",
+          "id_album": 62482862
+        },
+        {
+          "id": 2290913915,
+          "titolo": "All Night Long",
+          "durata": "03:54:00",
+          "id_album": 443485285
+        },
+        {
+          "id": 2512826471,
+          "titolo": "Independent Woman",
+          "durata": "03:32:00",
+          "id_album": 504321061
+        },
+        {
+          "id": 2698462772,
+          "titolo": "Pumpin'",
+          "durata": "05:34:00",
+          "id_album": 558742112
+        },
+        {
+          "id": 3405992021,
+          "titolo": "Sakura",
+          "durata": "06:24:00",
+          "id_album": 769758471
+        }
+      ]
+    },
+    {
+      "sqlQuery": "SELECT * FROM artista ORDER BY id ASC",
+      "entityName": "artists",
+      "expectedResult": [
+        {
+          "id": 1126553,
+          "nome": "Litmus"
+        },
+        {
+          "id": 4858265,
+          "nome": "Locklead"
+        },
+        {
+          "id": 5359276,
+          "nome": "Chris Stussy"
+        },
+        {
+          "id": 5862156,
+          "nome": "Bas Roos"
+        },
+        {
+          "id": 203478207,
+          "nome": "Across Boundaries"
+        }
+      ]
+    },
+    {
+      "sqlQuery": "SELECT * FROM brano_artista ORDER BY id_brano, id_artista ASC",
+      "entityName": "track to artist associations",
+      "expectedResult": [
+        { "id_brano": 493327352, "id_artista": 5359276 },
+        { "id_brano": 493327352, "id_artista": 5862156 },
+        { "id_brano": 2290913915, "id_artista": 5359276 },
+        { "id_brano": 2512826471, "id_artista": 1126553 },
+        { "id_brano": 2512826471, "id_artista": 5359276 },
+        { "id_brano": 2698462772, "id_artista": 4858265 },
+        { "id_brano": 2698462772, "id_artista": 5359276 },
+        { "id_brano": 2698462772, "id_artista": 203478207 },
+        { "id_brano": 3405992021, "id_artista": 4858265 },
+        { "id_brano": 3405992021, "id_artista": 5359276 },
+        { "id_brano": 3405992021, "id_artista": 203478207 }
+      ]
+    }
+  ],
+  "photosIdToDownload": {
+    "artisti_pictures": [ 1126553, 4858265, 5359276, 5862156, 203478207 ]
+  }
+}

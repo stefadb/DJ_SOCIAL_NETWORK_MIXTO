@@ -1,0 +1,84 @@
+{
+  "deezerApiCallUrl": "https://api.deezer.com/chart/106/tracks?limit=5&index=0",
+  "apiName": "/brani/genere",
+  "testApiCallUrl": "/brani/genere?genreId=106&limit=5&index=0",
+  "entityName": "tracks",
+  "dbUpsertTests": [
+    {
+      "sqlQuery": "SELECT * FROM brano ORDER BY id ASC",
+      "entityName": "tracks",
+      "expectedResult": [
+        {
+          "id": 2181330357,
+          "titolo": "Back On 74",
+          "durata": "03:29:00",
+          "id_album": 415184487
+        },
+        {
+          "id": 2823893032,
+          "titolo": "Move",
+          "durata": "02:57:00",
+          "id_album": 593916522
+        },
+        {
+          "id": 2833834872,
+          "titolo": "Apple",
+          "durata": "02:31:00",
+          "id_album": 597350882
+        },
+        {
+          "id": 3223602551,
+          "titolo": "Modern Times",
+          "durata": "03:30:00",
+          "id_album": 709775211
+        },
+        {
+          "id": 3364528701,
+          "titolo": "MONTAGEM FUTABA (Slowed)",
+          "durata": "01:33:00",
+          "id_album": 755996741
+        }
+      ]
+    },
+    {
+      "sqlQuery": "SELECT * FROM artista ORDER BY id ASC",
+      "entityName": "artists",
+      "expectedResult": [
+        { "id": 262264, "nome": "Adam Port" },
+        { "id": 436163, "nome": "Jungle" },
+        { "id": 1390695, "nome": "Mike Di Lorenzo" },
+        { "id": 1462230, "nome": "Charli xcx" },
+        { "id": 208557927, "nome": "MXCCREE" }
+      ]
+    },
+    {
+      "sqlQuery": "SELECT * FROM brano_artista ORDER BY id_brano, id_artista ASC",
+      "entityName": "track to artist associations",
+      "expectedResult": [
+        {
+          "id_brano": 2181330357,
+          "id_artista": 436163
+        },
+        {
+          "id_brano": 2823893032,
+          "id_artista": 262264
+        },
+        {
+          "id_brano": 2833834872,
+          "id_artista": 1462230
+        },
+        {
+          "id_brano": 3223602551,
+          "id_artista": 1390695
+        },
+        {
+          "id_brano": 3364528701,
+          "id_artista": 208557927
+        }
+      ]
+    }
+  ],
+  "photosIdToDownload": {
+    "artisti_pictures": [1462230, 1390695, 436163, 208557927, 262264]
+  }
+}

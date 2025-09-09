@@ -186,6 +186,7 @@ async function checkDbUpsert(sqlQuery, testApiCallUrl, app, expectedQueryResult)
         database: process.env.DATABASE || "mixto_test",
         dateStrings: true
     });
+    console.log(sqlQuery);
     const [rows] = await con.query(sqlQuery);
     //QUI C'è UN PROBLEMA, O CON LA FUNZIONE STESSA O CON QUELLE CHE LA CHIAMANO!!!
     //TANTE VOLTE, rows e expectedQueryResult NON SONO UGUALI!!

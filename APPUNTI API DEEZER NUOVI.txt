@@ -2,6 +2,7 @@ APPUNTI API DEEZER
 
 ORA DEVI FAR FUNZIONARE QUESTE API, ALTRIMENTI NON PUOI SVILUPPARE IL RESTO!!
 
+IMPLEMENTATO MA NON TESTATO
 3) - PER OTTENERE TUTTI I BRANI CHE CORRISPONDONO A UNA PAROLA/FRASE DI RICERCA (query) - OK
 
 https://api.deezer.com/search/track?q=Parola%20Chiave
@@ -17,21 +18,10 @@ Associazioni: brano_artista (TODO: per ogni brano, aggiunge, se non esiste già,
 
 Usa sempre limit e index per la paginazione
 
-4) - PER OTTENERE TUTTI I BRANI DI UN ARTISTA - OK
-
-https://api.deezer.com/artist/5359276/top
-
-Per ogni traccia restituita, restituisce tutte le info necessarie sulla traccia, tutte le informazioni necessarie su tutti gli artisti e tutte le informazioni necessarie sull'album (ad eccezione del genere)
-
-Upsert: artista, album, brano
-Caricamento foto: artista, album
-Associazioni: brano_artista (TODO: per ogni brano, elimina e ricrea tutte le associazioni tra questo brano e i vari artisti)
-
-Usa sempre limit e index per la paginazione
-
+IMPLEMENTATO MA NON TESTATO
 7) - PER OTTENERE I BRANI PIù FAMOSI APPARTENENTI A UN GENERE MUSICALE - OK
 
-https://api.deezer.com/chart/106/tracks
+https://api.deezer.com/chart/106/tracks?limit=5&index=0
 
 Per ogni traccia restituita, restituisce tutte le info necessarie sulla traccia, tutte le informazioni necessarie sull'artista PRINCIPALE (non tutti gli artisti) e tutte le informazioni necessarie sull'album (ad eccezione del genere)
 
@@ -41,11 +31,12 @@ Associazioni: brano_artista (TODO: per ogni brano, aggiunge, se non esiste già,
 
 Usa sempre limit e index per la paginazione
 
+IMPLEMENTATO MA NON TESTATO
 8) - PER OTTENERE UN SINGOLO BRANO - OK
 
 https://api.deezer.com/track/3135556
 
-Per la traccia restituita, restituisce tutte le info necessarie sulla traccia, tutte le informazioni necessarie su tutti gli artisti e tutte le informazioni necessarie sull'album (ad eccezione del genere)
+Per ogni traccia restituita, restituisce tutte le info necessarie sulla traccia, tutte le informazioni necessarie su tutti gli artisti e tutte le informazioni necessarie sull'album (ad eccezione del genere)
 
 Upsert: artista, album, brano
 Caricamento foto: artista, album

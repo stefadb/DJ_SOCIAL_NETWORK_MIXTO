@@ -417,12 +417,23 @@ function fromDeezerEntityToDbEntity(entity, tableName, param) {
             return { id: entity.id, nome: entity.name };
         case "Brano":
             const brano = entity;
-            return {
-                id: brano.id,
-                titolo: brano.title,
-                durata: fromSecondsToTime(brano.duration),
-                id_album: Number(param)
-            };
+            const album = brano.album;
+            if (album !== undefined) {
+                return {
+                    id: brano.id,
+                    titolo: brano.title,
+                    durata: fromSecondsToTime(brano.duration),
+                    id_album: album.id
+                };
+            }
+            else {
+                return {
+                    id: brano.id,
+                    titolo: brano.title,
+                    durata: fromSecondsToTime(brano.duration),
+                    id_album: Number(param)
+                };
+            }
         default:
             throw new Error("Tabella non supportata");
     }
@@ -559,10 +570,16 @@ async function deezerEntityApi(req, res, apisConfig) {
             }
             await upsertAssociations(apisConfig.association.tableName, associations);
         }
-        const mainEntityObjects = apisConfig.entities[0].getEntityObjectsFromResponse(response);
-        res.json(mainEntityObjects.map((obj) => { return fromDeezerEntityToDbEntity(obj, apisConfig.entities[0].tableName, param); }));
+        for (const entityConfig of apisConfig.entities) {
+            if (entityConfig.showEntityInResponse) {
+                const mainEntityObjects = entityConfig.getEntityObjectsFromResponse(response);
+                res.json(mainEntityObjects.map((obj) => { return fromDeezerEntityToDbEntity(obj, entityConfig.tableName, param); }));
+                break;
+            }
+        }
     }
     catch (err) {
+        console.log(err);
         res.status(500).json({ error: "Errore su questa Api legata a Deezer" });
     }
 }
