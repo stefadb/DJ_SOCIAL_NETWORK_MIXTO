@@ -288,7 +288,7 @@ const braniAPIsConfig = {
                 tableName: "Album",
                 deezerEntitySchema: deezer_types_1.AlbumDeezerBasicSchema,
                 getEntityObjectsFromResponse: (response) => {
-                    return [response.data.data.album];
+                    return [response.data.album];
                 },
                 showEntityInResponse: false
             },
@@ -296,7 +296,7 @@ const braniAPIsConfig = {
                 tableName: "Brano",
                 deezerEntitySchema: deezer_types_1.BranoDeezerBasicSchema,
                 getEntityObjectsFromResponse: (response) => {
-                    return [response.data.data];
+                    return [response.data];
                 },
                 showEntityInResponse: true
             },
@@ -304,14 +304,14 @@ const braniAPIsConfig = {
                 tableName: "Artista",
                 deezerEntitySchema: deezer_types_1.ArtistaDeezerBasicSchema,
                 getEntityObjectsFromResponse: (response) => {
-                    return response.data.data.contributors;
+                    return response.data.contributors;
                 },
                 showEntityInResponse: false
             },
         ],
         association: {
             getAssociationsFromResponse: (response) => {
-                let track = response.data.data;
+                let track = response.data;
                 return track.contributors ? track.contributors.map((contributor) => ({ id_brano: track.id, id_artista: contributor.id })) : [];
             },
             tableName: "brano_artista",

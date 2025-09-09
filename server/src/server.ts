@@ -316,7 +316,7 @@ const braniAPIsConfig: BraniAPIsConfig = {
         tableName: "Album",
         deezerEntitySchema: AlbumDeezerBasicSchema,
         getEntityObjectsFromResponse: (response: axios.AxiosResponse<any, any>) => {
-          return [response.data.data.album] as GenericDeezerEntityBasic[];
+          return [response.data.album] as GenericDeezerEntityBasic[];
         },
         showEntityInResponse: false
       },
@@ -324,7 +324,7 @@ const braniAPIsConfig: BraniAPIsConfig = {
         tableName: "Brano",
         deezerEntitySchema: BranoDeezerBasicSchema,
         getEntityObjectsFromResponse: (response: axios.AxiosResponse<any, any>) => {
-          return [response.data.data] as GenericDeezerEntityBasic[];
+          return [response.data] as GenericDeezerEntityBasic[];
         },
         showEntityInResponse: true
       },
@@ -332,14 +332,14 @@ const braniAPIsConfig: BraniAPIsConfig = {
         tableName: "Artista",
         deezerEntitySchema: ArtistaDeezerBasicSchema,
         getEntityObjectsFromResponse: (response: axios.AxiosResponse<any, any>) => {
-          return response.data.data.contributors as GenericDeezerEntityBasic[];
+          return response.data.contributors as GenericDeezerEntityBasic[];
         },
         showEntityInResponse: false
       },
     ],
     association: {
       getAssociationsFromResponse: (response: axios.AxiosResponse<any, any>) => {
-        let track = response.data.data as BranoDeezerBasic;
+        let track = response.data as BranoDeezerBasic;
         return track.contributors ? track.contributors.map((contributor) => ({ id_brano: track.id, id_artista: contributor.id })) as AssocBranoArtistaDb[] : [];
       },
       tableName: "brano_artista",

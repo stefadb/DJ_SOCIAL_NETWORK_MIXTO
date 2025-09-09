@@ -1,0 +1,71 @@
+{
+  "deezerApiCallUrl": "https://api.deezer.com/track/3405992021",
+  "apiName": "/brani/single",
+  "testApiCallUrl": "/brani/single?trackId=3405992021&limit=1&index=0",
+  "entityName": "tracks",
+  "dbUpsertTests": [
+    {
+      "sqlQuery": "SELECT * FROM brano ORDER BY id ASC",
+      "entityName": "tracks",
+      "expectedResult": [
+        {
+          "id": 3405992021,
+          "titolo": "Sakura",
+          "durata": "06:24:00",
+          "id_album": 769758471
+        }
+      ]
+    },
+    {
+      "sqlQuery": "SELECT * FROM album ORDER BY id ASC",
+      "entityName": "albums",
+      "expectedResult": [
+        {
+          "id": 769758471,
+          "titolo": "Sakura",
+          "data_uscita": "2025-09-05"
+        }
+      ]
+    },
+    {
+      "sqlQuery": "SELECT * FROM artista ORDER BY id ASC",
+      "entityName": "artists",
+      "expectedResult": [
+        {
+          "id": 4858265,
+          "nome": "Locklead"
+        },
+        {
+          "id": 5359276,
+          "nome": "Chris Stussy"
+        },
+        {
+          "id": 203478207,
+          "nome": "Across Boundaries"
+        }
+      ]
+    },
+    {
+      "sqlQuery": "SELECT * FROM brano_artista ORDER BY id_brano, id_artista ASC",
+      "entityName": "track to artist associations",
+      "expectedResult": [
+        {
+          "id_artista": 4858265,
+          "id_brano": 3405992021
+        },
+        {
+          "id_artista": 5359276,
+          "id_brano": 3405992021
+        },
+        {
+          "id_artista": 203478207,
+          "id_brano": 3405992021
+        }
+      ]
+    }
+  ],
+  "photosIdToDownload": {
+    "artisti_pictures": [4858265, 5359276, 203478207],
+    "album_pictures": [769758471]
+  }
+}

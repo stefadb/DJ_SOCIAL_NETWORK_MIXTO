@@ -579,6 +579,7 @@ async function deezerEntityApi(req, res, apisConfig) {
         }
     }
     catch (err) {
+        console.log(err);
         res.status(500).json({ error: "Errore su questa Api legata a Deezer" });
     }
 }
