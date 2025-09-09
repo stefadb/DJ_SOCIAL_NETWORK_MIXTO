@@ -2,19 +2,6 @@ APPUNTI API DEEZER
 
 ORA DEVI FAR FUNZIONARE QUESTE API, ALTRIMENTI NON PUOI SVILUPPARE IL RESTO!!
 
-IMPLEMENTATO MA NON TESTATO
-8) - PER OTTENERE UN SINGOLO BRANO - OK
-
-https://api.deezer.com/track/3135556
-
-Per ogni traccia restituita, restituisce tutte le info necessarie sulla traccia, tutte le informazioni necessarie su tutti gli artisti e tutte le informazioni necessarie sull'album (ad eccezione del genere)
-
-Upsert: artista, album, brano
-Caricamento foto: artista, album
-Associazioni: brano_artista (TODO: per ogni brano, elimina e ricrea tutte le associazioni tra questo brano e i vari artisti)
-
-Usa sempre limit e index per la paginazione
-
 --------------------------------------------------------------------------------
 
 E QUESTA è L'API PIU PARTICOLARE!!!

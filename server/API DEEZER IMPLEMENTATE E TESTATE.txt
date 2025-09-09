@@ -84,6 +84,18 @@ Associazioni: brano_artista (TODO: per ogni brano, aggiunge, se non esiste già,
 
 Usa sempre limit e index per la paginazione
 
+8) - PER OTTENERE UN SINGOLO BRANO - OK
+
+https://api.deezer.com/track/3135556
+
+Per ogni traccia restituita, restituisce tutte le info necessarie sulla traccia, tutte le informazioni necessarie su tutti gli artisti e tutte le informazioni necessarie sull'album (ad eccezione del genere)
+
+Upsert: artista, album, brano
+Caricamento foto: artista, album
+Associazioni: brano_artista (TODO: per ogni brano, elimina e ricrea tutte le associazioni tra questo brano e i vari artisti)
+
+Usa sempre limit e index per la paginazione
+
 9) - PER OTTENERE I BRANI DI UN ALBUM - OK
 
 https://api.deezer.com/album/486048505/tracks
