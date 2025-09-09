@@ -41,6 +41,37 @@
       ]
     },
     {
+      "sqlQuery": "SELECT * FROM album ORDER BY id ASC",
+      "entityName": "albums",
+      "expectedResult": [
+        {
+          "id": 62482862,
+          "titolo": "Ladies Night EP",
+          "data_uscita": null
+        },
+        {
+          "id": 443485285,
+          "titolo": "All Night Long",
+          "data_uscita": null
+        },
+        {
+          "id": 504321061,
+          "titolo": "Across Ocean",
+          "data_uscita": null
+        },
+        {
+          "id": 558742112,
+          "titolo": "Synergy",
+          "data_uscita": null
+        },
+        {
+          "id": 769758471,
+          "titolo": "Sakura",
+          "data_uscita": null
+        }
+      ]
+    },
+    {
       "sqlQuery": "SELECT * FROM artista ORDER BY id ASC",
       "entityName": "artists",
       "expectedResult": [
@@ -85,6 +116,7 @@
     }
   ],
   "photosIdToDownload": {
-    "artisti_pictures": [ 1126553, 4858265, 5359276, 5862156, 203478207 ]
+    "artisti_pictures": [1126553, 4858265, 5359276, 5862156, 203478207],
+    "album_pictures": [62482862, 443485285, 504321061, 558742112, 769758471]
   }
 }

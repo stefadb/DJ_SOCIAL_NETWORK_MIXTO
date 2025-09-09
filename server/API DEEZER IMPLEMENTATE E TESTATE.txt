@@ -1,3 +1,40 @@
+1) - PER OTTENERE UN SINGOLO ALBUM DATO IL SUO ID - OK
+
+https://api.deezer.com/album/302127
+
+Restituisce tutto sull'album, gli [id, nomi e le immagini] di tutti i generi e gli [id, nomi, immagini] di tutti i brani
+
+album è l'entità principale, mentre l'array di generi è dentro la chiave genres
+
+Upsert: album, genere
+Caricamento foto: album, genere
+Associazioni: album_genere (TODO: per ogni album, elimina e ricrea tutte le associazioni tra l'album e i vari generi)
+
+Usa sempre limit e index per la paginazione
+
+2) - PER OTTENERE TUTTI GLI ALBUM DI UN ARTISTA - OK
+
+https://api.deezer.com/artist/5359276/albums
+
+Restituisce tutti gli album dell'artista e il primo genere, quello più importante.
+
+Upsert: album
+Caricamento foto: album
+
+Usa sempre limit e index per la paginazione
+
+4) - PER OTTENERE TUTTI I BRANI DI UN ARTISTA - OK
+
+https://api.deezer.com/artist/5359276/top
+
+Per ogni traccia restituita, restituisce tutte le info necessarie sulla traccia, tutte le informazioni necessarie su tutti gli artisti e tutte le informazioni necessarie sull'album (ad eccezione del genere)
+
+Upsert: artista, album, brano
+Caricamento foto: artista, album
+Associazioni: brano_artista (TODO: per ogni brano, elimina e ricrea tutte le associazioni tra questo brano e i vari artisti)
+
+Usa sempre limit e index per la paginazione
+
 5) - PER OTTENERE GLI ARTISTI SIMILI A UNO SU DEEZER - OK
 
 https://api.deezer.com/artist/5359276/related
@@ -20,20 +57,28 @@ Upsert degli artisti e caricamento foto
 
 Usa sempre limit e index per la paginazione
 
-IMPLEMENTATO E TESTATO!!
-12) - PER OTTENERE GLI ARTISTI CHE CORRISPONDONO A UNA PAROLA/FRASE DI RICERCA (query) - OK
+7) - PER OTTENERE I BRANI PIù FAMOSI APPARTENENTI A UN GENERE MUSICALE - OK
 
-https://api.deezer.com/search/artist?q=eminem
+https://api.deezer.com/chart/106/tracks?limit=5&index=0
 
-Restitusice tutte le info sull'artista
+Per ogni traccia restituita, restituisce tutte le info necessarie sulla traccia, tutte le informazioni necessarie sull'artista PRINCIPALE (non tutti gli artisti) e tutte le informazioni necessarie sull'album (ad eccezione del genere)
 
-PASSI per ogni artista trovato:
-
-Upsert dell'artista e caricamento foto
+Upsert: artista, album, brano
+Caricamento foto: artista, album
+Associazioni: brano_artista (TODO: per ogni brano, aggiunge, se non esiste già, l'associazione tra il brano e l'artista principale)
 
 Usa sempre limit e index per la paginazione
 
-IMPLEMENTATO E TESTATO!!
+9) - PER OTTENERE I BRANI DI UN ALBUM - OK
+
+https://api.deezer.com/album/486048505/tracks
+
+PASSI per ogni traccia trovata:
+
+Upsert del brano (senza caricamento foto)
+
+ATTENZIONE: Questa API, prima di essere eseguita, richiede che l'album sia già nel db!!
+
 10) - PER OTTENERE TUTTI GLI ALBUM CHE CORRISPONDONO A UNA PAROLA/FRASE DI RICERCA (query) - OK
 
 https://api.deezer.com/search/album?q=eminem
@@ -46,13 +91,14 @@ Upsert dell'album e caricamento foto
 
 Usa sempre limit e index per la paginazione
 
-IMPLEMENTATO E TESTATO!!
-9) - PER OTTENERE I BRANI DI UN ALBUM - OK
+12) - PER OTTENERE GLI ARTISTI CHE CORRISPONDONO A UNA PAROLA/FRASE DI RICERCA (query) - OK
 
-https://api.deezer.com/album/486048505/tracks
+https://api.deezer.com/search/artist?q=eminem
 
-PASSI per ogni traccia trovata:
+Restitusice tutte le info sull'artista
 
-Upsert del brano (senza caricamento foto)
+PASSI per ogni artista trovato:
 
-ATTENZIONE: Questa API, prima di essere eseguita, richiede che l'album sia già nel db!!
+Upsert dell'artista e caricamento foto
+
+Usa sempre limit e index per la paginazione

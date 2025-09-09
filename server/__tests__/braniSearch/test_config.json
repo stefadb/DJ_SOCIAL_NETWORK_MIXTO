@@ -1,0 +1,131 @@
+{
+  "deezerApiCallUrl": "https://api.deezer.com/search/track?q=Love&limit=5&index=0",
+  "apiName": "/brani/search",
+  "testApiCallUrl": "/brani/search?query=Love&limit=5&index=0",
+  "entityName": "tracks",
+  "dbUpsertTests": [
+    {
+      "sqlQuery": "SELECT * FROM brano ORDER BY id ASC",
+      "entityName": "tracks",
+      "expectedResult": [
+        {
+          "id": 3158377,
+          "titolo": "L-O-V-E",
+          "durata": "02:32:00",
+          "id_album": 303652
+        },
+        {
+          "id": 6461440,
+          "titolo": "Love The Way You Lie",
+          "durata": "04:23:00",
+          "id_album": 595243
+        },
+        {
+          "id": 128548967,
+          "titolo": "Love & Hate",
+          "durata": "07:07:00",
+          "id_album": 13580509
+        },
+        {
+          "id": 2755315691,
+          "titolo": "Love Me Not",
+          "durata": "03:33:00",
+          "id_album": 574707311
+        },
+        {
+          "id": 3450512361,
+          "titolo": "Love",
+          "durata": "02:56:00",
+          "id_album": 784874611
+        }
+      ]
+    },
+    {
+      "sqlQuery": "SELECT * FROM album ORDER BY id ASC",
+      "entityName": "albums",
+      "expectedResult": [
+        {
+          "id": 303652,
+          "titolo": "L-O-V-E",
+          "data_uscita": null
+        },
+        {
+          "id": 595243,
+          "titolo": "Recovery",
+          "data_uscita": null
+        },
+        {
+          "id": 13580509,
+          "titolo": "Love & Hate",
+          "data_uscita": null
+        },
+        {
+          "id": 574707311,
+          "titolo": "Love Me Not / Love Is Blind",
+          "data_uscita": null
+        },
+        {
+          "id": 784874611,
+          "titolo": "No Sign of Weakness",
+          "data_uscita": null
+        }
+      ]
+    },
+    {
+      "sqlQuery": "SELECT * FROM artista ORDER BY id ASC",
+      "entityName": "artists",
+      "expectedResult": [
+        {
+          "id": 13,
+          "nome": "Eminem"
+        },
+        {
+          "id": 221,
+          "nome": "Nat King Cole"
+        },
+        {
+          "id": 459578,
+          "nome": "Michael Kiwanuka"
+        },
+        {
+          "id": 4338602,
+          "nome": "Burna Boy"
+        },
+        {
+          "id": 8973774,
+          "nome": "Ravyn Lenae"
+        }
+      ]
+    },
+    {
+      "sqlQuery": "SELECT * FROM brano_artista ORDER BY id_brano, id_artista ASC",
+      "entityName": "track to artist associations",
+      "expectedResult": [
+        {
+          "id_brano": 3158377,
+          "id_artista": 221
+        },
+        {
+          "id_brano": 6461440,
+          "id_artista": 13
+        },
+        {
+          "id_brano": 128548967,
+          "id_artista": 459578
+        },
+        {
+          "id_brano": 2755315691,
+          "id_artista": 8973774
+        },
+        {
+          "id_brano": 3450512361,
+          "id_artista": 4338602
+        }
+      ]
+    }
+  ],
+  "photosIdToDownload": {
+    "artisti_pictures": [ 13, 221, 459578, 4338602, 8973774 ],
+    "album_pictures": [ 303652, 595243, 13580509, 574707311, 784874611 ]
+  }
+}

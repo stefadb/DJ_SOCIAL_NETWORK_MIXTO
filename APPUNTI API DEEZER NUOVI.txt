@@ -19,19 +19,6 @@ Associazioni: brano_artista (TODO: per ogni brano, aggiunge, se non esiste già,
 Usa sempre limit e index per la paginazione
 
 IMPLEMENTATO MA NON TESTATO
-7) - PER OTTENERE I BRANI PIù FAMOSI APPARTENENTI A UN GENERE MUSICALE - OK
-
-https://api.deezer.com/chart/106/tracks?limit=5&index=0
-
-Per ogni traccia restituita, restituisce tutte le info necessarie sulla traccia, tutte le informazioni necessarie sull'artista PRINCIPALE (non tutti gli artisti) e tutte le informazioni necessarie sull'album (ad eccezione del genere)
-
-Upsert: artista, album, brano
-Caricamento foto: artista, album
-Associazioni: brano_artista (TODO: per ogni brano, aggiunge, se non esiste già, l'associazione tra il brano e l'artista principale)
-
-Usa sempre limit e index per la paginazione
-
-IMPLEMENTATO MA NON TESTATO
 8) - PER OTTENERE UN SINGOLO BRANO - OK
 
 https://api.deezer.com/track/3135556
