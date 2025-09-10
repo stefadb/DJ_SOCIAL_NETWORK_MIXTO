@@ -119,6 +119,20 @@ const albumAPIsConfig = {
                 showEntityInResponse: true
             }
         ]
+    },
+    genere: {
+        paramName: "genreId",
+        deezerAPICallback: (res, param, limit, index) => (0, functions_1.makeDeezerApiCall)(res, "chart", param, "albums", { limit: limit.toString(), index: index.toString() }),
+        entities: [
+            {
+                tableName: "Album",
+                deezerEntitySchema: deezer_types_1.AlbumDeezerBasicSchema,
+                getEntityObjectsFromResponse: (response) => {
+                    return response.data.data;
+                },
+                showEntityInResponse: true
+            }
+        ]
     }
 };
 const generiAPIsConfig = {
@@ -357,7 +371,7 @@ app.get("/artisti/singolo", (req, res) => { (0, apiroutes_1.deezerEntityApi)(req
 app.get("/album/search", (req, res) => { (0, apiroutes_1.deezerEntityApi)(req, res, albumAPIsConfig["search"]); });
 app.get("/album/singolo", (req, res) => { (0, apiroutes_1.deezerEntityApi)(req, res, albumAPIsConfig["singolo"]); });
 app.get("/album/artista", (req, res) => { (0, apiroutes_1.deezerEntityApi)(req, res, albumAPIsConfig["artist"]); });
-//TODO: implementare album/genere : https://api.deezer.com/chart/[ID_GENERE]/albums
+app.get("/album/genere", (req, res) => { (0, apiroutes_1.deezerEntityApi)(req, res, albumAPIsConfig["genere"]); });
 //TODO: implemnentare album/brano per ottenere l'album di appartenenza del brano specificato
 //BRANI--------------------------------------------------------
 app.get("/brani/album", (req, res) => { (0, apiroutes_1.deezerEntityApi)(req, res, braniAPIsConfig["album"]); });

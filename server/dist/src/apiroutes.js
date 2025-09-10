@@ -39,7 +39,6 @@ exports.getGeneriPassaggi = getGeneriPassaggi;
 exports.deezerEntityApi = deezerEntityApi;
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const promise_1 = __importDefault(require("mysql2/promise"));
-const deezer_types_1 = require("./deezer_types");
 const dotenv_1 = __importDefault(require("dotenv"));
 const functions_1 = require("./functions");
 const upserts_1 = require("./upserts");
@@ -412,7 +411,7 @@ function fromDeezerEntityToDbEntity(entity, tableName, param) {
         case "Artista":
             return { id: entity.id, nome: entity.name };
         case "Album":
-            return { id: entity.id, titolo: entity.title, data_uscita: entity.release_date };
+            return { id: entity.id, titolo: entity.title, data_uscita: entity.release_date !== undefined ? entity.release_date : null };
         case "Genere":
             return { id: entity.id, nome: entity.name };
         case "Brano":
@@ -448,20 +447,6 @@ function getPicturesFolder(tableName) {
             return "generi_pictures";
         case "Brano":
             return ""; //I brani non hanno immagini
-        default:
-            throw new Error("Tabella non supportata");
-    }
-}
-function getDeezerObjectBasicSchema(tableName) {
-    switch (tableName) {
-        case "Artista":
-            return deezer_types_1.ArtistaDeezerBasicSchema;
-        case "Album":
-            return deezer_types_1.AlbumDeezerBasicSchema;
-        case "Genere":
-            return deezer_types_1.GenereDeezerBasicSchema;
-        case "Brano":
-            return deezer_types_1.BranoDeezerBasicSchema;
         default:
             throw new Error("Tabella non supportata");
     }

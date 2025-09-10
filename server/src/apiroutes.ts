@@ -519,7 +519,7 @@ function fromDeezerEntityToDbEntity(entity: GenericDeezerEntityBasic, tableName:
     case "Artista":
       return { id: entity.id, nome: (entity as ArtistaDeezerBasic).name } as ArtistaDb;
     case "Album":
-      return { id: entity.id, titolo: (entity as AlbumDeezerBasic).title, data_uscita: (entity as AlbumDeezerBasic).release_date } as AlbumDb;
+      return { id: entity.id, titolo: (entity as AlbumDeezerBasic).title, data_uscita: (entity as AlbumDeezerBasic).release_date !== undefined ? (entity as AlbumDeezerBasic).release_date : null} as AlbumDb;
     case "Genere":
       return { id: entity.id, nome: (entity as GenereDeezerBasic).name } as GenereDb;
     case "Brano":
@@ -555,21 +555,6 @@ function getPicturesFolder(tableName: DeezerEntityTableName): string {
       return "generi_pictures";
     case "Brano":
       return ""; //I brani non hanno immagini
-    default:
-      throw new Error("Tabella non supportata");
-  }
-}
-
-function getDeezerObjectBasicSchema(tableName: DeezerEntityTableName): ZodIntersection<typeof GenericDeezerEntityBasicSchema, any> {
-  switch (tableName) {
-    case "Artista":
-      return ArtistaDeezerBasicSchema;
-    case "Album":
-      return AlbumDeezerBasicSchema;
-    case "Genere":
-      return GenereDeezerBasicSchema;
-    case "Brano":
-      return BranoDeezerBasicSchema;
     default:
       throw new Error("Tabella non supportata");
   }

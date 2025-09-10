@@ -5,28 +5,33 @@
   "entityName": "albums",
   "dbUpsertTests": [
     {
-      "sqlQuery": "SELECT id, titolo FROM album ORDER BY id ASC",
+      "sqlQuery": "SELECT id, titolo, data_uscita FROM album ORDER BY id ASC",
       "entityName": "albums",
       "expectedResult": [
         {
           "id": 103248,
-          "titolo": "The Eminem Show"
+          "titolo": "The Eminem Show",
+          "data_uscita": null
         },
         {
           "id": 72000342,
-          "titolo": "Kamikaze"
+          "titolo": "Kamikaze",
+          "data_uscita": null
         },
         {
           "id": 194219042,
-          "titolo": "Music To Be Murdered By - Side B (Deluxe Edition)"
+          "titolo": "Music To Be Murdered By - Side B (Deluxe Edition)",
+          "data_uscita": null
         },
         {
           "id": 641646351,
-          "titolo": "The Death of Slim Shady (Coup De Grâce): Expanded Mourner’s Edition"
+          "titolo": "The Death of Slim Shady (Coup De Grâce): Expanded Mourner’s Edition",
+          "data_uscita": null
         },
         {
           "id": 810703161,
-          "titolo": "STANS (The Official Soundtrack)"
+          "titolo": "STANS (The Official Soundtrack)",
+          "data_uscita": null
         }
       ]
     }

@@ -1,22 +1,27 @@
 [
-    {
-        "id": 194219042,
-        "titolo": "Music To Be Murdered By - Side B (Deluxe Edition)"
-    },
-    {
-        "id": 103248,
-        "titolo": "The Eminem Show"
-    },
-    {
-        "id": 641646351,
-        "titolo": "The Death of Slim Shady (Coup De Grâce): Expanded Mourner’s Edition"
-    },
-    {
-        "id": 810703161,
-        "titolo": "STANS (The Official Soundtrack)"
-    },
-    {
-        "id": 72000342,
-        "titolo": "Kamikaze"
-    }
+  {
+    "id": 194219042,
+    "titolo": "Music To Be Murdered By - Side B (Deluxe Edition)",
+    "data_uscita": null
+  },
+  {
+    "id": 103248,
+    "titolo": "The Eminem Show",
+    "data_uscita": null
+  },
+  {
+    "id": 641646351,
+    "titolo": "The Death of Slim Shady (Coup De Grâce): Expanded Mourner’s Edition",
+    "data_uscita": null
+  },
+  {
+    "id": 810703161,
+    "titolo": "STANS (The Official Soundtrack)",
+    "data_uscita": null
+  },
+  {
+    "id": 72000342,
+    "titolo": "Kamikaze",
+    "data_uscita": null
+  }
 ]
