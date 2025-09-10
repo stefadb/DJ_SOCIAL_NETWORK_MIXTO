@@ -404,7 +404,7 @@ app.get("/album/search", (req, res) => { deezerEntityApi(req, res, albumAPIsConf
 app.get("/album/singolo", (req, res) => { deezerEntityApi(req, res, albumAPIsConfig["singolo"]) });
 app.get("/album/artista", (req, res) => { deezerEntityApi(req, res, albumAPIsConfig["artist"]) });
 app.get("/album/genere", (req, res) => { deezerEntityApi(req, res, albumAPIsConfig["genere"]) });
-//TODO: implemnentare album/brano per ottenere l'album di appartenenza del brano specificato
+//TODO: album/brano non serve perchè basta chiamare brani/singolo per ottenere l'id dell'album e passarlo a album/singolo
 //BRANI--------------------------------------------------------
 app.get("/brani/album", (req, res) => { deezerEntityApi(req, res, braniAPIsConfig["album"]) });
 app.get("/brani/search", (req, res) => { deezerEntityApi(req, res, braniAPIsConfig["search"]) });
