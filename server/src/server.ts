@@ -13,6 +13,7 @@ type ArtistiAPIsConfig = {
   search: DeezerEntityAPIConfig;
   related: DeezerEntityAPIConfig;
   genere: DeezerEntityAPIConfig;
+  single: DeezerEntityAPIConfig;
 }
 
 const artistiAPIsConfig: ArtistiAPIsConfig = {
@@ -48,6 +49,18 @@ const artistiAPIsConfig: ArtistiAPIsConfig = {
       deezerEntitySchema: ArtistaDeezerBasicSchema,
       getEntityObjectsFromResponse: (response: axios.AxiosResponse<any, any>) => {
         return response.data.data as GenericDeezerEntityBasic[];
+      },
+      showEntityInResponse: true
+    }]
+  },
+  single: {
+    paramName: "artistId",
+    deezerAPICallback: (res: import("express").Response, param: string, limit: string, index: string) => makeDeezerApiCall(res, "artist", param, null, null),
+    entities: [{
+      tableName: "Artista",
+      deezerEntitySchema: ArtistaDeezerBasicSchema,
+      getEntityObjectsFromResponse: (response: axios.AxiosResponse<any, any>) => {
+        return [response.data] as GenericDeezerEntityBasic[];
       },
       showEntityInResponse: true
     }]
@@ -368,9 +381,9 @@ app.get("/genere", (req, res) => { deezerEntityApi(req, res, generiAPIsConfig["g
 app.get("/artisti/search", (req, res) => { deezerEntityApi(req, res, artistiAPIsConfig["search"]) });
 app.get("/artisti/related", (req, res) => { deezerEntityApi(req, res, artistiAPIsConfig["related"]) });
 app.get("/artisti/genere", (req, res) => { deezerEntityApi(req, res, artistiAPIsConfig["genere"]) });
+app.get("/artisti/single", (req, res) => { deezerEntityApi(req, res, artistiAPIsConfig["single"]) });
 //artisti/brano non serve perchè c'è già brani/single che restituisce anche gli artisti di un brano
 //TODO: implementare artisti/album per ottenere tutti gli artisti dell'album (passando per forza dai brani!)
-//TODO: implementare artisti/single
 //ALBUM--------------------------------------------------------
 app.get("/album/search", (req, res) => { deezerEntityApi(req, res, albumAPIsConfig["search"]) });
 app.get("/album/single", (req, res) => { deezerEntityApi(req, res, albumAPIsConfig["getSingle"]) });

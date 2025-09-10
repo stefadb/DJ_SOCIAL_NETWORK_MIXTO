@@ -1,0 +1,16 @@
+{
+    "id": 5359276,
+    "name": "Chris Stussy",
+    "link": "https://www.deezer.com/artist/5359276",
+    "share": "https://www.deezer.com/artist/5359276?utm_source=deezer&utm_content=artist-5359276&utm_term=0_1757510507&utm_medium=web",
+    "picture": "https://api.deezer.com/artist/5359276/image",
+    "picture_small": "https://cdn-images.dzcdn.net/images/artist/915921fa6b4d968c6c187ba4f1d01018/56x56-000000-80-0-0.jpg",
+    "picture_medium": "https://cdn-images.dzcdn.net/images/artist/915921fa6b4d968c6c187ba4f1d01018/250x250-000000-80-0-0.jpg",
+    "picture_big": "https://cdn-images.dzcdn.net/images/artist/915921fa6b4d968c6c187ba4f1d01018/500x500-000000-80-0-0.jpg",
+    "picture_xl": "https://cdn-images.dzcdn.net/images/artist/915921fa6b4d968c6c187ba4f1d01018/1000x1000-000000-80-0-0.jpg",
+    "nb_album": 42,
+    "nb_fan": 4939,
+    "radio": true,
+    "tracklist": "https://api.deezer.com/artist/5359276/top?limit=50",
+    "type": "artist"
+}

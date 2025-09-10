@@ -1,0 +1,22 @@
+{
+  "picturesFolder": "artisti_pictures",
+  "deezerApiCallUrl": "https://api.deezer.com/artist/5359276",
+  "apiName": "/artisti/single",
+  "testApiCallUrl": "/artisti/single?artistId=5359276&limit=1&index=0",
+  "entityName": "artist",
+  "photosIdToDownload": {
+    "artisti_pictures": [5359276]
+  },
+  "dbUpsertTests": [
+    {
+      "sqlQuery": "SELECT * FROM artista ORDER BY id ASC",
+      "entityName": "artists",
+      "expectedResult": [
+        {
+          "id": 5359276,
+          "nome": "Chris Stussy"
+        }
+      ]
+    }
+  ]
+}

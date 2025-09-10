@@ -45,6 +45,18 @@ const artistiAPIsConfig = {
                 },
                 showEntityInResponse: true
             }]
+    },
+    single: {
+        paramName: "artistId",
+        deezerAPICallback: (res, param, limit, index) => (0, functions_1.makeDeezerApiCall)(res, "artist", param, null, null),
+        entities: [{
+                tableName: "Artista",
+                deezerEntitySchema: deezer_types_1.ArtistaDeezerBasicSchema,
+                getEntityObjectsFromResponse: (response) => {
+                    return [response.data];
+                },
+                showEntityInResponse: true
+            }]
     }
 };
 const albumAPIsConfig = {
@@ -330,22 +342,30 @@ app.delete("/scalette/:id", apiroutes_1.deleteScalette);
 //GENERI
 app.get("/generi", (req, res) => { (0, apiroutes_1.deezerEntityApi)(req, res, generiAPIsConfig["getAll"]); });
 app.get("/genere", (req, res) => { (0, apiroutes_1.deezerEntityApi)(req, res, generiAPIsConfig["getSingle"]); });
+//genere/search non c'è perchè i generi sono pochi e Deezer non prevede la ricerca
+//genere/artista non c'è perchè per ottenere i generi di un artista bisogna prendere tutti gli album che contengono almeno un brano di quell'artista e poi prendere i generi di quegli album (operazione troppo pesante per Deezer)
+//genere/brano non c'è perchè per ottenere i generi di un brano bisogna prendere l'album di quel brano e poi prendere i generi di quell'album (operazione troppo pesante per Deezer)
+//genere/album non serve perchè c'è gia album/single che restituisce anche i generi di un album
 //ARTISTI
 app.get("/artisti/search", (req, res) => { (0, apiroutes_1.deezerEntityApi)(req, res, artistiAPIsConfig["search"]); });
 app.get("/artisti/related", (req, res) => { (0, apiroutes_1.deezerEntityApi)(req, res, artistiAPIsConfig["related"]); });
 app.get("/artisti/genere", (req, res) => { (0, apiroutes_1.deezerEntityApi)(req, res, artistiAPIsConfig["genere"]); });
+app.get("/artisti/single", (req, res) => { (0, apiroutes_1.deezerEntityApi)(req, res, artistiAPIsConfig["single"]); });
 //artisti/brano non serve perchè c'è già brani/single che restituisce anche gli artisti di un brano
 //TODO: implementare artisti/album per ottenere tutti gli artisti dell'album (passando per forza dai brani!)
 //ALBUM--------------------------------------------------------
 app.get("/album/search", (req, res) => { (0, apiroutes_1.deezerEntityApi)(req, res, albumAPIsConfig["search"]); });
 app.get("/album/single", (req, res) => { (0, apiroutes_1.deezerEntityApi)(req, res, albumAPIsConfig["getSingle"]); });
 app.get("/album/artista", (req, res) => { (0, apiroutes_1.deezerEntityApi)(req, res, albumAPIsConfig["artist"]); });
+//TODO: implementare album/genere : https://api.deezer.com/chart/[ID_GENERE]/albums
+//TODO: implemnentare album/brano per ottenere l'album di appartenenza del brano specificato
 //BRANI--------------------------------------------------------
 app.get("/brani/album", (req, res) => { (0, apiroutes_1.deezerEntityApi)(req, res, braniAPIsConfig["album"]); });
 app.get("/brani/search", (req, res) => { (0, apiroutes_1.deezerEntityApi)(req, res, braniAPIsConfig["search"]); });
 app.get("/brani/genere", (req, res) => { (0, apiroutes_1.deezerEntityApi)(req, res, braniAPIsConfig["genere"]); });
 app.get("/brani/artista", (req, res) => { (0, apiroutes_1.deezerEntityApi)(req, res, braniAPIsConfig["artista"]); });
 app.get("/brani/single", (req, res) => { (0, apiroutes_1.deezerEntityApi)(req, res, braniAPIsConfig["single"]); });
+//FINE DELLE API DI DEEZER----------------------------------------
 //PASSAGGI
 app.get("/brani/:id/passaggi", apiroutes_1.getBranoPassaggi);
 app.get("/album/:id/passaggi", apiroutes_1.getAlbumPassaggi);
