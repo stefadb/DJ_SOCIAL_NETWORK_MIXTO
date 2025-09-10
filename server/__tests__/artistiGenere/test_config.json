@@ -1,5 +1,4 @@
 {
-  "picturesFolder": "artisti_pictures",
   "deezerApiCallUrl": "https://api.deezer.com/genre/106/artists?limit=5&index=0",
   "apiName": "/artisti/genere",
   "testApiCallUrl": "/artisti/genere?genreId=106&limit=5&index=0",

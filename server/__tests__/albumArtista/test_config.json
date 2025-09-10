@@ -1,5 +1,4 @@
 {
-  "picturesFolder": "album_pictures",
   "deezerApiCallUrl": "https://api.deezer.com/artist/5359276/albums?limit=10&index=0",
   "apiName": "/album/artista",
   "testApiCallUrl": "/album/artista?artistId=5359276&limit=10&index=0",

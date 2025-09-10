@@ -1,5 +1,4 @@
 export type DeezerGetTestSuiteTestConfig = {
-    picturesFolder?: string;
     deezerApiCallUrl: string;
     apiName: string;
     testApiCallUrl: string;

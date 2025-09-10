@@ -1,5 +1,4 @@
 {
-  "picturesFolder": "album_pictures",
   "deezerApiCallUrl": "https://api.deezer.com/album/769758471",
   "apiName": "/album/singolo",
   "testApiCallUrl": "/album/singolo?albumId=769758471&limit=1&index=0",

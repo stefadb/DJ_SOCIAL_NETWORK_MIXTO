@@ -1,5 +1,4 @@
 {
-  "picturesFolder": "generi_pictures",
   "deezerApiCallUrl": "https://api.deezer.com/genre",
   "apiName": "/generi",
   "testApiCallUrl": "/generi?uselessParam=uselessValue&limit=0&index=0",
