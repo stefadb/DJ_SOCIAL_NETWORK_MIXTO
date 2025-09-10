@@ -1,7 +1,7 @@
 {
   "deezerApiCallUrl": "https://api.deezer.com/track/3405992021",
-  "apiName": "/brani/single",
-  "testApiCallUrl": "/brani/single?trackId=3405992021&limit=1&index=0",
+  "apiName": "/brani/singolo",
+  "testApiCallUrl": "/brani/singolo?trackId=3405992021&limit=1&index=0",
   "entityName": "tracks",
   "dbUpsertTests": [
     {
