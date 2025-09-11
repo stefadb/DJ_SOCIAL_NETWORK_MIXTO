@@ -17,7 +17,7 @@ module.exports = {
     "/dist/",
     "__tests__/common.ts",
     "__tests__/getGenere/.test.ts",
-    "__tests__/artistiRelated/.test.ts",
+    "__tests__/artistiSimili/.test.ts",
     "__tests__/getGeneri/.test.ts",
     "__tests__/albumSearch/.test.ts",
     "__tests__/braniAlbum/.test.ts",

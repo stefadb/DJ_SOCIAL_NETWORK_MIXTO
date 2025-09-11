@@ -5,346 +5,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const apiroutes_1 = require("./apiroutes");
 const express_1 = __importDefault(require("express"));
-const functions_1 = require("./functions");
-const deezer_types_1 = require("./deezer_types");
+const deezer_apis_config_1 = require("./deezer_apis_config");
 const app = (0, express_1.default)();
 const port = 3000;
-const artistiAPIsConfig = {
-    search: {
-        paramName: "query",
-        deezerAPICallback: (res, param, limit, index) => (0, functions_1.makeDeezerApiCall)(res, "search", null, "artist", { q: param, limit: limit.toString(), index: index.toString() }),
-        entities: [{
-                tableName: "Artista",
-                deezerEntitySchema: deezer_types_1.ArtistaDeezerBasicSchema,
-                getEntityObjectsFromResponse: (response) => {
-                    return response.data.data;
-                },
-                showEntityInResponse: true
-            }]
-    },
-    related: {
-        paramName: "artistId",
-        deezerAPICallback: (res, param, limit, index) => (0, functions_1.makeDeezerApiCall)(res, "artist", param, "related", { limit: limit.toString(), index: index.toString() }),
-        entities: [{
-                tableName: "Artista",
-                deezerEntitySchema: deezer_types_1.ArtistaDeezerBasicSchema,
-                getEntityObjectsFromResponse: (response) => {
-                    return response.data.data;
-                },
-                showEntityInResponse: true
-            }]
-    },
-    genere: {
-        paramName: "genreId",
-        deezerAPICallback: (res, param, limit, index) => (0, functions_1.makeDeezerApiCall)(res, "genre", param, "artists", { limit: limit.toString(), index: index.toString() }),
-        entities: [{
-                tableName: "Artista",
-                deezerEntitySchema: deezer_types_1.ArtistaDeezerBasicSchema,
-                getEntityObjectsFromResponse: (response) => {
-                    return response.data.data;
-                },
-                showEntityInResponse: true
-            }]
-    },
-    singolo: {
-        paramName: "artistId",
-        deezerAPICallback: (res, param, limit, index) => (0, functions_1.makeDeezerApiCall)(res, "artist", param, null, null),
-        entities: [{
-                tableName: "Artista",
-                deezerEntitySchema: deezer_types_1.ArtistaDeezerBasicSchema,
-                getEntityObjectsFromResponse: (response) => {
-                    return [response.data];
-                },
-                showEntityInResponse: true
-            }]
-    }
-};
-const albumAPIsConfig = {
-    search: {
-        paramName: "query",
-        deezerAPICallback: (res, param, limit, index) => (0, functions_1.makeDeezerApiCall)(res, "search", null, "album", { q: param, limit: limit.toString(), index: index.toString() }),
-        entities: [{
-                tableName: "Album",
-                deezerEntitySchema: deezer_types_1.AlbumDeezerBasicSchema,
-                getEntityObjectsFromResponse: (response) => {
-                    return response.data.data;
-                },
-                showEntityInResponse: true
-            }]
-    },
-    singolo: {
-        paramName: "albumId",
-        deezerAPICallback: (res, param, limit, index) => (0, functions_1.makeDeezerApiCall)(res, "album", param, null, null),
-        entities: [
-            {
-                tableName: "Album",
-                deezerEntitySchema: deezer_types_1.AlbumDeezerBasicSchema,
-                getEntityObjectsFromResponse: (response) => {
-                    return [response.data];
-                },
-                showEntityInResponse: true
-            },
-            {
-                tableName: "Genere",
-                deezerEntitySchema: deezer_types_1.GenereDeezerSemplificatoSchema,
-                getEntityObjectsFromResponse: (response) => {
-                    return response.data.genres.data;
-                },
-                showEntityInResponse: false
-            }
-        ],
-        association: {
-            tableName: "album_genere",
-            deleteOldAssociations: true,
-            getAssociationsFromResponse: (response) => {
-                const albumId = response.data.id;
-                const generi = response.data.genres.data;
-                const associations = generi.map((genere) => {
-                    return { id_album: albumId, id_genere: genere.id };
-                });
-                return associations;
-            }
-        }
-    },
-    artist: {
-        paramName: "artistId",
-        deezerAPICallback: (res, param, limit, index) => (0, functions_1.makeDeezerApiCall)(res, "artist", param, "albums", { limit: limit.toString(), index: index.toString() }),
-        entities: [
-            {
-                tableName: "Album",
-                deezerEntitySchema: deezer_types_1.AlbumDeezerBasicSchema,
-                getEntityObjectsFromResponse: (response) => {
-                    return response.data.data;
-                },
-                showEntityInResponse: true
-            }
-        ]
-    },
-    genere: {
-        paramName: "genreId",
-        deezerAPICallback: (res, param, limit, index) => (0, functions_1.makeDeezerApiCall)(res, "chart", param, "albums", { limit: limit.toString(), index: index.toString() }),
-        entities: [
-            {
-                tableName: "Album",
-                deezerEntitySchema: deezer_types_1.AlbumDeezerBasicSchema,
-                getEntityObjectsFromResponse: (response) => {
-                    return response.data.data;
-                },
-                showEntityInResponse: true
-            }
-        ]
-    }
-};
-const generiAPIsConfig = {
-    singolo: {
-        paramName: "genreId",
-        deezerAPICallback: (res, param, limit, index) => (0, functions_1.makeDeezerApiCall)(res, "genre", param, null, null),
-        entities: [{
-                tableName: "Genere",
-                deezerEntitySchema: deezer_types_1.GenereDeezerBasicSchema,
-                getEntityObjectsFromResponse: (response) => {
-                    return [response.data];
-                },
-                showEntityInResponse: true
-            }]
-    },
-    getAll: {
-        paramName: "uselessParam",
-        deezerAPICallback: (res, param, limit, index) => (0, functions_1.makeDeezerApiCall)(res, "genre", null, null, null),
-        entities: [{
-                tableName: "Genere",
-                deezerEntitySchema: deezer_types_1.GenereDeezerBasicSchema,
-                getEntityObjectsFromResponse: (response) => {
-                    return response.data.data;
-                },
-                showEntityInResponse: true
-            }]
-    }
-};
-const braniAPIsConfig = {
-    album: {
-        paramName: "albumId",
-        deezerAPICallback: (res, param, limit, index) => (0, functions_1.makeDeezerApiCall)(res, "album", param, "tracks", { limit: limit.toString(), index: index.toString() }),
-        entities: [{
-                tableName: "Brano",
-                deezerEntitySchema: deezer_types_1.BranoDeezerBasicSchema,
-                getEntityObjectsFromResponse: (response) => {
-                    return response.data.data;
-                },
-                showEntityInResponse: true
-            }]
-    },
-    search: {
-        paramName: "query",
-        deezerAPICallback: (res, param, limit, index) => (0, functions_1.makeDeezerApiCall)(res, "search", null, "track", { q: param, limit: limit.toString(), index: index.toString() }),
-        entities: [
-            {
-                tableName: "Album",
-                deezerEntitySchema: deezer_types_1.AlbumDeezerBasicSchema,
-                getEntityObjectsFromResponse: (response) => {
-                    return response.data.data.map((track) => track.album);
-                },
-                showEntityInResponse: false
-            },
-            {
-                tableName: "Brano",
-                deezerEntitySchema: deezer_types_1.BranoDeezerBasicSchema,
-                getEntityObjectsFromResponse: (response) => {
-                    return response.data.data;
-                },
-                showEntityInResponse: true
-            },
-            {
-                tableName: "Artista",
-                deezerEntitySchema: deezer_types_1.ArtistaDeezerBasicSchema,
-                getEntityObjectsFromResponse: (response) => {
-                    return response.data.data.map((track) => track.artist);
-                },
-                showEntityInResponse: false
-            }
-        ],
-        association: {
-            getAssociationsFromResponse: (response) => {
-                const tracks = response.data.data;
-                return tracks
-                    .filter((track) => track.artist !== undefined)
-                    .map((track) => {
-                    return { id_brano: track.id, id_artista: track.artist.id };
-                });
-            },
-            tableName: "brano_artista",
-            deleteOldAssociations: false
-        }
-    },
-    genere: {
-        paramName: "genreId",
-        deezerAPICallback: (res, param, limit, index) => (0, functions_1.makeDeezerApiCall)(res, "chart", param, "tracks", { limit: limit.toString(), index: index.toString() }),
-        entities: [
-            {
-                tableName: "Album",
-                deezerEntitySchema: deezer_types_1.AlbumDeezerBasicSchema,
-                getEntityObjectsFromResponse: (response) => {
-                    return response.data.data.map((track) => track.album);
-                },
-                showEntityInResponse: false
-            },
-            {
-                tableName: "Brano",
-                deezerEntitySchema: deezer_types_1.BranoDeezerBasicSchema,
-                getEntityObjectsFromResponse: (response) => {
-                    return response.data.data;
-                },
-                showEntityInResponse: true
-            },
-            {
-                tableName: "Artista",
-                deezerEntitySchema: deezer_types_1.ArtistaDeezerBasicSchema,
-                getEntityObjectsFromResponse: (response) => {
-                    return response.data.data.map((track) => track.artist);
-                },
-                showEntityInResponse: false
-            },
-        ],
-        association: {
-            getAssociationsFromResponse: (response) => {
-                const tracks = response.data.data;
-                return tracks
-                    .filter((track) => track.artist !== undefined)
-                    .map((track) => {
-                    return { id_brano: track.id, id_artista: track.artist.id };
-                });
-            },
-            tableName: "brano_artista",
-            deleteOldAssociations: false
-        }
-    },
-    artista: {
-        paramName: "artistId",
-        deezerAPICallback: (res, param, limit, index) => (0, functions_1.makeDeezerApiCall)(res, "artist", param, "top", { limit: limit.toString(), index: index.toString() }),
-        entities: [
-            {
-                tableName: "Album",
-                deezerEntitySchema: deezer_types_1.AlbumDeezerBasicSchema,
-                getEntityObjectsFromResponse: (response) => {
-                    return response.data.data.map((track) => track.album);
-                },
-                showEntityInResponse: false
-            },
-            {
-                tableName: "Brano",
-                deezerEntitySchema: deezer_types_1.BranoDeezerBasicSchema,
-                getEntityObjectsFromResponse: (response) => {
-                    return response.data.data;
-                },
-                showEntityInResponse: true
-            },
-            {
-                tableName: "Artista",
-                deezerEntitySchema: deezer_types_1.ArtistaDeezerBasicSchema,
-                getEntityObjectsFromResponse: (response) => {
-                    return [].concat(...response.data.data.map((track) => track.contributors || []));
-                },
-                showEntityInResponse: false
-            },
-        ],
-        association: {
-            getAssociationsFromResponse: (response) => {
-                let associationsCount = 0;
-                let tracks = response.data.data;
-                tracks.forEach((track) => { track.contributors?.forEach((_) => { associationsCount++; }); });
-                let index = 0;
-                let associations = new Array(associationsCount);
-                tracks.forEach((track) => {
-                    track.contributors?.forEach((contributor) => {
-                        associations[index] = { id_brano: track.id, id_artista: contributor.id };
-                        index++;
-                    });
-                });
-                return associations;
-            },
-            tableName: "brano_artista",
-            deleteOldAssociations: false
-        }
-    },
-    singolo: {
-        paramName: "trackId",
-        deezerAPICallback: (res, param, limit, index) => (0, functions_1.makeDeezerApiCall)(res, "track", param, null, null),
-        entities: [
-            {
-                tableName: "Album",
-                deezerEntitySchema: deezer_types_1.AlbumDeezerBasicSchema,
-                getEntityObjectsFromResponse: (response) => {
-                    return [response.data.album];
-                },
-                showEntityInResponse: false
-            },
-            {
-                tableName: "Brano",
-                deezerEntitySchema: deezer_types_1.BranoDeezerBasicSchema,
-                getEntityObjectsFromResponse: (response) => {
-                    return [response.data];
-                },
-                showEntityInResponse: true
-            },
-            {
-                tableName: "Artista",
-                deezerEntitySchema: deezer_types_1.ArtistaDeezerBasicSchema,
-                getEntityObjectsFromResponse: (response) => {
-                    return response.data.contributors;
-                },
-                showEntityInResponse: false
-            },
-        ],
-        association: {
-            getAssociationsFromResponse: (response) => {
-                let track = response.data;
-                return track.contributors ? track.contributors.map((contributor) => ({ id_brano: track.id, id_artista: contributor.id })) : [];
-            },
-            tableName: "brano_artista",
-            deleteOldAssociations: false
-        }
-    },
-};
 //API ROUTES'
 //SCALETTE
 app.get("/scalette/:id", apiroutes_1.getScaletta);
@@ -354,31 +17,31 @@ app.put("/scalette/:id", apiroutes_1.putScalette);
 app.delete("/scalette/:id", apiroutes_1.deleteScalette);
 //API DEEZER---------------------------------------------
 //GENERI
-app.get("/generi", (req, res) => { (0, apiroutes_1.deezerEntityApi)(req, res, generiAPIsConfig["getAll"]); });
-app.get("/genere", (req, res) => { (0, apiroutes_1.deezerEntityApi)(req, res, generiAPIsConfig["singolo"]); });
+app.get("/generi", (req, res) => { (0, apiroutes_1.deezerEntityApi)(req, res, deezer_apis_config_1.generiAPIsConfig["tutti"]); });
+app.get("/genere", (req, res) => { (0, apiroutes_1.deezerEntityApi)(req, res, deezer_apis_config_1.generiAPIsConfig["singolo"]); });
 //genere/search non c'è perchè i generi sono pochi e Deezer non prevede la ricerca
 //genere/artista non c'è perchè per ottenere i generi di un artista bisogna prendere tutti gli album che contengono almeno un brano di quell'artista e poi prendere i generi di quegli album (operazione troppo pesante per Deezer)
 //genere/brano non c'è perchè per ottenere i generi di un brano bisogna prendere l'album di quel brano e poi prendere i generi di quell'album (operazione troppo pesante per Deezer)
 //genere/album non serve perchè c'è gia album/singolo che restituisce anche i generi di un album
 //ARTISTI
-app.get("/artisti/search", (req, res) => { (0, apiroutes_1.deezerEntityApi)(req, res, artistiAPIsConfig["search"]); });
-app.get("/artisti/related", (req, res) => { (0, apiroutes_1.deezerEntityApi)(req, res, artistiAPIsConfig["related"]); });
-app.get("/artisti/genere", (req, res) => { (0, apiroutes_1.deezerEntityApi)(req, res, artistiAPIsConfig["genere"]); });
-app.get("/artisti/singolo", (req, res) => { (0, apiroutes_1.deezerEntityApi)(req, res, artistiAPIsConfig["singolo"]); });
+app.get("/artisti/search", (req, res) => { (0, apiroutes_1.deezerEntityApi)(req, res, deezer_apis_config_1.artistiAPIsConfig["search"]); });
+app.get("/artisti/simili", (req, res) => { (0, apiroutes_1.deezerEntityApi)(req, res, deezer_apis_config_1.artistiAPIsConfig["simili"]); });
+app.get("/artisti/genere", (req, res) => { (0, apiroutes_1.deezerEntityApi)(req, res, deezer_apis_config_1.artistiAPIsConfig["genere"]); });
+app.get("/artisti/singolo", (req, res) => { (0, apiroutes_1.deezerEntityApi)(req, res, deezer_apis_config_1.artistiAPIsConfig["singolo"]); });
 //artisti/brano non serve perchè c'è già brani/singolo che restituisce anche gli artisti di un brano
 //TODO: implementare artisti/album per ottenere tutti gli artisti dell'album (passando per forza dai brani!)
 //ALBUM--------------------------------------------------------
-app.get("/album/search", (req, res) => { (0, apiroutes_1.deezerEntityApi)(req, res, albumAPIsConfig["search"]); });
-app.get("/album/singolo", (req, res) => { (0, apiroutes_1.deezerEntityApi)(req, res, albumAPIsConfig["singolo"]); });
-app.get("/album/artista", (req, res) => { (0, apiroutes_1.deezerEntityApi)(req, res, albumAPIsConfig["artist"]); });
-app.get("/album/genere", (req, res) => { (0, apiroutes_1.deezerEntityApi)(req, res, albumAPIsConfig["genere"]); });
-//TODO: implemnentare album/brano per ottenere l'album di appartenenza del brano specificato
+app.get("/album/search", (req, res) => { (0, apiroutes_1.deezerEntityApi)(req, res, deezer_apis_config_1.albumAPIsConfig["search"]); });
+app.get("/album/singolo", (req, res) => { (0, apiroutes_1.deezerEntityApi)(req, res, deezer_apis_config_1.albumAPIsConfig["singolo"]); });
+app.get("/album/artista", (req, res) => { (0, apiroutes_1.deezerEntityApi)(req, res, deezer_apis_config_1.albumAPIsConfig["artist"]); });
+app.get("/album/genere", (req, res) => { (0, apiroutes_1.deezerEntityApi)(req, res, deezer_apis_config_1.albumAPIsConfig["genere"]); });
+//TODO: album/brano non serve perchè basta chiamare brani/singolo per ottenere l'id dell'album e passarlo a album/singolo
 //BRANI--------------------------------------------------------
-app.get("/brani/album", (req, res) => { (0, apiroutes_1.deezerEntityApi)(req, res, braniAPIsConfig["album"]); });
-app.get("/brani/search", (req, res) => { (0, apiroutes_1.deezerEntityApi)(req, res, braniAPIsConfig["search"]); });
-app.get("/brani/genere", (req, res) => { (0, apiroutes_1.deezerEntityApi)(req, res, braniAPIsConfig["genere"]); });
-app.get("/brani/artista", (req, res) => { (0, apiroutes_1.deezerEntityApi)(req, res, braniAPIsConfig["artista"]); });
-app.get("/brani/singolo", (req, res) => { (0, apiroutes_1.deezerEntityApi)(req, res, braniAPIsConfig["singolo"]); });
+app.get("/brani/album", (req, res) => { (0, apiroutes_1.deezerEntityApi)(req, res, deezer_apis_config_1.braniAPIsConfig["album"]); });
+app.get("/brani/search", (req, res) => { (0, apiroutes_1.deezerEntityApi)(req, res, deezer_apis_config_1.braniAPIsConfig["search"]); });
+app.get("/brani/genere", (req, res) => { (0, apiroutes_1.deezerEntityApi)(req, res, deezer_apis_config_1.braniAPIsConfig["genere"]); });
+app.get("/brani/artista", (req, res) => { (0, apiroutes_1.deezerEntityApi)(req, res, deezer_apis_config_1.braniAPIsConfig["artista"]); });
+app.get("/brani/singolo", (req, res) => { (0, apiroutes_1.deezerEntityApi)(req, res, deezer_apis_config_1.braniAPIsConfig["singolo"]); });
 //FINE DELLE API DI DEEZER----------------------------------------
 //PASSAGGI
 app.get("/brani/:id/passaggi", apiroutes_1.getBranoPassaggi);

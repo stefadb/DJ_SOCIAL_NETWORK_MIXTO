@@ -1,7 +1,7 @@
 {
   "deezerApiCallUrl": "https://api.deezer.com/artist/5359276/related?limit=5&index=0",
-  "apiName": "/artisti/related",
-  "testApiCallUrl": "/artisti/related?artistId=5359276&limit=5&index=0",
+  "apiName": "/artisti/simili",
+  "testApiCallUrl": "/artisti/simili?artistId=5359276&limit=5&index=0",
   "entityName": "artists",
   "photosIdToDownload": {
     "artisti_pictures": [6164532, 11389, 203478207, 12263646, 1613691]
