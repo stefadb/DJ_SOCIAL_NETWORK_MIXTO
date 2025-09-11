@@ -5,13 +5,7 @@ import { albumAPIsConfig, artistiAPIsConfig, braniAPIsConfig, generiAPIsConfig }
 const app = express();
 const port = 3000;
 
-//API ROUTES'
-//SCALETTE
-app.get("/scalette/:id", getScaletta);
-app.get("/scalette", getScalette);
-app.post("/scalette", postScalette);
-app.put("/scalette/:id", putScalette);
-app.delete("/scalette/:id", deleteScalette);
+//API ROUTES
 
 //API DEEZER---------------------------------------------
 //GENERI
@@ -42,6 +36,12 @@ app.get("/brani/artista", (req, res) => { deezerEntityApi(req, res, braniAPIsCon
 app.get("/brani/singolo", (req, res) => { deezerEntityApi(req, res, braniAPIsConfig["singolo"]) });
 //FINE DELLE API DI DEEZER----------------------------------------
 
+//SCALETTE
+app.get("/scalette/:id", getScaletta);
+app.get("/scalette", getScalette);
+app.post("/scalette", postScalette);
+app.put("/scalette/:id", putScalette);
+app.delete("/scalette/:id", deleteScalette);
 //PASSAGGI
 app.get("/brani/:id/passaggi", getBranoPassaggi);
 app.get("/album/:id/passaggi", getAlbumPassaggi);
