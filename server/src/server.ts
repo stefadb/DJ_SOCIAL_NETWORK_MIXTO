@@ -43,11 +43,6 @@ app.post("/scalette", postScalette);
 app.put("/scalette/:id", putScalette);
 app.delete("/scalette/:id", deleteScalette);
 //PASSAGGI
-app.get("/brani/:id/passaggi", getBranoPassaggi);
-app.get("/album/:id/passaggi", getAlbumPassaggi);
-app.get("/artisti/:id/passaggi", getArtistaPassaggi);
-app.get("/utenti/:id/passaggi", getUtentePassaggi);
-app.get("/generi/:id/passaggi", getGeneriPassaggi);
 app.get("/passaggi", getPassaggi);
 app.get("/passaggi/:id", getPassaggio);
 app.post("/passaggi", postPassaggio);
