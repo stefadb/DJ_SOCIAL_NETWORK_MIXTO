@@ -1,0 +1,13 @@
+[
+	[
+		{ "id": 1, "nome": "Scaletta Test 1", "descrizione": "Descrizione di test 1", "id_utente": 3 }
+	],
+	[
+		{ "id": 1, "nome": "Scaletta Test 1", "descrizione": "Descrizione di test 1", "id_utente": 3 },
+		{ "id": 2, "nome": "Scaletta Test 2", "descrizione": "Descrizione di test 2", "id_utente": 4 }
+	],
+	[
+		{ "id": 1, "nome": "Scaletta Test 1", "descrizione": "Descrizione di test 1", "id_utente": 3 },
+		{ "id": 2, "nome": "Scaletta Test 2", "descrizione": "Descrizione di test 2", "id_utente": 4 }
+	]
+]

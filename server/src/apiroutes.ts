@@ -28,14 +28,15 @@ import {
   DbEntity,
   Durata,
   AssocBranoArtistaDb,
-  AssocAlbumGenereDb
+  AssocAlbumGenereDb,
+  DbEntitySchema
 } from './db_types';
 import {
   DeezerEntityAPIConfig,
   DeezerEntityAPIsConfig,
   DeezerEntityTableName
 } from './types';
-import { ZodIntersection, ZodObject } from 'zod';
+import z, { ZodIntersection, ZodObject } from 'zod';
 import dotenv from "dotenv";
 import { isValidDeezerObject, makeDeezerApiCall, uploadPhoto } from './functions';
 import { upsertEntitaDeezer } from './upserts';
@@ -52,6 +53,8 @@ declare module 'express-session' {
     };
   }
 }
+
+import { dbTablesAndColumns } from "./get_db_tables_and_columns";
 
 // Decidi quale file .env usare in base a NODE_ENV
 const envFile = process.env.NODE_ENV === "test" ? ".env.test" : ".env";
@@ -105,407 +108,363 @@ export async function postLogin(req: import("express").Request, res: import("exp
   }
 }
 
-// ====== CRUD UTENTE ======
-export async function getUtenti(req: import("express").Request, res: import("express").Response) {
-  const con = await getConnection();
-  const [rows] = await con.execute("SELECT * FROM Utente");
-  await con.end();
-  res.json(rows);
-}
-
-export async function getUtente(req: import("express").Request, res: import("express").Response) {
-  const con = await getConnection();
-  const [rows] = await con.execute("SELECT * FROM Utente WHERE id = ?", [
-    req.params.id,
-  ]);
-  await con.end();
-  const utenti = rows as any[];
-  res.json(utenti[0]);
-}
-
-export async function postUtente(req: import("express").Request, res: import("express").Response) {
-  const { username, first_name, surname, password } = req.body;
-  try {
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const con = await getConnection();
-    const [result] = await con.execute(
-      "INSERT INTO Utente (username, first_name, surname, password) VALUES (?, ?, ?, ?)",
-      [username, first_name, surname, hashedPassword]
-    );
-    await con.end();
-    res.json({ id: (result as mysql.ResultSetHeader).insertId });
-  } catch (err) {
-    res.status(500).json({ error: "Errore nella creazione utente" });
-  }
-}
-
-export async function putUtente(req: import("express").Request, res: import("express").Response) {
-  const { username, first_name, surname, password } = req.body;
-  const con = await getConnection();
-  await con.execute(
-    "UPDATE Utente SET username=?, first_name=?, surname=?, password=? WHERE id=?",
-    [username, first_name, surname, password, req.params.id]
-  );
-  await con.end();
-  res.sendStatus(204);
-}
-
-export async function deleteUtente(req: import("express").Request, res: import("express").Response) {
-  const con = await getConnection();
-  await con.execute("DELETE FROM Utente WHERE id=?", [req.params.id]);
-  await con.end();
-  res.sendStatus(204);
-}
-
-// ====== CRUD PASSAGGIO ======
-export async function getPassaggi(req: import("express").Request, res: import("express").Response) {
-  const con = await getConnection();
-  const [rows] = await con.execute("SELECT * FROM Passaggio");
-  await con.end();
-  res.json(rows);
-}
-
-export async function getPassaggio(req: import("express").Request, res: import("express").Response) {
-  const con = await getConnection();
-  const [rows] = await con.execute("SELECT * FROM Passaggio WHERE id = ?", [
-    req.params.id,
-  ]);
-  await con.end();
-  res.json((rows as any[])[0]);
-}
-
-export async function postPassaggio(req: import("express").Request, res: import("express").Response) {
-  const { testo, inizio, fine, id_utente, id_brano_1, id_brano_2 } = req.body;
-  const con = await getConnection();
-  const [result] = await con.execute(
-    "INSERT INTO Passaggio (testo, inizio, fine, id_utente, id_brano_1, id_brano_2) VALUES (?, ?, ?, ?, ?, ?)",
-    [testo, inizio, fine, id_utente, id_brano_1, id_brano_2]
-  );
-  await con.end();
-  res.json({ id: (result as mysql.ResultSetHeader).insertId });
-}
-
-export async function putPassaggio(req: import("express").Request, res: import("express").Response) {
-  const { testo, inizio, fine, id_utente, id_brano_1, id_brano_2 } = req.body;
-  const con = await getConnection();
-  await con.execute(
-    "UPDATE Passaggio SET testo=?, inizio=?, fine=?, id_utente=?, id_brano_1=?, id_brano_2=? WHERE id=?",
-    [testo, inizio, fine, id_utente, id_brano_1, id_brano_2, req.params.id]
-  );
-  await con.end();
-  res.sendStatus(204);
-}
-
-export async function deletePassaggio(req: import("express").Request, res: import("express").Response) {
-  const con = await getConnection();
-  await con.execute("DELETE FROM Passaggio WHERE id=?", [req.params.id]);
-  await con.end();
-  res.sendStatus(204);
-}
-
-// ====== CRUD COMMENTO ======
-export async function getCommenti(req: import("express").Request, res: import("express").Response) {
-  const con = await getConnection();
-  const [rows] = await con.execute("SELECT * FROM Commento");
-  await con.end();
-  res.json(rows);
-}
-
-export async function getCommento(req: import("express").Request, res: import("express").Response) {
-  const con = await getConnection();
-  const [rows] = await con.execute("SELECT * FROM Commento WHERE id = ?", [
-    req.params.id,
-  ]);
-  await con.end();
-  res.json(((rows as any[]))[0]);
-}
-
-export async function postCommento(req: import("express").Request, res: import("express").Response) {
-  const { testo, id_utente, id_passaggio, id_commento_padre } = req.body;
-  const con = await getConnection();
-  const [result] = await con.execute(
-    "INSERT INTO Commento (testo, id_utente, id_passaggio, id_commento_padre) VALUES (?, ?, ?, ?)",
-    [testo, id_utente, id_passaggio, id_commento_padre]
-  );
-  await con.end();
-  res.json({ id: (result as mysql.ResultSetHeader).insertId });
-}
-
-export async function putCommento(req: import("express").Request, res: import("express").Response) {
-  const { testo, id_utente, id_passaggio, id_commento_padre } = req.body;
-  const con = await getConnection();
-  await con.execute(
-    "UPDATE Commento SET testo=?, id_utente=?, id_passaggio=?, id_commento_padre=? WHERE id=?",
-    [testo, id_utente, id_passaggio, id_commento_padre, req.params.id]
-  );
-  await con.end();
-  res.sendStatus(204);
-}
-
-export async function deleteCommento(req: import("express").Request, res: import("express").Response) {
-  const con = await getConnection();
-  await con.execute("DELETE FROM Commento WHERE id=?", [req.params.id]);
-  await con.end();
-  res.sendStatus(204);
-}
-
-// ====== CRUD VALUTAZIONE ======
-export async function getValutazioni(req: import("express").Request, res: import("express").Response) {
-  const con = await getConnection();
-  const [rows] = await con.execute("SELECT * FROM Valutazione");
-  await con.end();
-  res.json(rows);
-}
-
-export async function getValutazione(req: import("express").Request, res: import("express").Response) {
-  const con = await getConnection();
-  const [rows] = await con.execute("SELECT * FROM Valutazione WHERE id = ?", [
-    req.params.id,
-  ]);
-  await con.end();
-  res.json(((rows as any[]))[0]);
-}
-
-export async function postValutazione(req: import("express").Request, res: import("express").Response) {
-  const { voto, id_utente, id_passaggio } = req.body;
-  const con = await getConnection();
-  const [result] = await con.execute(
-    "INSERT INTO Valutazione (voto, id_utente, id_passaggio) VALUES (?, ?, ?)",
-    [voto, id_utente, id_passaggio]
-  );
-  await con.end();
-  res.json({ id: (result as mysql.ResultSetHeader).insertId });
-}
-
-export async function putValutazione(req: import("express").Request, res: import("express").Response) {
-  const { voto, id_utente, id_passaggio } = req.body;
-  const con = await getConnection();
-  await con.execute(
-    "UPDATE Valutazione SET voto=?, id_utente=?, id_passaggio=? WHERE id=?",
-    [voto, id_utente, id_passaggio, req.params.id]
-  );
-  await con.end();
-  res.sendStatus(204);
-}
-
-export async function deleteValutazione(req: import("express").Request, res: import("express").Response) {
-  const con = await getConnection();
-  await con.execute("DELETE FROM Valutazione WHERE id=?", [req.params.id]);
-  await con.end();
-  res.sendStatus(204);
-}
-
-// ====== CREATE VISUALIZZAZIONE ======
-export async function postVisualizzazione(req: import("express").Request, res: import("express").Response) {
-  const { id_utente, id_passaggio } = req.body;
-  const con = await getConnection();
-  const [result] = await con.execute(
-    "INSERT INTO Visualizzazione (id_utente, id_passaggio) VALUES (?, ?)",
-    [id_utente, id_passaggio]
-  );
-  await con.end();
-  res.json({ id: (result as mysql.ResultSetHeader).insertId });
-}
-
-function getPagination(page: number, pageSize: number) {
-  const offset = (page - 1) * pageSize;
-  return { pageSize, offset };
-}
-
-// ====== PASSAGGI CORRELATI ======
-export async function getBranoPassaggi(req: import("express").Request, res: import("express").Response) {
-  if (typeof req.query.page !== "string" || typeof req.query.pageSize !== "string" || isNaN(parseInt(req.query.page)) || isNaN(parseInt(req.query.pageSize))) {
-    return res.status(400).json({ error: "Parametri di paginazione non validi" });
-  }
-  const { pageSize, offset } = getPagination(parseInt(req.query.page), parseInt(req.query.pageSize));
-  const con = await getConnection();
-  const [rows] = await con.execute(
-    "SELECT * FROM Passaggio WHERE id_brano_1 = ? OR id_brano_2 = ? LIMIT ? OFFSET ?",
-    [req.params.id, req.params.id, pageSize, offset]
-  );
-  await con.end();
-  res.json(rows);
-}
-
-export async function getAlbumPassaggi(req: import("express").Request, res: import("express").Response) {
-  if (typeof req.query.page !== "string" || typeof req.query.pageSize !== "string" || isNaN(parseInt(req.query.page)) || isNaN(parseInt(req.query.pageSize))) {
-    return res.status(400).json({ error: "Parametri di paginazione non validi" });
-  }
-  const { pageSize, offset } = getPagination(parseInt(req.query.page), parseInt(req.query.pageSize));
-  const con = await getConnection();
-  const [rows] = await con.execute(
-    `SELECT p.* FROM Passaggio p
-         LEFT JOIN Brano b1 ON p.id_brano_1 = b1.id
-         LEFT JOIN Brano b2 ON p.id_brano_2 = b2.id
-         WHERE b1.id_album = ? OR b2.id_album = ?
-         LIMIT ? OFFSET ?`,
-    [req.params.id, req.params.id, pageSize, offset]
-  );
-  await con.end();
-  res.json(rows);
-}
-
-export async function getArtistaPassaggi(req: import("express").Request, res: import("express").Response) {
-  if (typeof req.query.page !== "string" || typeof req.query.pageSize !== "string" || isNaN(parseInt(req.query.page)) || isNaN(parseInt(req.query.pageSize))) {
-    return res.status(400).json({ error: "Parametri di paginazione non validi" });
-  }
-  const { pageSize, offset } = getPagination(parseInt(req.query.page), parseInt(req.query.pageSize));
-  const con = await getConnection();
-  const [rows] = await con.execute(
-    `SELECT p.* FROM Passaggio p
-         LEFT JOIN Brano b1 ON p.id_brano_1 = b1.id
-         LEFT JOIN Brano b2 ON p.id_brano_2 = b2.id
-         LEFT JOIN Album_Artista aa1 ON b1.id_album = aa1.id_album
-         LEFT JOIN Album_Artista aa2 ON b2.id_album = aa2.id_album
-         WHERE aa1.id_artista = ? OR aa2.id_artista = ?
-         LIMIT ? OFFSET ?`,
-    [req.params.id, req.params.id, pageSize, offset]
-  );
-  await con.end();
-  res.json(rows);
-}
-
-export async function getUtentePassaggi(req: import("express").Request, res: import("express").Response) {
-  const con = await getConnection();
-  const [rows] = await con.execute(
-    "SELECT * FROM Passaggio WHERE id_utente = ?",
-    [req.params.id]
-  );
-  await con.end();
-  res.json(rows);
-}
-// Configurazione del database
-
-export async function getScaletta(req: import("express").Request, res: import("express").Response) {
-  try {
-    const con = await getConnection();
-    const [rows] = await con.execute("SELECT * FROM Scaletta WHERE id = ?", [
-      req.params.id,
-    ]);
-    if ((rows as any[]).length > 0) {
-      const scaletta = ((rows as any[]))[0];
-      const [passaggi] = await con.execute(
-        `SELECT p.* FROM Passaggio p
-         JOIN Scaletta_Passaggio sp ON p.id = sp.id_passaggio
-         WHERE sp.id_scaletta = ?`,
-        [scaletta.id]
-      );
-      scaletta.passaggi = passaggi;
-      await con.end();
-      res.json(scaletta);
-    } else {
-      await con.end();
-      res.status(404).json({ error: "Scaletta non trovata" });
-    }
-  } catch (err) {
-    res.status(500).json({ error: "Errore nel recupero della scaletta" });
-  }
-}
-
-export async function getScalette(req: import("express").Request, res: import("express").Response) {
-  try {
-    const con = await getConnection();
-    const [scalette] = await con.execute("SELECT * FROM Scaletta");
-    for (const scaletta of (scalette as any[])) {
-      const [passaggi] = await con.execute(
-        `SELECT p.* FROM Passaggio p
-         JOIN Scaletta_Passaggio sp ON p.id = sp.id_passaggio
-         WHERE sp.id_scaletta = ?`,
-        [scaletta.id]
-      );
-      scaletta.passaggi = passaggi;
-    }
-    await con.end();
-    res.json(scalette);
-  } catch (err) {
-    res.status(500).json({ error: "Errore nel recupero delle scalette" });
-  }
-}
-
-export async function postScalette(req: import("express").Request, res: import("express").Response) {
-  const { nome, descrizione, passaggi } = req.body; // passaggi: array di id_passaggio
-  try {
-    const con = await getConnection();
-    const [result] = await con.execute(
-      "INSERT INTO Scaletta (nome, descrizione) VALUES (?, ?)",
-      [nome, descrizione]
-    );
-    const id_scaletta = (result as mysql.ResultSetHeader).insertId;
-    if (Array.isArray(passaggi) && passaggi.length > 0) {
-      for (const id_passaggio of passaggi) {
-        await con.execute(
-          "INSERT INTO Scaletta_Passaggio (id_scaletta, id_passaggio) VALUES (?, ?)",
-          [id_scaletta, id_passaggio]
-        );
-      }
-    }
-    await con.end();
-    res.json({ id: id_scaletta });
-  } catch (err) {
-    res.status(500).json({ error: "Errore nella creazione della scaletta" });
-  }
-}
-
-export async function putScalette(req: import("express").Request, res: import("express").Response) {
-  const { nome, descrizione, passaggi } = req.body; // passaggi: array di id_passaggio
-  try {
-    const con = await getConnection();
-    await con.execute(
-      "UPDATE Scaletta SET nome = ?, descrizione = ? WHERE id = ?",
-      [nome, descrizione, req.params.id]
-    );
-    // Aggiorna la relazione molti-a-molti: elimina tutte e reinserisce
-    await con.execute("DELETE FROM Scaletta_Passaggio WHERE id_scaletta = ?", [
-      req.params.id,
-    ]);
-    if (Array.isArray(passaggi) && passaggi.length > 0) {
-      for (const id_passaggio of passaggi) {
-        await con.execute(
-          "INSERT INTO Scaletta_Passaggio (id_scaletta, id_passaggio) VALUES (?, ?)",
-          [req.params.id, id_passaggio]
-        );
-      }
-    }
-    await con.end();
-    res.sendStatus(204);
-  } catch (err) {
-    res.status(500).json({ error: "Errore nella modifica della scaletta" });
-  }
-}
-
-export async function deleteScalette(req: import("express").Request, res: import("express").Response) {
-  try {
-    const con = await getConnection();
-    await con.execute("DELETE FROM Scaletta_Passaggio WHERE id_scaletta = ?", [
-      req.params.id,
-    ]);
-    await con.execute("DELETE FROM Scaletta WHERE id = ?", [req.params.id]);
-    await con.end();
-    res.sendStatus(204);
-  } catch (err) {
-    res.status(500).json({ error: "Errore nell'eliminazione della scaletta" });
-  }
-}
-
-//TODO: Adattare meglio questa funzione a Typescript
-export async function getGeneriPassaggi(req: import("express").Request, res: import("express").Response) {
-  const { pageSize = 20, offset = 0 } = req.query;
-  const con = await getConnection();
-  const [rows] = await con.execute(
-    `SELECT p.* FROM Passaggio p
-         LEFT JOIN Brano b1 ON p.id_brano_1 = b1.id
-         LEFT JOIN Brano b2 ON p.id_brano_2 = b2.id
-         WHERE b1.id_genere = ? OR b2.id_genere = ?
-         LIMIT ? OFFSET ?`,
-    [req.params.id, req.params.id, Number(pageSize), Number(offset)]
-  );
-  await con.end();
-  res.json(rows);
-}
-
 //DA QUI IN GIU, LE FUNZIONI GIA ADATTATE A TYPESCRIPT
 
-//-------------------------------------------------------------------------------
+export async function deleteEntity(req: import("express").Request, res: import("express").Response, tableName: string) {
+  const id = req.params.id;
+  const con = await getConnection();
+  try {
+    await con.execute(`DELETE FROM ${tableName} WHERE id = ?`, [id]);
+    await con.end();
+    res.sendStatus(204);
+  } catch (err) {
+    res.status(500).json({ error: "Errore nell'eliminazione dell'entità" });
+  }
+}
+
+function relationIsManyToOne(table1: string, table2: string): boolean {
+  const columns = dbTablesAndColumns[table1];
+  if (columns === undefined) {
+    return false;
+  }
+  for (const column of columns) {
+    if (column.startsWith(`id_${table2}`)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+function relationIsOneToMany(table1: string, table2: string): boolean {
+  const columns = dbTablesAndColumns[table2];
+  if (columns === undefined) {
+    return false;
+  }
+  for (const column of columns) {
+    if (column.startsWith(`id_${table1}`)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+function relationIsManyToMany(table1: string, table2: string): boolean {
+  return `${table1}_${table2}` in dbTablesAndColumns || `${table2}_${table1}` in dbTablesAndColumns;
+}
+
+function undefinedizeNullValues(obj: Record<string, any>) {
+  for (const key in obj) {
+    if (obj[key] === null) {
+      obj[key] = undefined;
+    }
+  }
+}
+
+function dbResultIsValid(res: import("express").Response, array: boolean, entity: any, schema: ZodObject<any>, tableName: string): boolean {
+  if (!array) {
+    if (!schema.safeParse(entity).success) {
+      //Passaggio necessario perchè i valori null del db sono undefined per gli schemi zod
+      undefinedizeNullValues(entity);
+      res.status(500).json({ error: `Entità associata ${tableName} non valida`, details: schema.safeParse(entity).error });
+      return false;
+    }
+  } else {
+    let index = 0;
+    for (const singleObj of entity) {
+      //Passaggio necessario perchè i valori null del db sono undefined per gli schemi zod
+      undefinedizeNullValues(singleObj);
+      if (!schema.safeParse(singleObj).success) {
+        res.status(500).json({ error: `Entità associata ${tableName} non valida alla posizione ${index}`, details: schema.safeParse(singleObj).error });
+        return false;
+      }
+      index++;
+    }
+  }
+  return true;
+}
+
+
+//TODO: testare questa funzione per capire se funziona
+export async function getEntityWithAssociations(
+  req: import("express").Request,
+  res: import("express").Response,
+
+  config: {
+    mainTableName: string,
+    mainTableColumns: string[],
+    mainTableSchema: ZodObject<any>,
+    otherTables: {
+      tableName: string,
+      columns: string[],
+      schema: ZodObject<any>
+    }[]
+  }
+) {
+  const id = req.params.id;
+  const con = await getConnection();
+  try {
+    //ESEGUI LA QUERY DI SELECT SULLA TABELLA PRINCIPALE
+    const mainTableCols = config.mainTableColumns.map(col => `${config.mainTableName}.${col}`).join(", ");
+    const [mainRows] = await con.execute(
+      `SELECT ${mainTableCols} FROM ${config.mainTableName} WHERE ${config.mainTableName}.id = ?`,
+      [id]
+    );
+    const mainEntity = (mainRows as any[])[0];
+    if (!config.mainTableSchema.safeParse(mainEntity).success) {
+      res.status(500).json({ error: "Entità principale non valida", details: config.mainTableSchema.safeParse(mainEntity).error });
+      return;
+    }
+    //PER OGNI TABELLA ASSOCIATA, ESEGUI LA QUERY DI SELECT
+    for (const assoc of config.otherTables) {
+      if (`include_${assoc.tableName}` in req.query) {
+        //in base al nome della tabella, cerca di capire il tipo di relazione leggendo dbTablesAndColumns
+        if (relationIsManyToMany(config.mainTableName, assoc.tableName)) {
+          //RELAZIONE MOLTI A MOLTI
+          const tableCols = assoc.columns.map(col => `${assoc.tableName}.${col}`).join(", ");
+          const [rows] = await con.execute(
+            `SELECT ${tableCols}
+          FROM ${assoc.tableName}
+          JOIN ${config.mainTableName}_${assoc.tableName} ON ${assoc.tableName}.id = ${config.mainTableName}_${assoc.tableName}.id_${assoc.tableName}
+          WHERE ${config.mainTableName}_${assoc.tableName}.id_${config.mainTableName} = ?`,
+            [id]
+          );
+          if (!dbResultIsValid(res, true, rows, assoc.schema, assoc.tableName)) {
+            return;
+          }
+          mainEntity[assoc.tableName + "s"] = rows;
+        } else if (relationIsManyToOne(config.mainTableName, assoc.tableName)) {
+          const columns = dbTablesAndColumns[config.mainTableName];
+          if (columns !== undefined) {
+            for (const column of columns) {
+              if (column.startsWith(`id_${assoc.tableName}`)) {
+                const [rows] = await con.execute(
+                  `SELECT ${assoc.columns.map(col => `${assoc.tableName}.${col}`).join(", ")}
+                FROM ${assoc.tableName}
+                WHERE ${assoc.tableName}.id = ?`,
+                  [mainEntity[column]]
+                );
+                const row = (rows as any[])[0];
+                if (!dbResultIsValid(res, false, row, assoc.schema, assoc.tableName)) {
+                  return;
+                }
+                mainEntity[assoc.tableName + column.substring((`id_${assoc.tableName}`).length)] = row;
+              }
+            }
+          } else {
+            res.status(500).json({ error: `Manca la tabella ${config.mainTableName} nel db!` });
+          }
+        } else if (relationIsOneToMany(config.mainTableName, assoc.tableName)) {
+          const columns = dbTablesAndColumns[assoc.tableName];
+          if (columns !== undefined) {
+            for (const column of columns) {
+              if (column.startsWith(`id_${config.mainTableName}`)) {
+                const [rows] = await con.execute(
+                  `SELECT ${assoc.columns.map(col => `${assoc.tableName}.${col}`).join(", ")}
+                FROM ${assoc.tableName}
+                WHERE ${column} = ?`,
+                  [mainEntity.id]
+                );
+                if (!dbResultIsValid(res, true, rows, assoc.schema, assoc.tableName)) {
+                  return;
+                }
+                mainEntity[assoc.tableName + "s" + column.substring((`id_${config.mainTableName}`).length)] = rows;
+              }
+            }
+          } else {
+            res.status(500).json({ error: `Manca la tabella ${config.mainTableName} nel db!` });
+          }
+        } else {
+          res.status(500).json({ error: `Non è stato possibile riconoscere il tipo di relazione tra ${config.mainTableName} e ${assoc.tableName}` });
+          return;
+        }
+      }
+    }
+  } catch (err) {
+    res.status(500).json({ error: "Errore nella query sulla tabella principale", details: err });
+  } finally {
+    await con.end();
+  }
+}
+
+//TODO: testare questa funzione per capire se funziona
+export async function getFilteredEntitiesList(
+  req: import("express").Request,
+  res: import("express").Response,
+
+  config: {
+    mainTableName: string,
+    mainTableColumns: string[],
+    mainTableSchema: ZodObject<any>,
+    filters: {
+      table: string,
+      column: string,
+      value: string | number,
+      joinColumnSuffix?: string //se la colonna di join non è id_[table], specificare il suffisso qui
+    }[]
+  }
+) {
+  let selectStatement = `SELECT ${config.mainTableColumns.map(col => `${config.mainTableName}.${col}`).join(", ")}\nFROM ${config.mainTableName}\n`;
+  let whereStatement = config.filters.length == 0 ? "" : `WHERE ${config.filters.map((filter, i) => `${filter.table}_${i}.${filter.column} = ${filter.value}`).join(" AND ")}`;
+  let joins = "";
+  for (const [i, filter] of config.filters.entries()) {
+    //console.log("Vorrei mettere il JOIN!!");
+    if (relationIsManyToMany(config.mainTableName, filter.table)) {
+      const middleTableName = `${config.mainTableName}_${filter.table}` in dbTablesAndColumns ? `${config.mainTableName}_${filter.table}` : `${filter.table}_${config.mainTableName}`;
+      joins += `JOIN ${middleTableName} AS ${middleTableName}_${i} ON ${config.mainTableName}.id = ${middleTableName}_${i}.id_${config.mainTableName}\n`;
+      joins += `JOIN ${filter.table} AS ${filter.table}_${i} ON ${filter.table}_${i}.id = ${middleTableName}_${i}.id_${filter.table}\n`;
+      //console.log("Ho messo il JOIN!!");
+    } else if (relationIsManyToOne(config.mainTableName, filter.table)) {
+      joins += `JOIN ${filter.table} AS ${filter.table}_${i} ON ${filter.table}_${i}.id = ${config.mainTableName}.id_${filter.table}${filter.joinColumnSuffix ? `_${filter.joinColumnSuffix}` : ""}\n`;
+      //console.log("Ho messo il JOIN!!");
+    } else if (relationIsOneToMany(config.mainTableName, filter.table)) {
+      joins += `JOIN ${filter.table} AS ${filter.table}_${i} ON ${filter.table}_${i}.id_${config.mainTableName}${filter.joinColumnSuffix ? `_${filter.joinColumnSuffix}` : ""} = ${config.mainTableName}.id\n`;
+      //console.log("Ho messo il JOIN!!");
+    }
+  }
+  const finalQuery = selectStatement + joins + whereStatement;
+  const con = await getConnection();
+  try {
+    const [rows] = await con.execute(finalQuery);
+    //PROBLEMA: ogni tanto config.mainTableSchema è undefined
+    if (!dbResultIsValid(res, true, rows, config.mainTableSchema, config.mainTableName)) {
+      return;
+    }
+    res.json(rows);
+  } catch (err) {
+    res.status(500).json({ error: "Errore nella query", details: err });
+  } finally {
+    await con.end();
+  }
+}
+
+export async function postEntity(
+  req: import("express").Request,
+  res: import("express").Response,
+
+  config: {
+    mainTableName: string,
+    mainTableSchema: ZodObject<any>,
+    mainTableNewRowValues: Record<string, string | number>,
+    assocTablesAndIds: Record<string, number[]>, //es. { "Genere": [1, 2, 3], "Artista": [4, 5] } per associare l'entità appena creata con i generi 1, 2, 3 e gli artisti 4, 5
+  }) {
+  try {
+    const { mainTableName, mainTableNewRowValues, assocTablesAndIds } = config;
+    if ("id" in mainTableNewRowValues) {
+      res.status(400).json({ error: "L'inserimento dell'id per l'entità non è consentito" });
+      return;
+    }
+    if (!dbResultIsValid(res, false, { ...mainTableNewRowValues, id: 1 /* Numero qualsiasi*/ }, config.mainTableSchema, mainTableName)) {
+      return;
+    }
+    const con = await getConnection();
+    // 1. Inserisci la nuova riga nella tabella principale
+    const columns = Object.keys(mainTableNewRowValues).join(", ");
+    const placeholders = Object.keys(mainTableNewRowValues).map(() => "?").join(", ");
+    const values = Object.values(mainTableNewRowValues);
+    const [result] = await con.execute(
+      `INSERT INTO ${mainTableName} (${columns}) VALUES (${placeholders})`,
+      values
+    );
+    // 2. Recupera l'id della nuova riga
+    const insertId = (result as mysql.ResultSetHeader).insertId;
+    // 3. Inserisci le associazioni nelle tabelle di join
+    for (const assocTable in assocTablesAndIds) {
+      if (assocTablesAndIds[assocTable] !== undefined) {
+        const ids = assocTablesAndIds[assocTable];
+        // Nome tabella di join (in ordine alfabetico, separato da _)
+        const joinTable = mainTableName + "_" + assocTable in dbTablesAndColumns ? mainTableName + "_" + assocTable : assocTable + "_" + mainTableName;
+        if (!(joinTable in dbTablesAndColumns)) {
+          res.status(500).json({ error: `Tabella di join ${joinTable} non trovata nel database` });
+          return;
+        }
+        // Chiave esterna per la tabella principale e associata
+        const mainKey = `id_${mainTableName.toLowerCase()}`;
+        const assocKey = `id_${assocTable.toLowerCase()}`;
+        for (const assocId of ids) {
+          await con.execute(
+            `INSERT INTO ${joinTable} (${mainKey}, ${assocKey}) VALUES (?, ?)`,
+            [insertId, assocId]
+          );
+        }
+      }
+    }
+    await con.end();
+    // 4. Risposta con id della nuova entità
+    res.json({ id: insertId });
+  } catch (err) {
+    res.status(500).json({ error: "Errore nella creazione dell'entità", details: err });
+  }
+}
+
+export async function putEntity(
+  req: import("express").Request,
+  res: import("express").Response,
+
+  config: {
+    mainTableName: string,
+    mainTableNewRowValues: Record<string, string | number>,
+    mainTableSchema: ZodObject<any>,
+    deleteOldAssociationsFirst: boolean, //se true, elimina tutte le associazioni vecchie prima di inserire le nuove
+    assocTablesAndIds: Record<string, number[]>, //es. { "Genere": [1, 2, 3], "Artista": [4, 5] } per associare l'entità appena creata con i generi 1, 2, 3 e gli artisti 4, 5
+  }) {
+  try {
+    const { mainTableName, mainTableNewRowValues, assocTablesAndIds } = config;
+    if ("id" in mainTableNewRowValues) {
+      res.status(400).json({ error: "L'aggiornamento dell'id dell'entità non è consentito" });
+      return;
+    }
+    if (!dbResultIsValid(res, false, { ...mainTableNewRowValues, id: 1 /* Numero qualsiasi*/ }, config.mainTableSchema, mainTableName)) {
+      return;
+    }
+    const con = await getConnection();
+    // 1. Aggiorna la  riga nella tabella principale
+    const values = Object.values(mainTableNewRowValues);
+    const columnsAndPlaceholders = Object.keys(mainTableNewRowValues).map(col => `${col} = ?`).join(", ");
+    const [result] = await con.execute(
+      `UPDATE ${mainTableName} SET ${columnsAndPlaceholders} WHERE id = ?`,
+      [...values, mainTableNewRowValues.id]
+    );
+    if ((result as mysql.ResultSetHeader).affectedRows === 0) {
+      res.status(404).json({ error: "Entità non trovata" });
+      return;
+    }
+    // 2. Inserisci le associazioni nelle tabelle di join (eliminando prima le vecchie se richiesto)
+    for (const assocTable in assocTablesAndIds) {
+      if (assocTablesAndIds[assocTable] !== undefined) {
+        const ids = assocTablesAndIds[assocTable];
+        // Nome tabella di join (in ordine alfabetico, separato da _)
+        const joinTable = mainTableName + "_" + assocTable in dbTablesAndColumns ? mainTableName + "_" + assocTable : assocTable + "_" + mainTableName;
+        if (!(joinTable in dbTablesAndColumns)) {
+          res.status(500).json({ error: `Tabella di join ${joinTable} non trovata nel database` });
+          return;
+        }
+        if (!config.deleteOldAssociationsFirst) {
+          // Elimina tutte le associazioni vecchie
+          await con.execute(
+            `DELETE FROM ${joinTable} WHERE id_${mainTableName.toLowerCase()} = ?`,
+            [mainTableNewRowValues.id]
+          );
+        }
+        // Chiave esterna per la tabella principale e associata
+        const mainKey = `id_${mainTableName.toLowerCase()}`;
+        const assocKey = `id_${assocTable.toLowerCase()}`;
+        for (const assocId of ids) {
+          await con.execute(
+            `INSERT IGNORE INTO ${joinTable} (${mainKey}, ${assocKey}) VALUES (?, ?)`,
+            [req.params.id, assocId]
+          );
+        }
+      }
+    }
+    await con.end();
+    // 4. Risposta con id della nuova entità
+    res.status(200).json();
+  } catch (err) {
+    res.status(500).json({ error: "Errore nella creazione dell'entità", details: err });
+  }
+}
+
+
 
 function fromSecondsToTime(seconds: number): Durata {
   const mins = Math.floor(seconds / 60);
@@ -519,7 +478,7 @@ function fromDeezerEntityToDbEntity(entity: GenericDeezerEntityBasic, tableName:
     case "Artista":
       return { id: entity.id, nome: (entity as ArtistaDeezerBasic).name } as ArtistaDb;
     case "Album":
-      return { id: entity.id, titolo: (entity as AlbumDeezerBasic).title, data_uscita: (entity as AlbumDeezerBasic).release_date !== undefined ? (entity as AlbumDeezerBasic).release_date : null} as AlbumDb;
+      return { id: entity.id, titolo: (entity as AlbumDeezerBasic).title, data_uscita: (entity as AlbumDeezerBasic).release_date !== undefined ? (entity as AlbumDeezerBasic).release_date : null } as AlbumDb;
     case "Genere":
       return { id: entity.id, nome: (entity as GenereDeezerBasic).name } as GenereDb;
     case "Brano":
@@ -562,7 +521,6 @@ function getPicturesFolder(tableName: DeezerEntityTableName): string {
 
 
 async function upsertAssociations(tableName: "album_genere" | "brano_artista", associations: AssocAlbumGenereDb[] | AssocBranoArtistaDb[]) {
-  //TODO: implementare
   //Questa funzione deve eseguire l'upsert di tutte le associazioni passate in associations, sulla tabella album_genere o brano_artista
   //Per ogni associazione, se non esiste, va inserita
   //Se esiste già, non va fatto nulla (non ci sono altri campi da aggiornare)
@@ -607,7 +565,6 @@ async function upsertAssociations(tableName: "album_genere" | "brano_artista", a
   }
 }
 async function deleteOldAssociations(tableName: "album_genere" | "brano_artista", associations: AssocAlbumGenereDb[] | AssocBranoArtistaDb[]) {
-  //TODO: implementare
   //Se tableName è album_genere:
   //Per ogni association dentro associations, la funzione deve eliminare tutte le righe della tabella album_genere dove id_album è uguale a association.id_album
   //Se tableName è brano_artista:
@@ -690,7 +647,6 @@ export async function deezerEntityApi(
       }
     }
   } catch (err) {
-    console.log(err);
     res.status(500).json({ error: "Errore su questa Api legata a Deezer" });
   }
 }

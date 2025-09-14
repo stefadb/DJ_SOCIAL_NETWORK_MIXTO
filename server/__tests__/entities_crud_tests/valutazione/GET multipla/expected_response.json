@@ -1,0 +1,25 @@
+[
+	[
+		{ "id": 1, "voto": 5, "id_utente": 3, "id_passaggio": 1 },
+		{ "id": 3, "voto": 3, "id_utente": 3, "id_passaggio": 2 },
+		{ "id": 5, "voto": 5, "id_utente": 3, "id_passaggio": 3 },
+		{ "id": 7, "voto": 3, "id_utente": 3, "id_passaggio": 4 },
+		{ "id": 9, "voto": 5, "id_utente": 3, "id_passaggio": 5 }
+	],
+	[
+		{ "id": 1, "voto": 5, "id_utente": 3, "id_passaggio": 1 },
+		{ "id": 2, "voto": 4, "id_utente": 4, "id_passaggio": 1 }
+	],
+	[
+		{ "id": 1, "voto": 5, "id_utente": 3, "id_passaggio": 1 },
+		{ "id": 2, "voto": 4, "id_utente": 4, "id_passaggio": 1 },
+		{ "id": 3, "voto": 3, "id_utente": 3, "id_passaggio": 2 },
+		{ "id": 4, "voto": 2, "id_utente": 4, "id_passaggio": 2 },
+		{ "id": 5, "voto": 5, "id_utente": 3, "id_passaggio": 3 },
+		{ "id": 6, "voto": 4, "id_utente": 4, "id_passaggio": 3 },
+		{ "id": 7, "voto": 3, "id_utente": 3, "id_passaggio": 4 },
+		{ "id": 8, "voto": 2, "id_utente": 4, "id_passaggio": 4 },
+		{ "id": 9, "voto": 5, "id_utente": 3, "id_passaggio": 5 },
+		{ "id": 10, "voto": 4, "id_utente": 4, "id_passaggio": 5 }
+	]
+]

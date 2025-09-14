@@ -1,0 +1,7 @@
+[
+    { "testApiCallUrl": "/passaggi?utente=1" },
+    { "testApiCallUrl": "/passaggi?primoBrano=1007" },
+    { "testApiCallUrl": "/passaggi?secondoBrano=1012" },
+    { "testApiCallUrl": "/passaggi?scaletta=1" },
+    { "testApiCallUrl": "/passaggi" }
+]

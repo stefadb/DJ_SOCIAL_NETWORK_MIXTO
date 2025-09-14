@@ -1,0 +1,18 @@
+[
+	[
+		{ "id": 6, "data_visualizzazione": "2022-06-01 12:00:00", "id_utente": 3, "id_passaggio": 1 },
+		{ "id": 7, "data_visualizzazione": "2022-06-01 13:00:00", "id_utente": 3, "id_passaggio": 1 },
+		{ "id": 10, "data_visualizzazione": "2022-06-01 16:00:00", "id_utente": 4, "id_passaggio": 1 },
+		{ "id": 11, "data_visualizzazione": "2022-06-01 17:00:00", "id_utente": 4, "id_passaggio": 1 }
+	],
+	[
+		{ "id": 6, "data_visualizzazione": "2022-06-01 12:00:00", "id_utente": 3, "id_passaggio": 1 },
+		{ "id": 7, "data_visualizzazione": "2022-06-01 13:00:00", "id_utente": 3, "id_passaggio": 1 },
+		{ "id": 8, "data_visualizzazione": "2022-06-01 14:00:00", "id_utente": 3, "id_passaggio": 2 },
+		{ "id": 9, "data_visualizzazione": "2022-06-01 15:00:00", "id_utente": 3, "id_passaggio": 2 },
+		{ "id": 10, "data_visualizzazione": "2022-06-01 16:00:00", "id_utente": 4, "id_passaggio": 1 },
+		{ "id": 11, "data_visualizzazione": "2022-06-01 17:00:00", "id_utente": 4, "id_passaggio": 1 },
+		{ "id": 12, "data_visualizzazione": "2022-06-01 18:00:00", "id_utente": 4, "id_passaggio": 2 },
+		{ "id": 13, "data_visualizzazione": "2022-06-01 19:00:00", "id_utente": 4, "id_passaggio": 2 }
+	]
+]

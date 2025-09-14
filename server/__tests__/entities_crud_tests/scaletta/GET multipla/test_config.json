@@ -1,0 +1,5 @@
+[
+    { "testApiCallUrl": "/scalette?utente=3" },
+    { "testApiCallUrl": "/scalette?passaggio=1" },
+    { "testApiCallUrl": "/scalette" }
+]

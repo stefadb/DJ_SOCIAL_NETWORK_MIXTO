@@ -9,7 +9,8 @@ module.exports = {
     ...tsJestTransformCfg,
   },
   testMatch: [
-    "**/__tests__/**/*.test.ts"
+    "**/__tests__/**/GET multipla/*.test.ts",
+    "**/__tests__/deezer_api_tests/**/*.test.ts"
   ],
   /*
   testPathIgnorePatterns: [

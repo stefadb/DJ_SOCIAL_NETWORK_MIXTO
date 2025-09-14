@@ -6,15 +6,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const apiroutes_1 = require("./apiroutes");
 const express_1 = __importDefault(require("express"));
 const deezer_apis_config_1 = require("./deezer_apis_config");
+const get_single_apis_config_1 = require("./get_single_apis_config");
+const get_multiple_apis_config_1 = require("./get_multiple_apis_config");
+const post_and_put_apis_config_1 = require("./post_and_put_apis_config");
 const app = (0, express_1.default)();
 const port = 3000;
-//API ROUTES'
-//SCALETTE
-app.get("/scalette/:id", apiroutes_1.getScaletta);
-app.get("/scalette", apiroutes_1.getScalette);
-app.post("/scalette", apiroutes_1.postScalette);
-app.put("/scalette/:id", apiroutes_1.putScalette);
-app.delete("/scalette/:id", apiroutes_1.deleteScalette);
+//API ROUTES
 //API DEEZER---------------------------------------------
 //GENERI
 app.get("/generi", (req, res) => { (0, apiroutes_1.deezerEntityApi)(req, res, deezer_apis_config_1.generiAPIsConfig["tutti"]); });
@@ -43,37 +40,40 @@ app.get("/brani/genere", (req, res) => { (0, apiroutes_1.deezerEntityApi)(req, r
 app.get("/brani/artista", (req, res) => { (0, apiroutes_1.deezerEntityApi)(req, res, deezer_apis_config_1.braniAPIsConfig["artista"]); });
 app.get("/brani/singolo", (req, res) => { (0, apiroutes_1.deezerEntityApi)(req, res, deezer_apis_config_1.braniAPIsConfig["singolo"]); });
 //FINE DELLE API DI DEEZER----------------------------------------
+//SCALETTE
+app.get("/scalette/:id", (req, res) => { (0, apiroutes_1.getEntityWithAssociations)(req, res, get_single_apis_config_1.getSingleApisConfig.scaletta); });
+app.get("/scalette", (req, res) => { (0, apiroutes_1.getFilteredEntitiesList)(req, res, get_multiple_apis_config_1.getMultipleApisConfig.scaletta(req)); });
+app.post("/scalette", (req, res) => { (0, apiroutes_1.postEntity)(req, res, post_and_put_apis_config_1.postAndPutApisConfig.scaletta(req)); });
+app.put("/scalette/:id", (req, res) => { (0, apiroutes_1.putEntity)(req, res, post_and_put_apis_config_1.postAndPutApisConfig.scaletta(req)); });
+app.delete("/scalette/:id", (req, res) => { (0, apiroutes_1.deleteEntity)(req, res, "scaletta"); }); //uso la funzione generica per eliminare un'entità
 //PASSAGGI
-app.get("/brani/:id/passaggi", apiroutes_1.getBranoPassaggi);
-app.get("/album/:id/passaggi", apiroutes_1.getAlbumPassaggi);
-app.get("/artisti/:id/passaggi", apiroutes_1.getArtistaPassaggi);
-app.get("/utenti/:id/passaggi", apiroutes_1.getUtentePassaggi);
-app.get("/generi/:id/passaggi", apiroutes_1.getGeneriPassaggi);
-app.get("/passaggi", apiroutes_1.getPassaggi);
-app.get("/passaggi/:id", apiroutes_1.getPassaggio);
-app.post("/passaggi", apiroutes_1.postPassaggio);
-app.put("/passaggi/:id", apiroutes_1.putPassaggio);
-app.delete("/passaggi/:id", apiroutes_1.deletePassaggio);
+app.get("/passaggi", (req, res) => { (0, apiroutes_1.getFilteredEntitiesList)(req, res, get_multiple_apis_config_1.getMultipleApisConfig.passaggio(req)); });
+app.get("/passaggi/:id", (req, res) => { (0, apiroutes_1.getEntityWithAssociations)(req, res, get_single_apis_config_1.getSingleApisConfig.passaggio); });
+app.post("/passaggi", (req, res) => { (0, apiroutes_1.postEntity)(req, res, post_and_put_apis_config_1.postAndPutApisConfig.passaggio(req)); });
+app.put("/passaggi/:id", (req, res) => { (0, apiroutes_1.putEntity)(req, res, post_and_put_apis_config_1.postAndPutApisConfig.passaggio(req)); });
+app.delete("/passaggi/:id", (req, res) => { (0, apiroutes_1.deleteEntity)(req, res, "passaggio"); });
 //UTENTI
-app.get("/utenti", apiroutes_1.getUtenti);
-app.get("/utenti/:id", apiroutes_1.getUtente);
-app.post("/utenti", apiroutes_1.postUtente);
-app.put("/utenti/:id", apiroutes_1.putUtente);
-app.delete("/utenti/:id", apiroutes_1.deleteUtente);
+app.get("/utenti", (req, res) => { (0, apiroutes_1.getFilteredEntitiesList)(req, res, get_multiple_apis_config_1.getMultipleApisConfig.utente(req)); });
+app.get("/utenti/:id", (req, res) => { (0, apiroutes_1.getEntityWithAssociations)(req, res, get_single_apis_config_1.getSingleApisConfig.utente); });
+app.post("/utenti", (req, res) => { (0, apiroutes_1.postEntity)(req, res, post_and_put_apis_config_1.postAndPutApisConfig.utente(req)); });
+app.put("/utenti/:id", (req, res) => { (0, apiroutes_1.putEntity)(req, res, post_and_put_apis_config_1.postAndPutApisConfig.utente(req)); });
+app.delete("/utenti/:id", (req, res) => { (0, apiroutes_1.deleteEntity)(req, res, "utente"); });
 //COMMENTI
-app.get("/commenti", apiroutes_1.getCommenti);
-app.get("/commenti/:id", apiroutes_1.getCommento);
-app.post("/commenti", apiroutes_1.postCommento);
-app.put("/commenti/:id", apiroutes_1.putCommento);
-app.delete("/commenti/:id", apiroutes_1.deleteCommento);
+app.get("/commenti", (req, res) => { (0, apiroutes_1.getFilteredEntitiesList)(req, res, get_multiple_apis_config_1.getMultipleApisConfig.commento(req)); });
+app.get("/commenti/:id", (req, res) => { (0, apiroutes_1.getEntityWithAssociations)(req, res, get_single_apis_config_1.getSingleApisConfig.commento); });
+app.post("/commenti", (req, res) => { (0, apiroutes_1.postEntity)(req, res, post_and_put_apis_config_1.postAndPutApisConfig.commento(req)); });
+app.put("/commenti/:id", (req, res) => { (0, apiroutes_1.putEntity)(req, res, post_and_put_apis_config_1.postAndPutApisConfig.commento(req)); });
+app.delete("/commenti/:id", (req, res) => { (0, apiroutes_1.deleteEntity)(req, res, "commento"); });
 //VALUTAZIONI
-app.get("/valutazioni", apiroutes_1.getValutazioni);
-app.get("/valutazioni/:id", apiroutes_1.getValutazione);
-app.post("/valutazioni", apiroutes_1.postValutazione);
-app.put("/valutazioni/:id", apiroutes_1.putValutazione);
-app.delete("/valutazioni/:id", apiroutes_1.deleteValutazione);
+app.get("/valutazioni", (req, res) => { (0, apiroutes_1.getFilteredEntitiesList)(req, res, get_multiple_apis_config_1.getMultipleApisConfig.valutazione(req)); });
+app.get("/valutazioni/:id", (req, res) => { (0, apiroutes_1.getEntityWithAssociations)(req, res, get_single_apis_config_1.getSingleApisConfig.valutazione); });
+app.post("/valutazioni", (req, res) => { (0, apiroutes_1.postEntity)(req, res, post_and_put_apis_config_1.postAndPutApisConfig.valutazione(req)); });
+app.put("/valutazioni/:id", (req, res) => { (0, apiroutes_1.putEntity)(req, res, post_and_put_apis_config_1.postAndPutApisConfig.valutazione(req)); });
+app.delete("/valutazioni/:id", (req, res) => { (0, apiroutes_1.deleteEntity)(req, res, "valutazione"); });
 //VISUALIZZAZIONI
-app.post("/visualizzazioni", apiroutes_1.postVisualizzazione);
+app.post("/visualizzazioni", (req, res) => { (0, apiroutes_1.postEntity)(req, res, post_and_put_apis_config_1.postAndPutApisConfig.visualizzazione(req)); });
+app.get("/visualizzazioni", (req, res) => { (0, apiroutes_1.getFilteredEntitiesList)(req, res, get_multiple_apis_config_1.getMultipleApisConfig.visualizzazione(req)); });
+app.get("/visualizzazioni/:id", (req, res) => { (0, apiroutes_1.getEntityWithAssociations)(req, res, get_single_apis_config_1.getSingleApisConfig.visualizzazione); });
 //LOGIN
 app.post("/login", apiroutes_1.postLogin);
 exports.default = app;

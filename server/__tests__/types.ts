@@ -8,6 +8,10 @@ export type DeezerGetTestSuiteTestConfig = {
     dbUpsertTests: {sqlQuery: string; expectedResult: Record<string, any>[]; entityName: string;}[];
 }
 
+export type GetApiTestSuiteTestConfig = {
+    testApiCallUrl: string
+}[]
+
 export type ImageUrlFileNameMapping = {
     url: string,
     fileName: string

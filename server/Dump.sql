@@ -26,10 +26,24 @@ CREATE TABLE `album` (
   `id` int NOT NULL,
   `titolo` varchar(100) NOT NULL,
   `data_uscita` date DEFAULT NULL,
-  `id_genere` int DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `fk_album_genere` (`id_genere`),
-  CONSTRAINT `fk_album_genere` FOREIGN KEY (`id_genere`) REFERENCES `genere` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `album_genere`
+--
+
+DROP TABLE IF EXISTS `album_genere`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `album_genere` (
+  `id_album` int NOT NULL,
+  `id_genere` int NOT NULL,
+  PRIMARY KEY (`id_album`,`id_genere`),
+  KEY `id_genere_album_genere_idx` (`id_genere`),
+  CONSTRAINT `id_album_album_genere` FOREIGN KEY (`id_album`) REFERENCES `album` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `id_genere_album_genere` FOREIGN KEY (`id_genere`) REFERENCES `genere` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -58,10 +72,10 @@ CREATE TABLE `brano` (
   `id` bigint unsigned NOT NULL,
   `titolo` varchar(100) NOT NULL,
   `durata` time DEFAULT NULL,
-  `id_album` int DEFAULT NULL,
+  `id_album` int NOT NULL,
   PRIMARY KEY (`id`),
   KEY `id_album` (`id_album`),
-  CONSTRAINT `brano_ibfk_1` FOREIGN KEY (`id_album`) REFERENCES `album` (`id`)
+  CONSTRAINT `brano_ibfk_1` FOREIGN KEY (`id_album`) REFERENCES `album` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -77,8 +91,8 @@ CREATE TABLE `brano_artista` (
   `id_artista` int NOT NULL,
   PRIMARY KEY (`id_brano`,`id_artista`),
   KEY `id_artista` (`id_artista`),
-  CONSTRAINT `brano_artista_ibfk_1` FOREIGN KEY (`id_brano`) REFERENCES `brano` (`id`),
-  CONSTRAINT `brano_artista_ibfk_2` FOREIGN KEY (`id_artista`) REFERENCES `artista` (`id`)
+  CONSTRAINT `brano_artista_ibfk_1` FOREIGN KEY (`id_brano`) REFERENCES `brano` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `brano_artista_ibfk_2` FOREIGN KEY (`id_artista`) REFERENCES `artista` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -94,15 +108,15 @@ CREATE TABLE `commento` (
   `testo` text NOT NULL,
   `data_pubblicazione` datetime DEFAULT CURRENT_TIMESTAMP,
   `id_utente` int DEFAULT NULL,
-  `id_passaggio` int DEFAULT NULL,
+  `id_passaggio` int NOT NULL,
   `id_commento_padre` int DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `id_utente` (`id_utente`),
   KEY `id_passaggio` (`id_passaggio`),
   KEY `id_commento_padre` (`id_commento_padre`),
-  CONSTRAINT `commento_ibfk_1` FOREIGN KEY (`id_utente`) REFERENCES `utente` (`id`),
-  CONSTRAINT `commento_ibfk_2` FOREIGN KEY (`id_passaggio`) REFERENCES `passaggio` (`id`),
-  CONSTRAINT `commento_ibfk_3` FOREIGN KEY (`id_commento_padre`) REFERENCES `commento` (`id`)
+  CONSTRAINT `commento_ibfk_1` FOREIGN KEY (`id_utente`) REFERENCES `utente` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  CONSTRAINT `commento_ibfk_2` FOREIGN KEY (`id_passaggio`) REFERENCES `passaggio` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `commento_ibfk_3` FOREIGN KEY (`id_commento_padre`) REFERENCES `commento` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -140,9 +154,9 @@ CREATE TABLE `passaggio` (
   KEY `id_utente` (`id_utente`),
   KEY `id_brano_1` (`id_brano_1`),
   KEY `id_brano_2` (`id_brano_2`),
-  CONSTRAINT `passaggio_ibfk_1` FOREIGN KEY (`id_utente`) REFERENCES `utente` (`id`),
-  CONSTRAINT `passaggio_ibfk_2` FOREIGN KEY (`id_brano_1`) REFERENCES `brano` (`id`),
-  CONSTRAINT `passaggio_ibfk_3` FOREIGN KEY (`id_brano_2`) REFERENCES `brano` (`id`)
+  CONSTRAINT `passaggio_ibfk_1` FOREIGN KEY (`id_utente`) REFERENCES `utente` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  CONSTRAINT `passaggio_ibfk_2` FOREIGN KEY (`id_brano_1`) REFERENCES `brano` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  CONSTRAINT `passaggio_ibfk_3` FOREIGN KEY (`id_brano_2`) REFERENCES `brano` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -157,7 +171,10 @@ CREATE TABLE `scaletta` (
   `id` int NOT NULL AUTO_INCREMENT,
   `nome` varchar(255) NOT NULL,
   `descrizione` text,
-  PRIMARY KEY (`id`)
+  `id_utente` int DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `id_utente_scaletta_idx` (`id_utente`),
+  CONSTRAINT `id_utente_scaletta` FOREIGN KEY (`id_utente`) REFERENCES `utente` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -171,10 +188,11 @@ DROP TABLE IF EXISTS `scaletta_passaggio`;
 CREATE TABLE `scaletta_passaggio` (
   `id_scaletta` int NOT NULL,
   `id_passaggio` int NOT NULL,
+  `ordine` int DEFAULT NULL,
   PRIMARY KEY (`id_scaletta`,`id_passaggio`),
   KEY `id_passaggio` (`id_passaggio`),
-  CONSTRAINT `scaletta_passaggio_ibfk_1` FOREIGN KEY (`id_scaletta`) REFERENCES `scaletta` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `scaletta_passaggio_ibfk_2` FOREIGN KEY (`id_passaggio`) REFERENCES `passaggio` (`id`) ON DELETE CASCADE
+  CONSTRAINT `scaletta_passaggio_ibfk_1` FOREIGN KEY (`id_scaletta`) REFERENCES `scaletta` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `scaletta_passaggio_ibfk_2` FOREIGN KEY (`id_passaggio`) REFERENCES `passaggio` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -188,8 +206,8 @@ DROP TABLE IF EXISTS `utente`;
 CREATE TABLE `utente` (
   `id` int NOT NULL AUTO_INCREMENT,
   `username` varchar(50) NOT NULL,
-  `first_name` varchar(100) NOT NULL,
-  `surname` varchar(100) NOT NULL,
+  `nome` varchar(100) NOT NULL,
+  `cognome` varchar(100) NOT NULL,
   `password` varchar(255) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`)
@@ -211,8 +229,8 @@ CREATE TABLE `valutazione` (
   PRIMARY KEY (`id`),
   KEY `id_utente` (`id_utente`),
   KEY `id_passaggio` (`id_passaggio`),
-  CONSTRAINT `valutazione_ibfk_1` FOREIGN KEY (`id_utente`) REFERENCES `utente` (`id`),
-  CONSTRAINT `valutazione_ibfk_2` FOREIGN KEY (`id_passaggio`) REFERENCES `passaggio` (`id`),
+  CONSTRAINT `valutazione_ibfk_1` FOREIGN KEY (`id_utente`) REFERENCES `utente` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  CONSTRAINT `valutazione_ibfk_2` FOREIGN KEY (`id_passaggio`) REFERENCES `passaggio` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
   CONSTRAINT `valutazione_chk_1` CHECK (((`voto` >= 1) and (`voto` <= 5)))
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -232,8 +250,8 @@ CREATE TABLE `visualizzazione` (
   PRIMARY KEY (`id`,`data_visualizzazione`),
   KEY `id_utente` (`id_utente`),
   KEY `id_passaggio` (`id_passaggio`),
-  CONSTRAINT `visualizzazione_ibfk_1` FOREIGN KEY (`id_utente`) REFERENCES `utente` (`id`),
-  CONSTRAINT `visualizzazione_ibfk_2` FOREIGN KEY (`id_passaggio`) REFERENCES `passaggio` (`id`)
+  CONSTRAINT `visualizzazione_ibfk_1` FOREIGN KEY (`id_utente`) REFERENCES `utente` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  CONSTRAINT `visualizzazione_ibfk_2` FOREIGN KEY (`id_passaggio`) REFERENCES `passaggio` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -246,4 +264,4 @@ CREATE TABLE `visualizzazione` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-09-04 11:52:38
+-- Dump completed on 2025-09-13  8:07:32

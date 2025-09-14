@@ -1,0 +1,8 @@
+[
+	[
+		{ "id": 1, "username": "user1", "nome": "Mario", "cognome": "Rossi", "password": "pwd1" },
+		{ "id": 2, "username": "user2", "nome": "Luca", "cognome": "Bianchi", "password": "pwd2" },
+		{ "id": 3, "username": "user3", "nome": "Anna", "cognome": "Verdi", "password": "pwd3" },
+		{ "id": 4, "username": "user4", "nome": "Sara", "cognome": "Neri", "password": "pwd4" }
+	]
+]

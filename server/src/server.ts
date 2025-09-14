@@ -1,9 +1,16 @@
-import { deezerEntityApi, deleteCommento, deletePassaggio, deleteScalette, deleteUtente, deleteValutazione, getAlbumPassaggi, getArtistaPassaggi, getBranoPassaggi, getCommenti, getCommento, getGeneriPassaggi, getPassaggi, getPassaggio, getScaletta, getScalette, getUtente, getUtentePassaggi, getUtenti, getValutazione, getValutazioni, postCommento, postLogin, postPassaggio, postScalette, postUtente, postValutazione, postVisualizzazione, putCommento, putPassaggio, putScalette, putUtente, putValutazione } from "./apiroutes";
+import { deezerEntityApi, deleteEntity, getEntityWithAssociations, getFilteredEntitiesList, postEntity, postLogin, putEntity } from "./apiroutes";
 
 import express from "express";
 import { albumAPIsConfig, artistiAPIsConfig, braniAPIsConfig, generiAPIsConfig } from "./deezer_apis_config";
+import { dbTablesAndColumns } from "./get_db_tables_and_columns";
+import { PassaggioDbSchema, ScalettaDbSchema, UtenteDbSchema } from "./db_types";
+import { getSingleApisConfig } from "./get_single_apis_config";
+import { getMultipleApisConfig } from "./get_multiple_apis_config";
+import { postAndPutApisConfig } from "./post_and_put_apis_config";
 const app = express();
 const port = 3000;
+
+
 
 //API ROUTES
 
@@ -37,37 +44,39 @@ app.get("/brani/singolo", (req, res) => { deezerEntityApi(req, res, braniAPIsCon
 //FINE DELLE API DI DEEZER----------------------------------------
 
 //SCALETTE
-app.get("/scalette/:id", getScaletta);
-app.get("/scalette", getScalette);
-app.post("/scalette", postScalette);
-app.put("/scalette/:id", putScalette);
-app.delete("/scalette/:id", deleteScalette);
+app.get("/scalette/:id", (req, res) => {getEntityWithAssociations(req, res, getSingleApisConfig.scaletta)});
+app.get("/scalette", (req, res) => {getFilteredEntitiesList(req, res, getMultipleApisConfig.scaletta(req))});
+app.post("/scalette", (req, res) => {postEntity(req, res, postAndPutApisConfig.scaletta(req))});
+app.put("/scalette/:id", (req, res) => {putEntity(req, res, postAndPutApisConfig.scaletta(req))});
+app.delete("/scalette/:id", (req, res) => { deleteEntity(req, res, "scaletta") }); //uso la funzione generica per eliminare un'entità
 //PASSAGGI
-app.get("/passaggi", getPassaggi);
-app.get("/passaggi/:id", getPassaggio);
-app.post("/passaggi", postPassaggio);
-app.put("/passaggi/:id", putPassaggio);
-app.delete("/passaggi/:id", deletePassaggio);
+app.get("/passaggi", (req, res) => { getFilteredEntitiesList(req, res, getMultipleApisConfig.passaggio(req)) });
+app.get("/passaggi/:id", (req, res) => {getEntityWithAssociations(req, res, getSingleApisConfig.passaggio)});
+app.post("/passaggi", (req, res) => {postEntity(req, res, postAndPutApisConfig.passaggio(req))});
+app.put("/passaggi/:id", (req, res) => {putEntity(req, res, postAndPutApisConfig.passaggio(req))});
+app.delete("/passaggi/:id", (req, res) => { deleteEntity(req, res, "passaggio") });
 //UTENTI
-app.get("/utenti", getUtenti);
-app.get("/utenti/:id", getUtente);
-app.post("/utenti", postUtente);
-app.put("/utenti/:id", putUtente);
-app.delete("/utenti/:id", deleteUtente);
+app.get("/utenti", (req, res) => { getFilteredEntitiesList(req, res, getMultipleApisConfig.utente(req)) });
+app.get("/utenti/:id", (req, res) => {getEntityWithAssociations(req, res, getSingleApisConfig.utente)});
+app.post("/utenti", (req, res) => {postEntity(req, res, postAndPutApisConfig.utente(req))});
+app.put("/utenti/:id", (req, res) => {putEntity(req, res, postAndPutApisConfig.utente(req))});
+app.delete("/utenti/:id", (req, res) => { deleteEntity(req, res, "utente") });
 //COMMENTI
-app.get("/commenti", getCommenti);
-app.get("/commenti/:id", getCommento);
-app.post("/commenti", postCommento);
-app.put("/commenti/:id", putCommento);
-app.delete("/commenti/:id", deleteCommento);
+app.get("/commenti", (req, res) => { getFilteredEntitiesList(req, res, getMultipleApisConfig.commento(req)) });
+app.get("/commenti/:id", (req, res) => {getEntityWithAssociations(req, res, getSingleApisConfig.commento)});
+app.post("/commenti", (req, res) => {postEntity(req, res, postAndPutApisConfig.commento(req))});
+app.put("/commenti/:id", (req, res) => {putEntity(req, res, postAndPutApisConfig.commento(req))});
+app.delete("/commenti/:id", (req, res) => { deleteEntity(req, res, "commento") });
 //VALUTAZIONI
-app.get("/valutazioni", getValutazioni);
-app.get("/valutazioni/:id", getValutazione);
-app.post("/valutazioni", postValutazione);
-app.put("/valutazioni/:id", putValutazione);
-app.delete("/valutazioni/:id", deleteValutazione);
+app.get("/valutazioni", (req, res) => { getFilteredEntitiesList(req, res, getMultipleApisConfig.valutazione(req)) });
+app.get("/valutazioni/:id", (req, res) => {getEntityWithAssociations(req, res, getSingleApisConfig.valutazione)});
+app.post("/valutazioni", (req, res) => {postEntity(req, res, postAndPutApisConfig.valutazione(req))});
+app.put("/valutazioni/:id", (req, res) => { putEntity(req, res, postAndPutApisConfig.valutazione(req))});
+app.delete("/valutazioni/:id", (req, res) => { deleteEntity(req, res, "valutazione") });
 //VISUALIZZAZIONI
-app.post("/visualizzazioni", postVisualizzazione);
+app.post("/visualizzazioni", (req, res) => {postEntity(req, res, postAndPutApisConfig.visualizzazione(req))});
+app.get("/visualizzazioni", (req, res) => { getFilteredEntitiesList(req, res, getMultipleApisConfig.visualizzazione(req)) });
+app.get("/visualizzazioni/:id", (req, res) => {getEntityWithAssociations(req, res, getSingleApisConfig.visualizzazione)});
 //LOGIN
 app.post("/login", postLogin);
 

@@ -1,0 +1,4 @@
+[
+    { "testApiCallUrl": "/visualizzazioni?passaggio=1" },
+    { "testApiCallUrl": "/visualizzazioni" }
+]

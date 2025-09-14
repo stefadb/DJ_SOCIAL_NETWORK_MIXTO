@@ -3,7 +3,7 @@ import mockDeezerResponseRaw from "./mock_deezer_response.json";
 import expectedApiSuccessResponse from "./expected_api_success_response.json";
 
 import testConfig from "./test_config.json";
-import commonDeezerGetTestSuite from "../../../common_test_suites";
+import {commonDeezerGetTestSuite} from "../../../common_test_suites";
 import axios from "axios";
 
 //Configurazione di axios mock

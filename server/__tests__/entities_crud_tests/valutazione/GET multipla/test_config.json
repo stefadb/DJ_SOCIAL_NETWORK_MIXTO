@@ -1,0 +1,5 @@
+[
+    { "testApiCallUrl": "/valutazioni?utente=3" },
+    { "testApiCallUrl": "/valutazioni?passaggio=1" },
+    { "testApiCallUrl": "/valutazioni" }
+]

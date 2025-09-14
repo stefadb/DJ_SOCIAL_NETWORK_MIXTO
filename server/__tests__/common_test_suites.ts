@@ -1,10 +1,13 @@
 import app from "../src/server";
+import dbInitInsertQueries from "./entities_crud_tests/db_init_insert_queries.json";
 import { checkApiSuccessResponse, checkDbUpsert, createOrDeleteTablesOnTestDb, prepareMocksForDeezerResponseAndImages, testPicturesDownload } from "./common_functions";
-import { DeezerGetTestSuiteTestConfig } from "./types";
+import { DeezerGetTestSuiteTestConfig, GetApiTestSuiteTestConfig } from "./types";
 import { DeezerResponseDataItemsArray, DeezerResponseSingleItem } from "../src/deezer_types";
 import axios from "axios";
+import { getDbTablesAndColumns } from "../src/get_db_tables_and_columns";
 
-export default function commonDeezerGetTestSuite(testConfig: DeezerGetTestSuiteTestConfig, mockDeezerResponseRaw: DeezerResponseSingleItem | DeezerResponseDataItemsArray, expectedApiSuccessResponse: Object, mockedAxios: jest.Mocked<typeof axios>) {
+
+export function commonDeezerGetTestSuite(testConfig: DeezerGetTestSuiteTestConfig, mockDeezerResponseRaw: DeezerResponseSingleItem | DeezerResponseDataItemsArray, expectedApiSuccessResponse: Object, mockedAxios: jest.Mocked<typeof axios>) {
     const deezerApiCallUrl = testConfig.deezerApiCallUrl;
     const apiName = testConfig.apiName;
     const testApiCallUrl = testConfig.testApiCallUrl;
@@ -12,6 +15,7 @@ export default function commonDeezerGetTestSuite(testConfig: DeezerGetTestSuiteT
     describe(`GET ${apiName}`, () => {
         //Configurazione dei mock delle API
         beforeEach(async () => {
+            await getDbTablesAndColumns();
             await createOrDeleteTablesOnTestDb(undefined, false);
             await createOrDeleteTablesOnTestDb(testConfig.queriesAfterDbInit, true);
             await prepareMocksForDeezerResponseAndImages(mockDeezerResponseRaw, deezerApiCallUrl, mockedAxios);
@@ -39,4 +43,28 @@ export default function commonDeezerGetTestSuite(testConfig: DeezerGetTestSuiteT
         }
 
     });
+}
+
+export function commonGetApiTestSuite(testConfig: GetApiTestSuiteTestConfig, expectedApiSuccessResponse: Object[]) {
+    for (const [i, config] of testConfig.entries()) {
+        if (expectedApiSuccessResponse[i] === undefined) {
+            throw new Error(`Expected API success response at index ${i} is undefined. Please check the expectedApiSuccessResponse array.`);
+        }
+        //PROBLEMA: Qui expectedApiSuccessResponse[index] as Object è definito, mentre dentro il test it() è undefined
+        describe(`GET ${config.testApiCallUrl}`, () => {
+            //Configurazione dei mock delle API
+            beforeEach(async () => {
+                await getDbTablesAndColumns();
+                await createOrDeleteTablesOnTestDb(undefined, false);
+                await createOrDeleteTablesOnTestDb(dbInitInsertQueries as string[], true);
+            });
+            afterEach(async () => {
+                await createOrDeleteTablesOnTestDb(undefined, false);
+            });
+
+            it(`should return the expected API response (arrays index ${i})`, async () => {
+                await checkApiSuccessResponse(config.testApiCallUrl, app, expectedApiSuccessResponse[i] as Object);
+            });
+        });
+    }
 }
