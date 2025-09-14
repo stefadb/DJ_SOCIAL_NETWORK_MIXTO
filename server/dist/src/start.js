@@ -10,6 +10,7 @@ async function startServer() {
     try {
         // Attendi che dbTablesAndColumns sia popolato
         await (0, get_db_tables_and_columns_1.getDbTablesAndColumns)();
+        console.log(get_db_tables_and_columns_1.dbTablesAndColumns);
         server_1.default.listen(3000, () => {
             console.log("Server is running on port 3000");
         });
