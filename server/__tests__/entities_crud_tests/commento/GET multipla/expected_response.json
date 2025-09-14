@@ -1,16 +1,16 @@
 [
 	[
-		{ "id": 1, "testo": "Commento 1 passaggio 1", "data_pubblicazione": "2022-01-01 11:00:00", "id_utente": 3, "id_passaggio": 1},
+		{ "id": 1, "testo": "Commento 1 passaggio 1", "data_pubblicazione": "2022-01-01 11:00:00", "id_utente": 3, "id_passaggio": 1, "id_commento_padre": null},
 		{ "id": 3, "testo": "Risposta 2 passaggio 1", "data_pubblicazione": "2022-01-01 11:20:00", "id_utente": 3, "id_passaggio": 1, "id_commento_padre": 1 },
 		{ "id": 5, "testo": "Risposta 1 passaggio 2", "data_pubblicazione": "2022-02-01 11:10:00", "id_utente": 3, "id_passaggio": 2, "id_commento_padre": 4 },
-		{ "id": 7, "testo": "Commento 1 passaggio 3", "data_pubblicazione": "2022-03-01 11:00:00", "id_utente": 3, "id_passaggio": 3},
+		{ "id": 7, "testo": "Commento 1 passaggio 3", "data_pubblicazione": "2022-03-01 11:00:00", "id_utente": 3, "id_passaggio": 3, "id_commento_padre": null},
 		{ "id": 9, "testo": "Risposta 2 passaggio 3", "data_pubblicazione": "2022-03-01 11:20:00", "id_utente": 3, "id_passaggio": 3, "id_commento_padre": 7 },
 		{ "id": 11, "testo": "Risposta 1 passaggio 4", "data_pubblicazione": "2022-04-01 11:10:00", "id_utente": 3, "id_passaggio": 4, "id_commento_padre": 10 },
-		{ "id": 13, "testo": "Commento 1 passaggio 5", "data_pubblicazione": "2022-05-01 11:00:00", "id_utente": 3, "id_passaggio": 5},
+		{ "id": 13, "testo": "Commento 1 passaggio 5", "data_pubblicazione": "2022-05-01 11:00:00", "id_utente": 3, "id_passaggio": 5, "id_commento_padre": null},
 		{ "id": 15, "testo": "Risposta 2 passaggio 5", "data_pubblicazione": "2022-05-01 11:20:00", "id_utente": 3, "id_passaggio": 5, "id_commento_padre": 13 }
 	],
 	[
-		{ "id": 1, "testo": "Commento 1 passaggio 1", "data_pubblicazione": "2022-01-01 11:00:00", "id_utente": 3, "id_passaggio": 1},
+		{ "id": 1, "testo": "Commento 1 passaggio 1", "data_pubblicazione": "2022-01-01 11:00:00", "id_utente": 3, "id_passaggio": 1, "id_commento_padre": null},
 		{ "id": 2, "testo": "Risposta 1 passaggio 1", "data_pubblicazione": "2022-01-01 11:10:00", "id_utente": 4, "id_passaggio": 1, "id_commento_padre": 1 },
 		{ "id": 3, "testo": "Risposta 2 passaggio 1", "data_pubblicazione": "2022-01-01 11:20:00", "id_utente": 3, "id_passaggio": 1, "id_commento_padre": 1 }
 	],
@@ -19,19 +19,19 @@
 		{ "id": 3, "testo": "Risposta 2 passaggio 1", "data_pubblicazione": "2022-01-01 11:20:00", "id_utente": 3, "id_passaggio": 1, "id_commento_padre": 1 }
 	],
 	[
-		{ "id": 1, "testo": "Commento 1 passaggio 1", "data_pubblicazione": "2022-01-01 11:00:00", "id_utente": 3, "id_passaggio": 1},
+		{ "id": 1, "testo": "Commento 1 passaggio 1", "data_pubblicazione": "2022-01-01 11:00:00", "id_utente": 3, "id_passaggio": 1, "id_commento_padre": null},
 		{ "id": 2, "testo": "Risposta 1 passaggio 1", "data_pubblicazione": "2022-01-01 11:10:00", "id_utente": 4, "id_passaggio": 1, "id_commento_padre": 1 },
 		{ "id": 3, "testo": "Risposta 2 passaggio 1", "data_pubblicazione": "2022-01-01 11:20:00", "id_utente": 3, "id_passaggio": 1, "id_commento_padre": 1 },
-		{ "id": 4, "testo": "Commento 1 passaggio 2", "data_pubblicazione": "2022-02-01 11:00:00", "id_utente": 4, "id_passaggio": 2},
+		{ "id": 4, "testo": "Commento 1 passaggio 2", "data_pubblicazione": "2022-02-01 11:00:00", "id_utente": 4, "id_passaggio": 2, "id_commento_padre": null},
 		{ "id": 5, "testo": "Risposta 1 passaggio 2", "data_pubblicazione": "2022-02-01 11:10:00", "id_utente": 3, "id_passaggio": 2, "id_commento_padre": 4 },
 		{ "id": 6, "testo": "Risposta 2 passaggio 2", "data_pubblicazione": "2022-02-01 11:20:00", "id_utente": 4, "id_passaggio": 2, "id_commento_padre": 4 },
-		{ "id": 7, "testo": "Commento 1 passaggio 3", "data_pubblicazione": "2022-03-01 11:00:00", "id_utente": 3, "id_passaggio": 3},
+		{ "id": 7, "testo": "Commento 1 passaggio 3", "data_pubblicazione": "2022-03-01 11:00:00", "id_utente": 3, "id_passaggio": 3, "id_commento_padre": null},
 		{ "id": 8, "testo": "Risposta 1 passaggio 3", "data_pubblicazione": "2022-03-01 11:10:00", "id_utente": 4, "id_passaggio": 3, "id_commento_padre": 7 },
 		{ "id": 9, "testo": "Risposta 2 passaggio 3", "data_pubblicazione": "2022-03-01 11:20:00", "id_utente": 3, "id_passaggio": 3, "id_commento_padre": 7 },
-		{ "id": 10, "testo": "Commento 1 passaggio 4", "data_pubblicazione": "2022-04-01 11:00:00", "id_utente": 4, "id_passaggio": 4},
+		{ "id": 10, "testo": "Commento 1 passaggio 4", "data_pubblicazione": "2022-04-01 11:00:00", "id_utente": 4, "id_passaggio": 4, "id_commento_padre": null},
 		{ "id": 11, "testo": "Risposta 1 passaggio 4", "data_pubblicazione": "2022-04-01 11:10:00", "id_utente": 3, "id_passaggio": 4, "id_commento_padre": 10 },
 		{ "id": 12, "testo": "Risposta 2 passaggio 4", "data_pubblicazione": "2022-04-01 11:20:00", "id_utente": 4, "id_passaggio": 4, "id_commento_padre": 10 },
-		{ "id": 13, "testo": "Commento 1 passaggio 5", "data_pubblicazione": "2022-05-01 11:00:00", "id_utente": 3, "id_passaggio": 5},
+		{ "id": 13, "testo": "Commento 1 passaggio 5", "data_pubblicazione": "2022-05-01 11:00:00", "id_utente": 3, "id_passaggio": 5, "id_commento_padre": null},
 		{ "id": 14, "testo": "Risposta 1 passaggio 5", "data_pubblicazione": "2022-05-01 11:10:00", "id_utente": 4, "id_passaggio": 5, "id_commento_padre": 13 },
 		{ "id": 15, "testo": "Risposta 2 passaggio 5", "data_pubblicazione": "2022-05-01 11:20:00", "id_utente": 3, "id_passaggio": 5, "id_commento_padre": 13 }
 	]

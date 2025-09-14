@@ -1,3 +1,4 @@
-[{
-    "testApiCallUrl": ""
-}]
+[
+    { "testApiCallUrl": "/scalette/1?include_passaggio" },
+    { "testApiCallUrl": "/scalette/1?include_utente" }
+]

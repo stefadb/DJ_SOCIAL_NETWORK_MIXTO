@@ -10,6 +10,7 @@ module.exports = {
   },
   testMatch: [
     "**/__tests__/**/GET multipla/*.test.ts",
+    "**/__tests__/**/GET singola/*.test.ts",
     "**/__tests__/deezer_api_tests/**/*.test.ts"
   ],
   /*

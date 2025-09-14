@@ -1,1 +1,151 @@
-[{}]
+[
+  {
+    "id": 1,
+    "testo": "Passaggio 1",
+    "inizio_secondo_brano": "00:01:00",
+    "cue_secondo_brano": "00:00:30",
+    "data_pubblicazione": "2022-01-01 10:00:00",
+    "id_utente": 1,
+    "id_brano_1": 1007,
+    "id_brano_2": 1012,
+    "utente": {
+      "id": 1,
+      "username": "user1",
+      "nome": "Mario",
+      "cognome": "Rossi",
+      "password": "pwd1"
+    }
+  },
+  {
+    "id": 1,
+    "testo": "Passaggio 1",
+    "inizio_secondo_brano": "00:01:00",
+    "cue_secondo_brano": "00:00:30",
+    "data_pubblicazione": "2022-01-01 10:00:00",
+    "id_utente": 1,
+    "id_brano_1": 1007,
+    "id_brano_2": 1012,
+    "brano_1": {
+      "id": 1007,
+      "titolo": "Brano 3-1",
+      "durata": "00:03:40",
+      "id_album": 3
+    },
+    "brano_2": {
+      "id": 1012,
+      "titolo": "Brano 4-3",
+      "durata": "00:04:30",
+      "id_album": 4
+    }
+  },
+  {
+    "id": 1,
+    "testo": "Passaggio 1",
+    "inizio_secondo_brano": "00:01:00",
+    "cue_secondo_brano": "00:00:30",
+    "data_pubblicazione": "2022-01-01 10:00:00",
+    "id_utente": 1,
+    "id_brano_1": 1007,
+    "id_brano_2": 1012,
+    "commento": [
+      {
+        "id": 1,
+        "testo": "Commento 1 passaggio 1",
+        "data_pubblicazione": "2022-01-01 11:00:00",
+        "id_utente": 3,
+        "id_passaggio": 1,
+        "id_commento_padre": null
+      },
+      {
+        "id": 2,
+        "testo": "Risposta 1 passaggio 1",
+        "data_pubblicazione": "2022-01-01 11:10:00",
+        "id_utente": 4,
+        "id_passaggio": 1,
+        "id_commento_padre": 1
+      },
+      {
+        "id": 3,
+        "testo": "Risposta 2 passaggio 1",
+        "data_pubblicazione": "2022-01-01 11:20:00",
+        "id_utente": 3,
+        "id_passaggio": 1,
+        "id_commento_padre": 1
+      }
+    ]
+  },
+  {
+    "id": 1,
+    "testo": "Passaggio 1",
+    "inizio_secondo_brano": "00:01:00",
+    "cue_secondo_brano": "00:00:30",
+    "data_pubblicazione": "2022-01-01 10:00:00",
+    "id_utente": 1,
+    "id_brano_1": 1007,
+    "id_brano_2": 1012,
+    "valutazione": [
+      { "id": 1, "voto": 5, "id_utente": 3, "id_passaggio": 1 },
+      { "id": 2, "voto": 4, "id_utente": 4, "id_passaggio": 1 }
+    ]
+  },
+  {
+    "id": 1,
+    "testo": "Passaggio 1",
+    "inizio_secondo_brano": "00:01:00",
+    "cue_secondo_brano": "00:00:30",
+    "data_pubblicazione": "2022-01-01 10:00:00",
+    "id_utente": 1,
+    "id_brano_1": 1007,
+    "id_brano_2": 1012,
+    "scaletta": [
+      {
+        "id": 1,
+        "nome": "Scaletta Test 1",
+        "descrizione": "Descrizione di test 1",
+        "id_utente": 3
+      },
+      {
+        "id": 2,
+        "nome": "Scaletta Test 2",
+        "descrizione": "Descrizione di test 2",
+        "id_utente": 4
+      }
+    ]
+  },
+  {
+    "id": 1,
+    "testo": "Passaggio 1",
+    "inizio_secondo_brano": "00:01:00",
+    "cue_secondo_brano": "00:00:30",
+    "data_pubblicazione": "2022-01-01 10:00:00",
+    "id_utente": 1,
+    "id_brano_1": 1007,
+    "id_brano_2": 1012,
+    "visualizzazione": [
+      {
+        "id": 6,
+        "data_visualizzazione": "2022-06-01 12:00:00",
+        "id_utente": 3,
+        "id_passaggio": 1
+      },
+      {
+        "id": 7,
+        "data_visualizzazione": "2022-06-01 13:00:00",
+        "id_utente": 3,
+        "id_passaggio": 1
+      },
+      {
+        "id": 10,
+        "data_visualizzazione": "2022-06-01 16:00:00",
+        "id_utente": 4,
+        "id_passaggio": 1
+      },
+      {
+        "id": 11,
+        "data_visualizzazione": "2022-06-01 17:00:00",
+        "id_utente": 4,
+        "id_passaggio": 1
+      }
+    ]
+  }
+]

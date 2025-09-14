@@ -1,3 +1,5 @@
-[{
-    "testApiCallUrl": ""
-}]
+[
+    { "testApiCallUrl": "/commenti/1?include_utente" },
+    { "testApiCallUrl": "/commenti/1?include_passaggio" },
+    { "testApiCallUrl": "/commenti/2?include_commento" }
+]

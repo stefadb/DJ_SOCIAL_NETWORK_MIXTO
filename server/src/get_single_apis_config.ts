@@ -1,12 +1,10 @@
-import { BranoDbSchema, PassaggioDbSchema, ScalettaDbSchema, UtenteDbSchema, VisualizzazioneDbSchema } from "./db_types";
-// Placeholder: definisci questi schema in db_types.ts
-export const ValutazioneDbSchema = null as any;
-export const CommentoDbSchema = null as any;
+import { BranoDbSchema, CommentoDbSchema, PassaggioDbSchema, ScalettaDbSchema, UtenteDbSchema, ValutazioneDbSchema, VisualizzazioneDbSchema } from "./db_types";
+
 
 export const getSingleApisConfig = {
     scaletta: {
         mainTableName: "scaletta",
-        mainTableColumns: ["id", "nome", "descrizione"],
+        mainTableColumns: ["id", "nome", "descrizione", "id_utente"],
         mainTableSchema: ScalettaDbSchema,
         otherTables: [
             {
@@ -48,7 +46,7 @@ export const getSingleApisConfig = {
             },
             {
                 tableName: "scaletta",
-                columns: ["id", "nome", "descrizione"],
+                columns: ["id", "nome", "descrizione", "id_utente"],
                 schema: ScalettaDbSchema
             },
             {
@@ -70,7 +68,7 @@ export const getSingleApisConfig = {
             },
             {
                 tableName: "scaletta",
-                columns: ["id", "nome", "descrizione"],
+                columns: ["id", "nome", "descrizione", "id_utente"],
                 schema: ScalettaDbSchema
             },
             {

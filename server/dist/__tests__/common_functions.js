@@ -196,6 +196,10 @@ async function checkDbUpsert(sqlQuery, testApiCallUrl, app, expectedQueryResult)
 //FA CHIAMATE API
 async function checkApiSuccessResponse(testApiCallUrl, app, expectedResponse) {
     const res = await (0, supertest_1.default)(app).get(testApiCallUrl);
+    if (res.status !== 200) {
+        console.log("Ecco l'errore !");
+        console.log(res.body);
+    }
     expect(res.status).toBe(200);
     expect(res.body).toEqual(expectedResponse);
 }

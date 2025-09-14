@@ -152,19 +152,10 @@ function relationIsManyToMany(table1: string, table2: string): boolean {
   return `${table1}_${table2}` in dbTablesAndColumns || `${table2}_${table1}` in dbTablesAndColumns;
 }
 
-function undefinedizeNullValues(obj: Record<string, any>) {
-  for (const key in obj) {
-    if (obj[key] === null) {
-      obj[key] = undefined;
-    }
-  }
-}
-
 function dbResultIsValid(res: import("express").Response, array: boolean, entity: any, schema: ZodObject<any>, tableName: string): boolean {
   if (!array) {
     if (!schema.safeParse(entity).success) {
       //Passaggio necessario perchè i valori null del db sono undefined per gli schemi zod
-      undefinedizeNullValues(entity);
       res.status(500).json({ error: `Entità associata ${tableName} non valida`, details: schema.safeParse(entity).error });
       return false;
     }
@@ -172,7 +163,6 @@ function dbResultIsValid(res: import("express").Response, array: boolean, entity
     let index = 0;
     for (const singleObj of entity) {
       //Passaggio necessario perchè i valori null del db sono undefined per gli schemi zod
-      undefinedizeNullValues(singleObj);
       if (!schema.safeParse(singleObj).success) {
         res.status(500).json({ error: `Entità associata ${tableName} non valida alla posizione ${index}`, details: schema.safeParse(singleObj).error });
         return false;
@@ -210,8 +200,9 @@ export async function getEntityWithAssociations(
       [id]
     );
     const mainEntity = (mainRows as any[])[0];
-    if (!config.mainTableSchema.safeParse(mainEntity).success) {
-      res.status(500).json({ error: "Entità principale non valida", details: config.mainTableSchema.safeParse(mainEntity).error });
+    if (!dbResultIsValid(res, false, mainEntity, config.mainTableSchema, config.mainTableName)) {
+      console.log("Questa entità non ha passato la validazione di zod:");
+      console.log(mainEntity);
       return;
     }
     //PER OGNI TABELLA ASSOCIATA, ESEGUI LA QUERY DI SELECT
@@ -221,17 +212,20 @@ export async function getEntityWithAssociations(
         if (relationIsManyToMany(config.mainTableName, assoc.tableName)) {
           //RELAZIONE MOLTI A MOLTI
           const tableCols = assoc.columns.map(col => `${assoc.tableName}.${col}`).join(", ");
+          const middleTableName = `${config.mainTableName}_${assoc.tableName}` in dbTablesAndColumns ? `${config.mainTableName}_${assoc.tableName}` : `${assoc.tableName}_${config.mainTableName}`;
           const [rows] = await con.execute(
             `SELECT ${tableCols}
           FROM ${assoc.tableName}
-          JOIN ${config.mainTableName}_${assoc.tableName} ON ${assoc.tableName}.id = ${config.mainTableName}_${assoc.tableName}.id_${assoc.tableName}
-          WHERE ${config.mainTableName}_${assoc.tableName}.id_${config.mainTableName} = ?`,
+          JOIN ${middleTableName} ON ${assoc.tableName}.id = ${middleTableName}.id_${assoc.tableName}
+          WHERE ${middleTableName}.id_${config.mainTableName} = ?`,
             [id]
           );
           if (!dbResultIsValid(res, true, rows, assoc.schema, assoc.tableName)) {
+            console.log("Questa entità non ha passato la validazione di zod:");
+            console.log(rows);
             return;
           }
-          mainEntity[assoc.tableName + "s"] = rows;
+          mainEntity[assoc.tableName] = rows;
         } else if (relationIsManyToOne(config.mainTableName, assoc.tableName)) {
           const columns = dbTablesAndColumns[config.mainTableName];
           if (columns !== undefined) {
@@ -245,6 +239,8 @@ export async function getEntityWithAssociations(
                 );
                 const row = (rows as any[])[0];
                 if (!dbResultIsValid(res, false, row, assoc.schema, assoc.tableName)) {
+                  console.log("Questa entità non ha passato la validazione di zod:");
+                  console.log(row);
                   return;
                 }
                 mainEntity[assoc.tableName + column.substring((`id_${assoc.tableName}`).length)] = row;
@@ -265,9 +261,11 @@ export async function getEntityWithAssociations(
                   [mainEntity.id]
                 );
                 if (!dbResultIsValid(res, true, rows, assoc.schema, assoc.tableName)) {
+                  console.log("Questa entità non ha passato la validazione di zod:");
+                  console.log(rows);
                   return;
                 }
-                mainEntity[assoc.tableName + "s" + column.substring((`id_${config.mainTableName}`).length)] = rows;
+                mainEntity[assoc.tableName + column.substring((`id_${config.mainTableName}`).length)] = rows;
               }
             }
           } else {
@@ -279,8 +277,11 @@ export async function getEntityWithAssociations(
         }
       }
     }
+    res.json(mainEntity);
   } catch (err) {
-    res.status(500).json({ error: "Errore nella query sulla tabella principale", details: err });
+    console.log("Ecco l'errore !");
+    console.log(err);
+    res.status(500).json({ error: "Errore in una delle query", details: err });
   } finally {
     await con.end();
   }

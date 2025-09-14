@@ -20,7 +20,7 @@ export type Durata = z.infer<typeof DurataSchema>;
 
 export const BranoDbSchema = DbEntitySchema.extend({
     titolo: z.string(),
-    durata: DurataSchema,
+    durata: z.string().regex(/^\d{2}:\d{2}:\d{2}$/, "Invalid time format, expected HH:MM:SS"),
     id_album: z.number()
 });
 
@@ -29,7 +29,7 @@ export type BranoDb = z.infer<typeof BranoDbSchema>;
 //Mostra come sono memorizzati gli album nel database
 export const AlbumDbSchema = DbEntitySchema.extend({
     titolo: z.string(),
-    data_uscita: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Invalid date format, expected YYYY-MM-DD").optional()
+    data_uscita: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Invalid date format, expected YYYY-MM-DD").nullable()
 });
 
 export type AlbumDb = z.infer<typeof AlbumDbSchema>;
@@ -73,7 +73,7 @@ export type PassaggioDb = z.infer<typeof PassaggioDbSchema>;
 export const ScalettaDbSchema = DbEntitySchema.extend({
     nome: z.string(),
     descrizione: z.string(),
-    id_utente: z.number()
+    id_utente: z.number().nullable()
 });
 
 export type ScalettaDb = z.infer<typeof ScalettaDbSchema>;
@@ -91,7 +91,7 @@ export type UtenteDb = z.infer<typeof UtenteDbSchema>;
 //Mostra come sono memorizzate le visualizzazioni nel database
 export const VisualizzazioneDbSchema = DbEntitySchema.extend({
     data_visualizzazione: z.string().regex(/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/, "Invalid date time format, expected YYYY-MM-DD HH:MM:SS"),
-    id_utente: z.number(),
+    id_utente: z.number().nullable(),
     id_passaggio: z.number()
 });
 
@@ -102,9 +102,9 @@ export type VisualizzazioneDb = z.infer<typeof VisualizzazioneDbSchema>;
 export const CommentoDbSchema = DbEntitySchema.extend({
     testo: z.string(),
     data_pubblicazione: z.string().regex(/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/, "Invalid date time format, expected YYYY-MM-DD HH:MM:SS"),
-    id_utente: z.number(),
-    id_passaggio: z.number(),
-    id_commento_padre: z.number().optional()
+    id_utente: z.number().nullable(),
+    id_passaggio: z.number().nullable(),
+    id_commento_padre: z.number().nullable()
 });
 
 export type CommentoDb = z.infer<typeof CommentoDbSchema>;
@@ -112,7 +112,7 @@ export type CommentoDb = z.infer<typeof CommentoDbSchema>;
 //Mostra come sono memorizzati i commenti nel database
 export const ValutazioneDbSchema = DbEntitySchema.extend({
     voto: z.number().min(1).max(5),
-    id_utente: z.number(),
+    id_utente: z.number().nullable(),
     id_passaggio: z.number()
 });
 

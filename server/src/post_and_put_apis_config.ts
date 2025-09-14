@@ -1,5 +1,4 @@
-import { PassaggioDbSchema, ScalettaDbSchema, UtenteDbSchema, VisualizzazioneDbSchema } from "./db_types"
-import { CommentoDbSchema, ValutazioneDbSchema } from "./get_single_apis_config"
+import { CommentoDbSchema, PassaggioDbSchema, ScalettaDbSchema, UtenteDbSchema, ValutazioneDbSchema, VisualizzazioneDbSchema } from "./db_types";
 
 export const postAndPutApisConfig = {
     scaletta: (req: import("express").Request) => { return{

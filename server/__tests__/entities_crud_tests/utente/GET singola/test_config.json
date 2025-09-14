@@ -1,3 +1,7 @@
-[{
-    "testApiCallUrl": ""
-}]
+[
+    { "testApiCallUrl": "/utenti/1?include_passaggio" },
+    { "testApiCallUrl": "/utenti/3?include_scaletta" },
+    { "testApiCallUrl": "/utenti/3?include_valutazione" },
+    { "testApiCallUrl": "/utenti/3?include_commento" },
+    { "testApiCallUrl": "/utenti/3?include_visualizzazione" }
+]
