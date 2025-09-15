@@ -40,6 +40,7 @@ import z, { ZodIntersection, ZodObject } from 'zod';
 import dotenv from "dotenv";
 import { isValidDeezerObject, makeDeezerApiCall, uploadPhoto } from './functions';
 import { upsertEntitaDeezer } from './upserts';
+import { dbTablesAndColumns } from "./get_db_tables_and_columns";
 
 // Extend express-session to include user property
 declare module 'express-session' {
@@ -53,8 +54,6 @@ declare module 'express-session' {
     };
   }
 }
-
-import { dbTablesAndColumns } from "./get_db_tables_and_columns";
 
 // Decidi quale file .env usare in base a NODE_ENV
 const envFile = process.env.NODE_ENV === "test" ? ".env.test" : ".env";
@@ -366,6 +365,11 @@ export async function postEntity(
       `INSERT INTO ${mainTableName} (${columns}) VALUES (${placeholders})`,
       values
     );
+    //1.5 Se si verifica l'errore di chiave duplicata, rispondi con 400
+    if ((result as mysql.ResultSetHeader).affectedRows === 0) {
+      res.status(400).json({ error: "Chiave duplicata" });
+      return;
+    }
     // 2. Recupera l'id della nuova riga
     const insertId = (result as mysql.ResultSetHeader).insertId;
     // 3. Inserisci le associazioni nelle tabelle di join

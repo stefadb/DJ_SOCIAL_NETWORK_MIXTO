@@ -14,7 +14,7 @@ const port = 3000;
 
 //API ROUTES
 
-//API DEEZER---------------------------------------------
+//API CHE SCARICANO DATI DA DEEZER, LI RESTITUISCONO E LI METTONO SUL DB
 //GENERI
 app.get("/generi", (req, res) => { deezerEntityApi(req, res, generiAPIsConfig["tutti"]) });
 app.get("/genere", (req, res) => { deezerEntityApi(req, res, generiAPIsConfig["singolo"]) });
@@ -34,14 +34,33 @@ app.get("/album/search", (req, res) => { deezerEntityApi(req, res, albumAPIsConf
 app.get("/album/singolo", (req, res) => { deezerEntityApi(req, res, albumAPIsConfig["singolo"]) });
 app.get("/album/artista", (req, res) => { deezerEntityApi(req, res, albumAPIsConfig["artist"]) });
 app.get("/album/genere", (req, res) => { deezerEntityApi(req, res, albumAPIsConfig["genere"]) });
-//TODO: album/brano non serve perchè basta chiamare brani/singolo per ottenere l'id dell'album e passarlo a album/singolo
+//album/brano non serve perchè basta chiamare brani/singolo per ottenere l'id dell'album e passarlo a album/singolo
 //BRANI--------------------------------------------------------
 app.get("/brani/album", (req, res) => { deezerEntityApi(req, res, braniAPIsConfig["album"]) });
 app.get("/brani/search", (req, res) => { deezerEntityApi(req, res, braniAPIsConfig["search"]) });
 app.get("/brani/genere", (req, res) => { deezerEntityApi(req, res, braniAPIsConfig["genere"]) });
 app.get("/brani/artista", (req, res) => { deezerEntityApi(req, res, braniAPIsConfig["artista"]) });
 app.get("/brani/singolo", (req, res) => { deezerEntityApi(req, res, braniAPIsConfig["singolo"]) });
-//FINE DELLE API DI DEEZER----------------------------------------
+//FINE DELLE API CHE SCARICANO DATI DA DEEZER
+
+//INIZIO API DI GET singola, GET multipla e DELETE delle entità db legate a Deezer (brani, album, artisti, generi). Operano solo sulle entità già esistenti sul db, senza contattare Deezer
+//BRANI
+app.get("/brani/esistenti/:id", (req, res) => { getEntityWithAssociations(req, res, getSingleApisConfig.brano) });
+app.get("/brani/esistenti", (req, res) => { getFilteredEntitiesList(req, res, getMultipleApisConfig.brano(req)) });
+app.delete("/brani/esistenti/:id", (req, res) => { deleteEntity(req, res, "brano") });
+//ALBUM
+app.get("/album/esistenti/:id", (req, res) => { getEntityWithAssociations(req, res, getSingleApisConfig.album) });
+app.get("/album/esistenti", (req, res) => { getFilteredEntitiesList(req, res, getMultipleApisConfig.album(req)) });
+app.delete("/album/esistenti/:id", (req, res) => { deleteEntity(req, res, "album") });
+//ARTISTI
+app.get("/artisti/esistenti/:id", (req, res) => { getEntityWithAssociations(req, res, getSingleApisConfig.artista) });
+app.get("/artisti/esistenti", (req, res) => { getFilteredEntitiesList(req, res, getMultipleApisConfig.artista(req)) });
+app.delete("/artisti/esistenti/:id", (req, res) => { deleteEntity(req, res, "artista") });
+//GENERI
+app.get("/generi/esistenti/:id", (req, res) => { getEntityWithAssociations(req, res, getSingleApisConfig.genere) });
+app.get("/generi/esistenti", (req, res) => { getFilteredEntitiesList(req, res, getMultipleApisConfig.genere(req)) });
+app.delete("/generi/esistenti/:id", (req, res) => { deleteEntity(req, res, "genere") });
+//FINE API DI GET singola, GET multipla e DELETE delle entità db legate a Deezer
 
 //SCALETTE
 app.get("/scalette/:id", (req, res) => {getEntityWithAssociations(req, res, getSingleApisConfig.scaletta)});

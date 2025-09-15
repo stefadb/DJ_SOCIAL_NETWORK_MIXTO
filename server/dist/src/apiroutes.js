@@ -269,6 +269,11 @@ async function postEntity(req, res, config) {
         const placeholders = Object.keys(mainTableNewRowValues).map(() => "?").join(", ");
         const values = Object.values(mainTableNewRowValues);
         const [result] = await con.execute(`INSERT INTO ${mainTableName} (${columns}) VALUES (${placeholders})`, values);
+        //1.5 Se si verifica l'errore di chiave duplicata, rispondi con 400
+        if (result.affectedRows === 0) {
+            res.status(400).json({ error: "Chiave duplicata" });
+            return;
+        }
         // 2. Recupera l'id della nuova riga
         const insertId = result.insertId;
         // 3. Inserisci le associazioni nelle tabelle di join

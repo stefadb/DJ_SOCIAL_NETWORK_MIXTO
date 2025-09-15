@@ -1,4 +1,4 @@
-import { PassaggioDbSchema, ScalettaDbSchema, UtenteDbSchema, VisualizzazioneDbSchema, CommentoDbSchema, ValutazioneDbSchema } from "./db_types";
+import { PassaggioDbSchema, ScalettaDbSchema, UtenteDbSchema, VisualizzazioneDbSchema, CommentoDbSchema, ValutazioneDbSchema, BranoDbSchema, AlbumDbSchema, ArtistaDbSchema, GenereDbSchema } from "./db_types";
 
 export const getMultipleApisConfig = {
     scaletta: (req: import("express").Request) => { return{
@@ -105,4 +105,68 @@ export const getMultipleApisConfig = {
         mainTableSchema: UtenteDbSchema,
         filters: []
     }},
-}
+    brano: (req: import("express").Request) => { return{
+        mainTableName: "brano",
+        mainTableColumns: req.query.columns === undefined ? ["id", "titolo", "durata", "id_album"] : (req.query.columns as string).split(","),
+        mainTableSchema: BranoDbSchema,
+        filters: [
+            ...(req.query.album ? [{
+                table: "album",
+                column: "id",
+                value: req.query.album as string
+            }] : []),
+            ...(req.query.artista ? [{
+                table: "artista",
+                column: "id",
+                value: req.query.artista as string
+
+            }] : []),
+            ...(req.query.passaggio ? [{
+                table: "passaggio",    
+                column: "id",
+                value: req.query.passaggio as string
+            }] : [])
+        ]
+    }},
+    album: (req: import("express").Request) => { return{
+        mainTableName: "album",
+        mainTableColumns: req.query.columns === undefined ? ["id", "titolo", "data_uscita"] : (req.query.columns as string).split(","),
+        mainTableSchema: AlbumDbSchema,
+        filters: [
+            ...(req.query.artista ? [{
+                table: "brano",
+                column: "id",
+                value: req.query.brano as string
+            }] : []),
+            ...(req.query.genere ? [{
+                table: "genere",
+                column: "id",
+                value: req.query.genere as string
+            }] : [])
+        ]
+    }},
+    artista: (req: import("express").Request) => { return{
+        mainTableName: "artista",
+        mainTableColumns: req.query.columns === undefined ? ["id", "nome"] : (req.query.columns as string).split(","),
+        mainTableSchema: ArtistaDbSchema,
+        filters: [
+            ...(req.query.artista ? [{
+                table: "brano",
+                column: "id",
+                value: req.query.brano as string
+            }] : [])
+        ]
+    }},
+    genere: (req: import("express").Request) => { return{
+        mainTableName: "genere",
+        mainTableColumns: req.query.columns === undefined ? ["id", "nome"] : (req.query.columns as string).split(","),
+        mainTableSchema: GenereDbSchema,
+        filters: [
+            ...(req.query.album ? [{
+                table: "album",
+                column: "id",
+                value: req.query.album as string
+            }] : []),
+        ]
+    }}
+};

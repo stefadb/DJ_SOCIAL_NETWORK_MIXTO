@@ -1,4 +1,4 @@
-import { BranoDbSchema, CommentoDbSchema, PassaggioDbSchema, ScalettaDbSchema, UtenteDbSchema, ValutazioneDbSchema, VisualizzazioneDbSchema } from "./db_types";
+import { AlbumDbSchema, ArtistaDbSchema, BranoDbSchema, CommentoDbSchema, GenereDbSchema, PassaggioDbSchema, ScalettaDbSchema, UtenteDbSchema, ValutazioneDbSchema, VisualizzazioneDbSchema } from "./db_types";
 
 
 export const getSingleApisConfig = {
@@ -137,5 +137,67 @@ export const getSingleApisConfig = {
             }
         ]
     },
-
-}
+    brano: {
+        mainTableName: "brano",
+        mainTableColumns: ["id", "titolo", "durata", "id_album"],
+        mainTableSchema: BranoDbSchema,
+        otherTables: [
+            {
+                tableName: "album",
+                columns: ["id", "titolo", "data_uscita"],
+                schema: AlbumDbSchema
+            },
+            {
+                tableName: "passaggio",
+                columns: ["id", "testo", "inizio_secondo_brano", "cue_secondo_brano", "data_pubblicazione", "id_utente", "id_brano_1", "id_brano_2"],
+                schema: PassaggioDbSchema
+            },
+            {
+                tableName: "artista",
+                columns: ["id", "nome"],
+                schema: ArtistaDbSchema
+            }
+        ]
+    },
+    artista: {
+        mainTableName: "artista",
+        mainTableColumns: ["id", "nome"],
+        mainTableSchema: ArtistaDbSchema,
+        otherTables: [
+            {
+                tableName: "brano",
+                columns: ["id", "titolo", "durata", "id_album"],
+                schema: BranoDbSchema
+            }
+        ]
+    },
+    album: {
+        mainTableName: "album",
+        mainTableColumns: ["id", "titolo", "data_uscita"],
+        mainTableSchema: AlbumDbSchema,
+        otherTables: [
+            {
+                tableName: "brano",
+                columns: ["id", "titolo", "durata", "id_album"],
+                schema: BranoDbSchema
+            },
+            {
+                tableName: "genere",
+                columns: ["id", "nome"],
+                schema: GenereDbSchema
+            }
+        ]
+    },
+    genere: {
+        mainTableName: "genere",
+        mainTableColumns: ["id", "nome"],
+        mainTableSchema: GenereDbSchema,
+        otherTables: [
+            {
+                tableName: "album",
+                columns: ["id", "titolo", "data_uscita"],
+                schema: AlbumDbSchema
+            }
+        ]
+    }
+};
