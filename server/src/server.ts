@@ -2,8 +2,6 @@ import { deezerEntityApi, deleteEntity, getEntityWithAssociations, getFilteredEn
 
 import express from "express";
 import { albumAPIsConfig, artistiAPIsConfig, braniAPIsConfig, generiAPIsConfig } from "./deezer_apis_config";
-import { dbTablesAndColumns } from "./get_db_tables_and_columns";
-import { PassaggioDbSchema, ScalettaDbSchema, UtenteDbSchema } from "./db_types";
 import { getSingleApisConfig } from "./get_single_apis_config";
 import { getMultipleApisConfig } from "./get_multiple_apis_config";
 import { postAndPutApisConfig } from "./post_and_put_apis_config";
