@@ -6,9 +6,6 @@ import { getSingleApisConfig } from "./get_single_apis_config";
 import { getMultipleApisConfig } from "./get_multiple_apis_config";
 import { postAndPutApisConfig } from "./post_and_put_apis_config";
 const app = express();
-const port = 3000;
-
-
 
 //API ROUTES
 
