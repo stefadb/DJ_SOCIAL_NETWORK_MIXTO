@@ -113,8 +113,6 @@ function dbResultIsValid(res, array, entity, schema, tableName) {
         for (const singleObj of entity) {
             //Passaggio necessario perchè i valori null del db sono undefined per gli schemi zod
             if (!schema.safeParse(singleObj).success) {
-                console.log("Questa entità non ha passato la validazione di zod:");
-                console.log(singleObj);
                 res.status(500).json({ error: `Entità associata ${tableName} non valida alla posizione ${index}`, details: schema.safeParse(singleObj).error });
                 return false;
             }
@@ -249,11 +247,23 @@ async function getFilteredEntitiesList(req, res, config) {
     const finalQuery = selectStatement + joins + whereStatement + groupByStatement;
     const con = await getConnection();
     try {
-        //console.log(finalQuery);
         const [rows] = await con.execute(finalQuery);
-        //TODO: estendere la validazione zod anche alle entità associate
-        if (!dbResultIsValid(res, true, rows, config.mainTableSchema, config.mainTableName)) {
-            return;
+        for (let row of rows) {
+            if (!dbResultIsValid(res, false, row, config.mainTableSchema, config.mainTableName)) {
+                return;
+            }
+            for (const queryJoin of config.filtersAndJoins) {
+                if (!("value" in queryJoin)) {
+                    let keyName = `${queryJoin.table}${queryJoin.joinColumnSuffix ? `_${queryJoin.joinColumnSuffix}` : ""}_array`;
+                    if (keyName in row) {
+                        if (!dbResultIsValid(res, true, row[keyName], queryJoin.schema, keyName)) {
+                            console.log("Questa entità non ha passato la validazione di zod:");
+                            console.log(row[keyName]);
+                            return;
+                        }
+                    }
+                }
+            }
         }
         res.json(rows);
     }

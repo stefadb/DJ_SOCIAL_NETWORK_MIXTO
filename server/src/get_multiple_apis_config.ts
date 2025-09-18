@@ -40,7 +40,8 @@ export const getMultipleApisConfig = {
                     table: "brano",
                     joinColumnSuffix: "2",
                     includeInResult: true,
-                    columns: ["id", "titolo", "durata", "id_album"]
+                    columns: ["id", "titolo", "durata", "id_album"],
+                    schema: BranoDbSchema
                 }] : []),
                 ...(req.query.secondoBrano ? [{
                     table: "brano",
@@ -51,7 +52,8 @@ export const getMultipleApisConfig = {
                     table: "brano",
                     joinColumnSuffix: "1",
                     includeInResult: true,
-                    columns: ["id", "titolo", "durata", "id_album"]
+                    columns: ["id", "titolo", "durata", "id_album"],
+                    schema: BranoDbSchema
                 }] : []),
                 ...(req.query.scaletta ? [{
                     table: "scaletta",
