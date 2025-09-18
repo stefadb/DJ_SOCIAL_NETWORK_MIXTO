@@ -1,6 +1,7 @@
 import mysql from "mysql2/promise";
+import { DbEntity } from "./db_types";
 
-export async function upsertEntitaDeezer(con: mysql.Connection, entita: { id: number } & Record<string, string | number>, nomeEntita: string) {
+export async function upsertEntitaDeezer(con: mysql.Connection, entita: DbEntity, nomeEntita: string) {
     const [rows] = await con.execute(
         `SELECT id FROM ${nomeEntita} WHERE id = ?`,
         [entita.id]

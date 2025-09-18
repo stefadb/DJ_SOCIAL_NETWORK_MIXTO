@@ -7,18 +7,10 @@ import bcrypt from "bcrypt";
 import mysql from "mysql2/promise";
 import {
   AlbumDeezerBasic,
-  AlbumDeezerBasicSchema,
-  AnyDeezerEntityBasic,
   ArtistaDeezerBasic,
-  ArtistaDeezerBasicSchema,
   BranoDeezerBasic,
-  BranoDeezerBasicSchema,
   GenereDeezerBasic,
-  GenereDeezerBasicSchema,
-  GenereDeezerSemplificato,
-  GenereDeezerSemplificatoSchema,
   GenericDeezerEntityBasic,
-  GenericDeezerEntityBasicSchema
 } from './deezer_types';
 import {
   AlbumDb,
@@ -163,6 +155,8 @@ function dbResultIsValid(res: import("express").Response, array: boolean, entity
     for (const singleObj of entity) {
       //Passaggio necessario perchè i valori null del db sono undefined per gli schemi zod
       if (!schema.safeParse(singleObj).success) {
+        console.log("Questa entità non ha passato la validazione di zod:");
+        console.log(singleObj);
         res.status(500).json({ error: `Entità associata ${tableName} non valida alla posizione ${index}`, details: schema.safeParse(singleObj).error });
         return false;
       }
@@ -286,7 +280,23 @@ export async function getEntityWithAssociations(
   }
 }
 
-//TODO: testare questa funzione per capire se funziona
+
+type QueryJoin = {
+  table: string,
+  joinColumnSuffix?: string //se la colonna di join non è id_[table], specificare il suffisso qui
+  includeInResult?: boolean //se true, include questa tabella nel risultato
+  columns: string[]
+}
+
+type QueryFilter = {
+  table: string,
+  joinColumnSuffix?: string //se la colonna di join non è id_[table], specificare il suffisso qui
+  includeInResult?: boolean //se true, include questa tabella nel risultato
+  column: string,
+  value: string | number
+}
+
+//TODO: Estendere questa funzione per poter includere nel risultato anche le entità associate
 export async function getFilteredEntitiesList(
   req: import("express").Request,
   res: import("express").Response,
@@ -295,42 +305,49 @@ export async function getFilteredEntitiesList(
     mainTableName: string,
     mainTableColumns: string[],
     mainTableSchema: ZodObject<any>,
-    filters: {
-      table: string,
-      column: string,
-      value: string | number,
-      joinColumnSuffix?: string //se la colonna di join non è id_[table], specificare il suffisso qui
-    }[]
+    filtersAndJoins: (QueryFilter | QueryJoin)[]
   }
 ) {
-  let selectStatement = `SELECT ${config.mainTableColumns.map(col => `${config.mainTableName}.${col}`).join(", ")}\nFROM ${config.mainTableName}\n`;
-  let whereStatement = config.filters.length == 0 ? "" : `WHERE ${config.filters.map((filter, i) => `${filter.table}_${i}.${filter.column} = ${filter.value}`).join(" AND ")}`;
+  let mainTableColumns = `${config.mainTableColumns.map(col => `${config.mainTableName}.${col}`).join(", ")}`;
+  let jsonArrayAggColumns = "";
+  for (const [i, queryJoin] of config.filtersAndJoins.entries()) {
+    if (!("value" in queryJoin)) {
+      jsonArrayAggColumns += `JSON_ARRAYAGG(JSON_OBJECT(${queryJoin.columns.map(col => `'${col}', ${queryJoin.table}_${i}.${col}`).join(", ")})) AS ${queryJoin.table}${queryJoin.joinColumnSuffix ? `_${queryJoin.joinColumnSuffix}` : ""}_array\n`;
+    }
+  }
+  let selectStatement = `SELECT ${mainTableColumns}${jsonArrayAggColumns.length > 0 ? "," : ""} ${jsonArrayAggColumns}\nFROM ${config.mainTableName}\n`;
+  let whereStatement = config.filtersAndJoins.length == 0 ? "" : `WHERE ${config.filtersAndJoins.filter(queryFilter => "value" in queryFilter).map((queryFilter, i) => `${queryFilter.table}_${i}.${queryFilter.column} = ${queryFilter.value}`).join(" AND ")}\n`;
+  let groupByStatement = `GROUP BY ${config.mainTableName}.id`;
   let joins = "";
-  for (const [i, filter] of config.filters.entries()) {
+  for (const [i, filter] of config.filtersAndJoins.entries()) {
     //console.log("Vorrei mettere il JOIN!!");
     if (relationIsManyToMany(config.mainTableName, filter.table)) {
       const middleTableName = `${config.mainTableName}_${filter.table}` in dbTablesAndColumns ? `${config.mainTableName}_${filter.table}` : `${filter.table}_${config.mainTableName}`;
-      joins += `JOIN ${middleTableName} AS ${middleTableName}_${i} ON ${config.mainTableName}.id = ${middleTableName}_${i}.id_${config.mainTableName}\n`;
-      joins += `JOIN ${filter.table} AS ${filter.table}_${i} ON ${filter.table}_${i}.id = ${middleTableName}_${i}.id_${filter.table}\n`;
+      joins += `LEFT JOIN ${middleTableName} AS ${middleTableName}_${i} ON ${config.mainTableName}.id = ${middleTableName}_${i}.id_${config.mainTableName}\n`;
+      joins += `LEFT JOIN ${filter.table} AS ${filter.table}_${i} ON ${filter.table}_${i}.id = ${middleTableName}_${i}.id_${filter.table}\n`;
       //console.log("Ho messo il JOIN!!");
     } else if (relationIsManyToOne(config.mainTableName, filter.table)) {
-      joins += `JOIN ${filter.table} AS ${filter.table}_${i} ON ${filter.table}_${i}.id = ${config.mainTableName}.id_${filter.table}${filter.joinColumnSuffix ? `_${filter.joinColumnSuffix}` : ""}\n`;
+      joins += `LEFT JOIN ${filter.table} AS ${filter.table}_${i} ON ${filter.table}_${i}.id = ${config.mainTableName}.id_${filter.table}${filter.joinColumnSuffix ? `_${filter.joinColumnSuffix}` : ""}\n`;
       //console.log("Ho messo il JOIN!!");
     } else if (relationIsOneToMany(config.mainTableName, filter.table)) {
-      joins += `JOIN ${filter.table} AS ${filter.table}_${i} ON ${filter.table}_${i}.id_${config.mainTableName}${filter.joinColumnSuffix ? `_${filter.joinColumnSuffix}` : ""} = ${config.mainTableName}.id\n`;
+      joins += `LEFT JOIN ${filter.table} AS ${filter.table}_${i} ON ${filter.table}_${i}.id_${config.mainTableName}${filter.joinColumnSuffix ? `_${filter.joinColumnSuffix}` : ""} = ${config.mainTableName}.id\n`;
       //console.log("Ho messo il JOIN!!");
     }
   }
-  const finalQuery = selectStatement + joins + whereStatement;
+  const finalQuery = selectStatement + joins + whereStatement + groupByStatement;
   const con = await getConnection();
   try {
+    //console.log(finalQuery);
     const [rows] = await con.execute(finalQuery);
-    //PROBLEMA: ogni tanto config.mainTableSchema è undefined
+    //TODO: estendere la validazione zod anche alle entità associate
     if (!dbResultIsValid(res, true, rows, config.mainTableSchema, config.mainTableName)) {
       return;
     }
+    
+    
     res.json(rows);
   } catch (err) {
+    console.log(err);
     res.status(500).json({ error: "Errore nella query", details: err });
   } finally {
     await con.end();
@@ -472,9 +489,10 @@ export async function putEntity(
 
 
 function fromSecondsToTime(seconds: number): Durata {
-  const mins = Math.floor(seconds / 60);
+  const hours = Math.floor(seconds / 3600);
+  const mins = Math.floor((seconds % 3600) / 60);
   const secs = seconds % 60;
-  return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}` as Durata;
+  return `${hours.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}` as Durata;
 }
 
 // Overloads for type-safe mapping from Deezer entity to DB entity

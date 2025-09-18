@@ -3,14 +3,22 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+//Import delle funzioni generiche delle API
 const apiroutes_1 = require("./apiroutes");
 const express_1 = __importDefault(require("express"));
+//Import delle config delle API
 const deezer_apis_config_1 = require("./deezer_apis_config");
 const get_single_apis_config_1 = require("./get_single_apis_config");
 const get_multiple_apis_config_1 = require("./get_multiple_apis_config");
 const post_and_put_apis_config_1 = require("./post_and_put_apis_config");
 const app = (0, express_1.default)();
-const port = 3000;
+//Configura il cors di app per permettere richieste dall'indirizzo http://localnost:5173 (dove gira il client React in dev)
+const cors_1 = __importDefault(require("cors"));
+app.use((0, cors_1.default)({
+    origin: 'http://localhost:5173', // Sostituisci con l'URL del tuo client React
+    methods: ['GET', 'POST', 'PUT', 'DELETE'], // Metodi consentiti
+    credentials: true // Se hai bisogno di inviare cookie o credenziali
+}));
 //API ROUTES
 //API CHE SCARICANO DATI DA DEEZER, LI RESTITUISCONO E LI METTONO SUL DB
 //GENERI

@@ -1,11 +1,21 @@
+//Import delle funzioni generiche delle API
 import { deezerEntityApi, deleteEntity, getEntityWithAssociations, getFilteredEntitiesList, postEntity, postLogin, putEntity } from "./apiroutes";
 
 import express from "express";
+//Import delle config delle API
 import { albumAPIsConfig, artistiAPIsConfig, braniAPIsConfig, generiAPIsConfig } from "./deezer_apis_config";
 import { getSingleApisConfig } from "./get_single_apis_config";
 import { getMultipleApisConfig } from "./get_multiple_apis_config";
 import { postAndPutApisConfig } from "./post_and_put_apis_config";
 const app = express();
+
+//Configura il cors di app per permettere richieste dall'indirizzo http://localnost:5173 (dove gira il client React in dev)
+import cors from "cors";
+app.use(cors({
+    origin: 'http://localhost:5173', // Sostituisci con l'URL del tuo client React
+    methods: ['GET', 'POST', 'PUT', 'DELETE'], // Metodi consentiti
+    credentials: true // Se hai bisogno di inviare cookie o credenziali
+}));
 
 //API ROUTES
 
