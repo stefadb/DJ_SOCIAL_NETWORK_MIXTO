@@ -18,7 +18,6 @@ app.use(cors({
     credentials: true // Se hai bisogno di inviare cookie o credenziali
 }));
 
-console.log(path.join(__dirname, "album_pictures"));
 app.use("/generi_pictures", express.static(path.join(__dirname, "generi_pictures")));
 app.use("/artisti_pictures", express.static(path.join(__dirname, "artisti_pictures")));
 app.use("/album_pictures", express.static(path.join(__dirname, "album_pictures")));
@@ -81,6 +80,7 @@ app.put("/scalette/:id", (req, res) => {putEntity(req, res, postAndPutApisConfig
 app.delete("/scalette/:id", (req, res) => { deleteEntity(req, res, "scaletta") }); //uso la funzione generica per eliminare un'entità
 //PASSAGGI
 app.get("/passaggi", (req, res) => { getFilteredEntitiesList(req, res, getMultipleApisConfig.passaggio(req)) });
+app.get("/passaggi/conta", (req ,res) => {getFilteredEntitiesList(req, res, getMultipleApisConfig.passaggioConta(req))});
 app.get("/passaggi/:id", (req, res) => {getEntityWithAssociations(req, res, getSingleApisConfig.passaggio)});
 app.post("/passaggi", (req, res) => {postEntity(req, res, postAndPutApisConfig.passaggio(req))});
 app.put("/passaggi/:id", (req, res) => {putEntity(req, res, postAndPutApisConfig.passaggio(req))});
@@ -109,5 +109,6 @@ app.get("/visualizzazioni", (req, res) => { getFilteredEntitiesList(req, res, ge
 app.get("/visualizzazioni/:id", (req, res) => {getEntityWithAssociations(req, res, getSingleApisConfig.visualizzazione)});
 //LOGIN
 app.post("/login", postLogin);
+
 
 export default app;

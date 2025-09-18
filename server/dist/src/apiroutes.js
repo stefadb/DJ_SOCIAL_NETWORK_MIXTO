@@ -131,8 +131,6 @@ async function getEntityWithAssociations(req, res, config) {
         const [mainRows] = await con.execute(`SELECT ${mainTableCols} FROM ${config.mainTableName} WHERE ${config.mainTableName}.id = ?`, [id]);
         const mainEntity = mainRows[0];
         if (!dbResultIsValid(res, false, mainEntity, config.mainTableSchema, config.mainTableName)) {
-            console.log("Questa entità non ha passato la validazione di zod:");
-            console.log(mainEntity);
             return;
         }
         //PER OGNI TABELLA ASSOCIATA, ESEGUI LA QUERY DI SELECT
@@ -148,8 +146,6 @@ async function getEntityWithAssociations(req, res, config) {
           JOIN ${middleTableName} ON ${assoc.tableName}.id = ${middleTableName}.id_${assoc.tableName}
           WHERE ${middleTableName}.id_${config.mainTableName} = ?`, [id]);
                     if (!dbResultIsValid(res, true, rows, assoc.schema, assoc.tableName)) {
-                        console.log("Questa entità non ha passato la validazione di zod:");
-                        console.log(rows);
                         return;
                     }
                     mainEntity[assoc.tableName] = rows;
@@ -164,8 +160,6 @@ async function getEntityWithAssociations(req, res, config) {
                 WHERE ${assoc.tableName}.id = ?`, [mainEntity[column]]);
                                 const row = rows[0];
                                 if (!dbResultIsValid(res, false, row, assoc.schema, assoc.tableName)) {
-                                    console.log("Questa entità non ha passato la validazione di zod:");
-                                    console.log(row);
                                     return;
                                 }
                                 mainEntity[assoc.tableName + column.substring((`id_${assoc.tableName}`).length)] = row;
@@ -185,8 +179,6 @@ async function getEntityWithAssociations(req, res, config) {
                 FROM ${assoc.tableName}
                 WHERE ${column} = ?`, [mainEntity.id]);
                                 if (!dbResultIsValid(res, true, rows, assoc.schema, assoc.tableName)) {
-                                    console.log("Questa entità non ha passato la validazione di zod:");
-                                    console.log(rows);
                                     return;
                                 }
                                 mainEntity[assoc.tableName + column.substring((`id_${config.mainTableName}`).length)] = rows;
@@ -206,8 +198,6 @@ async function getEntityWithAssociations(req, res, config) {
         res.json(mainEntity);
     }
     catch (err) {
-        console.log("Ecco l'errore !");
-        console.log(err);
         res.status(500).json({ error: "Errore in una delle query", details: err });
     }
     finally {
@@ -217,15 +207,18 @@ async function getEntityWithAssociations(req, res, config) {
 //TODO: Estendere questa funzione per poter includere nel risultato anche le entità associate
 async function getFilteredEntitiesList(req, res, config) {
     let mainTableColumns = `${config.mainTableColumns.map(col => `${config.mainTableName}.${col}`).join(", ")}`;
+    let selectCustomColumns = config.selectCustomColumns ? config.selectCustomColumns.join(", ") : "";
     let jsonArrayAggColumns = "";
     for (const [i, queryJoin] of config.filtersAndJoins.entries()) {
         if (!("value" in queryJoin)) {
             jsonArrayAggColumns += `JSON_ARRAYAGG(JSON_OBJECT(${queryJoin.columns.map(col => `'${col}', ${queryJoin.table}_${i}.${col}`).join(", ")})) AS ${queryJoin.table}${queryJoin.joinColumnSuffix ? `_${queryJoin.joinColumnSuffix}` : ""}_array\n`;
         }
     }
-    let selectStatement = `SELECT ${mainTableColumns}${jsonArrayAggColumns.length > 0 ? "," : ""} ${jsonArrayAggColumns}\nFROM ${config.mainTableName}\n`;
+    let allColumns = [selectCustomColumns, mainTableColumns, jsonArrayAggColumns].filter(part => part.length > 0).join(", ");
+    let selectStatement = `SELECT ${allColumns}\nFROM ${config.mainTableName}\n`;
     let whereStatement = config.filtersAndJoins.length == 0 ? "" : `WHERE ${config.filtersAndJoins.filter(queryFilter => "value" in queryFilter).map((queryFilter, i) => `${queryFilter.table}_${i}.${queryFilter.column} = ${queryFilter.value}`).join(" AND ")}\n`;
-    let groupByStatement = `GROUP BY ${config.mainTableName}.id\n`;
+    let allGroupBys = config.customGroupBys ? config.customGroupBys : [config.mainTableName + ".id"];
+    let groupByStatement = allGroupBys.length > 0 ? `GROUP BY ${allGroupBys.join(", ")}\n` : "";
     //Uso index al posto di offset per allinearmi con le API legate a Deezer
     let limitOffset = `${req.query.limit ? `LIMIT ${req.query.limit}` : ""} ${req.query.index ? `OFFSET ${req.query.index}` : ""}`;
     let joins = "";
@@ -249,18 +242,21 @@ async function getFilteredEntitiesList(req, res, config) {
     const finalQuery = selectStatement + joins + whereStatement + groupByStatement + limitOffset;
     const con = await getConnection();
     try {
+        console.log(finalQuery);
         const [rows] = await con.execute(finalQuery);
         for (let row of rows) {
-            if (!dbResultIsValid(res, false, row, config.mainTableSchema, config.mainTableName)) {
+            if (config.mainTableSchema !== undefined && !dbResultIsValid(res, false, row, config.mainTableSchema, config.mainTableName)) {
+                //console.log("Questa row non ha fatto passare la validazione di zod:");
+                //console.log(row);
                 return;
             }
             for (const queryJoin of config.filtersAndJoins) {
                 if (!("value" in queryJoin)) {
                     let keyName = `${queryJoin.table}${queryJoin.joinColumnSuffix ? `_${queryJoin.joinColumnSuffix}` : ""}_array`;
                     if (keyName in row) {
-                        if (!dbResultIsValid(res, true, row[keyName], queryJoin.schema, keyName)) {
-                            console.log("Questa entità non ha passato la validazione di zod:");
-                            console.log(row[keyName]);
+                        if (queryJoin.schema !== undefined && !dbResultIsValid(res, true, row[keyName], queryJoin.schema, keyName)) {
+                            //console.log("Questa row non ha fatto passare la validazione di zod:");
+                            //console.log(row);
                             return;
                         }
                     }
@@ -270,7 +266,6 @@ async function getFilteredEntitiesList(req, res, config) {
         res.json(rows);
     }
     catch (err) {
-        console.log(err);
         res.status(500).json({ error: "Errore nella query", details: err });
     }
     finally {
@@ -514,9 +509,6 @@ async function deezerEntityApi(req, res, apisConfig) {
             const con = await getConnection();
             for (const obj of entityObjects) {
                 if (!(0, functions_1.isValidDeezerObject)(res, obj, entityConfig.deezerEntitySchema)) {
-                    console.log("Validazione non riuscita con questa response passata in input:");
-                    console.log("CODICE " + response.status);
-                    console.log(response.data);
                     return;
                 }
                 await (0, upserts_1.upsertEntitaDeezer)(con, fromDeezerEntityToDbEntity(obj, entityConfig.tableName, param), entityConfig.tableName);

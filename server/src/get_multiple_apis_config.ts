@@ -63,6 +63,41 @@ export const getMultipleApisConfig = {
             ]
         }
     },
+    passaggioConta: (req: import("express").Request) => {
+        return {
+            mainTableName: "passaggio",
+            mainTableColumns: [...(req.query.primoBrano ? ["id_brano_2"] : []), ...(req.query.secondoBrano ? ["id_brano_1"] : [])],
+            selectCustomColumns: ["COUNT(*) AS numero_passaggi"],
+            mainTableSchema: undefined, //perchè non vengono restituite tutte le colonne del passaggio
+            customGroupBys: [...(req.query.primoBrano ? ["passaggio.id_brano_2"] : []), ...(req.query.secondoBrano ? ["passaggio.id_brano_1"] : [])],
+            filtersAndJoins: [
+                ...(req.query.primoBrano ? [{
+                    table: "brano",
+                    column: "id",
+                    value: req.query.primoBrano as string,
+                    joinColumnSuffix: "1"
+                }, {
+                    table: "brano",
+                    joinColumnSuffix: "2",
+                    includeInResult: true,
+                    columns: ["id", "titolo", "durata", "id_album"],
+                    schema: BranoDbSchema
+                }] : []),
+                ...(req.query.secondoBrano ? [{
+                    table: "brano",
+                    column: "id",
+                    value: req.query.secondoBrano as string,
+                    joinColumnSuffix: "2"
+                }, {
+                    table: "brano",
+                    joinColumnSuffix: "1",
+                    includeInResult: true,
+                    columns: ["id", "titolo", "durata", "id_album"],
+                    schema: BranoDbSchema
+                }] : [])
+            ]
+        }
+    },
     commento: (req: import("express").Request) => {
         return {
             mainTableName: "commento",

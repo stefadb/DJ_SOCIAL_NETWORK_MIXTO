@@ -23,6 +23,8 @@ function Brano() {
   const [brano, setBrano] = useState<BranoDb | null>(null);
   const [passaggi1, setPassaggi1] = useState<PassaggioDb[] | null>(null);
   const [passaggi2, setPassaggi2] = useState<PassaggioDb[] | null>(null);
+  const [conteggioPassaggi1, setConteggioPassaggi1] = useState<object[]>([]);
+  const [conteggioPassaggi2, setConteggioPassaggi2] = useState<object[]>([]);
 
   //useEffect necessario per recuperare i dati
   useEffect(() => {
@@ -40,6 +42,7 @@ function Brano() {
             return;
           }
           setBrano(branoParsed.data);
+          loadContaPassaggiBrano(branoParsed.data.id);
           //Il brano è stato caricato con successo, ora si possono caricare i passaggi
           axios
             .get(
@@ -113,6 +116,23 @@ function Brano() {
         console.error("Errore nel recupero del brano:", error);
       });
   }, []);
+
+  useEffect(() => {});
+
+  async function loadContaPassaggiBrano(id: number) {
+    try {
+      const response1 = await axios.get(
+        `http://localhost:3000/passaggi/conta?primoBrano=${id}`
+      );
+      const response2 = await axios.get(
+        `http://localhost:3000/passaggi/conta?secondoBrano=${id}`
+      );
+      setConteggioPassaggi1(response1.data);
+      setConteggioPassaggi2(response2.data);
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   async function getNomiArtistiBrano(id: number): Promise<ArtistaDb[]> {
     //TODO: migliorare le prestazioni in modo che non venga sempre fatta la chiamata API a Deezer

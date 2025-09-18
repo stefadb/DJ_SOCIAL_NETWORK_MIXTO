@@ -49,7 +49,6 @@ export async function makeDeezerApiCall(res: import("express").Response, urlFirs
       })
       .catch((error) => {
         if (axios.isAxiosError(error) && error.response && error.response.status === 4) {
-          console.log("Limite di richieste API superato");
           res.status(4).json({ error: "Limite di richieste API superato" });
           resolve(-1);
         }

@@ -20,7 +20,6 @@ app.use((0, cors_1.default)({
     methods: ['GET', 'POST', 'PUT', 'DELETE'], // Metodi consentiti
     credentials: true // Se hai bisogno di inviare cookie o credenziali
 }));
-console.log(win32_1.default.join(__dirname, "album_pictures"));
 app.use("/generi_pictures", express_1.default.static(win32_1.default.join(__dirname, "generi_pictures")));
 app.use("/artisti_pictures", express_1.default.static(win32_1.default.join(__dirname, "artisti_pictures")));
 app.use("/album_pictures", express_1.default.static(win32_1.default.join(__dirname, "album_pictures")));
@@ -79,6 +78,7 @@ app.put("/scalette/:id", (req, res) => { (0, apiroutes_1.putEntity)(req, res, po
 app.delete("/scalette/:id", (req, res) => { (0, apiroutes_1.deleteEntity)(req, res, "scaletta"); }); //uso la funzione generica per eliminare un'entità
 //PASSAGGI
 app.get("/passaggi", (req, res) => { (0, apiroutes_1.getFilteredEntitiesList)(req, res, get_multiple_apis_config_1.getMultipleApisConfig.passaggio(req)); });
+app.get("/passaggi/conta", (req, res) => { (0, apiroutes_1.getFilteredEntitiesList)(req, res, get_multiple_apis_config_1.getMultipleApisConfig.passaggioConta(req)); });
 app.get("/passaggi/:id", (req, res) => { (0, apiroutes_1.getEntityWithAssociations)(req, res, get_single_apis_config_1.getSingleApisConfig.passaggio); });
 app.post("/passaggi", (req, res) => { (0, apiroutes_1.postEntity)(req, res, post_and_put_apis_config_1.postAndPutApisConfig.passaggio(req)); });
 app.put("/passaggi/:id", (req, res) => { (0, apiroutes_1.putEntity)(req, res, post_and_put_apis_config_1.postAndPutApisConfig.passaggio(req)); });
