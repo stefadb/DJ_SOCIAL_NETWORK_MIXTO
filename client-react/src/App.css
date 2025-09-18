@@ -1,0 +1,51 @@
+body {
+  margin: 0;
+}
+
+main {
+  border: 1px solid black;
+}
+
+@media (max-width: 480px) {
+  /* Stili per dispositivi mobili */
+  aside {
+    width: 0%;
+  }
+
+  main {
+    width: 100%;
+  }
+}
+
+@media (min-width: 481px) and (max-width: 768px) {
+  /* Stili per tablet */
+  aside {
+    width: 0%;
+  }
+
+  main {
+    width: 100%;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1279px) {
+  /* Stili per laptop */
+  aside {
+    width: 20%;
+  }
+
+  main {
+    width: 60%;
+  }
+}
+
+@media (min-width: 1280px) {
+  /* Stili per desktop */
+  aside {
+    width: 25%;
+  }
+
+  main {
+    width: 50%;
+  }
+}

@@ -14,11 +14,16 @@ const post_and_put_apis_config_1 = require("./post_and_put_apis_config");
 const app = (0, express_1.default)();
 //Configura il cors di app per permettere richieste dall'indirizzo http://localnost:5173 (dove gira il client React in dev)
 const cors_1 = __importDefault(require("cors"));
+const win32_1 = __importDefault(require("path/win32"));
 app.use((0, cors_1.default)({
     origin: 'http://localhost:5173', // Sostituisci con l'URL del tuo client React
     methods: ['GET', 'POST', 'PUT', 'DELETE'], // Metodi consentiti
     credentials: true // Se hai bisogno di inviare cookie o credenziali
 }));
+console.log(win32_1.default.join(__dirname, "album_pictures"));
+app.use("/generi_pictures", express_1.default.static(win32_1.default.join(__dirname, "generi_pictures")));
+app.use("/artisti_pictures", express_1.default.static(win32_1.default.join(__dirname, "artisti_pictures")));
+app.use("/album_pictures", express_1.default.static(win32_1.default.join(__dirname, "album_pictures")));
 //API ROUTES
 //API CHE SCARICANO DATI DA DEEZER, LI RESTITUISCONO E LI METTONO SUL DB
 //GENERI

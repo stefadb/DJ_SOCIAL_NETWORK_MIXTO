@@ -9,7 +9,14 @@ exports.isValidDeezerObject = isValidDeezerObject;
 const axios_1 = __importDefault(require("axios"));
 const path_1 = __importDefault(require("path"));
 const fs_1 = __importDefault(require("fs"));
+const bottleneck_1 = __importDefault(require("bottleneck"));
 const deezerAPIUrl = "https://api.deezer.com";
+const deezerLimiter = new bottleneck_1.default({
+    minTime: 100,
+    reservoir: 50,
+    reservoirRefreshAmount: 50,
+    reservoirRefreshInterval: 5000
+});
 /**
  * Funzione comoda per effettuare chiamate API a Deezer
  * URL reale: https://api.deezer.com/[urlFirstPart]/[urlParameter]/[urlSecondPart]?[queryParams]
@@ -18,39 +25,46 @@ const deezerAPIUrl = "https://api.deezer.com";
  */
 async function makeDeezerApiCall(res, urlFirstPart, urlParameter, urlSecondPart, queryParams) {
     return new Promise((resolve) => {
-        let url = deezerAPIUrl;
-        if (urlFirstPart) {
-            url += `/${urlFirstPart}`;
-        }
-        if (urlParameter) {
-            url += `/${urlParameter}`;
-        }
-        if (urlSecondPart) {
-            url += `/${urlSecondPart}`;
-        }
-        if (queryParams) {
-            const queryString = new URLSearchParams(queryParams).toString();
-            url += `?${queryString}`;
-        }
-        axios_1.default.get(url)
-            .then((response) => {
-            if (response.status == 200) {
-                resolve(response);
+        deezerLimiter.schedule(async () => {
+            let url = deezerAPIUrl;
+            if (urlFirstPart) {
+                url += `/${urlFirstPart}`;
             }
-            else {
-                res.status(response.status).json({ error: `Errore nella chiamata a Deezer: ${response.statusText}` });
-                resolve(-1);
+            if (urlParameter) {
+                url += `/${urlParameter}`;
             }
-        })
-            .catch((error) => {
-            if (axios_1.default.isAxiosError(error) && error.response && error.response.status === 404) {
-                res.status(404).json({ error: "Deezer non ha trovato quello che si sta cercando" });
-                resolve(-1);
+            if (urlSecondPart) {
+                url += `/${urlSecondPart}`;
             }
-            else {
-                res.status(500).json({ error: "Errore nella chiamata a Deezer" });
-                resolve(-1);
+            if (queryParams) {
+                const queryString = new URLSearchParams(queryParams).toString();
+                url += `?${queryString}`;
             }
+            axios_1.default.get(url)
+                .then((response) => {
+                if (response.status == 200) {
+                    resolve(response);
+                }
+                else {
+                    res.status(response.status).json({ error: `Errore nella chiamata a Deezer: ${response.statusText}` });
+                    resolve(-1);
+                }
+            })
+                .catch((error) => {
+                if (axios_1.default.isAxiosError(error) && error.response && error.response.status === 4) {
+                    console.log("Limite di richieste API superato");
+                    res.status(4).json({ error: "Limite di richieste API superato" });
+                    resolve(-1);
+                }
+                if (axios_1.default.isAxiosError(error) && error.response && error.response.status === 404) {
+                    res.status(404).json({ error: "Deezer non ha trovato quello che si sta cercando" });
+                    resolve(-1);
+                }
+                else {
+                    res.status(500).json({ error: "Errore nella chiamata a Deezer" });
+                    resolve(-1);
+                }
+            });
         });
     });
 }

@@ -3,9 +3,17 @@ import { QueryParams } from "./types";
 import path from "path";
 import fs from "fs";
 import { ZodIntersection, ZodObject } from "zod";
+import Bottleneck from "bottleneck";
 import { GenericDeezerEntityBasic, GenericDeezerEntityBasicSchema } from "./deezer_types";
 
 const deezerAPIUrl = "https://api.deezer.com";
+
+const deezerLimiter = new Bottleneck({
+  minTime: 100,
+  reservoir: 50,
+  reservoirRefreshAmount: 50,
+  reservoirRefreshInterval: 5000
+});
 
 /**
  * Funzione comoda per effettuare chiamate API a Deezer
@@ -15,6 +23,7 @@ const deezerAPIUrl = "https://api.deezer.com";
  */
 export async function makeDeezerApiCall(res: import("express").Response, urlFirstPart: string | null, urlParameter: string | number | null, urlSecondPart: string | null, queryParams: QueryParams | null) : Promise<axios.AxiosResponse<any, any> | -1> {
   return new Promise((resolve) => {
+    deezerLimiter.schedule(async () => {
     let url = deezerAPIUrl;
     if (urlFirstPart) {
       url += `/${urlFirstPart}`;
@@ -39,6 +48,11 @@ export async function makeDeezerApiCall(res: import("express").Response, urlFirs
         }
       })
       .catch((error) => {
+        if (axios.isAxiosError(error) && error.response && error.response.status === 4) {
+          console.log("Limite di richieste API superato");
+          res.status(4).json({ error: "Limite di richieste API superato" });
+          resolve(-1);
+        }
         if (axios.isAxiosError(error) && error.response && error.response.status === 404) {
           res.status(404).json({ error: "Deezer non ha trovato quello che si sta cercando" });
           resolve(-1);
@@ -47,6 +61,7 @@ export async function makeDeezerApiCall(res: import("express").Response, urlFirs
           resolve(-1);
         }
       });
+    });
   });
 }
 
@@ -90,6 +105,7 @@ export async function uploadPhoto(dirName: string, entity: GenericDeezerEntityBa
 export function isValidDeezerObject<T extends ZodObject<any>>(res: import("express").Response, obj: any, schema: ZodIntersection<typeof GenericDeezerEntityBasicSchema, T>) {
   const safeParseResult = schema.safeParse(obj);
   if (!safeParseResult.success) {
+
     res.status(500).json({ error: "L'oggetto restituito da Deezer non segue lo schema.", details: safeParseResult.error });
   }
   return safeParseResult.success;

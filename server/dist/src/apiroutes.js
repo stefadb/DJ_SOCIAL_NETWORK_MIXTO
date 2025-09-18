@@ -225,7 +225,9 @@ async function getFilteredEntitiesList(req, res, config) {
     }
     let selectStatement = `SELECT ${mainTableColumns}${jsonArrayAggColumns.length > 0 ? "," : ""} ${jsonArrayAggColumns}\nFROM ${config.mainTableName}\n`;
     let whereStatement = config.filtersAndJoins.length == 0 ? "" : `WHERE ${config.filtersAndJoins.filter(queryFilter => "value" in queryFilter).map((queryFilter, i) => `${queryFilter.table}_${i}.${queryFilter.column} = ${queryFilter.value}`).join(" AND ")}\n`;
-    let groupByStatement = `GROUP BY ${config.mainTableName}.id`;
+    let groupByStatement = `GROUP BY ${config.mainTableName}.id\n`;
+    //Uso index al posto di offset per allinearmi con le API legate a Deezer
+    let limitOffset = `${req.query.limit ? `LIMIT ${req.query.limit}` : ""} ${req.query.index ? `OFFSET ${req.query.index}` : ""}`;
     let joins = "";
     for (const [i, filter] of config.filtersAndJoins.entries()) {
         //console.log("Vorrei mettere il JOIN!!");
@@ -244,7 +246,7 @@ async function getFilteredEntitiesList(req, res, config) {
             //console.log("Ho messo il JOIN!!");
         }
     }
-    const finalQuery = selectStatement + joins + whereStatement + groupByStatement;
+    const finalQuery = selectStatement + joins + whereStatement + groupByStatement + limitOffset;
     const con = await getConnection();
     try {
         const [rows] = await con.execute(finalQuery);
@@ -512,6 +514,9 @@ async function deezerEntityApi(req, res, apisConfig) {
             const con = await getConnection();
             for (const obj of entityObjects) {
                 if (!(0, functions_1.isValidDeezerObject)(res, obj, entityConfig.deezerEntitySchema)) {
+                    console.log("Validazione non riuscita con questa response passata in input:");
+                    console.log("CODICE " + response.status);
+                    console.log(response.data);
                     return;
                 }
                 await (0, upserts_1.upsertEntitaDeezer)(con, fromDeezerEntityToDbEntity(obj, entityConfig.tableName, param), entityConfig.tableName);

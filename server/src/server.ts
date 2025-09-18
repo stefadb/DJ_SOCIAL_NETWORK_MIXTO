@@ -11,11 +11,17 @@ const app = express();
 
 //Configura il cors di app per permettere richieste dall'indirizzo http://localnost:5173 (dove gira il client React in dev)
 import cors from "cors";
+import path from "path/win32";
 app.use(cors({
     origin: 'http://localhost:5173', // Sostituisci con l'URL del tuo client React
     methods: ['GET', 'POST', 'PUT', 'DELETE'], // Metodi consentiti
     credentials: true // Se hai bisogno di inviare cookie o credenziali
 }));
+
+console.log(path.join(__dirname, "album_pictures"));
+app.use("/generi_pictures", express.static(path.join(__dirname, "generi_pictures")));
+app.use("/artisti_pictures", express.static(path.join(__dirname, "artisti_pictures")));
+app.use("/album_pictures", express.static(path.join(__dirname, "album_pictures")));
 
 //API ROUTES
 
