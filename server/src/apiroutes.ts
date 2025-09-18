@@ -297,6 +297,7 @@ export async function getFilteredEntitiesList(
     customGroupBys?: string[], //es. ["column1", "column2"]
     mainTableSchema: ZodObject<any> | undefined,
     filtersAndJoins: (QueryFilter | QueryJoin)[]
+    orderBys?: string[] //es. ["column1 ASC", "column2 DESC"]
   }
 ) {
   let mainTableColumns = `${config.mainTableColumns.map(col => `${config.mainTableName}.${col}`).join(", ")}`;
@@ -312,6 +313,7 @@ export async function getFilteredEntitiesList(
   let whereStatement = config.filtersAndJoins.length == 0 ? "" : `WHERE ${config.filtersAndJoins.filter(queryFilter => "value" in queryFilter).map((queryFilter, i) => `${queryFilter.table}_${i}.${queryFilter.column} = ${queryFilter.value}`).join(" AND ")}\n`;
   let allGroupBys = config.customGroupBys ? config.customGroupBys : [config.mainTableName+".id"];
   let groupByStatement = allGroupBys.length > 0 ? `GROUP BY ${allGroupBys.join(", ")}\n` : "";
+  let orderByStatement = config.orderBys && config.orderBys.length > 0 ? `ORDER BY ${config.orderBys.join(", ")}\n` : "";
   //Uso index al posto di offset per allinearmi con le API legate a Deezer
   let limitOffset = `${req.query.limit ? `LIMIT ${req.query.limit}` : ""} ${req.query.index ? `OFFSET ${req.query.index}` : ""}`;
   let joins = "";
@@ -330,7 +332,7 @@ export async function getFilteredEntitiesList(
       //console.log("Ho messo il JOIN!!");
     }
   }
-  const finalQuery = selectStatement + joins + whereStatement + groupByStatement + limitOffset;
+  const finalQuery = selectStatement + joins + whereStatement + groupByStatement + orderByStatement + limitOffset;
   const con = await getConnection();
   try {
     console.log(finalQuery);

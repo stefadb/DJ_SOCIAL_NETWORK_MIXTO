@@ -69,6 +69,7 @@ export const getMultipleApisConfig = {
             mainTableColumns: [...(req.query.primoBrano ? ["id_brano_2"] : []), ...(req.query.secondoBrano ? ["id_brano_1"] : [])],
             selectCustomColumns: ["COUNT(*) AS numero_passaggi"],
             mainTableSchema: undefined, //perchè non vengono restituite tutte le colonne del passaggio
+            orderBys: ["numero_passaggi DESC"],
             customGroupBys: [...(req.query.primoBrano ? ["passaggio.id_brano_2"] : []), ...(req.query.secondoBrano ? ["passaggio.id_brano_1"] : [])],
             filtersAndJoins: [
                 ...(req.query.primoBrano ? [{

@@ -219,6 +219,7 @@ async function getFilteredEntitiesList(req, res, config) {
     let whereStatement = config.filtersAndJoins.length == 0 ? "" : `WHERE ${config.filtersAndJoins.filter(queryFilter => "value" in queryFilter).map((queryFilter, i) => `${queryFilter.table}_${i}.${queryFilter.column} = ${queryFilter.value}`).join(" AND ")}\n`;
     let allGroupBys = config.customGroupBys ? config.customGroupBys : [config.mainTableName + ".id"];
     let groupByStatement = allGroupBys.length > 0 ? `GROUP BY ${allGroupBys.join(", ")}\n` : "";
+    let orderByStatement = config.orderBys && config.orderBys.length > 0 ? `ORDER BY ${config.orderBys.join(", ")}\n` : "";
     //Uso index al posto di offset per allinearmi con le API legate a Deezer
     let limitOffset = `${req.query.limit ? `LIMIT ${req.query.limit}` : ""} ${req.query.index ? `OFFSET ${req.query.index}` : ""}`;
     let joins = "";
@@ -239,7 +240,7 @@ async function getFilteredEntitiesList(req, res, config) {
             //console.log("Ho messo il JOIN!!");
         }
     }
-    const finalQuery = selectStatement + joins + whereStatement + groupByStatement + limitOffset;
+    const finalQuery = selectStatement + joins + whereStatement + groupByStatement + orderByStatement + limitOffset;
     const con = await getConnection();
     try {
         console.log(finalQuery);
