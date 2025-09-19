@@ -79,8 +79,18 @@ function relationIsManyToOne(table1, table2) {
         return false;
     }
     for (const column of columns) {
-        if (column.startsWith(`id_${table2}`)) {
-            return true;
+        if (!table2.includes("_")) {
+            //La tabella è una tabella di entità normale
+            if (column.startsWith(`id_${table2}`)) {
+                return true;
+            }
+        }
+        else {
+            //La tabella è usata per formare relazioni molti a molti
+            const parts = table2.split("_");
+            if (parts.length === 2 && (column.startsWith(`id_${parts[0]}`) || column.startsWith(`id_${parts[1]}`))) {
+                return true;
+            }
         }
     }
     return false;
@@ -91,8 +101,18 @@ function relationIsOneToMany(table1, table2) {
         return false;
     }
     for (const column of columns) {
-        if (column.startsWith(`id_${table1}`)) {
-            return true;
+        if (!table1.includes("_")) {
+            //La tabella è una tabella di entità normale
+            if (column.startsWith(`id_${table1}`)) {
+                return true;
+            }
+        }
+        else {
+            //La tabella è usata per formare relazioni molti a molti
+            const parts = table1.split("_");
+            if (parts.length === 2 && (column.startsWith(`id_${parts[0]}`) || column.startsWith(`id_${parts[1]}`))) {
+                return true;
+            }
         }
     }
     return false;
@@ -206,17 +226,17 @@ async function getEntityWithAssociations(req, res, config) {
 }
 //TODO: Estendere questa funzione per poter includere nel risultato anche le entità associate
 async function getFilteredEntitiesList(req, res, config) {
-    let mainTableColumns = `${config.mainTableColumns.map(col => `${config.mainTableName}.${col}`).join(", ")}`;
-    let selectCustomColumns = config.selectCustomColumns ? config.selectCustomColumns.join(", ") : "";
-    let jsonArrayAggColumns = "";
+    let mainTableColumns = config.mainTableColumns.map(col => `${config.mainTableName}.${col}`);
+    let selectCustomColumns = config.selectCustomColumns ? config.selectCustomColumns : [];
+    let jsonArrayAggColumns = [];
     for (const [i, queryJoin] of config.filtersAndJoins.entries()) {
         if (!("value" in queryJoin)) {
-            jsonArrayAggColumns += `JSON_ARRAYAGG(JSON_OBJECT(${queryJoin.columns.map(col => `'${col}', ${queryJoin.table}_${i}.${col}`).join(", ")})) AS ${queryJoin.table}${queryJoin.joinColumnSuffix ? `_${queryJoin.joinColumnSuffix}` : ""}_array\n`;
+            jsonArrayAggColumns.push(`JSON_ARRAYAGG(JSON_OBJECT(${queryJoin.columns.map(col => `'${col}', ${queryJoin.table}_${i}.${col}`).join(", ")})) AS ${queryJoin.table}${queryJoin.joinColumnSuffix ? `_${queryJoin.joinColumnSuffix}` : ""}_array`);
         }
     }
-    let allColumns = [selectCustomColumns, mainTableColumns, jsonArrayAggColumns].filter(part => part.length > 0).join(", ");
+    let allColumns = selectCustomColumns.concat(mainTableColumns, jsonArrayAggColumns).join(", ");
     let selectStatement = `SELECT ${allColumns}\nFROM ${config.mainTableName}\n`;
-    let whereStatement = config.filtersAndJoins.length == 0 ? "" : `WHERE ${config.filtersAndJoins.filter(queryFilter => "value" in queryFilter).map((queryFilter, i) => `${queryFilter.table}_${i}.${queryFilter.column} = ${queryFilter.value}`).join(" AND ")}\n`;
+    let whereStatement = config.filtersAndJoins.length == 0 ? "" : `WHERE ${config.filtersAndJoins.filter(queryFilter => "value" in queryFilter).map((queryFilter, i) => `${queryFilter.table}_${i}.${queryFilter.columnToCheckValueIn} = ${queryFilter.value}`).join(" AND ")}\n`;
     let allGroupBys = config.customGroupBys ? config.customGroupBys : [config.mainTableName + ".id"];
     let groupByStatement = allGroupBys.length > 0 ? `GROUP BY ${allGroupBys.join(", ")}\n` : "";
     let orderByStatement = config.orderBys && config.orderBys.length > 0 ? `ORDER BY ${config.orderBys.join(", ")}\n` : "";
@@ -225,25 +245,36 @@ async function getFilteredEntitiesList(req, res, config) {
     let joins = "";
     for (const [i, filter] of config.filtersAndJoins.entries()) {
         //console.log("Vorrei mettere il JOIN!!");
+        console.log("Stabilisco la relazione tra " + config.mainTableName + " e " + filter.table);
         if (relationIsManyToMany(config.mainTableName, filter.table)) {
             const middleTableName = `${config.mainTableName}_${filter.table}` in get_db_tables_and_columns_1.dbTablesAndColumns ? `${config.mainTableName}_${filter.table}` : `${filter.table}_${config.mainTableName}`;
             joins += `LEFT JOIN ${middleTableName} AS ${middleTableName}_${i} ON ${config.mainTableName}.id = ${middleTableName}_${i}.id_${config.mainTableName}\n`;
             joins += `LEFT JOIN ${filter.table} AS ${filter.table}_${i} ON ${filter.table}_${i}.id = ${middleTableName}_${i}.id_${filter.table}\n`;
-            //console.log("Ho messo il JOIN!!");
         }
         else if (relationIsManyToOne(config.mainTableName, filter.table)) {
-            joins += `LEFT JOIN ${filter.table} AS ${filter.table}_${i} ON ${filter.table}_${i}.id = ${config.mainTableName}.id_${filter.table}${filter.joinColumnSuffix ? `_${filter.joinColumnSuffix}` : ""}\n`;
-            //console.log("Ho messo il JOIN!!");
+            if ("mainTableJoinColumn" in filter && "joinedTableJoinColumn" in filter) {
+                //Questo è un filtro custom
+                joins += `LEFT JOIN ${filter.table} AS ${filter.table}_${i} ON ${filter.table}_${i}.${filter.joinedTableJoinColumn} = ${config.mainTableName}.${filter.mainTableJoinColumn}\n`;
+            }
+            else {
+                //Questo è un filtro normale
+                joins += `LEFT JOIN ${filter.table} AS ${filter.table}_${i} ON ${filter.table}_${i}.id = ${config.mainTableName}.id_${filter.table}${filter.joinColumnSuffix ? `_${filter.joinColumnSuffix}` : ""}\n`;
+            }
         }
         else if (relationIsOneToMany(config.mainTableName, filter.table)) {
-            joins += `LEFT JOIN ${filter.table} AS ${filter.table}_${i} ON ${filter.table}_${i}.id_${config.mainTableName}${filter.joinColumnSuffix ? `_${filter.joinColumnSuffix}` : ""} = ${config.mainTableName}.id\n`;
-            //console.log("Ho messo il JOIN!!");
+            if ("mainTableJoinColumn" in filter && "joinedTableJoinColumn" in filter) {
+                //Questo è un filtro custom
+                joins += `LEFT JOIN ${filter.table} AS ${filter.table}_${i} ON ${filter.table}_${i}.${filter.joinedTableJoinColumn} = ${config.mainTableName}.${filter.mainTableJoinColumn}\n`;
+            }
+            else {
+                //Questo è un filtro normale
+                joins += `LEFT JOIN ${filter.table} AS ${filter.table}_${i} ON ${filter.table}_${i}.id_${config.mainTableName}${filter.joinColumnSuffix ? `_${filter.joinColumnSuffix}` : ""} = ${config.mainTableName}.id\n`;
+            }
         }
     }
     const finalQuery = selectStatement + joins + whereStatement + groupByStatement + orderByStatement + limitOffset;
     const con = await getConnection();
     try {
-        console.log(finalQuery);
         const [rows] = await con.execute(finalQuery);
         for (let row of rows) {
             if (config.mainTableSchema !== undefined && !dbResultIsValid(res, false, row, config.mainTableSchema, config.mainTableName)) {
@@ -488,8 +519,34 @@ async function deleteOldAssociations(tableName, associations) {
         }
     }
 }
+async function updateDeezerApiCalls(key, value) {
+    //Usare il database mixto_api_calls e la tabella deezer_api_calls con le colonne url (stringa, chiave primaria) e date (stringa)
+    const con = await getConnection();
+    const [rows] = await con.execute(`SELECT * FROM mixto_api_calls.deezer_api_calls WHERE url = ?`, [key]);
+    if (rows.length > 0) {
+        await con.execute(`UPDATE mixto_api_calls.deezer_api_calls SET date = ? WHERE url = ?`, [value, key]);
+    }
+    else {
+        await con.execute(`INSERT IGNORE INTO mixto_api_calls.deezer_api_calls (url, date) VALUES (?, ?)`, [key, value]);
+    }
+    con.end();
+}
+async function getDeezerApiCalls(key) {
+    const con = await getConnection();
+    const [rows] = await con.execute(`SELECT date FROM mixto_api_calls.deezer_api_calls WHERE url = ?`, [key]);
+    con.end();
+    return rows.length > 0 ? rows[0].date : undefined;
+}
 //FUNZIONE GIA ADATTATA A TYPESCRIPT
 async function deezerEntityApi(req, res, apisConfig) {
+    if (apisConfig.maxOneCallPerDay === true && await getDeezerApiCalls(req.originalUrl) == new Date().toISOString().split('T')[0]) {
+        res.status(200).json({ error: "API già chiamata oggi. Il risultato di questa richiesta è già stato memorizzato. Potrà essere aggiornato domani" });
+        return;
+    }
+    else if (apisConfig.maxOneCallPerDay === true) {
+        //Questa API non è ancora stata chiamata oggi, quindi aggiorna il file
+        await updateDeezerApiCalls(req.originalUrl, new Date().toISOString().split('T')[0]);
+    }
     const paramName = apisConfig.paramName; //nome del parametro di ricerca
     //CONTROLLO CHE I PARAMETRI query, limit e index SIANO STATI PASSATI E SIANO VALIDI
     const param = typeof req.query[paramName] === "string" ? req.query[paramName] : undefined;
@@ -534,6 +591,8 @@ async function deezerEntityApi(req, res, apisConfig) {
         }
     }
     catch (err) {
+        console.log("Guarda questo errore:");
+        console.log(err);
         res.status(500).json({ error: "Errore su questa Api legata a Deezer" });
     }
 }

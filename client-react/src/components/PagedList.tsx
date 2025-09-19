@@ -29,8 +29,6 @@ function PagedList<T>(props: { itemsPerPage: number; apiCall: string; schema?: Z
                             newElements[(currentPage - 1) * props.itemsPerPage + i] = response.data[i];
                         }
                     }
-                    console.log("Assegno questo a elements:");
-                    console.log(newElements);
                     setElements(newElements);
                 }else{
                     //TODO: mostrare errore giusto a schermo
@@ -44,8 +42,6 @@ function PagedList<T>(props: { itemsPerPage: number; apiCall: string; schema?: Z
     useEffect(loadElements, []);
     useEffect(loadElements, [currentPage, props.itemsPerPage]);
     useEffect(() => {
-        console.log("Assegno questo a elements:");
-        console.log([]);
         setElements([]);
         setCurrentPage(1);
     }, [props.apiCall, props.itemsPerPage]);

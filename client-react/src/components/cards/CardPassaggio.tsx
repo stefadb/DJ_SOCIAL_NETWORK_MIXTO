@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
-import type { ArtistaDb, BranoDb, PassaggioDb } from "../types/db_types";
-import BasicUl from "./BasicUl";
+import type { ArtistaDb, BranoDb, PassaggioDb } from "../../types/db_types";
+import BasicUl from "../BasicUl";
+import { getNomiArtistiBrano } from "../../functions/functions";
 
 type CardPassaggioProps = {
   passaggio: PassaggioDb;
   brano1: BranoDb;
   brano2: BranoDb;
-  getNomiArtistiBrano: (id: number) => Promise<ArtistaDb[]>;
 };
 
 function CardPassaggio(props: CardPassaggioProps) {
@@ -27,10 +27,10 @@ function CardPassaggio(props: CardPassaggioProps) {
   async function loadArtisti() {
     try {
       setArtistiBrano1(
-        await props.getNomiArtistiBrano(props.passaggio.id_brano_1)
+        await getNomiArtistiBrano(props.passaggio.id_brano_1)
       );
       setArtistiBrano2(
-        await props.getNomiArtistiBrano(props.passaggio.id_brano_2)
+        await getNomiArtistiBrano(props.passaggio.id_brano_2)
       );
       setCardIsReady(true);
     } catch (error) {

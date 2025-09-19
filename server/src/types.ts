@@ -25,7 +25,8 @@ export type DeezerEntityAPIConfig = {
     getAssociationsFromResponse: (response: axios.AxiosResponse<any, any>) => AssocBranoArtistaDb[] | AssocAlbumGenereDb[];
     tableName: "album_genere" | "brano_artista";
     deleteOldAssociations: boolean;
-  }
+  },
+  maxOneCallPerDay?: boolean; //se true, limita le chiamate a questa API a una al giorno (utile per API che non cambiano spesso e hanno limiti di chiamate)
 }
 
 export type DeezerEntityAPIsConfig = Record<string, DeezerEntityAPIConfig>;

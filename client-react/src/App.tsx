@@ -4,6 +4,8 @@ import Navbar from "./components/Navbar";
 import SideContainer from "./components/SideContainer";
 import { BrowserRouter, Routes, Route} from "react-router-dom";
 import Brano from "./pages/Brano";
+import Album from "./pages/Album";
+import Artista from "./pages/Artista";
 
 function App() {
   return (
@@ -21,6 +23,8 @@ function App() {
               {/* Qui va messo il React Router con la scelta della pagina*/}
               <Routes>
                 <Route path="/brano" element={<Brano />} />
+                <Route path="/album" element={<Album />} />
+                <Route path="/artista" element={<Artista />} />
                 <Route path="*" element={<></>} />
               </Routes>
             </>

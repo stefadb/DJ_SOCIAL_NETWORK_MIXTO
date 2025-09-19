@@ -70,6 +70,7 @@ export const artistiAPIsConfig: ArtistiAPIsConfig = {
     },
     singolo: {
         paramName: "artistId",
+        maxOneCallPerDay: true,
         deezerAPICallback: (res: import("express").Response, param: string, limit: string, index: string) => makeDeezerApiCall(res, "artist", param, null, null),
         entities: [{
             tableName: "Artista",
@@ -97,6 +98,7 @@ export const albumAPIsConfig: AlbumAPIsConfig = {
     },
     singolo: {
         paramName: "albumId",
+        maxOneCallPerDay: true,
         deezerAPICallback: (res: import("express").Response, param: string, limit: string, index: string) => makeDeezerApiCall(res, "album", param, null, null),
         entities: [
             {
@@ -112,6 +114,14 @@ export const albumAPIsConfig: AlbumAPIsConfig = {
                 deezerEntitySchema: GenereDeezerSemplificatoSchema,
                 getEntityObjectsFromResponse: (response: axios.AxiosResponse<any, any>) => {
                     return response.data.genres.data as GenericDeezerEntityBasic[];
+                },
+                showEntityInResponse: false
+            },
+            {
+                tableName: "Brano",
+                deezerEntitySchema: BranoDeezerBasicSchema,
+                getEntityObjectsFromResponse: (response: axios.AxiosResponse<any, any>) => {
+                    return response.data.tracks.data as GenericDeezerEntityBasic[];
                 },
                 showEntityInResponse: false
             }
@@ -334,6 +344,7 @@ export const braniAPIsConfig: BraniAPIsConfig = {
     },
     singolo: {
         paramName: "trackId",
+        maxOneCallPerDay: true,
         deezerAPICallback: (res: import("express").Response, param: string, limit: string, index: string) => makeDeezerApiCall(res, "track", param, null, null),
         entities: [
             {

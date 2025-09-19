@@ -2,13 +2,14 @@ import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import axios from "axios";
 import {
-  BranoDbSchema,
   PassaggioDbSchema,
+  type AlbumDb,
   type ArtistaDb,
   type BranoDb,
+  type GenereDb,
   type PassaggioDb,
 } from "../types/db_types";
-import CardPassaggio from "../components/CardPassaggio";
+import CardPassaggio from "../components/cards/CardPassaggio";
 import PagedList from "../components/PagedList";
 import BranoTableRow from "../components/BranoTableRow";
 
@@ -18,68 +19,27 @@ function Brano() {
   const query = new URLSearchParams(search);
   const id = query.get("id");
   const [brano, setBrano] = useState<BranoDb | null>(null);
+  const [generi, setGeneri] = useState<GenereDb[] | null>(null);
 
   //useEffect necessario per recuperare i dati
   useEffect(() => {
-    axios
-      .get(`http://localhost:3000/brani/singolo?trackId=${id}&limit=1&index=0`)
-      .then((response) => {
-        if (response.status == 200) {
-          const branoParsed = BranoDbSchema.safeParse(response.data[0]);
-          if (!branoParsed.success) {
-            //TODO: Gestire errore
-            console.error(
-              "Errore di validazione dei dati del brano:",
-              branoParsed.error
-            );
-            return;
-          }
-          setBrano(branoParsed.data);
-          //Il brano è stato caricato con successo, ora si possono caricare i passaggi
-        } else {
-          //TODO: Gestire errore
-          console.error("Errore nel recupero del brano:", response.statusText);
-        }
-      })
-      .catch((error) => {
-        //TODO: Gestire errore
-        console.error("Errore nel recupero del brano:", error);
-      });
+    loadBrano();
   }, []);
 
-  //TODO: spostare questa funzione in un file condiviso e non in un componente
-  async function getNomiArtistiBrano(id: number): Promise<ArtistaDb[]> {
-    //TODO: migliorare le prestazioni in modo che non venga sempre fatta la chiamata API a Deezer
-    return new Promise((resolve, reject) => {
-      axios
-        .get(
-          `http://localhost:3000/brani/singolo?trackId=${id}&limit=1&index=0`
-        )
-        .then((response) => {
-          if (response.status == 200) {
-            axios
-              .get(
-                `http://localhost:3000/brani/esistenti/${id}?include_artista`
-              )
-              .then((response) => {
-                if (response.status === 200) {
-                  //TODO: effettuare la validazione con zod
-                  resolve(response.data.artista as ArtistaDb[]);
-                } else {
-                  reject(new Error("Errore nel recupero dell'artista"));
-                }
-              })
-              .catch((error) => {
-                reject(error);
-              });
-          } else {
-            reject(new Error("Errore nel recupero del brano"));
-          }
-        })
-        .catch((error) => {
-          reject(error);
-        });
-    });
+  async function loadBrano() {
+    try {
+      await axios.get(`http://localhost:3000/brani/singolo?trackId=${id}&limit=1&index=0`);
+      const response = await axios.get(`http://localhost:3000/brani/esistenti/${id}?include_artista&include_album`);
+      await axios.get(`http://localhost:3000/album/singolo?albumId=${response.data.id_album}&limit=1&index=0`);
+      const responseAlbum = await axios.get(`http://localhost:3000/album/esistenti/${response.data.id_album}?include_genere`);
+      //TODO: validare con zod!!!
+      setBrano(response.data as BranoDb);
+      setGeneri(responseAlbum.data.genere as GenereDb[]);
+      //Il brano è stato caricato con successo, ora si possono caricare i passaggi
+    } catch (error) {
+      //TODO: Gestire errore
+      console.error("Errore nel recupero del brano:", error);
+    }
   }
 
   return (
@@ -87,9 +47,17 @@ function Brano() {
       <h1>Brano</h1>
       {brano ? (
         <div>
+          <img
+        style={{ width: "100px", height: "100px" }}
+        src={"http://localhost:3000/album_pictures/" + brano.id_album + ".jpg"}
+        alt={"Cover dell'album " + brano.album ? (brano.album as AlbumDb).titolo : "sconosciuto"}
+      ></img>
           <h2>{brano.titolo}</h2>
           <p>Durata: {brano.durata} secondi</p>
-          <p>Album ID: {brano.id_album}</p>
+          <p>Album: {brano.album ? (brano.album as AlbumDb).titolo : "Sconosciuto"}</p>
+          <p>Data di uscita: {brano.album ? (brano.album as AlbumDb).data_uscita : "Sconosciuta"}</p>
+          <p>Artisti: {(brano.artista as ArtistaDb[]).map(artista => artista.nome).join(", ")}</p>
+          <p>Generi: {generi ? generi.map(genere => genere.nome).join(", ") : "Caricamento..."}</p>
         </div>
       ) : (
         <p>Caricamento...</p>
@@ -109,7 +77,7 @@ function Brano() {
               </thead>
               <tbody>
                 <PagedList itemsPerPage={2} apiCall={`http://localhost:3000/passaggi/conta?primoBrano=${brano.id}`} component={(element: { numero_passaggi: number; id_brano_2: number; brano_2_array: BranoDb[] }) => (
-                  <BranoTableRow element={element} getNomiArtistiBrano={getNomiArtistiBrano} />
+                  <BranoTableRow element={element}/>
                 )} showMoreButton={(onClick) => <tr><td colSpan={4}><button onClick={onClick}>Carica altri brani</button></td></tr>} />
               </tbody>
             </table>
@@ -127,7 +95,7 @@ function Brano() {
               </thead>
               <tbody>
                 <PagedList itemsPerPage={2} apiCall={`http://localhost:3000/passaggi/conta?secondoBrano=${brano.id}`} component={(element: { numero_passaggi: number; id_brano_1: number; brano_1_array: BranoDb[] }) => (
-                  <BranoTableRow element={element} getNomiArtistiBrano={getNomiArtistiBrano} />
+                  <BranoTableRow element={element}/>
                 )} showMoreButton={(onClick) => <tr><td colSpan={4}><button onClick={onClick}>Carica altri brani</button></td></tr>} />
               </tbody>
             </table>
@@ -144,7 +112,6 @@ function Brano() {
                 passaggio={element}
                 brano1={brano}
                 brano2={(element.brano_2_array as BranoDb[])[0] as BranoDb}
-                getNomiArtistiBrano={getNomiArtistiBrano}
               />
             )} showMoreButton={(onClick) => <button onClick={onClick}>Carica altri passaggi</button>} />
           </div>
@@ -156,9 +123,8 @@ function Brano() {
                 passaggio={element}
                 brano1={(element.brano_1_array as BranoDb[])[0] as BranoDb}
                 brano2={brano}
-                getNomiArtistiBrano={getNomiArtistiBrano}
               />
-            )} showMoreButton={(onClick) => <button onClick={onClick}>Carica altri passaggi</button>}/>
+            )} showMoreButton={(onClick) => <button onClick={onClick}>Carica altri passaggi</button>} />
           </div>
         </>
       }
