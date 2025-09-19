@@ -22,7 +22,7 @@ type BraniAPIsConfig = {
 type AlbumAPIsConfig = {
     search: DeezerEntityAPIConfig;
     singolo: DeezerEntityAPIConfig;
-    artist: DeezerEntityAPIConfig;
+    artista: DeezerEntityAPIConfig;
     genere: DeezerEntityAPIConfig;
 }
 
@@ -129,7 +129,7 @@ export const albumAPIsConfig: AlbumAPIsConfig = {
             }
         }
     },
-    artist: {
+    artista: {
         paramName: "artistId",
         deezerAPICallback: (res: import("express").Response, param: string, limit: string, index: string) => makeDeezerApiCall(res, "artist", param, "albums", { limit: limit.toString(), index: index.toString() }),
         entities: [

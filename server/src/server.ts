@@ -26,31 +26,31 @@ app.use("/album_pictures", express.static(path.join(__dirname, "album_pictures")
 
 //API CHE SCARICANO DATI DA DEEZER, LI RESTITUISCONO E LI METTONO SUL DB
 //GENERI
-app.get("/generi", (req, res) => { deezerEntityApi(req, res, generiAPIsConfig["tutti"]) });
-app.get("/genere", (req, res) => { deezerEntityApi(req, res, generiAPIsConfig["singolo"]) });
+app.get("/generi", (req, res) => { deezerEntityApi(req, res, generiAPIsConfig.tutti) });
+app.get("/genere", (req, res) => { deezerEntityApi(req, res, generiAPIsConfig.singolo) });
 //genere/search non c'è perchè i generi sono pochi e Deezer non prevede la ricerca
 //genere/artista non c'è perchè per ottenere i generi di un artista bisogna prendere tutti gli album che contengono almeno un brano di quell'artista e poi prendere i generi di quegli album (operazione troppo pesante per Deezer)
 //genere/brano non c'è perchè per ottenere i generi di un brano bisogna prendere l'album di quel brano e poi prendere i generi di quell'album (operazione troppo pesante per Deezer)
 //genere/album non serve perchè c'è gia album/singolo che restituisce anche i generi di un album
 //ARTISTI
-app.get("/artisti/search", (req, res) => { deezerEntityApi(req, res, artistiAPIsConfig["search"]) });
-app.get("/artisti/simili", (req, res) => { deezerEntityApi(req, res, artistiAPIsConfig["simili"]) });
-app.get("/artisti/genere", (req, res) => { deezerEntityApi(req, res, artistiAPIsConfig["genere"]) });
-app.get("/artisti/singolo", (req, res) => { deezerEntityApi(req, res, artistiAPIsConfig["singolo"]) });
+app.get("/artisti/search", (req, res) => { deezerEntityApi(req, res, artistiAPIsConfig.search) });
+app.get("/artisti/simili", (req, res) => { deezerEntityApi(req, res, artistiAPIsConfig.simili) });
+app.get("/artisti/genere", (req, res) => { deezerEntityApi(req, res, artistiAPIsConfig.genere) });
+app.get("/artisti/singolo", (req, res) => { deezerEntityApi(req, res, artistiAPIsConfig.singolo) });
 //artisti/brano non serve perchè c'è già brani/singolo che restituisce anche gli artisti di un brano
 //TODO: implementare artisti/album per ottenere tutti gli artisti dell'album (passando per forza dai brani!)
 //ALBUM--------------------------------------------------------
-app.get("/album/search", (req, res) => { deezerEntityApi(req, res, albumAPIsConfig["search"]) });
-app.get("/album/singolo", (req, res) => { deezerEntityApi(req, res, albumAPIsConfig["singolo"]) });
-app.get("/album/artista", (req, res) => { deezerEntityApi(req, res, albumAPIsConfig["artist"]) });
-app.get("/album/genere", (req, res) => { deezerEntityApi(req, res, albumAPIsConfig["genere"]) });
+app.get("/album/search", (req, res) => { deezerEntityApi(req, res, albumAPIsConfig.search) });
+app.get("/album/singolo", (req, res) => { deezerEntityApi(req, res, albumAPIsConfig.singolo) });
+app.get("/album/artista", (req, res) => { deezerEntityApi(req, res, albumAPIsConfig.artista) });
+app.get("/album/genere", (req, res) => { deezerEntityApi(req, res, albumAPIsConfig.genere) });
 //album/brano non serve perchè basta chiamare brani/singolo per ottenere l'id dell'album e passarlo a album/singolo
 //BRANI--------------------------------------------------------
-app.get("/brani/album", (req, res) => { deezerEntityApi(req, res, braniAPIsConfig["album"]) });
-app.get("/brani/search", (req, res) => { deezerEntityApi(req, res, braniAPIsConfig["search"]) });
-app.get("/brani/genere", (req, res) => { deezerEntityApi(req, res, braniAPIsConfig["genere"]) });
-app.get("/brani/artista", (req, res) => { deezerEntityApi(req, res, braniAPIsConfig["artista"]) });
-app.get("/brani/singolo", (req, res) => { deezerEntityApi(req, res, braniAPIsConfig["singolo"]) });
+app.get("/brani/album", (req, res) => { deezerEntityApi(req, res, braniAPIsConfig.album) });
+app.get("/brani/search", (req, res) => { deezerEntityApi(req, res, braniAPIsConfig.search) });
+app.get("/brani/genere", (req, res) => { deezerEntityApi(req, res, braniAPIsConfig.genere) });
+app.get("/brani/artista", (req, res) => { deezerEntityApi(req, res, braniAPIsConfig.artista) });
+app.get("/brani/singolo", (req, res) => { deezerEntityApi(req, res, braniAPIsConfig.singolo) });
 //FINE DELLE API CHE SCARICANO DATI DA DEEZER
 
 //INIZIO API DI GET singola, GET multipla e DELETE delle entità db legate a Deezer (brani, album, artisti, generi). Operano solo sulle entità già esistenti sul db, senza contattare Deezer
