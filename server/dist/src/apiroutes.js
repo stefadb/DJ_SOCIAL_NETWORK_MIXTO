@@ -258,7 +258,6 @@ async function getFilteredEntitiesList(req, res, config) {
     let joins = "";
     for (const [i, filter] of config.filtersAndJoins.entries()) {
         if (filter.joinedTableName !== undefined) { //Senza la proprietà table, non c'è da fare il join perchè il filtro è sulla tabella principale
-            //console.log("Vorrei mettere il JOIN!!");
             console.log("Stabilisco la relazione tra " + config.mainTableName + " e " + filter.joinedTableName);
             if (relationIsManyToMany(config.mainTableName, filter.joinedTableName)) {
                 const middleTableName = `${config.mainTableName}_${filter.joinedTableName}` in get_db_tables_and_columns_1.dbTablesAndColumns ? `${config.mainTableName}_${filter.joinedTableName}` : `${filter.joinedTableName}_${config.mainTableName}`;
@@ -266,24 +265,10 @@ async function getFilteredEntitiesList(req, res, config) {
                 joins += `LEFT JOIN ${filter.joinedTableName} AS ${filter.joinedTableName}_${i} ON ${filter.joinedTableName}_${i}.id = ${middleTableName}_${i}.id_${filter.joinedTableName}\n`;
             }
             else if (relationIsManyToOne(config.mainTableName, filter.joinedTableName)) {
-                if ("mainTableJoinColumn" in filter && "joinedTableJoinColumn" in filter) {
-                    //Questo è un filtro custom
-                    joins += `LEFT JOIN ${filter.joinedTableName} AS ${filter.joinedTableName}_${i} ON ${filter.joinedTableName}_${i}.${filter.joinedTableJoinColumn} = ${config.mainTableName}.${filter.mainTableJoinColumn}\n`;
-                }
-                else {
-                    //Questo è un filtro normale
-                    joins += `LEFT JOIN ${filter.joinedTableName} AS ${filter.joinedTableName}_${i} ON ${filter.joinedTableName}_${i}.id = ${config.mainTableName}.id_${filter.joinedTableName}${filter.joinColumnSuffix ? `_${filter.joinColumnSuffix}` : ""}\n`;
-                }
+                joins += `LEFT JOIN ${filter.joinedTableName} AS ${filter.joinedTableName}_${i} ON ${filter.joinedTableName}_${i}.id = ${config.mainTableName}.id_${filter.joinedTableName}${filter.joinColumnSuffix ? `_${filter.joinColumnSuffix}` : ""}\n`;
             }
             else if (relationIsOneToMany(config.mainTableName, filter.joinedTableName)) {
-                if ("mainTableJoinColumn" in filter && "joinedTableJoinColumn" in filter) {
-                    //Questo è un filtro custom
-                    joins += `LEFT JOIN ${filter.joinedTableName} AS ${filter.joinedTableName}_${i} ON ${filter.joinedTableName}_${i}.${filter.joinedTableJoinColumn} = ${config.mainTableName}.${filter.mainTableJoinColumn}\n`;
-                }
-                else {
-                    //Questo è un filtro normale
-                    joins += `LEFT JOIN ${filter.joinedTableName} AS ${filter.joinedTableName}_${i} ON ${filter.joinedTableName}_${i}.id_${config.mainTableName}${filter.joinColumnSuffix ? `_${filter.joinColumnSuffix}` : ""} = ${config.mainTableName}.id\n`;
-                }
+                joins += `LEFT JOIN ${filter.joinedTableName} AS ${filter.joinedTableName}_${i} ON ${filter.joinedTableName}_${i}.id_${config.mainTableName}${filter.joinColumnSuffix ? `_${filter.joinColumnSuffix}` : ""} = ${config.mainTableName}.id\n`;
             }
         }
     }

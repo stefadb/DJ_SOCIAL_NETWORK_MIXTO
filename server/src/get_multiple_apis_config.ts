@@ -112,11 +112,11 @@ export const getMultipleApisConfig = {
                     value: req.query.scaletta as string
                 }] : []),
                 ...(req.query.artistaPrimoBrano ? [{
-                    joinedTableName: "brano_artista",
-                    joinedTableColumnToCheckValueIn: "id_artista",
-                    mainTableJoinColumn: "id_brano_1",
-                    joinedTableJoinColumn: "id_brano",
-                    value: req.query.artistaPrimoBrano as string
+                    joinedTableName: "brano",
+                    joinedTableColumnToCheckValueIn: "id",
+                    value: "(SELECT brano.id FROM brano JOIN brano_artista ON brano_artista.id_brano = brano.id WHERE brano_artista.id_artista = " + (req.query.artistaPrimoBrano as string) + ")",
+                    operator: "IN" as "LIKE" | "=" | "IN",
+                    joinColumnSuffix: "1"
                 }, {
                     joinedTableName: "brano",
                     joinColumnSuffix: "1",
@@ -132,11 +132,11 @@ export const getMultipleApisConfig = {
                     schema: BranoDbSchema
                 }] : []),
                 ...(req.query.artistaSecondoBrano ? [{
-                    joinedTableName: "brano_artista",
-                    mainTableJoinColumn: "id_brano_2",
-                    joinedTableJoinColumn: "id_brano",
-                    joinedTableColumnToCheckValueIn: "id_artista",
-                    value: req.query.artistaSecondoBrano as string
+                    joinedTableName: "brano",
+                    joinedTableColumnToCheckValueIn: "id",
+                    value: "(SELECT brano.id FROM brano JOIN brano_artista ON brano_artista.id_brano = brano.id WHERE brano_artista.id_artista = " + (req.query.artistaSecondoBrano as string) + ")",
+                    operator: "IN" as "LIKE" | "=" | "IN",
+                    joinColumnSuffix: "2"
                 }, {
                     joinedTableName: "brano",
                     joinColumnSuffix: "1",
