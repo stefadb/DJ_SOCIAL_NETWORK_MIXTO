@@ -184,6 +184,7 @@ export const generiAPIsConfig: GeneriAPIsConfig = {
     },
     tutti: {
         paramName: "uselessParam",
+        maxOneCallPerDay: true,
         deezerAPICallback: (res: import("express").Response, param: string, limit: string, index: string) => makeDeezerApiCall(res, "genre", null, null, null),
         entities: [{
             tableName: "Genere",

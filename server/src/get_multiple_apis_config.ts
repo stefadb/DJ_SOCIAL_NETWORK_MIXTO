@@ -104,7 +104,7 @@ export const getMultipleApisConfig = {
                     mainTableJoinColumn: "id_brano_1",
                     joinedTableJoinColumn: "id_brano",
                     value: req.query.artistaPrimoBrano as string
-                },{
+                }, {
                     table: "brano",
                     joinColumnSuffix: "1",
                     includeInResult: true,
@@ -124,7 +124,7 @@ export const getMultipleApisConfig = {
                     joinedTableJoinColumn: "id_brano",
                     columnToCheckValueIn: "id_artista",
                     value: req.query.artistaSecondoBrano as string
-                },{
+                }, {
                     table: "brano",
                     joinColumnSuffix: "1",
                     includeInResult: true,
@@ -264,6 +264,12 @@ export const getMultipleApisConfig = {
                     table: "passaggio",
                     columnToCheckValueIn: "id",
                     value: req.query.passaggio as string
+                }] : []),
+                ...(req.query.query ? [{
+                    table: undefined,
+                    columnToCheckValueIn: "titolo",
+                    operator: "LIKE" as "LIKE" | "=",
+                    value: `%${req.query.query as string}%`
                 }] : [])
             ]
         }
@@ -283,6 +289,12 @@ export const getMultipleApisConfig = {
                     table: "genere",
                     columnToCheckValueIn: "id",
                     value: req.query.genere as string
+                }] : []),
+                ...(req.query.query ? [{
+                    table: undefined,
+                    columnToCheckValueIn: "titolo",
+                    operator: "LIKE" as "LIKE" | "=",
+                    value: `%${req.query.query as string}%`
                 }] : [])
             ]
         }
@@ -302,6 +314,12 @@ export const getMultipleApisConfig = {
                     table: "brano",
                     columnToCheckValueIn: "id_album",
                     value: req.query.album as string
+                }] : []),
+                ...(req.query.query ? [{
+                    table: undefined,
+                    columnToCheckValueIn: "nome",
+                    operator : "LIKE" as "LIKE" | "=",
+                    value: `%${req.query.query as string}%`
                 }] : [])
             ]
         }

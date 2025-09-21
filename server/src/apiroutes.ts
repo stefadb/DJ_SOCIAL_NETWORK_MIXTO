@@ -4,7 +4,7 @@ import axios from "axios";
 import fs from "fs";
 import path from "path";
 import bcrypt from "bcrypt";
-import mysql from "mysql2/promise";
+import mysql, { Query } from "mysql2/promise";
 import {
   AlbumDeezerBasic,
   ArtistaDeezerBasic,
@@ -300,6 +300,7 @@ type QueryFilter = {
   joinColumnSuffix?: string //se la colonna di join non è id_[table], specificare il suffisso qui
   includeInResult?: boolean //se true, include questa tabella nel risultato
   columnToCheckValueIn: string,
+  operator?: "=" | "LIKE",
   value: string | number
 }
 
@@ -309,7 +310,25 @@ type QueryFilterCustom = {
   joinedTableJoinColumn: string //La colonna della tabella unita usata per il join (nella clausola ON)
   includeInResult?: boolean //se true, include questa tabella nel risultato
   columnToCheckValueIn: string,
+  operator?: "=" | "LIKE",
   value: string | number
+}
+
+type QueryFilterBasic = {
+  table: undefined,
+  columnToCheckValueIn: string,
+  operator?: "=" | "LIKE",
+  value: string | number
+}
+
+function getSqlOperatorString(operator?: "=" | "LIKE"): string {
+  switch (operator) {
+    case "LIKE":
+      return "LIKE";
+    case "=":
+    default:
+      return "=";
+  }
 }
 
 //TODO: Estendere questa funzione per poter includere nel risultato anche le entità associate
@@ -323,7 +342,7 @@ export async function getFilteredEntitiesList(
     selectCustomColumns?: string[], //es. ["COUNT(*) AS total_count"]
     customGroupBys?: string[], //es. ["column1", "column2"]
     mainTableSchema: ZodObject<any> | undefined,
-    filtersAndJoins: (QueryFilter | QueryJoin | QueryFilterCustom)[]
+    filtersAndJoins: (QueryFilter | QueryJoin | QueryFilterCustom | QueryFilterBasic)[]
     orderBys?: string[] //es. ["column1 ASC", "column2 DESC"]
   }
 ) {
@@ -337,7 +356,8 @@ export async function getFilteredEntitiesList(
   }
   let allColumns = selectCustomColumns.concat(mainTableColumns, jsonArrayAggColumns).join(", ");
   let selectStatement = `SELECT ${allColumns}\nFROM ${config.mainTableName}\n`;
-  let whereStatement = config.filtersAndJoins.length == 0 ? "" : `WHERE ${config.filtersAndJoins.filter(queryFilter => "value" in queryFilter).map((queryFilter, i) => `${queryFilter.table}_${i}.${queryFilter.columnToCheckValueIn} = ${queryFilter.value}`).join(" AND ")}\n`;
+  let queryFilters = config.filtersAndJoins.filter(queryFilter => "value" in queryFilter); //Se è presente la proprietà value, allora è un filtro, altrimenti è un join
+  let whereStatement = config.filtersAndJoins.length == 0 ? "" : `WHERE ${queryFilters.map((queryFilter, i) => `${queryFilter.table !== undefined ? `${queryFilter.table}_${i}` : config.mainTableName}.${queryFilter.columnToCheckValueIn} ${getSqlOperatorString("operator" in queryFilter ? queryFilter.operator : undefined)} ${typeof queryFilter.value === "string" ? `'${queryFilter.value}'` : queryFilter.value}`).join(" AND ")}\n`;
   let allGroupBys = config.customGroupBys ? config.customGroupBys : [config.mainTableName + ".id"];
   let groupByStatement = allGroupBys.length > 0 ? `GROUP BY ${allGroupBys.join(", ")}\n` : "";
   let orderByStatement = config.orderBys && config.orderBys.length > 0 ? `ORDER BY ${config.orderBys.join(", ")}\n` : "";
@@ -345,27 +365,29 @@ export async function getFilteredEntitiesList(
   let limitOffset = `${req.query.limit ? `LIMIT ${req.query.limit}` : ""} ${req.query.index ? `OFFSET ${req.query.index}` : ""}`;
   let joins = "";
   for (const [i, filter] of config.filtersAndJoins.entries()) {
-    //console.log("Vorrei mettere il JOIN!!");
-    console.log("Stabilisco la relazione tra " + config.mainTableName + " e " + filter.table);
-    if (relationIsManyToMany(config.mainTableName, filter.table)) {
-      const middleTableName = `${config.mainTableName}_${filter.table}` in dbTablesAndColumns ? `${config.mainTableName}_${filter.table}` : `${filter.table}_${config.mainTableName}`;
-      joins += `LEFT JOIN ${middleTableName} AS ${middleTableName}_${i} ON ${config.mainTableName}.id = ${middleTableName}_${i}.id_${config.mainTableName}\n`;
-      joins += `LEFT JOIN ${filter.table} AS ${filter.table}_${i} ON ${filter.table}_${i}.id = ${middleTableName}_${i}.id_${filter.table}\n`;
-    } else if (relationIsManyToOne(config.mainTableName, filter.table)) {
-      if ("mainTableJoinColumn" in filter && "joinedTableJoinColumn" in filter) {
-        //Questo è un filtro custom
-        joins += `LEFT JOIN ${filter.table} AS ${filter.table}_${i} ON ${filter.table}_${i}.${filter.joinedTableJoinColumn} = ${config.mainTableName}.${filter.mainTableJoinColumn}\n`;
-      } else {
-        //Questo è un filtro normale
-        joins += `LEFT JOIN ${filter.table} AS ${filter.table}_${i} ON ${filter.table}_${i}.id = ${config.mainTableName}.id_${filter.table}${filter.joinColumnSuffix ? `_${filter.joinColumnSuffix}` : ""}\n`;
-      }
-    } else if (relationIsOneToMany(config.mainTableName, filter.table)) {
-      if ("mainTableJoinColumn" in filter && "joinedTableJoinColumn" in filter) {
-        //Questo è un filtro custom
-        joins += `LEFT JOIN ${filter.table} AS ${filter.table}_${i} ON ${filter.table}_${i}.${filter.joinedTableJoinColumn} = ${config.mainTableName}.${filter.mainTableJoinColumn}\n`;
-      } else {
-        //Questo è un filtro normale
-        joins += `LEFT JOIN ${filter.table} AS ${filter.table}_${i} ON ${filter.table}_${i}.id_${config.mainTableName}${filter.joinColumnSuffix ? `_${filter.joinColumnSuffix}` : ""} = ${config.mainTableName}.id\n`;
+    if (filter.table !== undefined) { //Senza la proprietà table, non c'è da fare il join perchè il filtro è sulla tabella principale
+      //console.log("Vorrei mettere il JOIN!!");
+      console.log("Stabilisco la relazione tra " + config.mainTableName + " e " + filter.table);
+      if (relationIsManyToMany(config.mainTableName, filter.table)) {
+        const middleTableName = `${config.mainTableName}_${filter.table}` in dbTablesAndColumns ? `${config.mainTableName}_${filter.table}` : `${filter.table}_${config.mainTableName}`;
+        joins += `LEFT JOIN ${middleTableName} AS ${middleTableName}_${i} ON ${config.mainTableName}.id = ${middleTableName}_${i}.id_${config.mainTableName}\n`;
+        joins += `LEFT JOIN ${filter.table} AS ${filter.table}_${i} ON ${filter.table}_${i}.id = ${middleTableName}_${i}.id_${filter.table}\n`;
+      } else if (relationIsManyToOne(config.mainTableName, filter.table)) {
+        if ("mainTableJoinColumn" in filter && "joinedTableJoinColumn" in filter) {
+          //Questo è un filtro custom
+          joins += `LEFT JOIN ${filter.table} AS ${filter.table}_${i} ON ${filter.table}_${i}.${filter.joinedTableJoinColumn} = ${config.mainTableName}.${filter.mainTableJoinColumn}\n`;
+        } else {
+          //Questo è un filtro normale
+          joins += `LEFT JOIN ${filter.table} AS ${filter.table}_${i} ON ${filter.table}_${i}.id = ${config.mainTableName}.id_${filter.table}${filter.joinColumnSuffix ? `_${filter.joinColumnSuffix}` : ""}\n`;
+        }
+      } else if (relationIsOneToMany(config.mainTableName, filter.table)) {
+        if ("mainTableJoinColumn" in filter && "joinedTableJoinColumn" in filter) {
+          //Questo è un filtro custom
+          joins += `LEFT JOIN ${filter.table} AS ${filter.table}_${i} ON ${filter.table}_${i}.${filter.joinedTableJoinColumn} = ${config.mainTableName}.${filter.mainTableJoinColumn}\n`;
+        } else {
+          //Questo è un filtro normale
+          joins += `LEFT JOIN ${filter.table} AS ${filter.table}_${i} ON ${filter.table}_${i}.id_${config.mainTableName}${filter.joinColumnSuffix ? `_${filter.joinColumnSuffix}` : ""} = ${config.mainTableName}.id\n`;
+        }
       }
     }
   }
@@ -705,11 +727,8 @@ export async function deezerEntityApi(
   apisConfig: DeezerEntityAPIConfig
 ) {
   if (apisConfig.maxOneCallPerDay === true && await getDeezerApiCalls(req.originalUrl) == new Date().toISOString().split('T')[0] as string) {
-    res.status(200).json({ error: "API già chiamata oggi. Il risultato di questa richiesta è già stato memorizzato. Potrà essere aggiornato domani"});
+    res.status(200).json({ error: "API già chiamata oggi. Il risultato di questa richiesta è già stato memorizzato. Potrà essere aggiornato domani" });
     return;
-  }else if(apisConfig.maxOneCallPerDay === true){
-    //Questa API non è ancora stata chiamata oggi, quindi aggiorna il file
-    await updateDeezerApiCalls(req.originalUrl, new Date().toISOString().split('T')[0] as string);
   }
   const paramName = apisConfig.paramName; //nome del parametro di ricerca
   //CONTROLLO CHE I PARAMETRI query, limit e index SIANO STATI PASSATI E SIANO VALIDI
@@ -750,6 +769,10 @@ export async function deezerEntityApi(
       if (entityConfig.showEntityInResponse) {
         const mainEntityObjects: GenericDeezerEntityBasic[] = entityConfig.getEntityObjectsFromResponse(response);
         res.json(mainEntityObjects.map((obj) => { return fromDeezerEntityToDbEntity(obj, entityConfig.tableName, param) }));
+        if (apisConfig.maxOneCallPerDay === true) {
+          //Questa API non è ancora stata chiamata oggi, quindi aggiorna il file
+          await updateDeezerApiCalls(req.originalUrl, new Date().toISOString().split('T')[0] as string);
+        }
         break;
       }
     }
