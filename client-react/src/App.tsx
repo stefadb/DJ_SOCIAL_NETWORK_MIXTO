@@ -8,7 +8,6 @@ import Album from "./pages/Album";
 import Artista from "./pages/Artista";
 import RicercaDeezer from "./pages/RicercaDeezer";
 import RicercaLocale from "./pages/RicercaLocale";
-import { GenereDbSchema } from "./types/db_types";
 import Generi from "./pages/Generi";
 
 function App() {
