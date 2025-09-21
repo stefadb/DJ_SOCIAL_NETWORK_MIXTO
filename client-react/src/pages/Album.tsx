@@ -30,7 +30,7 @@ function Album() {
     async function loadAlbum() {
         try {
             await axios.get(`http://localhost:3000/album/singolo?albumId=${id}&limit=1&index=0`);
-            const responseAlbum = await axios.get(`http://localhost:3000/album/esistenti/${id}?include_genere&include_brano`);
+            const responseAlbum = await axios.get(`http://localhost:3000/album/esistenti/${id}?include_genere&include_brano`, { headers: {"Cache-Control": "no-cache, no-store, must-revalidate", Pragma: "no-cache", Expires: "0" } });
             //TODO: validare con zod!!!
             setAlbum(responseAlbum.data as AlbumDb);
             setArtistiAlbum(await getNomiArtistiAlbum((responseAlbum.data.brano as BranoDb[]).map((brano: BranoDb) => brano.id), responseAlbum.data.id));

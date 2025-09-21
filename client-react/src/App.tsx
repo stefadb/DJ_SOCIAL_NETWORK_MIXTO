@@ -2,14 +2,17 @@ import "./App.css";
 import MainContainer from "./components/MainContainer";
 import Navbar from "./components/Navbar";
 import SideContainer from "./components/SideContainer";
-import { BrowserRouter, Routes, Route} from "react-router-dom";
+import { Routes, Route, useLocation} from "react-router-dom";
 import Brano from "./pages/Brano";
 import Album from "./pages/Album";
 import Artista from "./pages/Artista";
+import RicercaDeezer from "./pages/RicercaDeezer";
+import RicercaLocale from "./pages/RicercaLocale";
+import { GenereDbSchema } from "./types/db_types";
+import Generi from "./pages/Generi";
 
 function App() {
   return (
-    <BrowserRouter>
       <div
         style={{ display: "flex", flexDirection: "column", height: "100vh" }}
       >
@@ -22,9 +25,12 @@ function App() {
             <>
               {/* Qui va messo il React Router con la scelta della pagina*/}
               <Routes>
-                <Route path="/brano" element={<Brano />} />
-                <Route path="/album" element={<Album />} />
-                <Route path="/artista" element={<Artista />} />
+                <Route path="/brano" element={<Brano key={new URLSearchParams(useLocation().search).get("id")} />} />
+                <Route path="/album" element={<Album key={new URLSearchParams(useLocation().search).get("id")} />} />
+                <Route path="/artista" element={<Artista key={new URLSearchParams(useLocation().search).get("id")} />} />
+                <Route path="/generi" element={<Generi/>} />
+                <Route path="/ricerca" element={<RicercaDeezer key={new URLSearchParams(useLocation().search).get("id")} />} />
+                <Route path="/ricerca_locale" element={<RicercaLocale key={new URLSearchParams(useLocation().search).get("id")} />} />
                 <Route path="*" element={<></>} />
               </Routes>
             </>
@@ -38,7 +44,6 @@ function App() {
           </SideContainer>
         </div>
       </div>
-    </BrowserRouter>
   );
 }
 

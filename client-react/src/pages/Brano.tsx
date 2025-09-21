@@ -29,9 +29,9 @@ function Brano() {
   async function loadBrano() {
     try {
       await axios.get(`http://localhost:3000/brani/singolo?trackId=${id}&limit=1&index=0`);
-      const response = await axios.get(`http://localhost:3000/brani/esistenti/${id}?include_artista&include_album`);
+      const response = await axios.get(`http://localhost:3000/brani/esistenti/${id}?include_artista&include_album`, { headers: {"Cache-Control": "no-cache, no-store, must-revalidate", Pragma: "no-cache", Expires: "0" } });
       await axios.get(`http://localhost:3000/album/singolo?albumId=${response.data.id_album}&limit=1&index=0`);
-      const responseAlbum = await axios.get(`http://localhost:3000/album/esistenti/${response.data.id_album}?include_genere`);
+      const responseAlbum = await axios.get(`http://localhost:3000/album/esistenti/${response.data.id_album}?include_genere`, { headers: {"Cache-Control": "no-cache, no-store, must-revalidate", Pragma: "no-cache", Expires: "0" } });
       //TODO: validare con zod!!!
       setBrano(response.data as BranoDb);
       setGeneri(responseAlbum.data.genere as GenereDb[]);

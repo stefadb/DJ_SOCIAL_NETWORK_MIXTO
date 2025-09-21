@@ -33,10 +33,10 @@ function Artista() {
         try {
             await axios.get(`http://localhost:3000/artisti/singolo?artistId=${id}&limit=1&index=0`);
             await axios.get(`http://localhost:3000/album/artista?artistId=${id}&limit=1&index=0`);
-            const responseArtista = await axios.get(`http://localhost:3000/artisti/esistenti/${id}`);
+            const responseArtista = await axios.get(`http://localhost:3000/artisti/esistenti/${id}`, { headers: {"Cache-Control": "no-cache, no-store, must-revalidate", Pragma: "no-cache", Expires: "0" } });
             //TODO: validare con zod!!!
             setArtista(responseArtista.data as ArtistaDb);
-            const responseAlbum = await axios.get(`http://localhost:3000/album/esistenti?artista=${id}`);
+            const responseAlbum = await axios.get(`http://localhost:3000/album/esistenti?artista=${id}`, { headers: {"Cache-Control": "no-cache, no-store, must-revalidate", Pragma: "no-cache", Expires: "0" } });
             //TODO: validare con zod!!!
             //setAlbumArtista(responseAlbum.data as AlbumDb[]);
         } catch (error) {
