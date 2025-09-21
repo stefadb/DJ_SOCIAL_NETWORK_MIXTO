@@ -289,24 +289,17 @@ export async function getEntityWithAssociations(
 
 type QueryJoin = {
   joinedTableName: string,
-  joinColumnSuffix?: string //se la colonna di join non è id_[table], specificare il suffisso qui
-  includeInResult?: boolean //se true, include questa tabella nel risultato
+  joinColumnSuffix?: string //se la colonna di join non è id_[table], specificare il suffisso qui (join con la colonna id_[table]_[suffix])
+  includeInResult?: boolean //se true, include questa tabella nel risultato della query
   columns: string[],
   schema: ZodObject<any> | undefined
 }
 
 type QueryFilter = {
-  joinedTableName: string,
-  joinColumnSuffix?: string //se la colonna di join non è id_[table], specificare il suffisso qui
-  includeInResult?: boolean //se true, include questa tabella nel risultato
-  joinedTableColumnToCheckValueIn: string,
-  operator?: "LIKE" | "=" | "IN",
-  value: string | number
-}
-
-type QueryFilterBasic = {
-  joinedTableName: undefined,
-  joinedTableColumnToCheckValueIn: string,
+  joinedTableName: string | undefined, //Se undefined, il filtro è applicato alla tabella principale
+  joinColumnSuffix?: string //se la colonna di join non è id_[table], specificare il suffisso qui (join con la colonna id_[table]_[suffix])
+  includeInResult?: boolean //se true, include questa tabella nel risultato della query
+  joinedTableColumnToCheckValueIn: string, //è la colonna della tabella joinata (o della tabella principale se joinedTableName è undefined) su cui applicare il filtro
   operator?: "LIKE" | "=" | "IN",
   value: string | number
 }
@@ -335,7 +328,7 @@ export async function getFilteredEntitiesList(
     selectCustomColumns?: string[], //es. ["COUNT(*) AS total_count"]
     customGroupBys?: string[], //es. ["column1", "column2"]
     mainTableSchema: ZodObject<any> | undefined,
-    filtersAndJoins: (QueryFilter | QueryJoin | QueryFilterBasic)[]
+    filtersAndJoins: (QueryFilter | QueryJoin)[]
     orderBys?: string[] //es. ["column1 ASC", "column2 DESC"]
   }
 ) {
