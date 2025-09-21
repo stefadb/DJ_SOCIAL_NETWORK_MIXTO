@@ -288,7 +288,7 @@ export async function getEntityWithAssociations(
 
 
 type QueryJoin = {
-  table: string,
+  joinedTableName: string,
   joinColumnSuffix?: string //se la colonna di join non è id_[table], specificare il suffisso qui
   includeInResult?: boolean //se true, include questa tabella nel risultato
   columns: string[],
@@ -296,36 +296,39 @@ type QueryJoin = {
 }
 
 type QueryFilter = {
-  table: string,
+  joinedTableName: string,
   joinColumnSuffix?: string //se la colonna di join non è id_[table], specificare il suffisso qui
   includeInResult?: boolean //se true, include questa tabella nel risultato
-  columnToCheckValueIn: string,
-  operator?: "=" | "LIKE",
+  joinedTableColumnToCheckValueIn: string,
+  operator?: "LIKE" | "=" | "IN",
   value: string | number
 }
 
 type QueryFilterCustom = {
-  table: string,
+  joinedTableName: string,
   mainTableJoinColumn: string //La colonna della tabella principale usata per il join (nella clausola ON)
   joinedTableJoinColumn: string //La colonna della tabella unita usata per il join (nella clausola ON)
   includeInResult?: boolean //se true, include questa tabella nel risultato
-  columnToCheckValueIn: string,
-  operator?: "=" | "LIKE",
+  joinedTableColumnToCheckValueIn: string,
+  operator?: "LIKE" | "=" | "IN",
   value: string | number
 }
 
 type QueryFilterBasic = {
-  table: undefined,
-  columnToCheckValueIn: string,
-  operator?: "=" | "LIKE",
+  joinedTableName: undefined,
+  joinedTableColumnToCheckValueIn: string,
+  operator?: "LIKE" | "=" | "IN",
   value: string | number
 }
 
-function getSqlOperatorString(operator?: "=" | "LIKE"): string {
+function getSqlOperatorString(operator?: "LIKE" | "=" | "IN"): string {
   switch (operator) {
     case "LIKE":
       return "LIKE";
     case "=":
+      return "=";
+    case "IN":
+      return "IN";
     default:
       return "=";
   }
@@ -351,13 +354,13 @@ export async function getFilteredEntitiesList(
   let jsonArrayAggColumns: string[] = [];
   for (const [i, queryJoin] of config.filtersAndJoins.entries()) {
     if (!("value" in queryJoin)) {
-      jsonArrayAggColumns.push(`JSON_ARRAYAGG(JSON_OBJECT(${queryJoin.columns.map(col => `'${col}', ${queryJoin.table}_${i}.${col}`).join(", ")})) AS ${queryJoin.table}${queryJoin.joinColumnSuffix ? `_${queryJoin.joinColumnSuffix}` : ""}_array`);
+      jsonArrayAggColumns.push(`JSON_ARRAYAGG(JSON_OBJECT(${queryJoin.columns.map(col => `'${col}', ${queryJoin.joinedTableName}_${i}.${col}`).join(", ")})) AS ${queryJoin.joinedTableName}${queryJoin.joinColumnSuffix ? `_${queryJoin.joinColumnSuffix}` : ""}_array`);
     }
   }
   let allColumns = selectCustomColumns.concat(mainTableColumns, jsonArrayAggColumns).join(", ");
   let selectStatement = `SELECT ${allColumns}\nFROM ${config.mainTableName}\n`;
   let queryFilters = config.filtersAndJoins.filter(queryFilter => "value" in queryFilter); //Se è presente la proprietà value, allora è un filtro, altrimenti è un join
-  let whereStatement = config.filtersAndJoins.length == 0 ? "" : `WHERE ${queryFilters.map((queryFilter, i) => `${queryFilter.table !== undefined ? `${queryFilter.table}_${i}` : config.mainTableName}.${queryFilter.columnToCheckValueIn} ${getSqlOperatorString("operator" in queryFilter ? queryFilter.operator : undefined)} ${typeof queryFilter.value === "string" ? `'${queryFilter.value}'` : queryFilter.value}`).join(" AND ")}\n`;
+  let whereStatement = config.filtersAndJoins.length == 0 ? "" : `WHERE ${queryFilters.map((queryFilter, i) => `${queryFilter.joinedTableName !== undefined ? `${queryFilter.joinedTableName}_${i}` : config.mainTableName}.${queryFilter.joinedTableColumnToCheckValueIn} ${getSqlOperatorString("operator" in queryFilter ? queryFilter.operator : undefined)} ${queryFilter.value}`).join(" AND ")}\n`;
   let allGroupBys = config.customGroupBys ? config.customGroupBys : [config.mainTableName + ".id"];
   let groupByStatement = allGroupBys.length > 0 ? `GROUP BY ${allGroupBys.join(", ")}\n` : "";
   let orderByStatement = config.orderBys && config.orderBys.length > 0 ? `ORDER BY ${config.orderBys.join(", ")}\n` : "";
@@ -365,28 +368,28 @@ export async function getFilteredEntitiesList(
   let limitOffset = `${req.query.limit ? `LIMIT ${req.query.limit}` : ""} ${req.query.index ? `OFFSET ${req.query.index}` : ""}`;
   let joins = "";
   for (const [i, filter] of config.filtersAndJoins.entries()) {
-    if (filter.table !== undefined) { //Senza la proprietà table, non c'è da fare il join perchè il filtro è sulla tabella principale
+    if (filter.joinedTableName !== undefined) { //Senza la proprietà table, non c'è da fare il join perchè il filtro è sulla tabella principale
       //console.log("Vorrei mettere il JOIN!!");
-      console.log("Stabilisco la relazione tra " + config.mainTableName + " e " + filter.table);
-      if (relationIsManyToMany(config.mainTableName, filter.table)) {
-        const middleTableName = `${config.mainTableName}_${filter.table}` in dbTablesAndColumns ? `${config.mainTableName}_${filter.table}` : `${filter.table}_${config.mainTableName}`;
+      console.log("Stabilisco la relazione tra " + config.mainTableName + " e " + filter.joinedTableName);
+      if (relationIsManyToMany(config.mainTableName, filter.joinedTableName)) {
+        const middleTableName = `${config.mainTableName}_${filter.joinedTableName}` in dbTablesAndColumns ? `${config.mainTableName}_${filter.joinedTableName}` : `${filter.joinedTableName}_${config.mainTableName}`;
         joins += `LEFT JOIN ${middleTableName} AS ${middleTableName}_${i} ON ${config.mainTableName}.id = ${middleTableName}_${i}.id_${config.mainTableName}\n`;
-        joins += `LEFT JOIN ${filter.table} AS ${filter.table}_${i} ON ${filter.table}_${i}.id = ${middleTableName}_${i}.id_${filter.table}\n`;
-      } else if (relationIsManyToOne(config.mainTableName, filter.table)) {
+        joins += `LEFT JOIN ${filter.joinedTableName} AS ${filter.joinedTableName}_${i} ON ${filter.joinedTableName}_${i}.id = ${middleTableName}_${i}.id_${filter.joinedTableName}\n`;
+      } else if (relationIsManyToOne(config.mainTableName, filter.joinedTableName)) {
         if ("mainTableJoinColumn" in filter && "joinedTableJoinColumn" in filter) {
           //Questo è un filtro custom
-          joins += `LEFT JOIN ${filter.table} AS ${filter.table}_${i} ON ${filter.table}_${i}.${filter.joinedTableJoinColumn} = ${config.mainTableName}.${filter.mainTableJoinColumn}\n`;
+          joins += `LEFT JOIN ${filter.joinedTableName} AS ${filter.joinedTableName}_${i} ON ${filter.joinedTableName}_${i}.${filter.joinedTableJoinColumn} = ${config.mainTableName}.${filter.mainTableJoinColumn}\n`;
         } else {
           //Questo è un filtro normale
-          joins += `LEFT JOIN ${filter.table} AS ${filter.table}_${i} ON ${filter.table}_${i}.id = ${config.mainTableName}.id_${filter.table}${filter.joinColumnSuffix ? `_${filter.joinColumnSuffix}` : ""}\n`;
+          joins += `LEFT JOIN ${filter.joinedTableName} AS ${filter.joinedTableName}_${i} ON ${filter.joinedTableName}_${i}.id = ${config.mainTableName}.id_${filter.joinedTableName}${filter.joinColumnSuffix ? `_${filter.joinColumnSuffix}` : ""}\n`;
         }
-      } else if (relationIsOneToMany(config.mainTableName, filter.table)) {
+      } else if (relationIsOneToMany(config.mainTableName, filter.joinedTableName)) {
         if ("mainTableJoinColumn" in filter && "joinedTableJoinColumn" in filter) {
           //Questo è un filtro custom
-          joins += `LEFT JOIN ${filter.table} AS ${filter.table}_${i} ON ${filter.table}_${i}.${filter.joinedTableJoinColumn} = ${config.mainTableName}.${filter.mainTableJoinColumn}\n`;
+          joins += `LEFT JOIN ${filter.joinedTableName} AS ${filter.joinedTableName}_${i} ON ${filter.joinedTableName}_${i}.${filter.joinedTableJoinColumn} = ${config.mainTableName}.${filter.mainTableJoinColumn}\n`;
         } else {
           //Questo è un filtro normale
-          joins += `LEFT JOIN ${filter.table} AS ${filter.table}_${i} ON ${filter.table}_${i}.id_${config.mainTableName}${filter.joinColumnSuffix ? `_${filter.joinColumnSuffix}` : ""} = ${config.mainTableName}.id\n`;
+          joins += `LEFT JOIN ${filter.joinedTableName} AS ${filter.joinedTableName}_${i} ON ${filter.joinedTableName}_${i}.id_${config.mainTableName}${filter.joinColumnSuffix ? `_${filter.joinColumnSuffix}` : ""} = ${config.mainTableName}.id\n`;
         }
       }
     }
@@ -403,7 +406,7 @@ export async function getFilteredEntitiesList(
       }
       for (const queryJoin of config.filtersAndJoins) {
         if (!("value" in queryJoin)) {
-          let keyName = `${queryJoin.table}${queryJoin.joinColumnSuffix ? `_${queryJoin.joinColumnSuffix}` : ""}_array`;
+          let keyName = `${queryJoin.joinedTableName}${queryJoin.joinColumnSuffix ? `_${queryJoin.joinColumnSuffix}` : ""}_array`;
           if (keyName in row) {
             if (queryJoin.schema !== undefined && !dbResultIsValid(res, true, row[keyName], queryJoin.schema, keyName)) {
               //console.log("Questa row non ha fatto passare la validazione di zod:");

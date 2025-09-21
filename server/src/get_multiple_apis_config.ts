@@ -8,13 +8,13 @@ export const getMultipleApisConfig = {
             mainTableSchema: ScalettaDbSchema,
             filtersAndJoins: [
                 ...(req.query.utente ? [{
-                    table: "utente",
-                    columnToCheckValueIn: "id",
+                    joinedTableName: "utente",
+                    joinedTableColumnToCheckValueIn: "id",
                     value: req.query.utente as string
                 }] : []),
                 ...(req.query.passaggio ? [{
-                    table: "passaggio",
-                    columnToCheckValueIn: "id",
+                    joinedTableName: "passaggio",
+                    joinedTableColumnToCheckValueIn: "id",
                     value: req.query.passaggio as string
                 }] : [])
             ]
@@ -27,117 +27,170 @@ export const getMultipleApisConfig = {
             mainTableSchema: PassaggioDbSchema,
             filtersAndJoins: [
                 ...(req.query.utente ? [{
-                    table: "utente",
-                    columnToCheckValueIn: "id",
+                    joinedTableName: "utente",
+                    joinedTableColumnToCheckValueIn: "id",
                     value: req.query.utente as string
+                },{
+                    joinedTableName: "brano",
+                    joinColumnSuffix: "1",
+                    includeInResult: true,
+                    columns: ["id", "titolo", "durata", "id_album"],
+                    schema: BranoDbSchema
+                },
+                {
+                    joinedTableName: "brano",
+                    joinColumnSuffix: "2",
+                    includeInResult: true,
+                    columns: ["id", "titolo", "durata", "id_album"],
+                    schema: BranoDbSchema
                 }] : []),
                 ...(req.query.primoBrano ? [{
-                    table: "brano",
-                    columnToCheckValueIn: "id",
+                    joinedTableName: "brano",
+                    joinedTableColumnToCheckValueIn: "id",
                     value: req.query.primoBrano as string,
                     joinColumnSuffix: "1"
                 }, {
-                    table: "brano",
+                    joinedTableName: "brano",
                     joinColumnSuffix: "2",
                     includeInResult: true,
                     columns: ["id", "titolo", "durata", "id_album"],
                     schema: BranoDbSchema
                 }] : []),
                 ...(req.query.secondoBrano ? [{
-                    table: "brano",
-                    columnToCheckValueIn: "id",
+                    joinedTableName: "brano",
+                    joinedTableColumnToCheckValueIn: "id",
                     value: req.query.secondoBrano as string,
                     joinColumnSuffix: "2"
                 }, {
-                    table: "brano",
+                    joinedTableName: "brano",
                     joinColumnSuffix: "1",
                     includeInResult: true,
                     columns: ["id", "titolo", "durata", "id_album"],
                     schema: BranoDbSchema
                 }] : []),
                 ...(req.query.albumPrimoBrano ? [{
-                    table: "brano",
-                    columnToCheckValueIn: "id_album",
+                    joinedTableName: "brano",
+                    joinedTableColumnToCheckValueIn: "id_album",
                     value: req.query.albumPrimoBrano as string,
                     joinColumnSuffix: "1"
                 }, {
-                    table: "brano",
+                    joinedTableName: "brano",
                     joinColumnSuffix: "1",
                     includeInResult: true,
                     columns: ["id", "titolo", "durata", "id_album"],
                     schema: BranoDbSchema
                 },
                 {
-                    table: "brano",
+                    joinedTableName: "brano",
                     joinColumnSuffix: "2",
                     includeInResult: true,
                     columns: ["id", "titolo", "durata", "id_album"],
                     schema: BranoDbSchema
                 }] : []),
                 ...(req.query.albumSecondoBrano ? [{
-                    table: "brano",
-                    columnToCheckValueIn: "id_album",
+                    joinedTableName: "brano",
+                    joinedTableColumnToCheckValueIn: "id_album",
                     value: req.query.albumSecondoBrano as string,
                     joinColumnSuffix: "2"
                 }, {
-                    table: "brano",
+                    joinedTableName: "brano",
                     joinColumnSuffix: "1",
                     includeInResult: true,
                     columns: ["id", "titolo", "durata", "id_album"],
                     schema: BranoDbSchema
                 },
                 {
-                    table: "brano",
+                    joinedTableName: "brano",
                     joinColumnSuffix: "2",
                     includeInResult: true,
                     columns: ["id", "titolo", "durata", "id_album"],
                     schema: BranoDbSchema
                 }] : []),
                 ...(req.query.scaletta ? [{
-                    table: "scaletta",
-                    columnToCheckValueIn: "id",
+                    joinedTableName: "scaletta",
+                    joinedTableColumnToCheckValueIn: "id",
                     value: req.query.scaletta as string
                 }] : []),
                 ...(req.query.artistaPrimoBrano ? [{
-                    table: "brano_artista",
-                    columnToCheckValueIn: "id_artista",
+                    joinedTableName: "brano_artista",
+                    joinedTableColumnToCheckValueIn: "id_artista",
                     mainTableJoinColumn: "id_brano_1",
                     joinedTableJoinColumn: "id_brano",
                     value: req.query.artistaPrimoBrano as string
                 }, {
-                    table: "brano",
+                    joinedTableName: "brano",
                     joinColumnSuffix: "1",
                     includeInResult: true,
                     columns: ["id", "titolo", "durata", "id_album"],
                     schema: BranoDbSchema
                 },
                 {
-                    table: "brano",
+                    joinedTableName: "brano",
                     joinColumnSuffix: "2",
                     includeInResult: true,
                     columns: ["id", "titolo", "durata", "id_album"],
                     schema: BranoDbSchema
                 }] : []),
                 ...(req.query.artistaSecondoBrano ? [{
-                    table: "brano_artista",
+                    joinedTableName: "brano_artista",
                     mainTableJoinColumn: "id_brano_2",
                     joinedTableJoinColumn: "id_brano",
-                    columnToCheckValueIn: "id_artista",
+                    joinedTableColumnToCheckValueIn: "id_artista",
                     value: req.query.artistaSecondoBrano as string
                 }, {
-                    table: "brano",
+                    joinedTableName: "brano",
                     joinColumnSuffix: "1",
                     includeInResult: true,
                     columns: ["id", "titolo", "durata", "id_album"],
                     schema: BranoDbSchema
                 },
                 {
-                    table: "brano",
+                    joinedTableName: "brano",
                     joinColumnSuffix: "2",
                     includeInResult: true,
                     columns: ["id", "titolo", "durata", "id_album"],
                     schema: BranoDbSchema
-                }] : [])
+                }] : []),
+                ...(req.query.generePrimoBrano ? [{
+                    joinedTableName: "brano",
+                    joinedTableColumnToCheckValueIn: "id",
+                    value: "(SELECT brano.id FROM album_genere JOIN album ON album_genere.id_album = album.id JOIN brano ON brano.id_album = album.id WHERE album_genere.id_genere = " + (req.query.generePrimoBrano as string) + ")",
+                    operator: "IN" as "LIKE" | "=" | "IN",
+                    joinColumnSuffix: "1"
+                }, {
+                    joinedTableName: "brano",
+                    joinColumnSuffix: "1",
+                    includeInResult: true,
+                    columns: ["id", "titolo", "durata", "id_album"],
+                    schema: BranoDbSchema
+                },
+                {
+                    joinedTableName: "brano",
+                    joinColumnSuffix: "2",
+                    includeInResult: true,
+                    columns: ["id", "titolo", "durata", "id_album"],
+                    schema: BranoDbSchema
+                }] : []),
+                ...(req.query.genereSecondoBrano ? [{
+                    joinedTableName: "brano",
+                    joinedTableColumnToCheckValueIn: "id",
+                    value: "(SELECT brano.id FROM album_genere JOIN album ON album_genere.id_album = album.id JOIN brano ON brano.id_album = album.id WHERE album_genere.id_genere = " + (req.query.genereSecondoBrano as string) + ")",
+                    operator: "IN" as "LIKE" | "=" | "IN",
+                    joinColumnSuffix: "2"
+                }, {
+                    joinedTableName: "brano",
+                    joinColumnSuffix: "1",
+                    includeInResult: true,
+                    columns: ["id", "titolo", "durata", "id_album"],
+                    schema: BranoDbSchema
+                },
+                {
+                    joinedTableName: "brano",
+                    joinColumnSuffix: "2",
+                    includeInResult: true,
+                    columns: ["id", "titolo", "durata", "id_album"],
+                    schema: BranoDbSchema
+                }] : []),
             ]
         }
     },
@@ -151,24 +204,24 @@ export const getMultipleApisConfig = {
             customGroupBys: [...(req.query.primoBrano ? ["passaggio.id_brano_2"] : []), ...(req.query.secondoBrano ? ["passaggio.id_brano_1"] : [])],
             filtersAndJoins: [
                 ...(req.query.primoBrano ? [{
-                    table: "brano",
-                    columnToCheckValueIn: "id",
+                    joinedTableName: "brano",
+                    joinedTableColumnToCheckValueIn: "id",
                     value: req.query.primoBrano as string,
                     joinColumnSuffix: "1"
                 }, {
-                    table: "brano",
+                    joinedTableName: "brano",
                     joinColumnSuffix: "2",
                     includeInResult: true,
                     columns: ["id", "titolo", "durata", "id_album"],
                     schema: BranoDbSchema
                 }] : []),
                 ...(req.query.secondoBrano ? [{
-                    table: "brano",
-                    columnToCheckValueIn: "id",
+                    joinedTableName: "brano",
+                    joinedTableColumnToCheckValueIn: "id",
                     value: req.query.secondoBrano as string,
                     joinColumnSuffix: "2"
                 }, {
-                    table: "brano",
+                    joinedTableName: "brano",
                     joinColumnSuffix: "1",
                     includeInResult: true,
                     columns: ["id", "titolo", "durata", "id_album"],
@@ -184,18 +237,18 @@ export const getMultipleApisConfig = {
             mainTableSchema: CommentoDbSchema,
             filtersAndJoins: [
                 ...(req.query.utente ? [{
-                    table: "utente",
-                    columnToCheckValueIn: "id",
+                    joinedTableName: "utente",
+                    joinedTableColumnToCheckValueIn: "id",
                     value: req.query.utente as string
                 }] : []),
                 ...(req.query.passaggio ? [{
-                    table: "passaggio",
-                    columnToCheckValueIn: "id",
+                    joinedTableName: "passaggio",
+                    joinedTableColumnToCheckValueIn: "id",
                     value: req.query.passaggio as string
                 }] : []),
                 ...(req.query.commentoPadre ? [{
-                    table: "commento",
-                    columnToCheckValueIn: "id",
+                    joinedTableName: "commento",
+                    joinedTableColumnToCheckValueIn: "id",
                     value: req.query.commentoPadre as string,
                     joinColumnSuffix: "padre"
                 }] : []),
@@ -209,13 +262,13 @@ export const getMultipleApisConfig = {
             mainTableSchema: ValutazioneDbSchema,
             filtersAndJoins: [
                 ...(req.query.utente ? [{
-                    table: "utente",
-                    columnToCheckValueIn: "id",
+                    joinedTableName: "utente",
+                    joinedTableColumnToCheckValueIn: "id",
                     value: req.query.utente as string
                 }] : []),
                 ...(req.query.passaggio ? [{
-                    table: "passaggio",
-                    columnToCheckValueIn: "id",
+                    joinedTableName: "passaggio",
+                    joinedTableColumnToCheckValueIn: "id",
                     value: req.query.passaggio as string
                 }] : []),
             ]
@@ -228,8 +281,8 @@ export const getMultipleApisConfig = {
             mainTableSchema: VisualizzazioneDbSchema,
             filtersAndJoins: [
                 ...(req.query.passaggio ? [{
-                    table: "passaggio",
-                    columnToCheckValueIn: "id",
+                    joinedTableName: "passaggio",
+                    joinedTableColumnToCheckValueIn: "id",
                     value: req.query.passaggio as string
                 }] : []),
             ]
@@ -250,26 +303,26 @@ export const getMultipleApisConfig = {
             mainTableSchema: BranoDbSchema,
             filtersAndJoins: [
                 ...(req.query.album ? [{
-                    table: "album",
-                    columnToCheckValueIn: "id",
+                    joinedTableName: "album",
+                    joinedTableColumnToCheckValueIn: "id",
                     value: req.query.album as string
                 }] : []),
                 ...(req.query.artista ? [{
-                    table: "artista",
-                    columnToCheckValueIn: "id",
+                    joinedTableName: "artista",
+                    joinedTableColumnToCheckValueIn: "id",
                     value: req.query.artista as string
 
                 }] : []),
                 ...(req.query.passaggio ? [{
-                    table: "passaggio",
-                    columnToCheckValueIn: "id",
+                    joinedTableName: "passaggio",
+                    joinedTableColumnToCheckValueIn: "id",
                     value: req.query.passaggio as string
                 }] : []),
                 ...(req.query.query ? [{
-                    table: undefined,
-                    columnToCheckValueIn: "titolo",
-                    operator: "LIKE" as "LIKE" | "=",
-                    value: `%${req.query.query as string}%`
+                    joinedTableName: undefined,
+                    joinedTableColumnToCheckValueIn: "titolo",
+                    operator: "LIKE" as "LIKE" | "=" | "IN",
+                    value: `'%${req.query.query as string}%'`
                 }] : [])
             ]
         }
@@ -281,20 +334,20 @@ export const getMultipleApisConfig = {
             mainTableSchema: AlbumDbSchema,
             filtersAndJoins: [
                 ...(req.query.brano ? [{
-                    table: "brano",
-                    columnToCheckValueIn: "id",
+                    joinedTableName: "brano",
+                    joinedTableColumnToCheckValueIn: "id",
                     value: req.query.brano as string
                 }] : []),
                 ...(req.query.genere ? [{
-                    table: "genere",
-                    columnToCheckValueIn: "id",
+                    joinedTableName: "genere",
+                    joinedTableColumnToCheckValueIn: "id",
                     value: req.query.genere as string
                 }] : []),
                 ...(req.query.query ? [{
-                    table: undefined,
-                    columnToCheckValueIn: "titolo",
-                    operator: "LIKE" as "LIKE" | "=",
-                    value: `%${req.query.query as string}%`
+                    joinedTableName: undefined,
+                    joinedTableColumnToCheckValueIn: "titolo",
+                    operator: "LIKE" as "LIKE" | "=" | "IN",
+                    value: `'%${req.query.query as string}%'`
                 }] : [])
             ]
         }
@@ -306,20 +359,20 @@ export const getMultipleApisConfig = {
             mainTableSchema: ArtistaDbSchema,
             filtersAndJoins: [
                 ...(req.query.brano ? [{
-                    table: "brano",
-                    columnToCheckValueIn: "id",
+                    joinedTableName: "brano",
+                    joinedTableColumnToCheckValueIn: "id",
                     value: req.query.brano as string
                 }] : []),
                 ...(req.query.album ? [{
-                    table: "brano",
-                    columnToCheckValueIn: "id_album",
+                    joinedTableName: "brano",
+                    joinedTableColumnToCheckValueIn: "id_album",
                     value: req.query.album as string
                 }] : []),
                 ...(req.query.query ? [{
-                    table: undefined,
-                    columnToCheckValueIn: "nome",
-                    operator : "LIKE" as "LIKE" | "=",
-                    value: `%${req.query.query as string}%`
+                    joinedTableName: undefined,
+                    joinedTableColumnToCheckValueIn: "nome",
+                    operator : "LIKE" as "LIKE" | "=" | "IN",
+                    value: `'%${req.query.query as string}%'`
                 }] : [])
             ]
         }
@@ -331,8 +384,8 @@ export const getMultipleApisConfig = {
             mainTableSchema: GenereDbSchema,
             filtersAndJoins: [
                 ...(req.query.album ? [{
-                    table: "album",
-                    columnToCheckValueIn: "id",
+                    joinedTableName: "album",
+                    joinedTableColumnToCheckValueIn: "id",
                     value: req.query.album as string
                 }] : []),
             ]

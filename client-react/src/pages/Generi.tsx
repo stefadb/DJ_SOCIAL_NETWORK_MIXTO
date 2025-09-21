@@ -12,7 +12,7 @@ function Generi(){
 
     async function loadGeneri() {
         try {
-            await axios.get(`http://localhost:3000/generi?uselessParam=uselessValue&limit=100&index=0`);
+            await axios.get(`http://localhost:3000/generi/tutti?uselessParam=uselessValue&limit=100&index=0`);
             const response = await axios.get(`http://localhost:3000/generi/esistenti`, { headers: {"Cache-Control": "no-cache, no-store, must-revalidate", Pragma: "no-cache", Expires: "0" } });
             setGeneri(response.data as GenereDb[]);
         } catch (error) {

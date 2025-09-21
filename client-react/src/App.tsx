@@ -9,6 +9,8 @@ import Artista from "./pages/Artista";
 import RicercaDeezer from "./pages/RicercaDeezer";
 import RicercaLocale from "./pages/RicercaLocale";
 import Generi from "./pages/Generi";
+import Genere from "./pages/Genere";
+import Utente from "./pages/Utente";
 
 function App() {
   return (
@@ -27,6 +29,8 @@ function App() {
                 <Route path="/brano" element={<Brano key={new URLSearchParams(useLocation().search).get("id")} />} />
                 <Route path="/album" element={<Album key={new URLSearchParams(useLocation().search).get("id")} />} />
                 <Route path="/artista" element={<Artista key={new URLSearchParams(useLocation().search).get("id")} />} />
+                <Route path="/genere" element={<Genere key={new URLSearchParams(useLocation().search).get("id")} />} />
+                <Route path="/utente" element={<Utente key={new URLSearchParams(useLocation().search).get("id")} />} />
                 <Route path="/generi" element={<Generi/>} />
                 <Route path="/ricerca" element={<RicercaDeezer key={new URLSearchParams(useLocation().search).get("id")} />} />
                 <Route path="/ricerca_locale" element={<RicercaLocale key={new URLSearchParams(useLocation().search).get("id")} />} />

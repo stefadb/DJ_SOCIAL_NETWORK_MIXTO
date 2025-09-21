@@ -26,8 +26,8 @@ app.use("/album_pictures", express.static(path.join(__dirname, "album_pictures")
 
 //API CHE SCARICANO DATI DA DEEZER, LI RESTITUISCONO E LI METTONO SUL DB
 //GENERI
-app.get("/generi", (req, res) => { deezerEntityApi(req, res, generiAPIsConfig.tutti) });
-app.get("/genere", (req, res) => { deezerEntityApi(req, res, generiAPIsConfig.singolo) });
+app.get("/generi/tutti", (req, res) => { deezerEntityApi(req, res, generiAPIsConfig.tutti) });
+app.get("/generi/singolo", (req, res) => { deezerEntityApi(req, res, generiAPIsConfig.singolo) });
 //genere/search non c'è perchè i generi sono pochi e Deezer non prevede la ricerca
 //genere/artista non c'è perchè per ottenere i generi di un artista bisogna prendere tutti gli album che contengono almeno un brano di quell'artista e poi prendere i generi di quegli album (operazione troppo pesante per Deezer)
 //genere/brano non c'è perchè per ottenere i generi di un brano bisogna prendere l'album di quel brano e poi prendere i generi di quell'album (operazione troppo pesante per Deezer)
