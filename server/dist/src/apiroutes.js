@@ -241,6 +241,7 @@ async function getFilteredEntitiesList(req, res, config) {
     let jsonArrayAggColumns = [];
     for (const [i, queryJoin] of config.filtersAndJoins.entries()) {
         if (!("value" in queryJoin)) {
+            //Se non è un filtro, allora metti la tabella nel risultato della query
             jsonArrayAggColumns.push(`JSON_ARRAYAGG(JSON_OBJECT(${queryJoin.columns.map(col => `'${col}', ${queryJoin.joinedTableName}_${i}.${col}`).join(", ")})) AS ${queryJoin.joinedTableName}${queryJoin.joinColumnSuffix ? `_${queryJoin.joinColumnSuffix}` : ""}_array`);
         }
     }
