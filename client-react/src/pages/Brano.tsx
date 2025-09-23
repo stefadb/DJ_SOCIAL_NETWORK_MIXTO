@@ -2,6 +2,10 @@ import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import axios from "axios";
 import {
+  AlbumDbSchema,
+  ArtistaDbSchema,
+  BranoDbSchema,
+  GenereDbSchema,
   PassaggioDbSchema,
   type AlbumDb,
   type ArtistaDb,
@@ -12,13 +16,19 @@ import {
 import CardPassaggio from "../components/cards/CardPassaggio";
 import PagedList from "../components/PagedList";
 import BranoTableRow from "../components/BranoTableRow";
+import z from "zod";
 
 function Brano() {
   //Il componente deve prendere in input l'id del brano (da passare come parametro di query nell'URL) e fare una chiamata al backend per ottenere i dati del brano
   const { search } = useLocation();
   const query = new URLSearchParams(search);
   const id = query.get("id");
-  const [brano, setBrano] = useState<BranoDb | null>(null);
+  const ApiSchema = BranoDbSchema.extend({
+    artista: z.array(ArtistaDbSchema),
+    album: AlbumDbSchema
+  });
+  type ApiType = z.infer<typeof ApiSchema>;
+  const [brano, setBrano] = useState<ApiType | null>(null);
   const [generi, setGeneri] = useState<GenereDb[] | null>(null);
 
   //useEffect necessario per recuperare i dati
@@ -29,12 +39,17 @@ function Brano() {
   async function loadBrano() {
     try {
       await axios.get(`http://localhost:3000/brani/singolo?trackId=${id}&limit=1&index=0`);
-      const response = await axios.get(`http://localhost:3000/brani/esistenti/${id}?include_artista&include_album`, { headers: {"Cache-Control": "no-cache, no-store, must-revalidate", Pragma: "no-cache", Expires: "0" } });
-      await axios.get(`http://localhost:3000/album/singolo?albumId=${response.data.id_album}&limit=1&index=0`);
-      const responseAlbum = await axios.get(`http://localhost:3000/album/esistenti/${response.data.id_album}?include_genere`, { headers: {"Cache-Control": "no-cache, no-store, must-revalidate", Pragma: "no-cache", Expires: "0" } });
-      //TODO: validare con zod!!!
-      setBrano(response.data as BranoDb);
-      setGeneri(responseAlbum.data.genere as GenereDb[]);
+      const response = await axios.get(`http://localhost:3000/brani/esistenti/${id}?include_artista&include_album`, { headers: { "Cache-Control": "no-cache, no-store, must-revalidate", Pragma: "no-cache", Expires: "0" } });
+      const responseData = ApiSchema.parse(response.data) as ApiType;
+      await axios.get(`http://localhost:3000/album/singolo?albumId=${responseData.id_album}&limit=1&index=0`);
+      const responseAlbum = await axios.get(`http://localhost:3000/album/esistenti/${responseData.id_album}?include_genere`, { headers: { "Cache-Control": "no-cache, no-store, must-revalidate", Pragma: "no-cache", Expires: "0" } });
+      const ApiSchemaAlbum = AlbumDbSchema.extend({
+        genere: z.array(GenereDbSchema)
+      });
+      type ApiTypeAlbum = z.infer<typeof ApiSchemaAlbum>;
+      const responseAlbumData = ApiSchemaAlbum.parse(responseAlbum.data) as ApiTypeAlbum;
+      setBrano(responseData);
+      setGeneri(responseAlbumData.genere as GenereDb[]);
       //Il brano è stato caricato con successo, ora si possono caricare i passaggi
     } catch (error) {
       //TODO: Gestire errore
@@ -48,15 +63,15 @@ function Brano() {
       {brano ? (
         <div>
           <img
-        style={{ width: "100px", height: "100px" }}
-        src={"http://localhost:3000/album_pictures/" + brano.id_album + ".jpg"}
-        alt={"Cover dell'album " + brano.album ? (brano.album as AlbumDb).titolo : "sconosciuto"}
-      ></img>
+            style={{ width: "100px", height: "100px" }}
+            src={"http://localhost:3000/album_pictures/" + brano.id_album + ".jpg"}
+            alt={"Cover dell'album " + (brano.album ? brano.album.titolo : "sconosciuto")}
+          ></img>
           <h2>{brano.titolo}</h2>
           <p>Durata: {brano.durata} secondi</p>
-          <p>Album: {brano.album ? (brano.album as AlbumDb).titolo : "Sconosciuto"}</p>
-          <p>Data di uscita: {brano.album ? (brano.album as AlbumDb).data_uscita : "Sconosciuta"}</p>
-          <p>Artisti: {(brano.artista as ArtistaDb[]).map(artista => artista.nome).join(", ")}</p>
+          <p>Album: {brano.album ? brano.album.titolo : "Sconosciuto"}</p>
+          <p>Data di uscita: {brano.album ? brano.album.data_uscita : "Sconosciuta"}</p>
+          <p>Artisti: {brano.artista.map(artista => artista.nome).join(", ")}</p>
           <p>Generi: {generi ? generi.map(genere => genere.nome).join(", ") : "Caricamento..."}</p>
         </div>
       ) : (
@@ -77,7 +92,7 @@ function Brano() {
               </thead>
               <tbody>
                 <PagedList itemsPerPage={2} apiCall={`http://localhost:3000/passaggi/conta?primoBrano=${brano.id}`} component={(element: { numero_passaggi: number; id_brano_2: number; brano_2_array: BranoDb[] }) => (
-                  <BranoTableRow element={element}/>
+                  <BranoTableRow element={element} />
                 )} showMoreButton={(onClick) => <tr><td colSpan={4}><button onClick={onClick}>Carica altri brani</button></td></tr>} />
               </tbody>
             </table>
@@ -95,7 +110,7 @@ function Brano() {
               </thead>
               <tbody>
                 <PagedList itemsPerPage={2} apiCall={`http://localhost:3000/passaggi/conta?secondoBrano=${brano.id}`} component={(element: { numero_passaggi: number; id_brano_1: number; brano_1_array: BranoDb[] }) => (
-                  <BranoTableRow element={element}/>
+                  <BranoTableRow element={element} />
                 )} showMoreButton={(onClick) => <tr><td colSpan={4}><button onClick={onClick}>Carica altri brani</button></td></tr>} />
               </tbody>
             </table>

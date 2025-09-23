@@ -4,6 +4,7 @@ import axios from "axios";
 import {
     ArtistaDbSchema,
     BranoDbSchema,
+    GenereDbSchema,
     PassaggioDbSchema,
     type ArtistaDb,
     type BranoDb,
@@ -31,6 +32,7 @@ function Genere() {
         try {
             await axios.get(`http://localhost:3000/generi/singolo?genreId=${id}&limit=1&index=0`);
             const response = await axios.get(`http://localhost:3000/generi/esistenti/${id}`, { headers: {"Cache-Control": "no-cache, no-store, must-revalidate", Pragma: "no-cache", Expires: "0" } });
+            GenereDbSchema.parse(response.data);
             setGenere(response.data as GenereDb);
         } catch (error) {
             console.error("Errore nel recupero del genere:", error);

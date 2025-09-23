@@ -11,6 +11,7 @@ import RicercaLocale from "./pages/RicercaLocale";
 import Generi from "./pages/Generi";
 import Genere from "./pages/Genere";
 import Utente from "./pages/Utente";
+import ModalPassaggioTest from "./pages/ModalPassaggioTest";
 
 function App() {
   return (
@@ -32,6 +33,8 @@ function App() {
                 <Route path="/genere" element={<Genere key={new URLSearchParams(useLocation().search).get("id")} />} />
                 <Route path="/utente" element={<Utente key={new URLSearchParams(useLocation().search).get("id")} />} />
                 <Route path="/generi" element={<Generi/>} />
+                {/* Route provvisoria che poi andrà eliminata */}
+                <Route path="/passaggio" element={<ModalPassaggioTest key={new URLSearchParams(useLocation().search).get("id")} />} />
                 <Route path="/ricerca" element={<RicercaDeezer key={new URLSearchParams(useLocation().search).get("id")} />} />
                 <Route path="/ricerca_locale" element={<RicercaLocale key={new URLSearchParams(useLocation().search).get("id")} />} />
                 <Route path="*" element={<></>} />

@@ -2,6 +2,9 @@ import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import axios from "axios";
 import {
+    AlbumDbSchema,
+    BranoDbSchema,
+    GenereDbSchema,
     PassaggioDbSchema,
     type AlbumDb,
     type ArtistaDb,
@@ -13,6 +16,7 @@ import CardPassaggio from "../components/cards/CardPassaggio";
 import PagedList from "../components/PagedList";
 import CardBrano from "../components/cards/CardBrano";
 import { getNomiArtistiAlbum } from "../functions/functions";
+import z from "zod";
 
 function Album() {
     //Il componente deve prendere in input l'id del brano (da passare come parametro di query nell'URL) e fare una chiamata al backend per ottenere i dati del brano
@@ -31,9 +35,14 @@ function Album() {
         try {
             await axios.get(`http://localhost:3000/album/singolo?albumId=${id}&limit=1&index=0`);
             const responseAlbum = await axios.get(`http://localhost:3000/album/esistenti/${id}?include_genere&include_brano`, { headers: {"Cache-Control": "no-cache, no-store, must-revalidate", Pragma: "no-cache", Expires: "0" } });
-            //TODO: validare con zod!!!
-            setAlbum(responseAlbum.data as AlbumDb);
-            setArtistiAlbum(await getNomiArtistiAlbum((responseAlbum.data.brano as BranoDb[]).map((brano: BranoDb) => brano.id), responseAlbum.data.id));
+            const ApiSchema = AlbumDbSchema.extend({
+                genere: z.array(GenereDbSchema),
+                brano: z.array(BranoDbSchema)
+            });
+            type ApiType = z.infer<typeof ApiSchema>;
+            const responseAlbumData = ApiSchema.parse(responseAlbum.data) as ApiType;
+            setAlbum(responseAlbumData);
+            setArtistiAlbum(await getNomiArtistiAlbum((responseAlbumData.brano as BranoDb[]).map((brano: BranoDb) => brano.id), responseAlbumData.id));
             //L'album è stato caricato con successo, ora si possono caricare i passaggi
         } catch (error) {
             //TODO: Gestire errore

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import axios from "axios";
 import {
+    AlbumDbSchema,
     ArtistaDbSchema,
     BranoDbSchema,
     PassaggioDbSchema,
@@ -34,11 +35,13 @@ function Artista() {
             await axios.get(`http://localhost:3000/artisti/singolo?artistId=${id}&limit=1&index=0`);
             await axios.get(`http://localhost:3000/album/artista?artistId=${id}&limit=1&index=0`);
             const responseArtista = await axios.get(`http://localhost:3000/artisti/esistenti/${id}`, { headers: {"Cache-Control": "no-cache, no-store, must-revalidate", Pragma: "no-cache", Expires: "0" } });
-            //TODO: validare con zod!!!
+            ArtistaDbSchema.parse(responseArtista.data);
             setArtista(responseArtista.data as ArtistaDb);
+            /*
             const responseAlbum = await axios.get(`http://localhost:3000/album/esistenti?artista=${id}`, { headers: {"Cache-Control": "no-cache, no-store, must-revalidate", Pragma: "no-cache", Expires: "0" } });
-            //TODO: validare con zod!!!
-            //setAlbumArtista(responseAlbum.data as AlbumDb[]);
+            AlbumDbSchema.parse(responseAlbum.data);
+            setAlbumArtista(responseAlbum.data as AlbumDb[]);
+            */
         } catch (error) {
             //TODO: Gestire errore
             console.error("Errore nel recupero dell'artista:", error);

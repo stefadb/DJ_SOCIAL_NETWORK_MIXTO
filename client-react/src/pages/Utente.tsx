@@ -3,6 +3,7 @@ import { useLocation } from "react-router-dom";
 import axios from "axios";
 import {
   PassaggioDbSchema,
+  UtenteDbSchema,
   type BranoDb,
   type PassaggioDb,
   type UtenteDb,
@@ -25,7 +26,7 @@ function Utente() {
   async function loadUtente() {
     try {
       const response = await axios.get(`http://localhost:3000/utenti/${id}`, { headers: { "Cache-Control": "no-cache, no-store, must-revalidate", Pragma: "no-cache", Expires: "0" } });
-      //TODO: validare con zod!!!
+      UtenteDbSchema.parse(response.data);
       setUtente(response.data as UtenteDb);
       //Il brano è stato caricato con successo, ora si possono caricare i passaggi
     } catch (error) {

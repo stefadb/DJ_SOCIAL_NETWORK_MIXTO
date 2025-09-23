@@ -3,12 +3,11 @@ import { Fragment, useEffect, useState, type ReactNode } from "react";
 import type { ZodObject } from "zod";
 
 function PagedList<T>(props: { itemsPerPage: number; apiCall: string; schema?: ZodObject<any>; component: (element: T, index: number) => ReactNode, showMoreButton: (onClick: () => void) => ReactNode }) {
-    //TODO: risolvere un bug in questo componente, legato al cambiamento dei parametri
     const [elements, setElements] = useState<T[]>([]);
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [showMoreItemsButton, setShowMoreItemsButton] = useState<boolean>(true);
 
-    const disableValidation = true;
+    const disableValidation = false; //In produzione deve essere false
 
     function loadElements() {
         axios.get(`${props.apiCall}${props.apiCall.includes("?") ? "&" : "?"}limit=${props.itemsPerPage}&index=${(currentPage - 1) * props.itemsPerPage}`, { headers: {"Cache-Control": "no-cache, no-store, must-revalidate", Pragma: "no-cache", Expires: "0" } })

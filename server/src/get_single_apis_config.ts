@@ -30,7 +30,12 @@ export const getSingleApisConfig = {
                 schema: UtenteDbSchema
             },
             {
-                tableName: "brano",
+                tableName: "brano_1",
+                columns: ["id", "titolo", "durata", "id_album"],
+                schema: BranoDbSchema
+            },
+            {
+                tableName: "brano_2",
                 columns: ["id", "titolo", "durata", "id_album"],
                 schema: BranoDbSchema
             },
