@@ -141,7 +141,6 @@ function dbResultIsValid(res, array, entity, schema, tableName) {
     }
     return true;
 }
-//TODO: testare questa funzione per capire se funziona
 async function getEntityWithAssociations(req, res, config) {
     const id = req.params.id;
     const con = await getConnection();
@@ -236,7 +235,6 @@ function getSqlOperatorString(operator) {
             return "=";
     }
 }
-//TODO: Estendere questa funzione per poter includere nel risultato anche le entità associate
 async function getFilteredEntitiesList(req, res, config) {
     let mainTableColumns = config.mainTableColumns.map(col => `${config.mainTableName}.${col}`);
     let selectCustomColumns = config.selectCustomColumns ? config.selectCustomColumns : [];

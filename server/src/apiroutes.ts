@@ -182,8 +182,6 @@ function dbResultIsValid(res: import("express").Response, array: boolean, entity
   return true;
 }
 
-
-//TODO: testare questa funzione per capire se funziona
 export async function getEntityWithAssociations(
   req: import("express").Request,
   res: import("express").Response,
@@ -317,7 +315,6 @@ function getSqlOperatorString(operator?: "LIKE" | "=" | "IN"): string {
   }
 }
 
-//TODO: Estendere questa funzione per poter includere nel risultato anche le entità associate
 export async function getFilteredEntitiesList(
   req: import("express").Request,
   res: import("express").Response,

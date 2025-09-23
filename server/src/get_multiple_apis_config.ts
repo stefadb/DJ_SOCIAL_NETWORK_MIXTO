@@ -1,3 +1,4 @@
+import { ZodObject } from "zod/v3";
 import { PassaggioDbSchema, ScalettaDbSchema, UtenteDbSchema, VisualizzazioneDbSchema, CommentoDbSchema, ValutazioneDbSchema, BranoDbSchema, AlbumDbSchema, ArtistaDbSchema, GenereDbSchema } from "./db_types";
 
 export const getMultipleApisConfig = {
@@ -25,12 +26,13 @@ export const getMultipleApisConfig = {
             mainTableName: "passaggio",
             mainTableColumns: req.query.columns === undefined ? ["id", "testo", "inizio_secondo_brano", "cue_secondo_brano", "data_pubblicazione", "id_utente", "id_brano_1", "id_brano_2"] : (req.query.columns as string).split(","),
             mainTableSchema: PassaggioDbSchema,
+            orderBys: ["passaggio.data_pubblicazione DESC"],
             filtersAndJoins: [
                 ...(req.query.utente ? [{
                     joinedTableName: "utente",
                     joinedTableColumnToCheckValueIn: "id",
                     value: req.query.utente as string
-                },{
+                }, {
                     joinedTableName: "brano",
                     joinColumnSuffix: "1",
                     includeInResult: true,
@@ -245,6 +247,11 @@ export const getMultipleApisConfig = {
                     joinedTableName: "passaggio",
                     joinedTableColumnToCheckValueIn: "id",
                     value: req.query.passaggio as string
+                }, {
+                    joinedTableName: "utente",
+                    includeInResult: true,
+                    columns: ["id", "username", "nome", "cognome"],
+                    schema: UtenteDbSchema
                 }] : []),
                 ...(req.query.commentoPadre ? [{
                     joinedTableName: "commento",
@@ -270,6 +277,18 @@ export const getMultipleApisConfig = {
                     joinedTableName: "passaggio",
                     joinedTableColumnToCheckValueIn: "id",
                     value: req.query.passaggio as string
+                },{
+                    joinedTableName: "utente",
+                    includeInResult: true,
+                    columns: ["id", "username", "nome", "cognome"],
+                    schema: UtenteDbSchema
+                }] : []),
+                ...(req.query.mediaPassaggio ? [{
+                    selectCustomColumns: ["AVG(valutazione.voto) AS voto_medio"],
+                    customGroupBys: ["valutazione.id_passaggio"],
+                    joinedTableName: undefined,
+                    joinedTableColumnToCheckValueIn: "id_passaggio",
+                    value: req.query.mediaPassaggio as string
                 }] : []),
             ]
         }
@@ -371,7 +390,7 @@ export const getMultipleApisConfig = {
                 ...(req.query.query ? [{
                     joinedTableName: undefined,
                     joinedTableColumnToCheckValueIn: "nome",
-                    operator : "LIKE" as "LIKE" | "=" | "IN",
+                    operator: "LIKE" as "LIKE" | "=" | "IN",
                     value: `'%${req.query.query as string}%'`
                 }] : [])
             ]

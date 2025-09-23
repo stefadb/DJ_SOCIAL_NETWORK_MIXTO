@@ -38,7 +38,7 @@ app.get("/artisti/simili", (req, res) => { deezerEntityApi(req, res, artistiAPIs
 app.get("/artisti/genere", (req, res) => { deezerEntityApi(req, res, artistiAPIsConfig.genere) });
 app.get("/artisti/singolo", (req, res) => { deezerEntityApi(req, res, artistiAPIsConfig.singolo) });
 //artisti/brano non serve perchè c'è già brani/singolo che restituisce anche gli artisti di un brano
-//TODO: implementare artisti/album per ottenere tutti gli artisti dell'album (passando per forza dai brani!)
+//artisti/album non serve perchè il frontend è già in grado di ottenere gli artisti di un album tramite brani/singolo
 //ALBUM--------------------------------------------------------
 app.get("/album/search", (req, res) => { deezerEntityApi(req, res, albumAPIsConfig.search) });
 app.get("/album/singolo", (req, res) => { deezerEntityApi(req, res, albumAPIsConfig.singolo) });
