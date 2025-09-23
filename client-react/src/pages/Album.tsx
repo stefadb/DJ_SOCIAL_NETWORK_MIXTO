@@ -12,11 +12,19 @@ import {
     type GenereDb,
     type PassaggioDb,
 } from "../types/db_types";
+
 import CardPassaggio from "../components/cards/CardPassaggio";
 import PagedList from "../components/PagedList";
 import CardBrano from "../components/cards/CardBrano";
 import { getNomiArtistiAlbum } from "../functions/functions";
 import z from "zod";
+
+// Schema e type per /passaggi?albumPrimoBrano= e /passaggi?albumSecondoBrano=
+const PassaggioConBraniSchema = PassaggioDbSchema.extend({
+    brano_1_array: z.array(BranoDbSchema),
+    brano_2_array: z.array(BranoDbSchema)
+});
+type PassaggioConBrani = z.infer<typeof PassaggioConBraniSchema>;
 
 function Album() {
     //Il componente deve prendere in input l'id del brano (da passare come parametro di query nell'URL) e fare una chiamata al backend per ottenere i dati del brano
@@ -75,25 +83,37 @@ function Album() {
                 <>
                     <div>
                         <h2>Passaggi dove il primo brano è di questo album</h2>
-                        <PagedList itemsPerPage={2} apiCall={`http://localhost:3000/passaggi?albumPrimoBrano=${album.id}`} schema={PassaggioDbSchema} component={(element: PassaggioDb) => (
-                            <CardPassaggio
-                                key={element.id}
-                                passaggio={element}
-                                brano1={(element.brano_1_array as BranoDb[])[0] as BranoDb}
-                                brano2={(element.brano_2_array as BranoDb[])[0] as BranoDb}
-                            />
-                        )} showMoreButton={(onClick) => <button onClick={onClick}>Carica altri passaggi</button>} />
+                                                <PagedList
+                                                    itemsPerPage={2}
+                                                    apiCall={`http://localhost:3000/passaggi?albumPrimoBrano=${album.id}`}
+                                                    schema={PassaggioConBraniSchema}
+                                                    component={(element: PassaggioConBrani) => (
+                                                        <CardPassaggio
+                                                            key={element.id}
+                                                            passaggio={element}
+                                                            brano1={element.brano_1_array[0]}
+                                                            brano2={element.brano_2_array[0]}
+                                                        />
+                                                    )}
+                                                    showMoreButton={(onClick) => <button onClick={onClick}>Carica altri passaggi</button>}
+                                                />
                     </div>
                     <div>
                         <h2>Passaggi dove il secondo brano è di questo album</h2>
-                        <PagedList itemsPerPage={2} apiCall={`http://localhost:3000/passaggi?albumSecondoBrano=${album.id}`} schema={PassaggioDbSchema} component={(element: PassaggioDb) => (
-                            <CardPassaggio
-                                key={element.id}
-                                passaggio={element}
-                                brano1={(element.brano_1_array as BranoDb[])[0] as BranoDb}
-                                brano2={(element.brano_2_array as BranoDb[])[0] as BranoDb}
-                            />
-                        )} showMoreButton={(onClick) => <button onClick={onClick}>Carica altri passaggi</button>} />
+                                                <PagedList
+                                                    itemsPerPage={2}
+                                                    apiCall={`http://localhost:3000/passaggi?albumSecondoBrano=${album.id}`}
+                                                    schema={PassaggioConBraniSchema}
+                                                    component={(element: PassaggioConBrani) => (
+                                                        <CardPassaggio
+                                                            key={element.id}
+                                                            passaggio={element}
+                                                            brano1={element.brano_1_array[0]}
+                                                            brano2={element.brano_2_array[0]}
+                                                        />
+                                                    )}
+                                                    showMoreButton={(onClick) => <button onClick={onClick}>Carica altri passaggi</button>}
+                                                />
                     </div>
                 </>
             }

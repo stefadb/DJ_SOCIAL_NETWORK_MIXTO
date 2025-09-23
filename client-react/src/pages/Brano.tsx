@@ -7,16 +7,30 @@ import {
   BranoDbSchema,
   GenereDbSchema,
   PassaggioDbSchema,
-  type AlbumDb,
-  type ArtistaDb,
   type BranoDb,
   type GenereDb,
   type PassaggioDb,
 } from "../types/db_types";
+
 import CardPassaggio from "../components/cards/CardPassaggio";
 import PagedList from "../components/PagedList";
 import BranoTableRow from "../components/BranoTableRow";
 import z from "zod";
+
+// Schema e type per /passaggi/conta?primoBrano= e /passaggi/conta?secondoBrano=
+const ContaPassaggiBrano2Schema = z.object({
+  numero_passaggi: z.number(),
+  id_brano_2: z.number(),
+  brano_2_array: z.array(BranoDbSchema)
+});
+type ContaPassaggiBrano2 = z.infer<typeof ContaPassaggiBrano2Schema>;
+
+const ContaPassaggiBrano1Schema = z.object({
+  numero_passaggi: z.number(),
+  id_brano_1: z.number(),
+  brano_1_array: z.array(BranoDbSchema)
+});
+type ContaPassaggiBrano1 = z.infer<typeof ContaPassaggiBrano1Schema>;
 
 function Brano() {
   //Il componente deve prendere in input l'id del brano (da passare come parametro di query nell'URL) e fare una chiamata al backend per ottenere i dati del brano
@@ -91,9 +105,15 @@ function Brano() {
                 </tr>
               </thead>
               <tbody>
-                <PagedList itemsPerPage={2} apiCall={`http://localhost:3000/passaggi/conta?primoBrano=${brano.id}`} component={(element: { numero_passaggi: number; id_brano_2: number; brano_2_array: BranoDb[] }) => (
-                  <BranoTableRow element={element} />
-                )} showMoreButton={(onClick) => <tr><td colSpan={4}><button onClick={onClick}>Carica altri brani</button></td></tr>} />
+                <PagedList
+                  itemsPerPage={2}
+                  apiCall={`http://localhost:3000/passaggi/conta?primoBrano=${brano.id}`}
+                  schema={ContaPassaggiBrano2Schema}
+                  component={(element: ContaPassaggiBrano2) => (
+                    <BranoTableRow element={element} />
+                  )}
+                  showMoreButton={(onClick) => <tr><td colSpan={4}><button onClick={onClick}>Carica altri brani</button></td></tr>}
+                />
               </tbody>
             </table>
           </div>
@@ -109,9 +129,15 @@ function Brano() {
                 </tr>
               </thead>
               <tbody>
-                <PagedList itemsPerPage={2} apiCall={`http://localhost:3000/passaggi/conta?secondoBrano=${brano.id}`} component={(element: { numero_passaggi: number; id_brano_1: number; brano_1_array: BranoDb[] }) => (
-                  <BranoTableRow element={element} />
-                )} showMoreButton={(onClick) => <tr><td colSpan={4}><button onClick={onClick}>Carica altri brani</button></td></tr>} />
+                <PagedList
+                  itemsPerPage={2}
+                  apiCall={`http://localhost:3000/passaggi/conta?secondoBrano=${brano.id}`}
+                  schema={ContaPassaggiBrano1Schema}
+                  component={(element: ContaPassaggiBrano1) => (
+                    <BranoTableRow element={element} />
+                  )}
+                  showMoreButton={(onClick) => <tr><td colSpan={4}><button onClick={onClick}>Carica altri brani</button></td></tr>}
+                />
               </tbody>
             </table>
           </div>
