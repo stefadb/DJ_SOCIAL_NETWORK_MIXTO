@@ -288,7 +288,6 @@ export async function getEntityWithAssociations(
 type QueryJoin = {
   joinedTableName: string,
   joinColumnSuffix?: string //se la colonna di join non è id_[table], specificare il suffisso qui (join con la colonna id_[table]_[suffix])
-  includeInResult?: boolean //se true, include questa tabella nel risultato della query
   columns: string[],
   schema: ZodObject<any> | undefined
 }
@@ -296,7 +295,6 @@ type QueryJoin = {
 type QueryFilter = {
   joinedTableName: string | undefined, //Se undefined, il filtro è applicato alla tabella principale
   joinColumnSuffix?: string //se la colonna di join non è id_[table], specificare il suffisso qui (join con la colonna id_[table]_[suffix])
-  includeInResult?: boolean //se true, include questa tabella nel risultato della query
   joinedTableColumnToCheckValueIn: string, //è la colonna della tabella joinata (o della tabella principale se joinedTableName è undefined) su cui applicare il filtro
   operator?: "LIKE" | "=" | "IN",
   value: string | number
@@ -334,6 +332,7 @@ export async function getFilteredEntitiesList(
   let jsonArrayAggColumns: string[] = [];
   for (const [i, queryJoin] of config.filtersAndJoins.entries()) {
     if (!("value" in queryJoin)) {
+      //Se non è un filtro, allora metti la tabella nel risultato della query
       jsonArrayAggColumns.push(`JSON_ARRAYAGG(JSON_OBJECT(${queryJoin.columns.map(col => `'${col}', ${queryJoin.joinedTableName}_${i}.${col}`).join(", ")})) AS ${queryJoin.joinedTableName}${queryJoin.joinColumnSuffix ? `_${queryJoin.joinColumnSuffix}` : ""}_array`);
     }
   }

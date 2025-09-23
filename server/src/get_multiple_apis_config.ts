@@ -35,14 +35,14 @@ export const getMultipleApisConfig = {
                 }, {
                     joinedTableName: "brano",
                     joinColumnSuffix: "1",
-                    includeInResult: true,
+                    
                     columns: ["id", "titolo", "durata", "id_album"],
                     schema: BranoDbSchema
                 },
                 {
                     joinedTableName: "brano",
                     joinColumnSuffix: "2",
-                    includeInResult: true,
+                    
                     columns: ["id", "titolo", "durata", "id_album"],
                     schema: BranoDbSchema
                 }] : []),
@@ -54,7 +54,7 @@ export const getMultipleApisConfig = {
                 }, {
                     joinedTableName: "brano",
                     joinColumnSuffix: "2",
-                    includeInResult: true,
+                    
                     columns: ["id", "titolo", "durata", "id_album"],
                     schema: BranoDbSchema
                 }] : []),
@@ -66,7 +66,7 @@ export const getMultipleApisConfig = {
                 }, {
                     joinedTableName: "brano",
                     joinColumnSuffix: "1",
-                    includeInResult: true,
+                    
                     columns: ["id", "titolo", "durata", "id_album"],
                     schema: BranoDbSchema
                 }] : []),
@@ -78,14 +78,14 @@ export const getMultipleApisConfig = {
                 }, {
                     joinedTableName: "brano",
                     joinColumnSuffix: "1",
-                    includeInResult: true,
+                    
                     columns: ["id", "titolo", "durata", "id_album"],
                     schema: BranoDbSchema
                 },
                 {
                     joinedTableName: "brano",
                     joinColumnSuffix: "2",
-                    includeInResult: true,
+                    
                     columns: ["id", "titolo", "durata", "id_album"],
                     schema: BranoDbSchema
                 }] : []),
@@ -97,14 +97,14 @@ export const getMultipleApisConfig = {
                 }, {
                     joinedTableName: "brano",
                     joinColumnSuffix: "1",
-                    includeInResult: true,
+                    
                     columns: ["id", "titolo", "durata", "id_album"],
                     schema: BranoDbSchema
                 },
                 {
                     joinedTableName: "brano",
                     joinColumnSuffix: "2",
-                    includeInResult: true,
+                    
                     columns: ["id", "titolo", "durata", "id_album"],
                     schema: BranoDbSchema
                 }] : []),
@@ -122,14 +122,14 @@ export const getMultipleApisConfig = {
                 }, {
                     joinedTableName: "brano",
                     joinColumnSuffix: "1",
-                    includeInResult: true,
+                    
                     columns: ["id", "titolo", "durata", "id_album"],
                     schema: BranoDbSchema
                 },
                 {
                     joinedTableName: "brano",
                     joinColumnSuffix: "2",
-                    includeInResult: true,
+                    
                     columns: ["id", "titolo", "durata", "id_album"],
                     schema: BranoDbSchema
                 }] : []),
@@ -142,14 +142,14 @@ export const getMultipleApisConfig = {
                 }, {
                     joinedTableName: "brano",
                     joinColumnSuffix: "1",
-                    includeInResult: true,
+                    
                     columns: ["id", "titolo", "durata", "id_album"],
                     schema: BranoDbSchema
                 },
                 {
                     joinedTableName: "brano",
                     joinColumnSuffix: "2",
-                    includeInResult: true,
+                    
                     columns: ["id", "titolo", "durata", "id_album"],
                     schema: BranoDbSchema
                 }] : []),
@@ -162,14 +162,14 @@ export const getMultipleApisConfig = {
                 }, {
                     joinedTableName: "brano",
                     joinColumnSuffix: "1",
-                    includeInResult: true,
+                    
                     columns: ["id", "titolo", "durata", "id_album"],
                     schema: BranoDbSchema
                 },
                 {
                     joinedTableName: "brano",
                     joinColumnSuffix: "2",
-                    includeInResult: true,
+                    
                     columns: ["id", "titolo", "durata", "id_album"],
                     schema: BranoDbSchema
                 }] : []),
@@ -182,14 +182,14 @@ export const getMultipleApisConfig = {
                 }, {
                     joinedTableName: "brano",
                     joinColumnSuffix: "1",
-                    includeInResult: true,
+                    
                     columns: ["id", "titolo", "durata", "id_album"],
                     schema: BranoDbSchema
                 },
                 {
                     joinedTableName: "brano",
                     joinColumnSuffix: "2",
-                    includeInResult: true,
+                    
                     columns: ["id", "titolo", "durata", "id_album"],
                     schema: BranoDbSchema
                 }] : []),
@@ -213,7 +213,7 @@ export const getMultipleApisConfig = {
                 }, {
                     joinedTableName: "brano",
                     joinColumnSuffix: "2",
-                    includeInResult: true,
+                    
                     columns: ["id", "titolo", "durata", "id_album"],
                     schema: BranoDbSchema
                 }] : []),
@@ -225,7 +225,7 @@ export const getMultipleApisConfig = {
                 }, {
                     joinedTableName: "brano",
                     joinColumnSuffix: "1",
-                    includeInResult: true,
+                    
                     columns: ["id", "titolo", "durata", "id_album"],
                     schema: BranoDbSchema
                 }] : [])
@@ -249,7 +249,7 @@ export const getMultipleApisConfig = {
                     value: req.query.passaggio as string
                 }, {
                     joinedTableName: "utente",
-                    includeInResult: true,
+                    
                     columns: ["id", "username", "nome", "cognome"],
                     schema: UtenteDbSchema
                 }] : []),
@@ -279,7 +279,7 @@ export const getMultipleApisConfig = {
                     value: req.query.passaggio as string
                 },{
                     joinedTableName: "utente",
-                    includeInResult: true,
+                    
                     columns: ["id", "username", "nome", "cognome"],
                     schema: UtenteDbSchema
                 }] : []),
