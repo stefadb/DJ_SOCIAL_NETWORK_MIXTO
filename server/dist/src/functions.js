@@ -42,27 +42,22 @@ async function makeDeezerApiCall(res, urlFirstPart, urlParameter, urlSecondPart,
             }
             axios_1.default.get(url)
                 .then((response) => {
-                if (response.status == 200) {
+                if (!response.data.error) {
                     resolve(response);
                 }
                 else {
-                    res.status(response.status).json({ error: `Errore nella chiamata a Deezer: ${response.statusText}` });
+                    if (response.data.error.code === 800) {
+                        res.status(404).json({ error: "L'oggetto richiesto non esiste su Deezer.", details: response.data.error });
+                    }
+                    else {
+                        res.status(500).json({ error: "Errore nella chiamata a Deezer", details: response.data.error });
+                    }
                     resolve(-1);
                 }
             })
                 .catch((error) => {
-                if (axios_1.default.isAxiosError(error) && error.response && error.response.status === 4) {
-                    res.status(4).json({ error: "Limite di richieste API superato" });
-                    resolve(-1);
-                }
-                if (axios_1.default.isAxiosError(error) && error.response && error.response.status === 404) {
-                    res.status(404).json({ error: "Deezer non ha trovato quello che si sta cercando" });
-                    resolve(-1);
-                }
-                else {
-                    res.status(500).json({ error: "Errore nella chiamata a Deezer" });
-                    resolve(-1);
-                }
+                res.status(500).json({ error: "Errore nella chiamata a Deezer", details: error });
+                resolve(-1);
             });
         });
     });
