@@ -21,7 +21,8 @@ import {
   Durata,
   AssocBranoArtistaDb,
   AssocAlbumGenereDb,
-  DbEntitySchema
+  DbEntitySchema,
+  UtenteDb
 } from './db_types';
 import {
   DeezerEntityAPIConfig,
@@ -37,13 +38,7 @@ import { dbTablesAndColumns } from "./get_db_tables_and_columns";
 // Extend express-session to include user property
 declare module 'express-session' {
   interface SessionData {
-    user?: {
-      id: number;
-      username: string;
-      first_name: string;
-      surname: string;
-      email: string;
-    };
+    user: UtenteDb | undefined;
   }
 }
 
@@ -67,6 +62,15 @@ export async function getConnection() {
 
 //FUNZIONI DELLE CHIAMATE API ESPORTATE
 
+export async function logout(req: import("express").Request, res: import("express").Response) {
+  if (req.session.user) {
+    req.session.user = undefined;
+    res.send();
+  } else {
+    res.status(400).json({ error: "Sessione non trovata" });
+  }
+}
+
 // ====== LOGIN ======
 export async function postLogin(req: import("express").Request, res: import("express").Response) {
   const { username, password } = req.body;
@@ -76,9 +80,9 @@ export async function postLogin(req: import("express").Request, res: import("exp
       "SELECT * FROM Utente WHERE username = ?",
       [username]
     );
-    const utenti = rows as any[];
+    const utenti = rows as UtenteDb[];
     await con.end();
-    if (utenti.length === 0) {
+    if (utenti[0] === undefined) {
       return res.status(401).json({ error: "Credenziali non valide" });
     }
     const user = utenti[0];
@@ -89,12 +93,13 @@ export async function postLogin(req: import("express").Request, res: import("exp
     req.session.user = {
       id: user.id,
       username: user.username,
-      first_name: user.first_name,
-      surname: user.surname,
-      email: user.email,
+      nome: user.nome,
+      cognome: user.cognome,
+      password: ""
     };
-    res.json({ message: "Login effettuato", user: req.session.user });
+    res.json(req.session.user);
   } catch (err) {
+    console.log(err);
     res.status(500).json({ error: "Errore durante il login" });
   }
 }
@@ -354,9 +359,9 @@ export async function getFilteredEntitiesList(
         joins += `LEFT JOIN ${middleTableName} AS ${middleTableName}_${i} ON ${config.mainTableName}.id = ${middleTableName}_${i}.id_${config.mainTableName}\n`;
         joins += `LEFT JOIN ${filter.joinedTableName} AS ${filter.joinedTableName}_${i} ON ${filter.joinedTableName}_${i}.id = ${middleTableName}_${i}.id_${filter.joinedTableName}\n`;
       } else if (relationIsManyToOne(config.mainTableName, filter.joinedTableName)) {
-          joins += `LEFT JOIN ${filter.joinedTableName} AS ${filter.joinedTableName}_${i} ON ${filter.joinedTableName}_${i}.id = ${config.mainTableName}.id_${filter.joinedTableName}${filter.joinColumnSuffix ? `_${filter.joinColumnSuffix}` : ""}\n`;
+        joins += `LEFT JOIN ${filter.joinedTableName} AS ${filter.joinedTableName}_${i} ON ${filter.joinedTableName}_${i}.id = ${config.mainTableName}.id_${filter.joinedTableName}${filter.joinColumnSuffix ? `_${filter.joinColumnSuffix}` : ""}\n`;
       } else if (relationIsOneToMany(config.mainTableName, filter.joinedTableName)) {
-          joins += `LEFT JOIN ${filter.joinedTableName} AS ${filter.joinedTableName}_${i} ON ${filter.joinedTableName}_${i}.id_${config.mainTableName}${filter.joinColumnSuffix ? `_${filter.joinColumnSuffix}` : ""} = ${config.mainTableName}.id\n`;
+        joins += `LEFT JOIN ${filter.joinedTableName} AS ${filter.joinedTableName}_${i} ON ${filter.joinedTableName}_${i}.id_${config.mainTableName}${filter.joinColumnSuffix ? `_${filter.joinColumnSuffix}` : ""} = ${config.mainTableName}.id\n`;
       }
     }
   }
@@ -525,7 +530,7 @@ export async function putEntity(
   }
 }
 
-export async function getBraniEsistentiPreferiti(req: import("express").Request, res: import("express").Response){
+export async function getBraniEsistentiPreferiti(req: import("express").Request, res: import("express").Response) {
   //Questa API risponde con true se nella tabella del db brano_utente esiste una riga con id utente e id brano uguali a quelli specificati, altrimenti restituisce false
   const id_utente = req.query.utente;
   const id_brano = req.query.brano;

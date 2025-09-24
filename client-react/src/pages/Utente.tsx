@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-import axios from "axios";
+import api from "../api";
 import {
   BranoDbSchema,
   PassaggioDbSchema,
@@ -35,7 +35,7 @@ function Utente() {
 
   async function loadUtente() {
     try {
-      const response = await axios.get(`http://localhost:3000/utenti/${id}`, { headers: { "Cache-Control": "no-cache, no-store, must-revalidate", Pragma: "no-cache", Expires: "0" } });
+      const response = await api.get(`/utenti/${id}`, { headers: { "Cache-Control": "no-cache, no-store, must-revalidate", Pragma: "no-cache", Expires: "0" } });
       UtenteDbSchema.parse(response.data);
       setUtente(response.data as UtenteDb);
       //Il brano è stato caricato con successo, ora si possono caricare i passaggi
@@ -61,7 +61,7 @@ function Utente() {
             <h3>I brani preferiti di {utente.nome} {utente.cognome}</h3>
             <PagedList
               itemsPerPage={5}
-              apiCall={`http://localhost:3000/brani/esistenti?utente=${utente.id}`}
+              apiCall={`/brani/esistenti?utente=${utente.id}`}
               schema={BranoDbSchema}
               component={(element: BranoDb) => (
                 <CardBrano key={element.id} brano={element} />
@@ -73,7 +73,7 @@ function Utente() {
             <h3>Passaggi pubblicati da {utente.nome} {utente.cognome}</h3>
             <PagedList
               itemsPerPage={2}
-              apiCall={`http://localhost:3000/passaggi?utente=${utente.id}`}
+              apiCall={`/passaggi?utente=${utente.id}`}
               schema={PassaggioConBraniSchema}
               component={(element: PassaggioConBrani) => (
                 <CardPassaggio

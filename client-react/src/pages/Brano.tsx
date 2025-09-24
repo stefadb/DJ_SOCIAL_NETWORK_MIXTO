@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-import axios from "axios";
+import api from "../api";
 import {
   AlbumDbSchema,
   ArtistaDbSchema,
@@ -17,6 +17,7 @@ import PagedList from "../components/PagedList";
 import BranoTableRow from "../components/BranoTableRow";
 import z from "zod";
 import SalvaBranoPreferito from "../components/SalvaBranoPreferito";
+import CardBrano from "../components/cards/CardBrano";
 
 // Schema e type per /passaggi/conta?primoBrano= e /passaggi/conta?secondoBrano=
 const ContaPassaggiBrano2Schema = z.object({
@@ -53,11 +54,11 @@ function Brano() {
 
   async function loadBrano() {
     try {
-      await axios.get(`http://localhost:3000/brani/singolo?trackId=${id}&limit=1&index=0`);
-      const response = await axios.get(`http://localhost:3000/brani/esistenti/${id}?include_artista&include_album`, { headers: { "Cache-Control": "no-cache, no-store, must-revalidate", Pragma: "no-cache", Expires: "0" } });
+      await api.get(`/brani/singolo?trackId=${id}&limit=1&index=0`);
+      const response = await api.get(`/brani/esistenti/${id}?include_artista&include_album`, { headers: { "Cache-Control": "no-cache, no-store, must-revalidate", Pragma: "no-cache", Expires: "0" } });
       const responseData = ApiSchema.parse(response.data) as ApiType;
-      await axios.get(`http://localhost:3000/album/singolo?albumId=${responseData.id_album}&limit=1&index=0`);
-      const responseAlbum = await axios.get(`http://localhost:3000/album/esistenti/${responseData.id_album}?include_genere`, { headers: { "Cache-Control": "no-cache, no-store, must-revalidate", Pragma: "no-cache", Expires: "0" } });
+      await api.get(`/album/singolo?albumId=${responseData.id_album}&limit=1&index=0`);
+      const responseAlbum = await api.get(`/album/esistenti/${responseData.id_album}?include_genere`, { headers: { "Cache-Control": "no-cache, no-store, must-revalidate", Pragma: "no-cache", Expires: "0" } });
       const ApiSchemaAlbum = AlbumDbSchema.extend({
         genere: z.array(GenereDbSchema)
       });
@@ -76,20 +77,7 @@ function Brano() {
     <div>
       <h1>Brano</h1>
       {brano ? (
-        <div>
-          <img
-            style={{ width: "100px", height: "100px" }}
-            src={"http://localhost:3000/album_pictures/" + brano.id_album + ".jpg"}
-            alt={"Cover dell'album " + (brano.album ? brano.album.titolo : "sconosciuto")}
-          ></img>
-          <h2>{brano.titolo}</h2>
-          <p>Durata: {brano.durata} secondi</p>
-          <p>Album: {brano.album ? brano.album.titolo : "Sconosciuto"}</p>
-          <p>Data di uscita: {brano.album ? brano.album.data_uscita : "Sconosciuta"}</p>
-          <p>Artisti: {brano.artista.map(artista => artista.nome).join(", ")}</p>
-          <p>Generi: {generi ? generi.map(genere => genere.nome).join(", ") : "Caricamento..."}</p>
-          <SalvaBranoPreferito idBrano={brano.id} />
-        </div>
+        <CardBrano brano={brano} />
       ) : (
         <p>Caricamento...</p>
       )}
@@ -109,7 +97,7 @@ function Brano() {
               <tbody>
                 <PagedList
                   itemsPerPage={2}
-                  apiCall={`http://localhost:3000/passaggi/conta?primoBrano=${brano.id}`}
+                  apiCall={`/passaggi/conta?primoBrano=${brano.id}`}
                   schema={ContaPassaggiBrano2Schema}
                   component={(element: ContaPassaggiBrano2) => (
                     <BranoTableRow element={element} />
@@ -133,7 +121,7 @@ function Brano() {
               <tbody>
                 <PagedList
                   itemsPerPage={2}
-                  apiCall={`http://localhost:3000/passaggi/conta?secondoBrano=${brano.id}`}
+                  apiCall={`/passaggi/conta?secondoBrano=${brano.id}`}
                   schema={ContaPassaggiBrano1Schema}
                   component={(element: ContaPassaggiBrano1) => (
                     <BranoTableRow element={element} />
@@ -149,7 +137,7 @@ function Brano() {
         <>
           <div>
             <h2>Passaggi dove il brano è il primo</h2>
-            <PagedList itemsPerPage={2} apiCall={`http://localhost:3000/passaggi?primoBrano=${brano.id}`} schema={PassaggioDbSchema} component={(element: PassaggioDb) => (
+            <PagedList itemsPerPage={2} apiCall={`/passaggi?primoBrano=${brano.id}`} schema={PassaggioDbSchema} component={(element: PassaggioDb) => (
               <CardPassaggio
                 key={element.id}
                 passaggio={element}
@@ -160,7 +148,7 @@ function Brano() {
           </div>
           <div>
             <h2>Passaggi dove il brano è il secondo</h2>
-            <PagedList itemsPerPage={2} apiCall={`http://localhost:3000/passaggi?secondoBrano=${brano.id}`} schema={PassaggioDbSchema} component={(element: PassaggioDb) => (
+            <PagedList itemsPerPage={2} apiCall={`/passaggi?secondoBrano=${brano.id}`} schema={PassaggioDbSchema} component={(element: PassaggioDb) => (
               <CardPassaggio
                 key={element.id}
                 passaggio={element}

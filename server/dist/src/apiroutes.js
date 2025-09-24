@@ -4,6 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getConnection = getConnection;
+exports.logout = logout;
 exports.postLogin = postLogin;
 exports.deleteEntity = deleteEntity;
 exports.getEntityWithAssociations = getEntityWithAssociations;
@@ -32,6 +33,15 @@ async function getConnection() {
     return await promise_1.default.createConnection(dbConfig);
 }
 //FUNZIONI DELLE CHIAMATE API ESPORTATE
+async function logout(req, res) {
+    if (req.session.user) {
+        req.session.user = undefined;
+        res.send();
+    }
+    else {
+        res.status(400).json({ error: "Sessione non trovata" });
+    }
+}
 // ====== LOGIN ======
 async function postLogin(req, res) {
     const { username, password } = req.body;
@@ -40,7 +50,7 @@ async function postLogin(req, res) {
         const [rows] = await con.execute("SELECT * FROM Utente WHERE username = ?", [username]);
         const utenti = rows;
         await con.end();
-        if (utenti.length === 0) {
+        if (utenti[0] === undefined) {
             return res.status(401).json({ error: "Credenziali non valide" });
         }
         const user = utenti[0];
@@ -51,13 +61,14 @@ async function postLogin(req, res) {
         req.session.user = {
             id: user.id,
             username: user.username,
-            first_name: user.first_name,
-            surname: user.surname,
-            email: user.email,
+            nome: user.nome,
+            cognome: user.cognome,
+            password: ""
         };
-        res.json({ message: "Login effettuato", user: req.session.user });
+        res.json(req.session.user);
     }
     catch (err) {
+        console.log(err);
         res.status(500).json({ error: "Errore durante il login" });
     }
 }

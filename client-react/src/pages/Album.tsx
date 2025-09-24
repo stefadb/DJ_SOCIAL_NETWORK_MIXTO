@@ -17,6 +17,7 @@ import PagedList from "../components/PagedList";
 import CardBrano from "../components/cards/CardBrano";
 import { getNomiArtistiAlbum } from "../functions/functions";
 import z from "zod";
+import api from "../api";
 
 // Schema e type per /passaggi?albumPrimoBrano= e /passaggi?albumSecondoBrano=
 const PassaggioConBraniSchema = PassaggioDbSchema.extend({
@@ -40,8 +41,8 @@ function Album() {
 
     async function loadAlbum() {
         try {
-            await axios.get(`http://localhost:3000/album/singolo?albumId=${id}&limit=1&index=0`);
-            const responseAlbum = await axios.get(`http://localhost:3000/album/esistenti/${id}?include_genere&include_brano`, { headers: { "Cache-Control": "no-cache, no-store, must-revalidate", Pragma: "no-cache", Expires: "0" } });
+            await api.get(`/album/singolo?albumId=${id}&limit=1&index=0`);
+            const responseAlbum = await api.get(`/album/esistenti/${id}?include_genere&include_brano`, { headers: { "Cache-Control": "no-cache, no-store, must-revalidate", Pragma: "no-cache", Expires: "0" } });
             const ApiSchema = AlbumDbSchema.extend({
                 genere: z.array(GenereDbSchema),
                 brano: z.array(BranoDbSchema)
@@ -84,7 +85,7 @@ function Album() {
                         <h2>Passaggi dove il primo brano è di questo album</h2>
                         <PagedList
                             itemsPerPage={2}
-                            apiCall={`http://localhost:3000/passaggi?albumPrimoBrano=${album.id}`}
+                            apiCall={`/passaggi?albumPrimoBrano=${album.id}`}
                             schema={PassaggioConBraniSchema}
                             component={(element: PassaggioConBrani) => (
                                 <CardPassaggio
@@ -101,7 +102,7 @@ function Album() {
                         <h2>Passaggi dove il secondo brano è di questo album</h2>
                         <PagedList
                             itemsPerPage={2}
-                            apiCall={`http://localhost:3000/passaggi?albumSecondoBrano=${album.id}`}
+                            apiCall={`/passaggi?albumSecondoBrano=${album.id}`}
                             schema={PassaggioConBraniSchema}
                             component={(element: PassaggioConBrani) => (
                                 <CardPassaggio

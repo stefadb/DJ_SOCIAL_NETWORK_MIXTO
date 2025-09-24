@@ -1,6 +1,7 @@
 import axios from "axios";
 import { Fragment, useEffect, useState, type ReactNode } from "react";
 import type { ZodObject } from "zod";
+import api from "../api";
 
 function PagedList<T>(props: { itemsPerPage: number; apiCall: string; schema?: ZodObject<any>; component: (element: T, index: number) => ReactNode, showMoreButton: (onClick: () => void) => ReactNode }) {
     const [elements, setElements] = useState<T[]>([]);
@@ -10,7 +11,7 @@ function PagedList<T>(props: { itemsPerPage: number; apiCall: string; schema?: Z
     const disableValidation = false; //In produzione deve essere false
 
     function loadElements() {
-        axios.get(`${props.apiCall}${props.apiCall.includes("?") ? "&" : "?"}limit=${props.itemsPerPage}&index=${(currentPage - 1) * props.itemsPerPage}`, { headers: {"Cache-Control": "no-cache, no-store, must-revalidate", Pragma: "no-cache", Expires: "0" } })
+        api.get(`${props.apiCall}${props.apiCall.includes("?") ? "&" : "?"}limit=${props.itemsPerPage}&index=${(currentPage - 1) * props.itemsPerPage}`, { headers: {"Cache-Control": "no-cache, no-store, must-revalidate", Pragma: "no-cache", Expires: "0" } })
             .then(response => {
                 if (response.status === 200) {
                     if (response.data.length == 0) {

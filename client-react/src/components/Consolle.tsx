@@ -1,25 +1,42 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import type { BranoDb } from "../types/db_types";
+import { useDispatch, useSelector } from "react-redux";
+import { setBrano1 } from "../store/giradischiSlice";
+import { setBrano2 } from "../store/giradischiSlice";
+import CardBrano from "./cards/CardBrano";
+import type { RootState } from "../store/store";
 
 function Consolle() {
-    const [brano1, setBrano1] = useState<BranoDb | null>(() => {
-        const stored = localStorage.getItem('brano1');
-        return stored ? JSON.parse(stored) as BranoDb : null;
-    });
-
+    const dispatch = useDispatch();
+    const brano1: BranoDb | null = useSelector((state: RootState) => (state.giradischi as any).brano1);
+    const brano2: BranoDb | null = useSelector((state: RootState) => (state.giradischi as any).brano2);
     useEffect(() => {
-        localStorage.setItem('brano1', JSON.stringify(brano1));
-    }, [brano1]);
+        const savedBrano1 = localStorage.getItem('brano1');
+        const savedBrano2 = localStorage.getItem('brano2');
+        if (savedBrano1) {
+            const brano1: BranoDb = JSON.parse(savedBrano1);
+            dispatch(setBrano1(brano1));
+        }
+        if (savedBrano2) {
+            const brano2: BranoDb = JSON.parse(savedBrano2);
+            dispatch(setBrano2(brano2));
+        }
+    }, []);
 
-    const [brano2, setBrano2] = useState<BranoDb | null>(() => {
-        const stored = localStorage.getItem('brano2');
-        return stored ? JSON.parse(stored) as BranoDb : null;
-    });
-
-    useEffect(() => {
-        localStorage.setItem('brano2', JSON.stringify(brano2));
-    }, [brano2]);
-    return <div>Consolle</div>;
+    function scambia(){
+        const temp = brano1;
+        dispatch(setBrano1(brano2));
+        dispatch(setBrano2(temp));
+    }
+    return <div>
+        <h3>Brano 1</h3>
+        {brano1 === null ? <p><i>(vuoto)</i></p> :
+        <CardBrano brano={brano1} noDeckButtons/>}
+        <h3>Brano 2</h3>
+        {brano2 === null ? <p><i>(vuoto)</i></p> :
+        <CardBrano brano={brano2} noDeckButtons/>}
+        <button onClick={scambia}>Scambia</button>
+    </div>;
 }
 
 export default Consolle;

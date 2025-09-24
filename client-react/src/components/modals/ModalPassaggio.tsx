@@ -33,14 +33,14 @@ function ModalPassaggio(props: { idPassaggio?: number; onClose: () => void }) {
 
     async function loadPassaggio() {
         try {
-            const response = await axios.get(`http://localhost:3000/passaggi/${props.idPassaggio}?include_utente`, { headers: { "Cache-Control": "no-cache, no-store, must-revalidate", Pragma: "no-cache", Expires: "0" } });
+            const response = await api.get(`/passaggi/${props.idPassaggio}?include_utente`, { headers: { "Cache-Control": "no-cache, no-store, must-revalidate", Pragma: "no-cache", Expires: "0" } });
             const apiSchema = PassaggioDbSchema.extend({
                 utente: UtenteDbSchema.optional(),
             });
             type APIType = z.infer<typeof apiSchema>;
             const responseData: APIType = apiSchema.parse(response.data) as APIType;
-            const responseBrano1 = await axios.get(`http://localhost:3000/brani/${responseData.id_brano_1}`, { headers: { "Cache-Control": "no-cache, no-store, must-revalidate", Pragma: "no-cache", Expires: "0" } });
-            const responseBrano2 = await axios.get(`http://localhost:3000/brani/${responseData.id_brano_2}`, { headers: { "Cache-Control": "no-cache, no-store, must-revalidate", Pragma: "no-cache", Expires: "0" } });
+            const responseBrano1 = await api.get(`/brani/${responseData.id_brano_1}`, { headers: { "Cache-Control": "no-cache, no-store, must-revalidate", Pragma: "no-cache", Expires: "0" } });
+            const responseBrano2 = await api.get(`/brani/${responseData.id_brano_2}`, { headers: { "Cache-Control": "no-cache, no-store, must-revalidate", Pragma: "no-cache", Expires: "0" } });
             setPassaggio(responseData);
             BranoDbSchema.parse(responseBrano1.data);
             BranoDbSchema.parse(responseBrano2.data);
@@ -62,7 +62,7 @@ function ModalPassaggio(props: { idPassaggio?: number; onClose: () => void }) {
     async function loadValutazioni() {
         if (passaggio !== null) {
             try {
-                const response = await axios.get(`http://localhost:3000/valutazioni?passaggio=${passaggio.id}`, { headers: { "Cache-Control": "no-cache, no-store, must-revalidate", Pragma: "no-cache", Expires: "0" } });
+                const response = await api.get(`/valutazioni?passaggio=${passaggio.id}`, { headers: { "Cache-Control": "no-cache, no-store, must-revalidate", Pragma: "no-cache", Expires: "0" } });
                 const apiSchema = z.array(ValutazioneDbSchema.extend({
                     utente: UtenteDbSchema.optional(),
                 }));
@@ -78,7 +78,7 @@ function ModalPassaggio(props: { idPassaggio?: number; onClose: () => void }) {
     async function loadCommenti() {
         if (passaggio !== null) {
             try {
-                const response = await axios.get(`http://localhost:3000/commenti?passaggio=${passaggio.id}`, { headers: { "Cache-Control": "no-cache, no-store, must-revalidate", Pragma: "no-cache", Expires: "0" } });
+                const response = await api.get(`/commenti?passaggio=${passaggio.id}`, { headers: { "Cache-Control": "no-cache, no-store, must-revalidate", Pragma: "no-cache", Expires: "0" } });
                 const apiSchema = z.array(CommentoDbSchema.extend({
                     utente: UtenteDbSchema.optional(),
                 }));
@@ -94,7 +94,7 @@ function ModalPassaggio(props: { idPassaggio?: number; onClose: () => void }) {
     async function loadValutazioneMedia() {
         if (passaggio != null) {
             try {
-                const response = await axios.get(`http://localhost:3000/valutazioni?mediaPassaggio=${passaggio.id}`, { headers: { "Cache-Control": "no-cache, no-store, must-revalidate", Pragma: "no-cache", Expires: "0" } });
+                const response = await api.get(`/valutazioni?mediaPassaggio=${passaggio.id}`, { headers: { "Cache-Control": "no-cache, no-store, must-revalidate", Pragma: "no-cache", Expires: "0" } });
                 const responseData = z.number().parse(response.data);
                 setValutazioneMedia(responseData);
             } catch (error) {

@@ -3,8 +3,9 @@ import type { ArtistaDb, BranoDb } from "../../types/db_types";
 import { getNomiArtistiBrano } from "../../functions/functions";
 import { useNavigate } from "react-router-dom";
 import SalvaBranoPreferito from "../SalvaBranoPreferito";
+import PosizionaBrano from "../PosizionaBrano";
 
-function CardBrano(props: { brano: BranoDb }) {
+function CardBrano(props: { brano: BranoDb, noDeckButtons?: boolean }) {
     const [artisti, setArtisti] = useState<ArtistaDb[] | null>(null);
 
     const navigate = useNavigate();
@@ -30,6 +31,10 @@ function CardBrano(props: { brano: BranoDb }) {
                 <p>Artisti: {artisti ? artisti.map(artista => artista.nome).join(", ") : "Caricamento..."}</p>
             </div>
             <SalvaBranoPreferito idBrano={props.brano.id} />
+            {props.noDeckButtons !== true && <>
+                <PosizionaBrano deck={1} brano={props.brano} />
+                <PosizionaBrano deck={2} brano={props.brano} />
+            </>}
         </div >
     );
 }

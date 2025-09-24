@@ -29,15 +29,15 @@ function RicercaDeezer() {
             <>
                 <h2>Risultati per <i>"{sentQueryText}"</i></h2>
                 <h3>Artisti:</h3>
-                <PagedList itemsPerPage={10} apiCall={`http://localhost:3000/artisti/search?query=${sentQueryText}`} schema={ArtistaDbSchema} component={(element: ArtistaDb) => (
+                <PagedList itemsPerPage={10} apiCall={`/artisti/search?query=${sentQueryText}`} schema={ArtistaDbSchema} component={(element: ArtistaDb) => (
                     <CardArtista key={element.id} artista={element} />
                 )} showMoreButton={(onClick) => <button onClick={onClick}>Carica altri artisti</button>} />
                 <h3>Album:</h3>
-                <PagedList itemsPerPage={10} apiCall={`http://localhost:3000/album/search?query=${sentQueryText}`} schema={AlbumDbSchema} component={(element: AlbumDb) => (
+                <PagedList itemsPerPage={10} apiCall={`/album/search?query=${sentQueryText}`} schema={AlbumDbSchema} component={(element: AlbumDb) => (
                     <CardAlbum key={element.id} album={element} />
                 )} showMoreButton={(onClick) => <button onClick={onClick}>Carica altri album</button>} />
                 <h3>Brani:</h3>
-                <PagedList itemsPerPage={10} apiCall={`http://localhost:3000/brani/search?query=${sentQueryText}`} schema={BranoDbSchema} component={(element: BranoDb) => (
+                <PagedList itemsPerPage={10} apiCall={`/brani/search?query=${sentQueryText}`} schema={BranoDbSchema} component={(element: BranoDb) => (
                     <CardBrano key={element.id} brano={element} />
                 )} showMoreButton={(onClick) => <button onClick={onClick}>Carica altri brani</button>} />
             </>

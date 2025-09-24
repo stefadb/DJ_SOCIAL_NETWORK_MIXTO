@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { GenereDbSchema, type GenereDb } from "../types/db_types";
-import axios from "axios";
+import api from "../api";
 import CardGenere from "../components/cards/CardGenere";
 import z from "zod";
 
@@ -13,8 +13,8 @@ function Generi(){
 
     async function loadGeneri() {
         try {
-            await axios.get(`http://localhost:3000/generi/tutti?uselessParam=uselessValue&limit=100&index=0`);
-            const response = await axios.get(`http://localhost:3000/generi/esistenti`, { headers: {"Cache-Control": "no-cache, no-store, must-revalidate", Pragma: "no-cache", Expires: "0" } });
+            await api.get(`/generi/tutti?uselessParam=uselessValue&limit=100&index=0`);
+            const response = await api.get(`/generi/esistenti`, { headers: {"Cache-Control": "no-cache, no-store, must-revalidate", Pragma: "no-cache", Expires: "0" } });
             const generi = z.array(GenereDbSchema).parse(response.data);
             setGeneri(generi);
         } catch (error) {

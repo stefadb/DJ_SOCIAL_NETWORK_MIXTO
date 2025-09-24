@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 //Import delle funzioni generiche delle API
 const apiroutes_1 = require("./apiroutes");
 const express_1 = __importDefault(require("express"));
+const express_session_1 = __importDefault(require("express-session"));
 const swagger_ui_express_1 = __importDefault(require("swagger-ui-express"));
 const yamljs_1 = __importDefault(require("yamljs"));
 //Import delle config delle API
@@ -14,6 +15,7 @@ const get_single_apis_config_1 = require("./get_single_apis_config");
 const get_multiple_apis_config_1 = require("./get_multiple_apis_config");
 const post_and_put_apis_config_1 = require("./post_and_put_apis_config");
 const cleanup_db_api_1 = __importDefault(require("./cleanup_db_api"));
+const bcrypt_1 = __importDefault(require("bcrypt"));
 const app = (0, express_1.default)();
 app.use(express_1.default.json());
 //Configura il cors di app per permettere richieste dall'indirizzo http://localnost:5173 (dove gira il client React in dev)
@@ -23,6 +25,11 @@ app.use((0, cors_1.default)({
     origin: 'http://localhost:5173', // Sostituisci con l'URL del tuo client React
     methods: ['GET', 'POST', 'PUT', 'DELETE'], // Metodi consentiti
     credentials: true // Se hai bisogno di inviare cookie o credenziali
+}));
+app.use((0, express_session_1.default)({
+    secret: process.env.SESSION_SECRET || "default_secret",
+    resave: false,
+    saveUninitialized: true,
 }));
 app.use("/generi_pictures", express_1.default.static(win32_1.default.join(__dirname, "generi_pictures")));
 app.use("/artisti_pictures", express_1.default.static(win32_1.default.join(__dirname, "artisti_pictures")));
@@ -92,10 +99,70 @@ app.put("/passaggi/:id", (req, res) => { (0, apiroutes_1.putEntity)(req, res, po
 app.delete("/passaggi/:id", (req, res) => { (0, apiroutes_1.deleteEntity)(req, res, "passaggio"); });
 //UTENTI
 app.get("/utenti", (req, res) => { (0, apiroutes_1.getFilteredEntitiesList)(req, res, get_multiple_apis_config_1.getMultipleApisConfig.utente(req)); });
+app.get("/utenti/loggato", (req, res) => {
+    if (!req.session.user) {
+        res.status(401).json({ error: "Utente non autenticato." });
+        return;
+    }
+    req.params = { id: req.session.user.id };
+    (0, apiroutes_1.getEntityWithAssociations)(req, res, get_single_apis_config_1.getSingleApisConfig.utente);
+});
 app.get("/utenti/:id", (req, res) => { (0, apiroutes_1.getEntityWithAssociations)(req, res, get_single_apis_config_1.getSingleApisConfig.utente); });
-app.post("/utenti", (req, res) => { (0, apiroutes_1.postEntity)(req, res, post_and_put_apis_config_1.postAndPutApisConfig.utente(req)); });
-app.put("/utenti/:id", (req, res) => { (0, apiroutes_1.putEntity)(req, res, post_and_put_apis_config_1.postAndPutApisConfig.utente(req)); });
-app.delete("/utenti/:id", (req, res) => { (0, apiroutes_1.deleteEntity)(req, res, "utente"); });
+app.post("/utenti", (req, res) => {
+    bcrypt_1.default.hash(req.body.newRowValues.password, 10, (err, hash) => {
+        if (err) {
+            res.status(500).json({ error: "Errore nel server durante la registrazione." });
+            return;
+        }
+        req.body.newRowValues.password = hash;
+        (0, apiroutes_1.postEntity)(req, res, post_and_put_apis_config_1.postAndPutApisConfig.utente(req));
+    });
+});
+app.put("/utenti/:id", async (req, res) => {
+    if (req.body.oldPassword) {
+        const con = await (0, apiroutes_1.getConnection)();
+        const [rows] = await con.query("SELECT password FROM utente WHERE id = ? ", [req.params.id]);
+        if (rows[0] === undefined) {
+            res.status(401).json({ error: "Utente non trovato." });
+            return;
+        }
+        const match = await bcrypt_1.default.compare(req.body.oldPassword, rows[0].password);
+        if (!match) {
+            res.status(401).json({ error: "Vecchia password errata." });
+            return;
+        }
+        bcrypt_1.default.hash(req.body.newRowValues.password, 10, (err, hash) => {
+            if (err) {
+                res.status(500).json({ error: "Errore nel server durante la registrazione." });
+                return;
+            }
+            req.body.newRowValues.password = hash;
+            (0, apiroutes_1.putEntity)(req, res, post_and_put_apis_config_1.postAndPutApisConfig.utente(req));
+        });
+        con.end();
+    }
+    else {
+        delete req.body.newRowValues.password;
+        delete req.body.oldPassword;
+        const con = await (0, apiroutes_1.getConnection)();
+        const [rows] = await con.query("SELECT password FROM utente WHERE id = ?", [req.params.id]);
+        if (rows[0] === undefined) {
+            res.status(401).json({ error: "Utente non trovato." });
+            return;
+        }
+        req.body.newRowValues.password = rows[0].password; //mantieni la password vecchia
+        (0, apiroutes_1.putEntity)(req, res, post_and_put_apis_config_1.postAndPutApisConfig.utente(req));
+        con.end();
+    }
+});
+app.delete("/utenti/:id", (req, res) => {
+    if (req.session.user && req.session.user.id === parseInt(req.params.id)) {
+        (0, apiroutes_1.deleteEntity)(req, res, "utente");
+    }
+    else {
+        res.status(403).json({ error: "Accesso negato." });
+    }
+});
 //COMMENTI
 app.get("/commenti", (req, res) => { (0, apiroutes_1.getFilteredEntitiesList)(req, res, get_multiple_apis_config_1.getMultipleApisConfig.commento(req)); });
 app.get("/commenti/:id", (req, res) => { (0, apiroutes_1.getEntityWithAssociations)(req, res, get_single_apis_config_1.getSingleApisConfig.commento); });
@@ -114,6 +181,9 @@ app.get("/visualizzazioni", (req, res) => { (0, apiroutes_1.getFilteredEntitiesL
 app.get("/visualizzazioni/:id", (req, res) => { (0, apiroutes_1.getEntityWithAssociations)(req, res, get_single_apis_config_1.getSingleApisConfig.visualizzazione); });
 //LOGIN
 app.post("/login", apiroutes_1.postLogin);
+//LOGOUT
+app.delete("/logout", apiroutes_1.logout);
+//CLEANUP
 app.use(cleanup_db_api_1.default);
 exports.default = app;
 //# sourceMappingURL=server.js.map

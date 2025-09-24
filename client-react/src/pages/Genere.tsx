@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-import axios from "axios";
+import api from "../api";
 import {
     ArtistaDbSchema,
     BranoDbSchema,
@@ -39,8 +39,8 @@ function Genere() {
 
     async function loadGenere() {
         try {
-            await axios.get(`http://localhost:3000/generi/singolo?genreId=${id}&limit=1&index=0`);
-            const response = await axios.get(`http://localhost:3000/generi/esistenti/${id}`, { headers: { "Cache-Control": "no-cache, no-store, must-revalidate", Pragma: "no-cache", Expires: "0" } });
+            await api.get(`/generi/singolo?genreId=${id}&limit=1&index=0`);
+            const response = await api.get(`/generi/esistenti/${id}`, { headers: { "Cache-Control": "no-cache, no-store, must-revalidate", Pragma: "no-cache", Expires: "0" } });
             GenereDbSchema.parse(response.data);
             setGenere(response.data as GenereDb);
         } catch (error) {
@@ -63,13 +63,13 @@ function Genere() {
                 <>
                     <div>
                         <h2>Artisti del genere più popolari su Deezer</h2>
-                        <PagedList itemsPerPage={5} apiCall={`http://localhost:3000/artisti/genere?genreId=${genere.id}`} schema={ArtistaDbSchema} component={(element: ArtistaDb) => (
+                        <PagedList itemsPerPage={5} apiCall={`/artisti/genere?genreId=${genere.id}`} schema={ArtistaDbSchema} component={(element: ArtistaDb) => (
                             <CardArtista key={element.id} artista={element} />
                         )} showMoreButton={(onClick) => <button onClick={onClick}>Carica altri artisti</button>} />
                     </div>
                     <div>
                         <h2>Brani del genere più popolari su Deezer</h2>
-                        <PagedList itemsPerPage={5} apiCall={`http://localhost:3000/brani/genere?genreId=${genere.id}`} schema={BranoDbSchema} component={(element: BranoDb) => (
+                        <PagedList itemsPerPage={5} apiCall={`/brani/genere?genreId=${genere.id}`} schema={BranoDbSchema} component={(element: BranoDb) => (
                             <CardBrano key={element.id} brano={element} />
                         )} showMoreButton={(onClick) => <button onClick={onClick}>Carica altri brani</button>} />
                     </div>
@@ -77,7 +77,7 @@ function Genere() {
                         <h2>Cosa mettere prima di un brano del genere {genere.nome}?</h2>
                         <PagedList
                             itemsPerPage={2}
-                            apiCall={`http://localhost:3000/passaggi?genereSecondoBrano=${genere.id}`}
+                            apiCall={`/passaggi?genereSecondoBrano=${genere.id}`}
                             schema={PassaggioConBraniSchema}
                             component={(element: PassaggioConBrani) => (
                                 <CardPassaggio
@@ -94,7 +94,7 @@ function Genere() {
                         <h2>E dopo?</h2>
                         <PagedList
                             itemsPerPage={2}
-                            apiCall={`http://localhost:3000/passaggi?generePrimoBrano=${genere.id}`}
+                            apiCall={`/passaggi?generePrimoBrano=${genere.id}`}
                             schema={PassaggioConBraniSchema}
                             component={(element: PassaggioConBrani) => (
                                 <CardPassaggio

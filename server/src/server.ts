@@ -1,7 +1,8 @@
 //Import delle funzioni generiche delle API
-import { deezerEntityApi, deleteEntity, getBraniEsistentiPreferiti, getEntityWithAssociations, getFilteredEntitiesList, postEntity, postLogin, putEntity } from "./apiroutes";
+import { deezerEntityApi, deleteEntity, getBraniEsistentiPreferiti, getConnection, getEntityWithAssociations, getFilteredEntitiesList, logout, postEntity, postLogin, putEntity } from "./apiroutes";
 
 import express from "express";
+import session from "express-session";
 import swaggerUi from 'swagger-ui-express';
 import YAML from 'yamljs';
 //Import delle config delle API
@@ -10,6 +11,7 @@ import { getSingleApisConfig } from "./get_single_apis_config";
 import { getMultipleApisConfig } from "./get_multiple_apis_config";
 import { postAndPutApisConfig } from "./post_and_put_apis_config";
 import cleanupDbRouter from "./cleanup_db_api";
+import bcrypt from "bcrypt";
 const app = express();
 app.use(express.json());
 
@@ -20,6 +22,12 @@ app.use(cors({
     origin: 'http://localhost:5173', // Sostituisci con l'URL del tuo client React
     methods: ['GET', 'POST', 'PUT', 'DELETE'], // Metodi consentiti
     credentials: true // Se hai bisogno di inviare cookie o credenziali
+}));
+
+app.use(session({
+    secret: process.env.SESSION_SECRET || "default_secret",
+    resave: false,
+    saveUninitialized: true,
 }));
 
 app.use("/generi_pictures", express.static(path.join(__dirname, "generi_pictures")));
@@ -82,42 +90,103 @@ app.delete("/generi/esistenti/:id", (req, res) => { deleteEntity(req, res, "gene
 //FINE API DI GET singola, GET multipla e DELETE delle entità db legate a Deezer
 
 //SCALETTE
-app.get("/scalette/:id", (req, res) => {getEntityWithAssociations(req, res, getSingleApisConfig.scaletta)});
-app.get("/scalette", (req, res) => {getFilteredEntitiesList(req, res, getMultipleApisConfig.scaletta(req))});
-app.post("/scalette", (req, res) => {postEntity(req, res, postAndPutApisConfig.scaletta(req))});
-app.put("/scalette/:id", (req, res) => {putEntity(req, res, postAndPutApisConfig.scaletta(req))});
+app.get("/scalette/:id", (req, res) => { getEntityWithAssociations(req, res, getSingleApisConfig.scaletta) });
+app.get("/scalette", (req, res) => { getFilteredEntitiesList(req, res, getMultipleApisConfig.scaletta(req)) });
+app.post("/scalette", (req, res) => { postEntity(req, res, postAndPutApisConfig.scaletta(req)) });
+app.put("/scalette/:id", (req, res) => { putEntity(req, res, postAndPutApisConfig.scaletta(req)) });
 app.delete("/scalette/:id", (req, res) => { deleteEntity(req, res, "scaletta") }); //uso la funzione generica per eliminare un'entità
 //PASSAGGI
 app.get("/passaggi", (req, res) => { getFilteredEntitiesList(req, res, getMultipleApisConfig.passaggio(req)) });
-app.get("/passaggi/conta", (req ,res) => {getFilteredEntitiesList(req, res, getMultipleApisConfig.passaggioConta(req))});
-app.get("/passaggi/:id", (req, res) => {getEntityWithAssociations(req, res, getSingleApisConfig.passaggio)});
-app.post("/passaggi", (req, res) => {postEntity(req, res, postAndPutApisConfig.passaggio(req))});
-app.put("/passaggi/:id", (req, res) => {putEntity(req, res, postAndPutApisConfig.passaggio(req))});
+app.get("/passaggi/conta", (req, res) => { getFilteredEntitiesList(req, res, getMultipleApisConfig.passaggioConta(req)) });
+app.get("/passaggi/:id", (req, res) => { getEntityWithAssociations(req, res, getSingleApisConfig.passaggio) });
+app.post("/passaggi", (req, res) => { postEntity(req, res, postAndPutApisConfig.passaggio(req)) });
+app.put("/passaggi/:id", (req, res) => { putEntity(req, res, postAndPutApisConfig.passaggio(req)) });
 app.delete("/passaggi/:id", (req, res) => { deleteEntity(req, res, "passaggio") });
 //UTENTI
 app.get("/utenti", (req, res) => { getFilteredEntitiesList(req, res, getMultipleApisConfig.utente(req)) });
-app.get("/utenti/:id", (req, res) => {getEntityWithAssociations(req, res, getSingleApisConfig.utente)});
-app.post("/utenti", (req, res) => {postEntity(req, res, postAndPutApisConfig.utente(req))});
-app.put("/utenti/:id", (req, res) => {putEntity(req, res, postAndPutApisConfig.utente(req))});
-app.delete("/utenti/:id", (req, res) => { deleteEntity(req, res, "utente") });
+app.get("/utenti/loggato", (req, res) => {
+    if (!req.session.user) {
+        res.status(401).json({ error: "Utente non autenticato." });
+        return;
+    }
+    req.params = { id: req.session.user.id };
+    getEntityWithAssociations(req, res, getSingleApisConfig.utente);
+});
+app.get("/utenti/:id", (req, res) => { getEntityWithAssociations(req, res, getSingleApisConfig.utente) });
+app.post("/utenti", (req, res) => {
+    bcrypt.hash(req.body.newRowValues.password, 10, (err, hash) => {
+        if (err) {
+            res.status(500).json({ error: "Errore nel server durante la registrazione." });
+            return;
+        }
+        req.body.newRowValues.password = hash;
+        postEntity(req, res, postAndPutApisConfig.utente(req));
+    });
+});
+app.put("/utenti/:id", async (req, res) => {
+    if (req.body.oldPassword) {
+        const con = await getConnection();
+        const [rows] = await con.query("SELECT password FROM utente WHERE id = ? ", [req.params.id]);
+        if ((rows as any[])[0] === undefined) {
+            res.status(401).json({ error: "Utente non trovato." });
+            return;
+        }
+        const match = await bcrypt.compare(req.body.oldPassword, (rows as any[])[0].password);
+        if(!match){
+            res.status(401).json({ error: "Vecchia password errata." });
+            return;
+        }
+        bcrypt.hash(req.body.newRowValues.password, 10, (err, hash) => {
+            if (err) {
+                res.status(500).json({ error: "Errore nel server durante la registrazione." });
+                return;
+            }
+            req.body.newRowValues.password = hash;
+            putEntity(req, res, postAndPutApisConfig.utente(req));
+        });
+        con.end();
+    } else {
+        delete req.body.newRowValues.password;
+        delete req.body.oldPassword;
+        const con = await getConnection();
+        const [rows] = await con.query("SELECT password FROM utente WHERE id = ?", [req.params.id]);
+        if ((rows as any[])[0] === undefined) {
+            res.status(401).json({ error: "Utente non trovato." });
+            return;
+        }
+        req.body.newRowValues.password = (rows as any[])[0].password; //mantieni la password vecchia
+        putEntity(req, res, postAndPutApisConfig.utente(req));
+        con.end();
+    }
+});
+app.delete("/utenti/:id", (req, res) => {
+    if (req.session.user && req.session.user.id === parseInt(req.params.id)) {
+        deleteEntity(req, res, "utente");
+    } else {
+        res.status(403).json({ error: "Accesso negato." });
+    }
+});
 //COMMENTI
 app.get("/commenti", (req, res) => { getFilteredEntitiesList(req, res, getMultipleApisConfig.commento(req)) });
-app.get("/commenti/:id", (req, res) => {getEntityWithAssociations(req, res, getSingleApisConfig.commento)});
-app.post("/commenti", (req, res) => {postEntity(req, res, postAndPutApisConfig.commento(req))});
-app.put("/commenti/:id", (req, res) => {putEntity(req, res, postAndPutApisConfig.commento(req))});
+app.get("/commenti/:id", (req, res) => { getEntityWithAssociations(req, res, getSingleApisConfig.commento) });
+app.post("/commenti", (req, res) => { postEntity(req, res, postAndPutApisConfig.commento(req)) });
+app.put("/commenti/:id", (req, res) => { putEntity(req, res, postAndPutApisConfig.commento(req)) });
 app.delete("/commenti/:id", (req, res) => { deleteEntity(req, res, "commento") });
 //VALUTAZIONI
 app.get("/valutazioni", (req, res) => { getFilteredEntitiesList(req, res, getMultipleApisConfig.valutazione(req)) });
-app.get("/valutazioni/:id", (req, res) => {getEntityWithAssociations(req, res, getSingleApisConfig.valutazione)});
-app.post("/valutazioni", (req, res) => {postEntity(req, res, postAndPutApisConfig.valutazione(req))});
-app.put("/valutazioni/:id", (req, res) => { putEntity(req, res, postAndPutApisConfig.valutazione(req))});
+app.get("/valutazioni/:id", (req, res) => { getEntityWithAssociations(req, res, getSingleApisConfig.valutazione) });
+app.post("/valutazioni", (req, res) => { postEntity(req, res, postAndPutApisConfig.valutazione(req)) });
+app.put("/valutazioni/:id", (req, res) => { putEntity(req, res, postAndPutApisConfig.valutazione(req)) });
 app.delete("/valutazioni/:id", (req, res) => { deleteEntity(req, res, "valutazione") });
 //VISUALIZZAZIONI
-app.post("/visualizzazioni", (req, res) => {postEntity(req, res, postAndPutApisConfig.visualizzazione(req))});
+app.post("/visualizzazioni", (req, res) => { postEntity(req, res, postAndPutApisConfig.visualizzazione(req)) });
 app.get("/visualizzazioni", (req, res) => { getFilteredEntitiesList(req, res, getMultipleApisConfig.visualizzazione(req)) });
-app.get("/visualizzazioni/:id", (req, res) => {getEntityWithAssociations(req, res, getSingleApisConfig.visualizzazione)});
+app.get("/visualizzazioni/:id", (req, res) => { getEntityWithAssociations(req, res, getSingleApisConfig.visualizzazione) });
 //LOGIN
 app.post("/login", postLogin);
+//LOGOUT
+app.delete("/logout", logout);
+//CLEANUP
 app.use(cleanupDbRouter);
 
 

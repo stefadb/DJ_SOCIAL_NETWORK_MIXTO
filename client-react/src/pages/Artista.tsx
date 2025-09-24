@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-import axios from "axios";
+import api from "../api";
 import {
     AlbumDbSchema,
     ArtistaDbSchema,
@@ -9,7 +9,6 @@ import {
     type AlbumDb,
     type ArtistaDb,
     type BranoDb,
-    type PassaggioDb,
 } from "../types/db_types";
 
 import CardPassaggio from "../components/cards/CardPassaggio";
@@ -32,7 +31,6 @@ function Artista() {
     const query = new URLSearchParams(search);
     const id = query.get("id");
     const [artista, setArtista] = useState<ArtistaDb | null>(null);
-    const [albumArtista, setAlbumArtista] = useState<AlbumDb[] | null>(null);
 
     //useEffect necessario per recuperare i dati
     useEffect(() => {
@@ -41,16 +39,11 @@ function Artista() {
 
     async function loadArtista() {
         try {
-            await axios.get(`http://localhost:3000/artisti/singolo?artistId=${id}&limit=1&index=0`);
-            await axios.get(`http://localhost:3000/album/artista?artistId=${id}&limit=1&index=0`);
-            const responseArtista = await axios.get(`http://localhost:3000/artisti/esistenti/${id}`, { headers: { "Cache-Control": "no-cache, no-store, must-revalidate", Pragma: "no-cache", Expires: "0" } });
+            await api.get(`/artisti/singolo?artistId=${id}&limit=1&index=0`);
+            await api.get(`/album/artista?artistId=${id}&limit=1&index=0`);
+            const responseArtista = await api.get(`/artisti/esistenti/${id}`, { headers: { "Cache-Control": "no-cache, no-store, must-revalidate", Pragma: "no-cache", Expires: "0" } });
             ArtistaDbSchema.parse(responseArtista.data);
             setArtista(responseArtista.data as ArtistaDb);
-            /*
-            const responseAlbum = await axios.get(`http://localhost:3000/album/esistenti?artista=${id}`, { headers: {"Cache-Control": "no-cache, no-store, must-revalidate", Pragma: "no-cache", Expires: "0" } });
-            AlbumDbSchema.parse(responseAlbum.data);
-            setAlbumArtista(responseAlbum.data as AlbumDb[]);
-            */
         } catch (error) {
             //TODO: Gestire errore
             console.error("Errore nel recupero dell'artista:", error);
@@ -72,24 +65,20 @@ function Artista() {
             {artista !== null &&
                 <>
                     <div>
-                        <h2>Album dell'artista (ancora non so come farli vedere //TODO:)</h2>
-                        {albumArtista ? (
-                            albumArtista.map(album => (
-                                <CardAlbum key={album.id} album={album} />
-                            ))
-                        ) : (
-                            <p>Caricamento...</p>
-                        )}
+                        <h2>Album dell'artista</h2>
+                        <PagedList itemsPerPage={5} apiCall={`/album/artista?artistId=${artista.id}`} schema={AlbumDbSchema} component={(element: AlbumDb) => (
+                            <CardAlbum key={element.id} album={element} />
+                        )} showMoreButton={(onClick) => <button onClick={onClick}>Carica altri album</button>} />
                     </div>
                     <div>
                         <h2>Brani dell'artista più popolari su Deezer</h2>
-                        <PagedList itemsPerPage={5} apiCall={`http://localhost:3000/brani/artista?artistId=${artista.id}`} schema={BranoDbSchema} component={(element: BranoDb) => (
+                        <PagedList itemsPerPage={5} apiCall={`/brani/artista?artistId=${artista.id}`} schema={BranoDbSchema} component={(element: BranoDb) => (
                             <CardBrano key={element.id} brano={element} />
                         )} showMoreButton={(onClick) => <button onClick={onClick}>Carica altri brani</button>} />
                     </div>
                     <div>
                         <h2>Artisti simili a {artista.nome}</h2>
-                        <PagedList itemsPerPage={5} apiCall={`http://localhost:3000/artisti/simili?artistId=${artista.id}`} schema={ArtistaDbSchema} component={(element: ArtistaDb) => (
+                        <PagedList itemsPerPage={5} apiCall={`/artisti/simili?artistId=${artista.id}`} schema={ArtistaDbSchema} component={(element: ArtistaDb) => (
                             <CardArtista key={element.id} artista={element} />
                         )} showMoreButton={(onClick) => <button onClick={onClick}>Carica altri artisti</button>} />
                     </div>
@@ -97,7 +86,7 @@ function Artista() {
                         <h2>Cosa mettere prima di un brano di {artista.nome}?</h2>
                         <PagedList
                             itemsPerPage={2}
-                            apiCall={`http://localhost:3000/passaggi?artistaSecondoBrano=${artista.id}`}
+                            apiCall={`/passaggi?artistaSecondoBrano=${artista.id}`}
                             schema={PassaggioConBraniSchema}
                             component={(element: PassaggioConBrani) => (
                                 <CardPassaggio
@@ -114,7 +103,7 @@ function Artista() {
                         <h2>E dopo?</h2>
                         <PagedList
                             itemsPerPage={2}
-                            apiCall={`http://localhost:3000/passaggi?artistaPrimoBrano=${artista.id}`}
+                            apiCall={`/passaggi?artistaPrimoBrano=${artista.id}`}
                             schema={PassaggioConBraniSchema}
                             component={(element: PassaggioConBrani) => (
                                 <CardPassaggio
