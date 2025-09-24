@@ -31,21 +31,5 @@
       "id_brano_1": 1007,
       "id_brano_2": 1012
     }
-  },
-  {
-    "id": 2,
-    "testo": "Risposta 1 passaggio 1",
-    "data_pubblicazione": "2022-01-01 11:10:00",
-    "id_utente": 4,
-    "id_passaggio": 1,
-    "id_commento_padre": 1,
-    "commento_padre": {
-      "id": 1,
-      "testo": "Commento 1 passaggio 1",
-      "data_pubblicazione": "2022-01-01 11:00:00",
-      "id_utente": 3,
-      "id_passaggio": 1,
-      "id_commento_padre": null
-    }
   }
 ]

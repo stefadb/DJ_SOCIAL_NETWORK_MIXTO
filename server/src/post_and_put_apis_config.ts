@@ -15,7 +15,9 @@ export const postAndPutApisConfig = {
         assocTablesAndIds: req.body.assocTablesAndIds,
         deleteOldAssociationsFirst: req.body.deleteOldAssociationsFirst
     }},
-    utente: (req: import("express").Request) => { return{
+    utente: (req: import("express").Request) => { 
+        console.log("postAndPutApisConfig.utente called with req.body:", req.body);
+        return{
         mainTableName: "utente",
         mainTableSchema: UtenteDbSchema,
         mainTableNewRowValues: req.body.newRowValues,

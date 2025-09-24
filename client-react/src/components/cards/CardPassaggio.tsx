@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import type { ArtistaDb, BranoDb, PassaggioDb } from "../../types/db_types";
 import BasicUl from "../BasicUl";
 import { getNomiArtistiBrano } from "../../functions/functions";
+import SalvaBranoPreferito from "../SalvaBranoPreferito";
 
 type CardPassaggioProps = {
   passaggio: PassaggioDb;
@@ -75,6 +76,7 @@ function CardPassaggio(props: CardPassaggioProps) {
         }
         alt={cardIsReady ? "Cover " + props.brano1.titolo : "Caricamento..."}
       ></img>
+      <SalvaBranoPreferito idBrano={props.brano1.id} />
       <img
         style={{ width: "100px", height: "100px" }}
         src={
@@ -86,6 +88,7 @@ function CardPassaggio(props: CardPassaggioProps) {
         }
         alt={cardIsReady ? "Cover " + props.brano2.titolo : "Caricamento..."}
       ></img>
+      <SalvaBranoPreferito idBrano={props.brano2.id} />
     </div>
   );
 }

@@ -1,13 +1,17 @@
 //Import delle funzioni generiche delle API
-import { deezerEntityApi, deleteEntity, getEntityWithAssociations, getFilteredEntitiesList, postEntity, postLogin, putEntity } from "./apiroutes";
+import { deezerEntityApi, deleteEntity, getBraniEsistentiPreferiti, getEntityWithAssociations, getFilteredEntitiesList, postEntity, postLogin, putEntity } from "./apiroutes";
 
 import express from "express";
+import swaggerUi from 'swagger-ui-express';
+import YAML from 'yamljs';
 //Import delle config delle API
 import { albumAPIsConfig, artistiAPIsConfig, braniAPIsConfig, generiAPIsConfig } from "./deezer_apis_config";
 import { getSingleApisConfig } from "./get_single_apis_config";
 import { getMultipleApisConfig } from "./get_multiple_apis_config";
 import { postAndPutApisConfig } from "./post_and_put_apis_config";
+import cleanupDbRouter from "./cleanup_db_api";
 const app = express();
+app.use(express.json());
 
 //Configura il cors di app per permettere richieste dall'indirizzo http://localnost:5173 (dove gira il client React in dev)
 import cors from "cors";
@@ -21,6 +25,10 @@ app.use(cors({
 app.use("/generi_pictures", express.static(path.join(__dirname, "generi_pictures")));
 app.use("/artisti_pictures", express.static(path.join(__dirname, "artisti_pictures")));
 app.use("/album_pictures", express.static(path.join(__dirname, "album_pictures")));
+
+const swaggerDocument = YAML.load(path.join(__dirname, 'openapi.yaml'));
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 //API ROUTES
 
@@ -55,6 +63,7 @@ app.get("/brani/singolo", (req, res) => { deezerEntityApi(req, res, braniAPIsCon
 
 //INIZIO API DI GET singola, GET multipla e DELETE delle entità db legate a Deezer (brani, album, artisti, generi). Operano solo sulle entità già esistenti sul db, senza contattare Deezer
 //BRANI
+app.get("/brani/esistenti/preferiti", (req, res) => { getBraniEsistentiPreferiti(req, res) }); //recupera i brani preferiti dell'utente loggato
 app.get("/brani/esistenti/:id", (req, res) => { getEntityWithAssociations(req, res, getSingleApisConfig.brano) });
 app.get("/brani/esistenti", (req, res) => { getFilteredEntitiesList(req, res, getMultipleApisConfig.brano(req)) });
 app.delete("/brani/esistenti/:id", (req, res) => { deleteEntity(req, res, "brano") });
@@ -109,6 +118,7 @@ app.get("/visualizzazioni", (req, res) => { getFilteredEntitiesList(req, res, ge
 app.get("/visualizzazioni/:id", (req, res) => {getEntityWithAssociations(req, res, getSingleApisConfig.visualizzazione)});
 //LOGIN
 app.post("/login", postLogin);
+app.use(cleanupDbRouter);
 
 
 export default app;

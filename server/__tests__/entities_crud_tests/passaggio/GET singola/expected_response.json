@@ -25,28 +25,6 @@
     "id_utente": 1,
     "id_brano_1": 1007,
     "id_brano_2": 1012,
-    "brano_1": {
-      "id": 1007,
-      "titolo": "Brano 3-1",
-      "durata": "00:03:40",
-      "id_album": 3
-    },
-    "brano_2": {
-      "id": 1012,
-      "titolo": "Brano 4-3",
-      "durata": "00:04:30",
-      "id_album": 4
-    }
-  },
-  {
-    "id": 1,
-    "testo": "Passaggio 1",
-    "inizio_secondo_brano": "00:01:00",
-    "cue_secondo_brano": "00:00:30",
-    "data_pubblicazione": "2022-01-01 10:00:00",
-    "id_utente": 1,
-    "id_brano_1": 1007,
-    "id_brano_2": 1012,
     "commento": [
       {
         "id": 1,

@@ -1,5 +1,5 @@
 import axios from "axios";
-import { ArtistaDbSchema, BranoDbSchema, type ArtistaDb, type BranoDb } from "../types/db_types";
+import { ArtistaDbSchema, BranoDbSchema, type ArtistaDb, type BranoDb, type UtenteDb } from "../types/db_types";
 import z from "zod";
 
 export async function getNomiArtistiBrano(id: number): Promise<ArtistaDb[]> {
@@ -32,5 +32,45 @@ export async function getNomiArtistiAlbum(idBrani: number[] | undefined, idAlbum
         return response.data as ArtistaDb[];
     } else {
         throw new Error("Errore nel recupero degli artisti");
+    }
+}
+
+function noId<T extends { id?: number }>(obj: T): Omit<T, "id"> {
+  const { id, ...rest } = obj;
+  return rest;
+}
+
+export async function salvaBranoPreferito(utente: UtenteDb, idBrano: number): Promise<void> {
+    try {
+        const responseIdBrani = await axios.get(`http://localhost:3000/brani/esistenti?utente=${utente.id}`);
+        //Togli idBrano da idBrani
+        const idBrani: number[] = z.array(BranoDbSchema).parse(responseIdBrani.data).map(brano => brano.id);
+        if (!idBrani.includes(idBrano)) {
+            idBrani.push(idBrano);
+        }
+        await axios.put(`http://localhost:3000/utenti/${utente.id}`, { newRowValues: noId(utente), assocTablesAndIds: { brano: idBrani }, deleteOldAssociationsFirst: true });
+    } catch (error) {
+        throw new Error("Errore nel rimuovere il brano dai preferiti:", error);
+    }
+}
+
+export async function rimuoviBranoPreferito(utente: UtenteDb, idBrano: number): Promise<void> {
+    try {
+        const responseIdBrani = await axios.get(`http://localhost:3000/brani/esistenti?utente=${utente.id}`);
+        //Togli idBrano da idBrani
+        const idBrani: number[] = z.array(BranoDbSchema).parse(responseIdBrani.data).filter(brano => brano.id !== idBrano).map(brano => brano.id);
+        await axios.put(`http://localhost:3000/utenti/${utente.id}`, { newRowValues: noId(utente), assocTablesAndIds: { brano: idBrani }, deleteOldAssociationsFirst: true });
+    } catch (error) {
+        throw new Error("Errore nel rimuovere il brano dai preferiti:", error);
+    }
+}
+
+export function getLoggedUtente(): UtenteDb {
+    return {
+        id: 1,
+        username: "djalpha",
+        nome: "Alessandro",
+        cognome: "Rossi",
+        password: "pwd_1"
     }
 }

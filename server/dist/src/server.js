@@ -6,12 +6,16 @@ Object.defineProperty(exports, "__esModule", { value: true });
 //Import delle funzioni generiche delle API
 const apiroutes_1 = require("./apiroutes");
 const express_1 = __importDefault(require("express"));
+const swagger_ui_express_1 = __importDefault(require("swagger-ui-express"));
+const yamljs_1 = __importDefault(require("yamljs"));
 //Import delle config delle API
 const deezer_apis_config_1 = require("./deezer_apis_config");
 const get_single_apis_config_1 = require("./get_single_apis_config");
 const get_multiple_apis_config_1 = require("./get_multiple_apis_config");
 const post_and_put_apis_config_1 = require("./post_and_put_apis_config");
+const cleanup_db_api_1 = __importDefault(require("./cleanup_db_api"));
 const app = (0, express_1.default)();
+app.use(express_1.default.json());
 //Configura il cors di app per permettere richieste dall'indirizzo http://localnost:5173 (dove gira il client React in dev)
 const cors_1 = __importDefault(require("cors"));
 const win32_1 = __importDefault(require("path/win32"));
@@ -23,6 +27,8 @@ app.use((0, cors_1.default)({
 app.use("/generi_pictures", express_1.default.static(win32_1.default.join(__dirname, "generi_pictures")));
 app.use("/artisti_pictures", express_1.default.static(win32_1.default.join(__dirname, "artisti_pictures")));
 app.use("/album_pictures", express_1.default.static(win32_1.default.join(__dirname, "album_pictures")));
+const swaggerDocument = yamljs_1.default.load(win32_1.default.join(__dirname, 'openapi.yaml'));
+app.use('/api-docs', swagger_ui_express_1.default.serve, swagger_ui_express_1.default.setup(swaggerDocument));
 //API ROUTES
 //API CHE SCARICANO DATI DA DEEZER, LI RESTITUISCONO E LI METTONO SUL DB
 //GENERI
@@ -54,6 +60,7 @@ app.get("/brani/singolo", (req, res) => { (0, apiroutes_1.deezerEntityApi)(req, 
 //FINE DELLE API CHE SCARICANO DATI DA DEEZER
 //INIZIO API DI GET singola, GET multipla e DELETE delle entità db legate a Deezer (brani, album, artisti, generi). Operano solo sulle entità già esistenti sul db, senza contattare Deezer
 //BRANI
+app.get("/brani/esistenti/preferiti", (req, res) => { (0, apiroutes_1.getBraniEsistentiPreferiti)(req, res); }); //recupera i brani preferiti dell'utente loggato
 app.get("/brani/esistenti/:id", (req, res) => { (0, apiroutes_1.getEntityWithAssociations)(req, res, get_single_apis_config_1.getSingleApisConfig.brano); });
 app.get("/brani/esistenti", (req, res) => { (0, apiroutes_1.getFilteredEntitiesList)(req, res, get_multiple_apis_config_1.getMultipleApisConfig.brano(req)); });
 app.delete("/brani/esistenti/:id", (req, res) => { (0, apiroutes_1.deleteEntity)(req, res, "brano"); });
@@ -107,5 +114,6 @@ app.get("/visualizzazioni", (req, res) => { (0, apiroutes_1.getFilteredEntitiesL
 app.get("/visualizzazioni/:id", (req, res) => { (0, apiroutes_1.getEntityWithAssociations)(req, res, get_single_apis_config_1.getSingleApisConfig.visualizzazione); });
 //LOGIN
 app.post("/login", apiroutes_1.postLogin);
+app.use(cleanup_db_api_1.default);
 exports.default = app;
 //# sourceMappingURL=server.js.map

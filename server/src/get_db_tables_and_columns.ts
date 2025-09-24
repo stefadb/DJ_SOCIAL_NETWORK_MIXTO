@@ -8,7 +8,8 @@ import { getConnection } from "./apiroutes";
 export var dbTablesAndColumns: Record<string, string[]> = {};
 
 export async function getDbTablesAndColumns(): Promise<string> {
-    const disattiva = true;
+    const disattiva = process.env.NODE_ENV === "test" ? true : false; //Metti a true solo per i test
+    console.log(`Funzione getDbTablesAndColumns ${disattiva ? "disattivata" : "attivata"}`);
     if (disattiva) {
         return new Promise((resolve) => {
             resolve("Ok");
@@ -18,6 +19,7 @@ export async function getDbTablesAndColumns(): Promise<string> {
                 artista: ['id', 'nome'],
                 brano: ['id', 'titolo', 'durata', 'id_album'],
                 brano_artista: ['id_brano', 'id_artista'],
+                brano_utente: ['id_brano', 'id_utente'],
                 commento: [
                     'id',
                     'testo',

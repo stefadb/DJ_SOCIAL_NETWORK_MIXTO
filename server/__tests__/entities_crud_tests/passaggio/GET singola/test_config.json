@@ -1,6 +1,5 @@
 [
     { "testApiCallUrl": "/passaggi/1?include_utente" },
-    { "testApiCallUrl": "/passaggi/1?include_brano" },
     { "testApiCallUrl": "/passaggi/1?include_commento" },
     { "testApiCallUrl": "/passaggi/1?include_valutazione" },
     { "testApiCallUrl": "/passaggi/1?include_scaletta" },

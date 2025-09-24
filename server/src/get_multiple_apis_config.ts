@@ -326,6 +326,11 @@ export const getMultipleApisConfig = {
                     joinedTableColumnToCheckValueIn: "id",
                     value: req.query.album as string
                 }] : []),
+                ...(req.query.utente ? [{
+                    joinedTableName: "utente",
+                    joinedTableColumnToCheckValueIn: "id",
+                    value: req.query.utente as string
+                }] : []),
                 ...(req.query.artista ? [{
                     joinedTableName: "artista",
                     joinedTableColumnToCheckValueIn: "id",

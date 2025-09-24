@@ -33,17 +33,19 @@ function ModalPassaggio(props: { idPassaggio?: number; onClose: () => void }) {
 
     async function loadPassaggio() {
         try {
-            const response = await axios.get(`http://localhost:3000/passaggi/${props.idPassaggio}?include_utente&include_brano_1&include_brano_2`, { headers: { "Cache-Control": "no-cache, no-store, must-revalidate", Pragma: "no-cache", Expires: "0" } });
+            const response = await axios.get(`http://localhost:3000/passaggi/${props.idPassaggio}?include_utente`, { headers: { "Cache-Control": "no-cache, no-store, must-revalidate", Pragma: "no-cache", Expires: "0" } });
             const apiSchema = PassaggioDbSchema.extend({
                 utente: UtenteDbSchema.optional(),
-                brano_1: BranoDbSchema.optional(),
-                brano_2: BranoDbSchema.optional(),
             });
             type APIType = z.infer<typeof apiSchema>;
             const responseData: APIType = apiSchema.parse(response.data) as APIType;
+            const responseBrano1 = await axios.get(`http://localhost:3000/brani/${responseData.id_brano_1}`, { headers: { "Cache-Control": "no-cache, no-store, must-revalidate", Pragma: "no-cache", Expires: "0" } });
+            const responseBrano2 = await axios.get(`http://localhost:3000/brani/${responseData.id_brano_2}`, { headers: { "Cache-Control": "no-cache, no-store, must-revalidate", Pragma: "no-cache", Expires: "0" } });
             setPassaggio(responseData);
-            setBrano1(responseData.brano_1 ? responseData.brano_1 : null);
-            setBrano2(responseData.brano_2 ? responseData.brano_2 : null);
+            BranoDbSchema.parse(responseBrano1.data);
+            BranoDbSchema.parse(responseBrano2.data);
+            setBrano1(responseBrano1.data);
+            setBrano2(responseBrano2.data);
             setUtente(responseData.utente ? responseData.utente : null);
         } catch (error) {
             console.error("Errore nel recupero del passaggio:", error);

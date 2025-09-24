@@ -1,0 +1,826 @@
+openapi: 3.0.0
+info:
+  title: DJ Social Network Mixto API
+  version: 1.0.0
+  description: API per la gestione di brani, album, artisti, generi, scalette, passaggi, utenti, commenti, valutazioni e visualizzazioni, con integrazione Deezer.
+servers:
+  - url: http://localhost:3000
+paths:
+  /generi/tutti:
+    get:
+      summary: Ottieni tutti i generi da Deezer
+      responses:
+        '200':
+          description: Lista dei generi
+  /generi/singolo:
+    get:
+      summary: Ottieni un singolo genere da Deezer
+      parameters:
+        - in: query
+          name: id
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Dettaglio del genere
+  /artisti/search:
+    get:
+      summary: Cerca artisti su Deezer
+      parameters:
+        - in: query
+          name: q
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Lista degli artisti trovati
+  /artisti/simili:
+    get:
+      summary: Ottieni artisti simili da Deezer
+      parameters:
+        - in: query
+          name: id
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Lista di artisti simili
+  /artisti/genere:
+    get:
+      summary: Ottieni artisti per genere da Deezer
+      parameters:
+        - in: query
+          name: id_genere
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Lista di artisti per genere
+  /artisti/singolo:
+    get:
+      summary: Ottieni un singolo artista da Deezer
+      parameters:
+        - in: query
+          name: id
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Dettaglio dell'artista
+  /album/search:
+    get:
+      summary: Cerca album su Deezer
+      parameters:
+        - in: query
+          name: q
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Lista degli album trovati
+  /album/singolo:
+    get:
+      summary: Ottieni un singolo album da Deezer
+      parameters:
+        - in: query
+          name: id
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Dettaglio dell'album
+  /album/artista:
+    get:
+      summary: Ottieni album per artista da Deezer
+      parameters:
+        - in: query
+          name: id_artista
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Lista di album per artista
+  /album/genere:
+    get:
+      summary: Ottieni album per genere da Deezer
+      parameters:
+        - in: query
+          name: id_genere
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Lista di album per genere
+  /brani/album:
+    get:
+      summary: Ottieni brani per album da Deezer
+      parameters:
+        - in: query
+          name: id_album
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Lista di brani per album
+  /brani/search:
+    get:
+      summary: Cerca brani su Deezer
+      parameters:
+        - in: query
+          name: q
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Lista dei brani trovati
+  /brani/genere:
+    get:
+      summary: Ottieni brani per genere da Deezer
+      parameters:
+        - in: query
+          name: id_genere
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Lista di brani per genere
+  /brani/artista:
+    get:
+      summary: Ottieni brani per artista da Deezer
+      parameters:
+        - in: query
+          name: id_artista
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Lista di brani per artista
+  /brani/singolo:
+    get:
+      summary: Ottieni un singolo brano da Deezer
+      parameters:
+        - in: query
+          name: id
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Dettaglio del brano
+  /brani/esistenti/{id}:
+    get:
+      summary: Ottieni un brano dal DB locale
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Dettaglio del brano
+    delete:
+      summary: Elimina un brano dal DB locale
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Brano eliminato
+  /brani/esistenti:
+    get:
+      summary: Ottieni lista brani dal DB locale
+      parameters:
+        - in: query
+          name: columns
+          schema:
+            type: string
+          description: Colonne da restituire separate da virgola
+        - in: query
+          name: album
+          schema:
+            type: string
+          description: Filtra per id_album
+        - in: query
+          name: artista
+          schema:
+            type: string
+          description: Filtra per id_artista
+        - in: query
+          name: passaggio
+          schema:
+            type: string
+          description: Filtra per id_passaggio
+        - in: query
+          name: query
+          schema:
+            type: string
+          description: Filtro LIKE sul titolo
+      responses:
+        '200':
+          description: Lista dei brani
+  /album/esistenti/{id}:
+    get:
+      summary: Ottieni un album dal DB locale
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Dettaglio dell'album
+    delete:
+      summary: Elimina un album dal DB locale
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Album eliminato
+  /album/esistenti:
+    get:
+      summary: Ottieni lista album dal DB locale
+      parameters:
+        - in: query
+          name: columns
+          schema:
+            type: string
+          description: Colonne da restituire separate da virgola
+        - in: query
+          name: brano
+          schema:
+            type: string
+          description: Filtra per id_brano
+        - in: query
+          name: genere
+          schema:
+            type: string
+          description: Filtra per id_genere
+        - in: query
+          name: query
+          schema:
+            type: string
+          description: Filtro LIKE sul titolo
+      responses:
+        '200':
+          description: Lista degli album
+  /artisti/esistenti/{id}:
+    get:
+      summary: Ottieni un artista dal DB locale
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Dettaglio dell'artista
+    delete:
+      summary: Elimina un artista dal DB locale
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Artista eliminato
+  /artisti/esistenti:
+    get:
+      summary: Ottieni lista artisti dal DB locale
+      parameters:
+        - in: query
+          name: columns
+          schema:
+            type: string
+          description: Colonne da restituire separate da virgola
+        - in: query
+          name: brano
+          schema:
+            type: string
+          description: Filtra per id_brano
+        - in: query
+          name: album
+          schema:
+            type: string
+          description: Filtra per id_album
+        - in: query
+          name: query
+          schema:
+            type: string
+          description: Filtro LIKE sul nome
+      responses:
+        '200':
+          description: Lista degli artisti
+  /generi/esistenti/{id}:
+    get:
+      summary: Ottieni un genere dal DB locale
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Dettaglio del genere
+    delete:
+      summary: Elimina un genere dal DB locale
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Genere eliminato
+  /generi/esistenti:
+    get:
+      summary: Ottieni lista generi dal DB locale
+      parameters:
+        - in: query
+          name: columns
+          schema:
+            type: string
+          description: Colonne da restituire separate da virgola
+        - in: query
+          name: album
+          schema:
+            type: string
+          description: Filtra per id_album
+      responses:
+        '200':
+          description: Lista dei generi
+  /scalette/{id}:
+    get:
+      summary: Ottieni una scaletta
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Dettaglio della scaletta
+    put:
+      summary: Modifica una scaletta
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Scaletta modificata
+    delete:
+      summary: Elimina una scaletta
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Scaletta eliminata
+  /scalette:
+    get:
+      summary: Ottieni lista scalette
+      parameters:
+        - in: query
+          name: columns
+          schema:
+            type: string
+          description: Colonne da restituire separate da virgola
+        - in: query
+          name: utente
+          schema:
+            type: string
+          description: Filtra per id_utente
+        - in: query
+          name: passaggio
+          schema:
+            type: string
+          description: Filtra per id_passaggio
+      responses:
+        '200':
+          description: Lista delle scalette
+    post:
+      summary: Crea una nuova scaletta
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '201':
+          description: Scaletta creata
+  /passaggi:
+    get:
+      summary: Ottieni lista passaggi
+      parameters:
+        - in: query
+          name: columns
+          schema:
+            type: string
+          description: Colonne da restituire separate da virgola
+        - in: query
+          name: utente
+          schema:
+            type: string
+          description: Filtra per id_utente
+        - in: query
+          name: primoBrano
+          schema:
+            type: string
+          description: Filtra per id_brano_1
+        - in: query
+          name: secondoBrano
+          schema:
+            type: string
+          description: Filtra per id_brano_2
+        - in: query
+          name: albumPrimoBrano
+          schema:
+            type: string
+          description: Filtra per id_album del primo brano
+        - in: query
+          name: albumSecondoBrano
+          schema:
+            type: string
+          description: Filtra per id_album del secondo brano
+        - in: query
+          name: scaletta
+          schema:
+            type: string
+          description: Filtra per id_scaletta
+        - in: query
+          name: artistaPrimoBrano
+          schema:
+            type: string
+          description: Filtra per id_artista del primo brano
+        - in: query
+          name: artistaSecondoBrano
+          schema:
+            type: string
+          description: Filtra per id_artista del secondo brano
+        - in: query
+          name: generePrimoBrano
+          schema:
+            type: string
+          description: Filtra per id_genere del primo brano
+        - in: query
+          name: genereSecondoBrano
+          schema:
+            type: string
+          description: Filtra per id_genere del secondo brano
+      responses:
+        '200':
+          description: Lista dei passaggi
+    post:
+      summary: Crea un nuovo passaggio
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '201':
+          description: Passaggio creato
+  /passaggi/conta:
+    get:
+      summary: Conta i passaggi
+      responses:
+        '200':
+          description: Numero di passaggi
+  /passaggi/{id}:
+    get:
+      summary: Ottieni un passaggio
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Dettaglio del passaggio
+    put:
+      summary: Modifica un passaggio
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Passaggio modificato
+    delete:
+      summary: Elimina un passaggio
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Passaggio eliminato
+  /utenti:
+    get:
+      summary: Ottieni lista utenti
+      parameters:
+        - in: query
+          name: columns
+          schema:
+            type: string
+          description: Colonne da restituire separate da virgola
+      responses:
+        '200':
+          description: Lista degli utenti
+    post:
+      summary: Crea un nuovo utente
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '201':
+          description: Utente creato
+  /utenti/{id}:
+    get:
+      summary: Ottieni un utente
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Dettaglio dell'utente
+    put:
+      summary: Modifica un utente
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Utente modificato
+    delete:
+      summary: Elimina un utente
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Utente eliminato
+  /commenti:
+    get:
+      summary: Ottieni lista commenti
+      parameters:
+        - in: query
+          name: columns
+          schema:
+            type: string
+          description: Colonne da restituire separate da virgola
+        - in: query
+          name: utente
+          schema:
+            type: string
+          description: Filtra per id_utente
+        - in: query
+          name: passaggio
+          schema:
+            type: string
+          description: Filtra per id_passaggio
+        - in: query
+          name: commentoPadre
+          schema:
+            type: string
+          description: Filtra per id_commento_padre
+      responses:
+        '200':
+          description: Lista dei commenti
+    post:
+      summary: Crea un nuovo commento
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '201':
+          description: Commento creato
+  /commenti/{id}:
+    get:
+      summary: Ottieni un commento
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Dettaglio del commento
+    put:
+      summary: Modifica un commento
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Commento modificato
+    delete:
+      summary: Elimina un commento
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Commento eliminato
+  /valutazioni:
+    get:
+      summary: Ottieni lista valutazioni
+      parameters:
+        - in: query
+          name: columns
+          schema:
+            type: string
+          description: Colonne da restituire separate da virgola
+        - in: query
+          name: utente
+          schema:
+            type: string
+          description: Filtra per id_utente
+        - in: query
+          name: passaggio
+          schema:
+            type: string
+          description: Filtra per id_passaggio
+        - in: query
+          name: mediaPassaggio
+          schema:
+            type: string
+          description: Calcola la media delle valutazioni per passaggio
+      responses:
+        '200':
+          description: Lista delle valutazioni
+    post:
+      summary: Crea una nuova valutazione
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '201':
+          description: Valutazione creata
+  /valutazioni/{id}:
+    get:
+      summary: Ottieni una valutazione
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Dettaglio della valutazione
+    put:
+      summary: Modifica una valutazione
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Valutazione modificata
+    delete:
+      summary: Elimina una valutazione
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Valutazione eliminata
+  /visualizzazioni:
+    get:
+      summary: Ottieni lista visualizzazioni
+      parameters:
+        - in: query
+          name: columns
+          schema:
+            type: string
+          description: Colonne da restituire separate da virgola
+        - in: query
+          name: passaggio
+          schema:
+            type: string
+          description: Filtra per id_passaggio
+      responses:
+        '200':
+          description: Lista delle visualizzazioni
+    post:
+      summary: Crea una nuova visualizzazione
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '201':
+          description: Visualizzazione creata
+  /visualizzazioni/{id}:
+    get:
+      summary: Ottieni una visualizzazione
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Dettaglio della visualizzazione
+  /login:
+    post:
+      summary: Login utente
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Login effettuato

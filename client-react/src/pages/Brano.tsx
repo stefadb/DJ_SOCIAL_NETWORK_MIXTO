@@ -16,6 +16,7 @@ import CardPassaggio from "../components/cards/CardPassaggio";
 import PagedList from "../components/PagedList";
 import BranoTableRow from "../components/BranoTableRow";
 import z from "zod";
+import SalvaBranoPreferito from "../components/SalvaBranoPreferito";
 
 // Schema e type per /passaggi/conta?primoBrano= e /passaggi/conta?secondoBrano=
 const ContaPassaggiBrano2Schema = z.object({
@@ -87,6 +88,7 @@ function Brano() {
           <p>Data di uscita: {brano.album ? brano.album.data_uscita : "Sconosciuta"}</p>
           <p>Artisti: {brano.artista.map(artista => artista.nome).join(", ")}</p>
           <p>Generi: {generi ? generi.map(genere => genere.nome).join(", ") : "Caricamento..."}</p>
+          <SalvaBranoPreferito idBrano={brano.id} />
         </div>
       ) : (
         <p>Caricamento...</p>

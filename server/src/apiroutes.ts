@@ -363,6 +363,7 @@ export async function getFilteredEntitiesList(
   const finalQuery = selectStatement + joins + whereStatement + groupByStatement + orderByStatement + limitOffset;
   const con = await getConnection();
   try {
+    console.log(finalQuery);
     const [rows] = await con.execute(finalQuery);
     for (let row of (rows as any[])) {
       if (config.mainTableSchema !== undefined && !dbResultIsValid(res, false, row, config.mainTableSchema, config.mainTableName)) {
@@ -481,7 +482,7 @@ export async function putEntity(
     const columnsAndPlaceholders = Object.keys(mainTableNewRowValues).map(col => `${col} = ?`).join(", ");
     const [result] = await con.execute(
       `UPDATE ${mainTableName} SET ${columnsAndPlaceholders} WHERE id = ?`,
-      [...values, mainTableNewRowValues.id]
+      [...values, req.params.id]
     );
     if ((result as mysql.ResultSetHeader).affectedRows === 0) {
       res.status(404).json({ error: "Entità non trovata" });
@@ -497,11 +498,11 @@ export async function putEntity(
           res.status(500).json({ error: `Tabella di join ${joinTable} non trovata nel database` });
           return;
         }
-        if (!config.deleteOldAssociationsFirst) {
+        if (config.deleteOldAssociationsFirst) {
           // Elimina tutte le associazioni vecchie
           await con.execute(
             `DELETE FROM ${joinTable} WHERE id_${mainTableName.toLowerCase()} = ?`,
-            [mainTableNewRowValues.id]
+            [req.params.id]
           );
         }
         // Chiave esterna per la tabella principale e associata
@@ -519,7 +520,30 @@ export async function putEntity(
     // 4. Risposta con id della nuova entità
     res.status(200).json();
   } catch (err) {
+    console.log(err);
     res.status(500).json({ error: "Errore nella creazione dell'entità", details: err });
+  }
+}
+
+export async function getBraniEsistentiPreferiti(req: import("express").Request, res: import("express").Response){
+  //Questa API risponde con true se nella tabella del db brano_utente esiste una riga con id utente e id brano uguali a quelli specificati, altrimenti restituisce false
+  const id_utente = req.query.utente;
+  const id_brano = req.query.brano;
+  if (typeof id_utente !== "string" || typeof id_brano !== "string" || isNaN(Number(id_utente)) || isNaN(Number(id_brano))) {
+    res.status(401).json({ error: "I parametri id_utente e id_brano sono obbligatori e devono essere numerici" });
+    return;
+  }
+  const con = await getConnection();
+  try {
+    const [rows] = await con.execute(
+      `SELECT * FROM brano_utente WHERE id_utente = ? AND id_brano = ?`,
+      [id_utente, id_brano]
+    );
+    await con.end();
+    res.json((rows as any[]).length > 0);
+  }
+  catch (err) {
+    res.status(500).json({ error: "Errore nel recupero dei brani preferiti" });
   }
 }
 

@@ -12,6 +12,7 @@ import Generi from "./pages/Generi";
 import Genere from "./pages/Genere";
 import Utente from "./pages/Utente";
 import ModalPassaggioTest from "./pages/ModalPassaggioTest";
+import Consolle from "./components/Consolle";
 
 function App() {
   return (
@@ -42,11 +43,7 @@ function App() {
             </>
           </MainContainer>
           <SideContainer>
-            <img
-              src="src/assets/turntable.png"
-              alt="Immagine giradischi di prova"
-              style={{ width: "100%", height: "auto" }}
-            />
+            <Consolle />
           </SideContainer>
         </div>
       </div>

@@ -5,12 +5,14 @@ import {
   BranoDbSchema,
   PassaggioDbSchema,
   UtenteDbSchema,
+  type BranoDb,
   type UtenteDb,
 } from "../types/db_types";
 
 import CardPassaggio from "../components/cards/CardPassaggio";
 import PagedList from "../components/PagedList";
 import z from "zod";
+import CardBrano from "../components/cards/CardBrano";
 
 // Schema e type per /passaggi?utente=...
 const PassaggioConBraniSchema = PassaggioDbSchema.extend({
@@ -55,6 +57,18 @@ function Utente() {
       )}
       {utente !== null &&
         <div>
+          <div>
+            <h3>I brani preferiti di {utente.nome} {utente.cognome}</h3>
+            <PagedList
+              itemsPerPage={5}
+              apiCall={`http://localhost:3000/brani/esistenti?utente=${utente.id}`}
+              schema={BranoDbSchema}
+              component={(element: BranoDb) => (
+                <CardBrano key={element.id} brano={element} />
+              )}
+              showMoreButton={(onClick) => <button onClick={onClick}>Carica altri brani</button>}
+            />
+          </div>
           <div>
             <h3>Passaggi pubblicati da {utente.nome} {utente.cognome}</h3>
             <PagedList

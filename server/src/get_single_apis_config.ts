@@ -30,16 +30,6 @@ export const getSingleApisConfig = {
                 schema: UtenteDbSchema
             },
             {
-                tableName: "brano_1",
-                columns: ["id", "titolo", "durata", "id_album"],
-                schema: BranoDbSchema
-            },
-            {
-                tableName: "brano_2",
-                columns: ["id", "titolo", "durata", "id_album"],
-                schema: BranoDbSchema
-            },
-            {
                 tableName: "commento",
                 columns: ["id", "testo", "data_pubblicazione", "id_utente", "id_passaggio", "id_commento_padre"],
                 schema: CommentoDbSchema
@@ -134,11 +124,6 @@ export const getSingleApisConfig = {
                 tableName: "passaggio",
                 columns: ["id", "testo", "inizio_secondo_brano", "cue_secondo_brano", "data_pubblicazione", "id_utente", "id_brano_1", "id_brano_2"],
                 schema: PassaggioDbSchema
-            },
-            {
-                tableName: "commento",
-                columns: ["id", "testo", "data_pubblicazione", "id_utente", "id_passaggio", "id_commento_padre"],
-                schema: CommentoDbSchema
             }
         ]
     },
