@@ -83,7 +83,7 @@ export const UtenteDbSchema = DbEntitySchema.extend({
     username: z.string(),
     nome: z.string(),
     cognome: z.string(),
-    password: z.string()
+    password: z.string().optional()
 });
 
 export type UtenteDb = z.infer<typeof UtenteDbSchema>;

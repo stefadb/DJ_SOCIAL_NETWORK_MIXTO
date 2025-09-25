@@ -1,13 +1,15 @@
 import { useEffect } from "react";
-import type { BranoDb } from "../types/db_types";
+import type { BranoDb, UtenteDb } from "../types/db_types";
 import { useDispatch, useSelector } from "react-redux";
 import { setBrano1 } from "../store/giradischiSlice";
 import { setBrano2 } from "../store/giradischiSlice";
 import CardBrano from "./cards/CardBrano";
 import type { RootState } from "../store/store";
+import { openModal } from "../store/modalNuovoPassaggioSlice";
 
 function Consolle() {
     const dispatch = useDispatch();
+    const loggedUtente: UtenteDb | null = useSelector((state: RootState) => (state.user as any).utente);
     const brano1: BranoDb | null = useSelector((state: RootState) => (state.giradischi as any).brano1);
     const brano2: BranoDb | null = useSelector((state: RootState) => (state.giradischi as any).brano2);
     useEffect(() => {
@@ -36,6 +38,7 @@ function Consolle() {
         {brano2 === null ? <p><i>(vuoto)</i></p> :
         <CardBrano brano={brano2} noDeckButtons/>}
         <button onClick={scambia}>Scambia</button>
+        <button onClick={() => {if(loggedUtente){dispatch(openModal())}else{alert("Accedi per pubblicare un passaggio");}}}>Pubblica un nuovo passaggio</button>
     </div>;
 }
 

@@ -101,7 +101,7 @@ app.delete("/passaggi/:id", (req, res) => { (0, apiroutes_1.deleteEntity)(req, r
 app.get("/utenti", (req, res) => { (0, apiroutes_1.getFilteredEntitiesList)(req, res, get_multiple_apis_config_1.getMultipleApisConfig.utente(req)); });
 app.get("/utenti/loggato", (req, res) => {
     if (!req.session.user) {
-        res.status(401).json({ error: "Utente non autenticato." });
+        res.status(200).json();
         return;
     }
     req.params = { id: req.session.user.id };
@@ -171,6 +171,7 @@ app.put("/commenti/:id", (req, res) => { (0, apiroutes_1.putEntity)(req, res, po
 app.delete("/commenti/:id", (req, res) => { (0, apiroutes_1.deleteEntity)(req, res, "commento"); });
 //VALUTAZIONI
 app.get("/valutazioni", (req, res) => { (0, apiroutes_1.getFilteredEntitiesList)(req, res, get_multiple_apis_config_1.getMultipleApisConfig.valutazione(req)); });
+app.get("/valutazioni/media", (req, res) => { (0, apiroutes_1.getFilteredEntitiesList)(req, res, get_multiple_apis_config_1.getMultipleApisConfig.valutazioneMedia(req)); });
 app.get("/valutazioni/:id", (req, res) => { (0, apiroutes_1.getEntityWithAssociations)(req, res, get_single_apis_config_1.getSingleApisConfig.valutazione); });
 app.post("/valutazioni", (req, res) => { (0, apiroutes_1.postEntity)(req, res, post_and_put_apis_config_1.postAndPutApisConfig.valutazione(req)); });
 app.put("/valutazioni/:id", (req, res) => { (0, apiroutes_1.putEntity)(req, res, post_and_put_apis_config_1.postAndPutApisConfig.valutazione(req)); });

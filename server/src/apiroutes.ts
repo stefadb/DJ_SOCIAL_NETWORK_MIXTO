@@ -86,7 +86,7 @@ export async function postLogin(req: import("express").Request, res: import("exp
       return res.status(401).json({ error: "Credenziali non valide" });
     }
     const user = utenti[0];
-    const match = await bcrypt.compare(password, user.password);
+    const match = await bcrypt.compare(password, user.password as string /* Qui lo posso fare perchè, se l'utente proviene da questa query, la password c'è sicuramente*/);
     if (!match) {
       return res.status(401).json({ error: "Credenziali non valide" });
     }
@@ -301,11 +301,11 @@ type QueryFilter = {
   joinedTableName: string | undefined, //Se undefined, il filtro è applicato alla tabella principale
   joinColumnSuffix?: string //se la colonna di join non è id_[table], specificare il suffisso qui (join con la colonna id_[table]_[suffix])
   joinedTableColumnToCheckValueIn: string, //è la colonna della tabella joinata (o della tabella principale se joinedTableName è undefined) su cui applicare il filtro
-  operator?: "LIKE" | "=" | "IN",
+  operator?: "LIKE" | "=" | "IN" | "IS",
   value: string | number
 }
 
-function getSqlOperatorString(operator?: "LIKE" | "=" | "IN"): string {
+function getSqlOperatorString(operator?: "LIKE" | "=" | "IN" | "IS"): string {
   switch (operator) {
     case "LIKE":
       return "LIKE";
@@ -313,6 +313,8 @@ function getSqlOperatorString(operator?: "LIKE" | "=" | "IN"): string {
       return "=";
     case "IN":
       return "IN";
+    case "IS":
+      return "IS";
     default:
       return "=";
   }
@@ -366,9 +368,9 @@ export async function getFilteredEntitiesList(
     }
   }
   const finalQuery = selectStatement + joins + whereStatement + groupByStatement + orderByStatement + limitOffset;
+  console.log(finalQuery);
   const con = await getConnection();
   try {
-    console.log(finalQuery);
     const [rows] = await con.execute(finalQuery);
     for (let row of (rows as any[])) {
       if (config.mainTableSchema !== undefined && !dbResultIsValid(res, false, row, config.mainTableSchema, config.mainTableName)) {
@@ -380,6 +382,8 @@ export async function getFilteredEntitiesList(
         if (!("value" in queryJoin)) {
           let keyName = `${queryJoin.joinedTableName}${queryJoin.joinColumnSuffix ? `_${queryJoin.joinColumnSuffix}` : ""}_array`;
           if (keyName in row) {
+            console.log("Validazione di questa entità associata:");
+            console.log(row[keyName]);
             if (queryJoin.schema !== undefined && !dbResultIsValid(res, true, row[keyName], queryJoin.schema, keyName)) {
               //console.log("Questa row non ha fatto passare la validazione di zod:");
               //console.log(row);
@@ -457,6 +461,7 @@ export async function postEntity(
     // 4. Risposta con id della nuova entità
     res.json({ id: insertId });
   } catch (err) {
+    console.log(err);
     res.status(500).json({ error: "Errore nella creazione dell'entità", details: err });
   }
 }

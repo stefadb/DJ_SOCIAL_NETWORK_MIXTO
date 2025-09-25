@@ -49,3 +49,7 @@ main {
     width: 50%;
   }
 }
+
+.hover-underline:hover {
+  text-decoration: underline; /* sottolinea al passaggio del mouse */
+}

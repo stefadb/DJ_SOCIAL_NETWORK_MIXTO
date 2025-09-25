@@ -106,7 +106,7 @@ app.delete("/passaggi/:id", (req, res) => { deleteEntity(req, res, "passaggio") 
 app.get("/utenti", (req, res) => { getFilteredEntitiesList(req, res, getMultipleApisConfig.utente(req)) });
 app.get("/utenti/loggato", (req, res) => {
     if (!req.session.user) {
-        res.status(401).json({ error: "Utente non autenticato." });
+        res.status(200).json();
         return;
     }
     req.params = { id: req.session.user.id };
@@ -174,6 +174,7 @@ app.put("/commenti/:id", (req, res) => { putEntity(req, res, postAndPutApisConfi
 app.delete("/commenti/:id", (req, res) => { deleteEntity(req, res, "commento") });
 //VALUTAZIONI
 app.get("/valutazioni", (req, res) => { getFilteredEntitiesList(req, res, getMultipleApisConfig.valutazione(req)) });
+app.get("/valutazioni/media", (req, res) => { getFilteredEntitiesList(req, res, getMultipleApisConfig.valutazioneMedia(req)) });
 app.get("/valutazioni/:id", (req, res) => { getEntityWithAssociations(req, res, getSingleApisConfig.valutazione) });
 app.post("/valutazioni", (req, res) => { postEntity(req, res, postAndPutApisConfig.valutazione(req)) });
 app.put("/valutazioni/:id", (req, res) => { putEntity(req, res, postAndPutApisConfig.valutazione(req)) });

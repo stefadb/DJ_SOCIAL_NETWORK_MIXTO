@@ -12,11 +12,14 @@
   "dependencies": {
     "@reduxjs/toolkit": "^2.9.0",
     "axios": "^1.12.2",
+    "javascript-time-ago": "^2.5.12",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "react-modal": "^3.16.3",
+    "react-rating": "^2.0.5",
     "react-redux": "^9.2.0",
     "react-router-dom": "^7.9.1",
+    "react-time-ago": "^7.3.5",
     "zod": "^4.1.8"
   },
   "devDependencies": {

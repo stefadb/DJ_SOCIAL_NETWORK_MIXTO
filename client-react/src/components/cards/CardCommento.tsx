@@ -1,27 +1,137 @@
-function CardCommento(props: { commento: CommentoDb, utente: UtenteDb }) {
-    const { commento, utente } = props;
+import { useState } from "react";
+import { CommentoEUtenteSchema, type CommentoEUtente } from "../../types/types";
+import PagedList from "../PagedList";
+import api from "../../api";
+import type { UtenteDb } from "../../types/db_types";
+import { useSelector } from "react-redux";
+import type { RootState } from "../../store/store";
+import ReactTimeAgo from "react-time-ago";
+import TimeAgo from 'javascript-time-ago';
+import it from 'javascript-time-ago/locale/it';
+
+TimeAgo.addLocale(it);
+
+function CardCommento(props: { commento: CommentoEUtente, livello: number }) {
+    const [commento, setCommento] = useState(props.commento);
+    const minWidth = 60; // dimensione percentuale minima del commento (per il livello più profondo)
+    const loggedUtente: UtenteDb | null = useSelector((state: RootState) => (state.user as any).utente as UtenteDb | null);
+    const [showAnswerBox, setShowAnswerBox] = useState(false);
+    const [editing, setEditing] = useState(false);
+    const [answer, setAnswer] = useState(""); // Stato per il contenuto della risposta
+    const [nuovoTesto, setNuovoTesto] = useState(commento.testo); // Stato per il testo modificato del commento
+    const [sendingAnswer, setSendingAnswer] = useState(false); // Stato per indicare se la risposta è in fase di invio
+
+    async function sendAnswer(){
+        if (loggedUtente) {
+            try {
+                setSendingAnswer(true);
+                await api.post("/commenti", {
+                    newRowValues: {
+                        testo: answer,
+                        data_pubblicazione: new Date().toISOString().slice(0, 19).replace('T', ' '),
+                        id_utente: loggedUtente.id,
+                        id_passaggio: commento.id_passaggio,
+                        id_commento_padre: commento.id
+                    }
+                });
+                setShowAnswerBox(false);
+                setAnswer("");
+                setSendingAnswer(false);
+            } catch (error) {
+                console.error("Errore durante l'invio della risposta:", error);
+                setSendingAnswer(false);
+            }
+        }
+    }
+
+    async function salvaCommento(){
+        // Logica per salvare il commento modificato
+        if (loggedUtente) {
+            try {
+                const newData = new Date().toISOString().slice(0, 19).replace('T', ' ');
+                await api.put(`/commenti/${commento.id}`, {
+                    newRowValues: {
+                        testo: nuovoTesto,
+                        data_pubblicazione: newData,
+                        id_utente: commento.id_utente,
+                        id_passaggio: commento.id_passaggio,
+                        id_commento_padre: commento.id_commento_padre
+                    }
+                });
+                setCommento({ ...commento, testo: nuovoTesto, data_pubblicazione: newData });
+                setEditing(false);
+            } catch (error) {
+                console.error("Errore durante il salvataggio del commento:", error);
+            }
+        }
+    }
+
+    function openAnswerBox() {
+        if (loggedUtente) {
+            setShowAnswerBox(true);
+        } else {
+            alert("Accedi per rispondere a questo commento");
+        }
+    }
+
+    function mioCommento(): boolean {
+        return commento.utente_array[0] !== undefined && commento.utente_array.length == 1 && commento.utente_array[0].id === loggedUtente?.id;
+    }
+
+    function getNomeUtente(): string {
+        return commento.utente_array[0] !== undefined && commento.utente_array.length == 1 ? commento.utente_array[0].nome + " " + commento.utente_array[0].cognome + (mioCommento() ? " (tu)" : "") : "Utente sconosciuto";
+    }
+
     return (
-        <div key={commento.id} style={{ marginLeft: livello * 24, marginTop: 8, borderLeft: livello ? "1px solid #eee" : undefined, paddingLeft: livello ? 12 : 0 }}>
-            <div style={{ display: "flex", alignItems: "center" }}>
-                <img src={PLACEHOLDER_USER} alt="avatar" style={{ width: 32, height: 32, borderRadius: "50%", marginRight: 8 }} />
-                <b>{commento.autore.nome}</b>
-                {commento.isAutorePassaggio && <span style={{ marginLeft: 6, color: "#d32f2f", fontSize: 12, border: "1px solid #d32f2f", borderRadius: 8, padding: "0 4px", marginRight: 4 }}>autore</span>}
-                <span style={{ marginLeft: 8, color: "#888", fontSize: 12 }}>{new Date(commento.data).toLocaleString()}</span>
-            </div>
-            <div style={{ marginTop: 2 }}>{commento.testo}</div>
-            <div style={{ display: "flex", alignItems: "center", marginTop: 2 }}>
-                {renderStars(commento.rating)}
-                <span style={{ marginLeft: 8, color: "#888", fontSize: 12 }}>Ha dato {commento.rating} stelle</span>
-                <button style={{ marginLeft: 16, fontSize: 12 }}>Rispondi</button>
-            </div>
-            {commento.risposte && commento.risposte.length > 0 && (
-                <div style={{ marginTop: 4 }}>
-                    <button style={{ fontSize: 12 }}>Nascondi {commento.risposte.length} risposte</button>
-                    {commento.risposte.map(r => renderCommento(r, livello + 1))}
+        <>
+            <div style={{ display: "flex", flexDirection: "column" }}>
+                <div style={{ width: "100%", display: "flex", justifyContent: "flex-end", boxSizing: "border-box", paddingTop: 4, paddingBottom: 4, paddingLeft: 0, paddingRight: 0 }}>
+                    <div style={{ width: minWidth + ((1.0 / props.livello) * (100 - minWidth)) + "%", border: "1px solid black", borderRadius: 8, backgroundColor: "#f0f0f0", boxSizing: "border-box", padding: 8 }}>
+                        {!editing &&
+                            <>
+                                <p>{commento.testo}</p>
+                                <ReactTimeAgo date={new Date(commento.data_pubblicazione)} locale="it" />
+                                {mioCommento() &&
+                                    <button onClick={() => { setEditing(true); }}>Modifica</button>
+                                }
+                            </>
+                        }
+                        {editing &&
+                            <>
+                                <textarea style={{ width: "100%", height: 100 }} value={nuovoTesto} onChange={(e) => { setNuovoTesto(e.target.value); }} />
+                                <br />
+                                <button onClick={() => { salvaCommento();}}>Salva</button>
+                                <button onClick={() => { setEditing(false); setNuovoTesto(commento.testo);}}>Annulla</button>
+                            </>
+                        }
+                        <br />
+                        <b>{getNomeUtente()}</b>
+                        <br />
+                        {!showAnswerBox &&
+                            <a className="hover-underline" style={{ cursor: "pointer", color: "blue" }} onClick={openAnswerBox}>Rispondi</a>
+                        }
+                    </div>
                 </div>
-            )}
-        </div>
+                {showAnswerBox &&
+                    <div style={{ width: "100%", display: "flex", justifyContent: "flex-end", boxSizing: "border-box", paddingTop: 4, paddingBottom: 4, paddingLeft: 0, paddingRight: 0 }}>
+                        <div style={{ width: minWidth + ((1.0 / (props.livello + 1)) * (100 - minWidth)) + "%", boxSizing: "border-box", padding: 8 }}>
+                            <textarea placeholder="Scrivi una risposta..." style={{ width: "100%", height: 100 }} value={answer} onChange={(e) => setAnswer(e.target.value)} />
+                            <br />
+                            <button onClick={() => { sendAnswer(); }} style={{ marginTop: 4 }}>Invia</button>
+                            <button onClick={() => { setShowAnswerBox(false); setAnswer(""); }} style={{ marginTop: 4 }}>Annulla</button>
+                        </div>
+                    </div>
+                }
+                {!sendingAnswer &&
+                    <PagedList itemsPerPage={5} apiCall={`/commenti?commentoPadre=${commento.id}`} schema={CommentoEUtenteSchema} component={(element: CommentoEUtente) => {
+                        return <CardCommento commento={element} livello={props.livello + 1} />;
+                    }} showMoreButton={(onClick) => <div style={{ display: "flex", justifyContent: "flex-end" }}><button style={{ width: minWidth + ((1.0 / (props.livello + 1)) * (100 - minWidth)) + "%" }} onClick={onClick}>Carica altre risposte</button></div>
+                    } />
+                }
+            </div>
+        </>
     );
+
 }
 
 export default CardCommento;
