@@ -5,6 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const server_1 = __importDefault(require("./server"));
 const get_db_tables_and_columns_1 = require("./get_db_tables_and_columns");
+const logger_1 = __importDefault(require("./logger"));
 function checkDbTablesAndColumns(dbTablesAndColumns) {
     // Tabelle normali: nome senza "_"
     const normali = Object.keys(dbTablesAndColumns).filter(t => !t.includes("_"));
@@ -69,10 +70,17 @@ async function startServer() {
             });
         }
         else {
+            logger_1.default.error("Database schema validation failed - server startup aborted", {
+                dbTablesAndColumns: get_db_tables_and_columns_1.dbTablesAndColumns
+            });
             console.error("Sono state trovate delle tabelle o colonne non conformi. Il server non verrà avviato.");
         }
     }
     catch (error) {
+        logger_1.default.error("Server initialization failed", {
+            error: error instanceof Error ? error.message : String(error),
+            stack: error instanceof Error ? error.stack : undefined
+        });
         console.error("Errore durante l'inizializzazione del server:", error);
     }
 }

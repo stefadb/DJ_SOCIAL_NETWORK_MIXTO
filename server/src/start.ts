@@ -1,6 +1,7 @@
 import app from "./server";
 import { dbTablesAndColumns, getDbTablesAndColumns } from "./get_db_tables_and_columns";
 import { ref } from "process";
+import logger from "./logger";
 
 function checkDbTablesAndColumns(dbTablesAndColumns: Record<string, string[]>): boolean {
   // Tabelle normali: nome senza "_"
@@ -63,9 +64,16 @@ async function startServer() {
         console.log("Server is running on port 3000");
       });
     }else{
+      logger.error("Database schema validation failed - server startup aborted", {
+        dbTablesAndColumns
+      });
       console.error("Sono state trovate delle tabelle o colonne non conformi. Il server non verrà avviato.");
     }
   } catch (error) {
+    logger.error("Server initialization failed", {
+      error: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack : undefined
+    });
     console.error("Errore durante l'inizializzazione del server:", error);
   }
 }

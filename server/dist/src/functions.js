@@ -7,6 +7,7 @@ exports.makeDeezerApiCall = makeDeezerApiCall;
 exports.isValidDeezerObject = isValidDeezerObject;
 const axios_1 = __importDefault(require("axios"));
 const bottleneck_1 = __importDefault(require("bottleneck"));
+const logger_1 = __importDefault(require("./logger"));
 const deezerAPIUrl = "https://api.deezer.com";
 const deezerLimiter = new bottleneck_1.default({
     minTime: 100,
@@ -44,16 +45,29 @@ async function makeDeezerApiCall(res, urlFirstPart, urlParameter, urlSecondPart,
                 }
                 else {
                     if (response.data.error.code === 800) {
-                        res.status(404).json({ error: "L'oggetto richiesto non esiste su Deezer.", details: response.data.error });
+                        logger_1.default.warn('Deezer API: Object not found', {
+                            url,
+                            error: response.data.error
+                        });
+                        res.status(404).json({ error: "L'oggetto richiesto non esiste su Deezer." });
                     }
                     else {
-                        res.status(500).json({ error: "Errore nella chiamata a Deezer", details: response.data.error });
+                        logger_1.default.error('Deezer API error', {
+                            url,
+                            error: response.data.error
+                        });
+                        res.status(500).json({ error: "Errore nella chiamata a Deezer" });
                     }
                     resolve(-1);
                 }
             })
                 .catch((error) => {
-                res.status(500).json({ error: "Errore nella chiamata a Deezer", details: error });
+                logger_1.default.error('Deezer API request failed', {
+                    url,
+                    error: error.message,
+                    stack: error.stack
+                });
+                res.status(500).json({ error: "Errore nella chiamata a Deezer" });
                 resolve(-1);
             });
         });
@@ -66,7 +80,11 @@ async function makeDeezerApiCall(res, urlFirstPart, urlParameter, urlSecondPart,
 function isValidDeezerObject(res, obj, schema) {
     const safeParseResult = schema.safeParse(obj);
     if (!safeParseResult.success) {
-        res.status(500).json({ error: "L'oggetto restituito da Deezer non segue lo schema.", details: safeParseResult.error });
+        logger_1.default.error('Deezer object validation failed', {
+            object: obj,
+            validationErrors: safeParseResult.error.issues
+        });
+        res.status(500).json({ error: "L'oggetto restituito da Deezer non segue lo schema." });
     }
     return safeParseResult.success;
 }

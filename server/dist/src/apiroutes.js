@@ -19,6 +19,7 @@ const dotenv_1 = __importDefault(require("dotenv"));
 const functions_1 = require("./functions");
 const upserts_1 = require("./upserts");
 const get_db_tables_and_columns_1 = require("./get_db_tables_and_columns");
+const logger_1 = __importDefault(require("./logger"));
 // Decidi quale file .env usare in base a NODE_ENV
 const envFile = process.env.NODE_ENV === "test" ? ".env.test" : ".env";
 dotenv_1.default.config({ path: envFile });
@@ -67,6 +68,11 @@ async function postLogin(req, res) {
         res.json(req.session.user);
     }
     catch (err) {
+        logger_1.default.error('Login error', {
+            username,
+            error: err instanceof Error ? err.message : String(err),
+            stack: err instanceof Error ? err.stack : undefined
+        });
         res.status(500).json({ error: "Errore durante il login" });
     }
 }
@@ -106,7 +112,12 @@ async function blockUnauthorizedUser(req, res, tableName, newRowValues) {
             await con.end();
         }
         catch (err) {
-            console.log(err);
+            logger_1.default.error('Database error during entity retrieval', {
+                tableName,
+                entityId: req.params.id,
+                error: err instanceof Error ? err.message : String(err),
+                stack: err instanceof Error ? err.stack : undefined
+            });
             res.status(500).json({ error: "Errore durante il recupero dell'entità" });
             return true;
         }
@@ -126,6 +137,12 @@ async function deleteEntity(req, res, tableName) {
         res.sendStatus(204);
     }
     catch (err) {
+        logger_1.default.error('Entity deletion error', {
+            tableName,
+            entityId: id,
+            error: err instanceof Error ? err.message : String(err),
+            stack: err instanceof Error ? err.stack : undefined
+        });
         res.status(500).json({ error: "Errore nell'eliminazione dell'entità" });
     }
 }
@@ -273,7 +290,13 @@ async function getEntityWithAssociations(req, res, config) {
         res.json(mainEntity);
     }
     catch (err) {
-        res.status(500).json({ error: "Errore in una delle query", details: err });
+        logger_1.default.error('Database query error in getEntityWithAssociations', {
+            mainTableName: config.mainTableName,
+            entityId: req.params.id,
+            error: err instanceof Error ? err.message : String(err),
+            stack: err instanceof Error ? err.stack : undefined
+        });
+        res.status(500).json({ error: "Errore in una delle query" });
     }
     finally {
         await con.end();
@@ -350,7 +373,11 @@ async function getFilteredEntitiesList(req, res, config) {
         res.json(rows);
     }
     catch (err) {
-        res.status(500).json({ error: "Errore nella query", details: err });
+        logger_1.default.error('Database query error in getFilteredEntitiesList', {
+            error: err instanceof Error ? err.message : String(err),
+            stack: err instanceof Error ? err.stack : undefined
+        });
+        res.status(500).json({ error: "Errore nella query" });
     }
     finally {
         await con.end();
@@ -406,7 +433,13 @@ async function postEntity(req, res, config) {
         res.json({ id: insertId });
     }
     catch (err) {
-        res.status(500).json({ error: "Errore nella creazione dell'entità", details: err });
+        logger_1.default.error('Entity creation error', {
+            tableName: config.mainTableName,
+            newRowValues: config.mainTableNewRowValues,
+            error: err instanceof Error ? err.message : String(err),
+            stack: err instanceof Error ? err.stack : undefined
+        });
+        res.status(500).json({ error: "Errore nella creazione dell'entità" });
     }
 }
 async function putEntity(req, res, config) {
@@ -459,7 +492,14 @@ async function putEntity(req, res, config) {
         res.status(200).json();
     }
     catch (err) {
-        res.status(500).json({ error: "Errore nella creazione dell'entità", details: err });
+        logger_1.default.error('Entity update error', {
+            tableName: config.mainTableName,
+            entityId: req.params.id,
+            newRowValues: config.mainTableNewRowValues,
+            error: err instanceof Error ? err.message : String(err),
+            stack: err instanceof Error ? err.stack : undefined
+        });
+        res.status(500).json({ error: "Errore nell'aggiornamento dell'entità" });
     }
 }
 async function getBraniEsistentiPreferiti(req, res) {
@@ -477,6 +517,12 @@ async function getBraniEsistentiPreferiti(req, res) {
         res.json(rows.length > 0);
     }
     catch (err) {
+        logger_1.default.error('Error checking favorite tracks', {
+            userId: id_utente,
+            trackId: id_brano,
+            error: err instanceof Error ? err.message : String(err),
+            stack: err instanceof Error ? err.stack : undefined
+        });
         res.status(500).json({ error: "Errore nel recupero dei brani preferiti" });
     }
 }
@@ -554,6 +600,12 @@ async function upsertAssociations(tableName, associations) {
             await con.commit();
         }
         catch (error) {
+            logger_1.default.error('Database transaction error in upsertAssociations', {
+                tableName,
+                associationsCount: associations.length,
+                error: error instanceof Error ? error.message : String(error),
+                stack: error instanceof Error ? error.stack : undefined
+            });
             await con.rollback();
             throw error;
         }
@@ -584,6 +636,12 @@ async function deleteOldAssociations(tableName, associations) {
             await con.commit();
         }
         catch (error) {
+            logger_1.default.error('Database transaction error in deleteOldAssociations', {
+                tableName,
+                associationsCount: associations.length,
+                error: error instanceof Error ? error.message : String(error),
+                stack: error instanceof Error ? error.stack : undefined
+            });
             await con.rollback();
             throw error;
         }
@@ -663,6 +721,11 @@ async function deezerEntityApi(req, res, apisConfig) {
         }
     }
     catch (err) {
+        logger_1.default.error('Deezer API integration error', {
+            apiConfig: apisConfig,
+            error: err instanceof Error ? err.message : String(err),
+            stack: err instanceof Error ? err.stack : undefined
+        });
         res.status(500).json({ error: "Errore su questa Api legata a Deezer" });
     }
 }

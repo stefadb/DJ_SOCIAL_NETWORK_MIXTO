@@ -37,7 +37,7 @@ router.delete("/cleanup", async (req, res) => {
         await conn.query(`UPDATE mixto_api_calls.deezer_api_calls SET date = DATE_SUB(CURDATE(), INTERVAL 1 DAY) WHERE DATE(date) = CURDATE()`);
         res.json({ ok: true });
     } catch (err) {
-        res.status(500).json({ error: err });
+        res.status(500).json({ error: "Errore durante la pulizia del database" });
     } finally {
         conn.end();
     }

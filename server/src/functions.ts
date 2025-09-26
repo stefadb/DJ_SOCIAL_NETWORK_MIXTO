@@ -5,6 +5,7 @@ import fs from "fs";
 import { ZodIntersection, ZodObject } from "zod";
 import Bottleneck from "bottleneck";
 import { GenericDeezerEntityBasic, GenericDeezerEntityBasicSchema } from "./deezer_types";
+import logger from "./logger";
 
 const deezerAPIUrl = "https://api.deezer.com";
 
@@ -44,15 +45,28 @@ export async function makeDeezerApiCall(res: import("express").Response, urlFirs
             resolve(response);
           }else{
             if(response.data.error.code === 800){
-              res.status(404).json({ error: "L'oggetto richiesto non esiste su Deezer.", details: response.data.error });
+              logger.warn('Deezer API: Object not found', {
+                url,
+                error: response.data.error
+              });
+              res.status(404).json({ error: "L'oggetto richiesto non esiste su Deezer." });
             }else{
-              res.status(500).json({ error: "Errore nella chiamata a Deezer", details: response.data.error });
+              logger.error('Deezer API error', {
+                url,
+                error: response.data.error
+              });
+              res.status(500).json({ error: "Errore nella chiamata a Deezer" });
             }
             resolve(-1);
           }
         })
         .catch((error) => {
-          res.status(500).json({ error: "Errore nella chiamata a Deezer", details: error });
+          logger.error('Deezer API request failed', {
+            url,
+            error: error.message,
+            stack: error.stack
+          });
+          res.status(500).json({ error: "Errore nella chiamata a Deezer" });
           resolve(-1);
         });
     });
@@ -66,8 +80,11 @@ export async function makeDeezerApiCall(res: import("express").Response, urlFirs
 export function isValidDeezerObject<T extends ZodObject<any>>(res: import("express").Response, obj: any, schema: ZodIntersection<typeof GenericDeezerEntityBasicSchema, T>) {
   const safeParseResult = schema.safeParse(obj);
   if (!safeParseResult.success) {
-
-    res.status(500).json({ error: "L'oggetto restituito da Deezer non segue lo schema.", details: safeParseResult.error });
+    logger.error('Deezer object validation failed', {
+      object: obj,
+      validationErrors: safeParseResult.error.issues
+    });
+    res.status(500).json({ error: "L'oggetto restituito da Deezer non segue lo schema." });
   }
   return safeParseResult.success;
 }
