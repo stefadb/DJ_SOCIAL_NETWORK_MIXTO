@@ -7,6 +7,7 @@ exports.commonDeezerGetTestSuite = commonDeezerGetTestSuite;
 exports.commonGetApiTestSuite = commonGetApiTestSuite;
 const server_1 = __importDefault(require("../src/server"));
 const db_init_insert_queries_json_1 = __importDefault(require("./entities_crud_tests/db_init_insert_queries.json"));
+const db_restore_insert_queries_json_1 = __importDefault(require("./entities_crud_tests/db_restore_insert_queries.json"));
 const common_functions_1 = require("./common_functions");
 const get_db_tables_and_columns_1 = require("../src/get_db_tables_and_columns");
 function commonDeezerGetTestSuite(testConfig, mockDeezerResponseRaw, expectedApiSuccessResponse, mockedAxios) {
@@ -18,12 +19,11 @@ function commonDeezerGetTestSuite(testConfig, mockDeezerResponseRaw, expectedApi
         //Configurazione dei mock delle API
         beforeEach(async () => {
             await (0, get_db_tables_and_columns_1.getDbTablesAndColumns)();
-            await (0, common_functions_1.createOrDeleteTablesOnTestDb)(undefined, false);
-            await (0, common_functions_1.createOrDeleteTablesOnTestDb)(testConfig.queriesAfterDbInit, true);
+            await (0, common_functions_1.initializeOrRestoreDb)(testConfig.queriesAfterDbInit ? testConfig.queriesAfterDbInit : []);
             await (0, common_functions_1.prepareMocksForDeezerResponse)(mockDeezerResponseRaw, deezerApiCallUrl, mockedAxios);
         });
         afterEach(async () => {
-            await (0, common_functions_1.createOrDeleteTablesOnTestDb)(undefined, false);
+            await (0, common_functions_1.initializeOrRestoreDb)(db_restore_insert_queries_json_1.default);
             await jest.clearAllMocks();
         });
         //Descrizioni dei test
@@ -47,11 +47,10 @@ function commonGetApiTestSuite(testConfig, expectedApiSuccessResponse) {
             //Configurazione dei mock delle API
             beforeEach(async () => {
                 await (0, get_db_tables_and_columns_1.getDbTablesAndColumns)();
-                await (0, common_functions_1.createOrDeleteTablesOnTestDb)(undefined, false);
-                await (0, common_functions_1.createOrDeleteTablesOnTestDb)(db_init_insert_queries_json_1.default, true);
+                await (0, common_functions_1.initializeOrRestoreDb)(db_init_insert_queries_json_1.default);
             });
             afterEach(async () => {
-                await (0, common_functions_1.createOrDeleteTablesOnTestDb)(undefined, false);
+                await (0, common_functions_1.initializeOrRestoreDb)(db_restore_insert_queries_json_1.default);
             });
             it(`should return the expected API response (arrays index ${i})`, async () => {
                 await (0, common_functions_1.checkApiSuccessResponse)(config.testApiCallUrl, server_1.default, expectedApiSuccessResponse[i]);

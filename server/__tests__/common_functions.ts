@@ -18,52 +18,43 @@ export async function prepareMocksForDeezerResponse(mockDeezerResponseRaw: any, 
     return Promise.resolve();
 }
 
-export async function createOrDeleteTablesOnTestDb(queriesAfterDbInit: string[] | undefined, createTables: boolean): Promise<string> {
+export async function initializeOrRestoreDb(insertQueriesAfterTablesTruncate: string[]): Promise<string> {
     return new Promise(async (resolve, reject) => {
         try {
-            //Questo metodo deve partire da uno schema mixto_test completamente pulito e senza tabelle, altrimenti non va
+            //Questo metodo deve partire da uno schema mixto completamente pulito e senza tabelle, altrimenti non va
             const originalDB = "mixto";
-            const testDB = "mixto_test";
             const connection = await mysql.createConnection({
                 host: process.env.HOST || "localhost",
                 user: process.env.USER || "root",
                 password: process.env.PASSWORD || "5vhpS8!2xxS88s4rbT8m7j",
                 dateStrings: true
             });
-            if (createTables) {
-                await connection.query(`DROP DATABASE IF EXISTS \`${testDB}\``);
-                await connection.query(`CREATE DATABASE \`${testDB}\``);
-                // 2️⃣ disabilita temporaneamente le foreign key
-                await connection.query(`SET FOREIGN_KEY_CHECKS = 0`);
-                // 3️⃣ ottieni la lista delle tabelle dal database originale
-                const [tables] = await connection.query(
-                    `SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = ?`,
-                    [originalDB]
-                );
-                // 4️⃣ crea tutte le tabelle nel db di test
-                for (const row of tables as any[]) {
-                    const tableName = row.TABLE_NAME;
-                    await connection.query(`CREATE TABLE \`${testDB}\`.\`${tableName}\` LIKE \`${originalDB}\`.\`${tableName}\``);
-                }
-                // 5️⃣ riabilita le foreign key
-                await connection.query(`SET FOREIGN_KEY_CHECKS = 1`);
-            } else {
-                await connection.query(`DROP DATABASE IF EXISTS \`${testDB}\``);
+            // 2️⃣ disabilita temporaneamente le foreign key
+            await connection.query(`SET FOREIGN_KEY_CHECKS = 0`);
+            // 3️⃣ ottieni la lista delle tabelle dal database originale
+            const [tables] = await connection.query(
+                `SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = ?`,
+                [originalDB]
+            );
+            // 4️⃣ svuota tutte le tabelle
+            for (const row of tables as any[]) {
+                const tableName = row.TABLE_NAME;
+                await connection.query(`TRUNCATE TABLE \`${originalDB}\`.\`${tableName}\``);
             }
-            if (queriesAfterDbInit) {
-                await connection.query(`USE \`${testDB}\``);
-                //Qui esegui altre query per popolare il database di test con dati fittizi
-                for (let i = 0; i < queriesAfterDbInit.length; i++) {
-                    const query = queriesAfterDbInit[i];
-                    if (typeof query === "string") {
-                        await connection.query(query);
-                    }
+            await connection.query(`USE \`${originalDB}\``);
+            //Qui esegui altre query per popolare il database con dati fittizi
+            for (let i = 0; i < insertQueriesAfterTablesTruncate.length; i++) {
+                const query = insertQueriesAfterTablesTruncate[i];
+                if (typeof query === "string") {
+                    await connection.query(query);
                 }
             }
+            // 5️⃣ riabilita le foreign key
+            await connection.query(`SET FOREIGN_KEY_CHECKS = 1`);
             await connection.end();
-            resolve("Database di test " + (createTables ? "creato" : "eliminato") + " correttamente!");
+            resolve("Database di test inizializzato o ripristinato correttamente!");
         } catch (error) {
-            console.error("Errore nella " + (createTables ? "creazione" : "eliminazione") + " del database di test:", error);
+            console.error("Errore nella inizializzazione o ripristino del database di test:", error);
             reject(error);
         }
     });
@@ -79,7 +70,7 @@ export async function checkDbUpsert(sqlQuery: string, testApiCallUrl: string, ap
         host: process.env.HOST || "localhost",
         user: process.env.USER || "root",
         password: process.env.PASSWORD || "5vhpS8!2xxS88s4rbT8m7j",
-        database: process.env.DATABASE || "mixto_test",
+        database: process.env.DATABASE || "mixto",
         dateStrings: true
     });
     const [rows] = await con.query(sqlQuery);

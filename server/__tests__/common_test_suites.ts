@@ -1,6 +1,7 @@
 import app from "../src/server";
 import dbInitInsertQueries from "./entities_crud_tests/db_init_insert_queries.json";
-import { checkApiSuccessResponse, checkDbUpsert, createOrDeleteTablesOnTestDb, prepareMocksForDeezerResponse} from "./common_functions";
+import dbRestoreInsertQueries from "./entities_crud_tests/db_restore_insert_queries.json";
+import { checkApiSuccessResponse, checkDbUpsert, initializeOrRestoreDb, prepareMocksForDeezerResponse} from "./common_functions";
 import { DeezerGetTestSuiteTestConfig, GetApiTestSuiteTestConfig } from "./types";
 import { DeezerResponseDataItemsArray, DeezerResponseSingleItem } from "../src/deezer_types";
 import axios from "axios";
@@ -16,12 +17,11 @@ export function commonDeezerGetTestSuite(testConfig: DeezerGetTestSuiteTestConfi
         //Configurazione dei mock delle API
         beforeEach(async () => {
             await getDbTablesAndColumns();
-            await createOrDeleteTablesOnTestDb(undefined, false);
-            await createOrDeleteTablesOnTestDb(testConfig.queriesAfterDbInit, true);
+            await initializeOrRestoreDb(testConfig.queriesAfterDbInit ? testConfig.queriesAfterDbInit : []);
             await prepareMocksForDeezerResponse(mockDeezerResponseRaw, deezerApiCallUrl, mockedAxios);
         });
         afterEach(async () => {
-            await createOrDeleteTablesOnTestDb(undefined, false);
+            await initializeOrRestoreDb(dbRestoreInsertQueries as string[]);
             await jest.clearAllMocks();
         });
 
@@ -49,11 +49,10 @@ export function commonGetApiTestSuite(testConfig: GetApiTestSuiteTestConfig, exp
             //Configurazione dei mock delle API
             beforeEach(async () => {
                 await getDbTablesAndColumns();
-                await createOrDeleteTablesOnTestDb(undefined, false);
-                await createOrDeleteTablesOnTestDb(dbInitInsertQueries as string[], true);
+                await initializeOrRestoreDb(dbInitInsertQueries as string[]);
             });
             afterEach(async () => {
-                await createOrDeleteTablesOnTestDb(undefined, false);
+                await initializeOrRestoreDb(dbRestoreInsertQueries as string[]);
             });
 
             it(`should return the expected API response (arrays index ${i})`, async () => {

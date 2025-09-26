@@ -48,7 +48,6 @@ export async function getDbTablesAndColumns(): Promise<string> {
     } else {
         return new Promise(async (resolve, reject) => {
             const connection = await getConnection();
-            //await connection.execute("USE mixto;");
             const [tables] = await connection.execute<mysql.RowDataPacket[]>("SHOW TABLES");
             if (tables[0] !== undefined) {
                 const dbTablesAndColumnsNew: DbTablesAndColumns = {};
