@@ -67,19 +67,19 @@ app.get("/brani/singolo", (req, res) => { (0, apiroutes_1.deezerEntityApi)(req, 
 app.get("/brani/esistenti/preferiti", (req, res) => { (0, apiroutes_1.getBraniEsistentiPreferiti)(req, res); }); //recupera i brani preferiti dell'utente loggato
 app.get("/brani/esistenti/:id", (req, res) => { (0, apiroutes_1.getEntityWithAssociations)(req, res, get_single_apis_config_1.getSingleApisConfig.brano); });
 app.get("/brani/esistenti", (req, res) => { (0, apiroutes_1.getFilteredEntitiesList)(req, res, get_multiple_apis_config_1.getMultipleApisConfig.brano(req)); });
-app.delete("/brani/esistenti/:id", (req, res) => { (0, apiroutes_1.deleteEntity)(req, res, "brano"); });
+//app.delete("/brani/esistenti/:id", (req, res) => { deleteEntity(req, res, "brano") });
 //ALBUM
 app.get("/album/esistenti/:id", (req, res) => { (0, apiroutes_1.getEntityWithAssociations)(req, res, get_single_apis_config_1.getSingleApisConfig.album); });
 app.get("/album/esistenti", (req, res) => { (0, apiroutes_1.getFilteredEntitiesList)(req, res, get_multiple_apis_config_1.getMultipleApisConfig.album(req)); });
-app.delete("/album/esistenti/:id", (req, res) => { (0, apiroutes_1.deleteEntity)(req, res, "album"); });
+//app.delete("/album/esistenti/:id", (req, res) => { deleteEntity(req, res, "album") });
 //ARTISTI
 app.get("/artisti/esistenti/:id", (req, res) => { (0, apiroutes_1.getEntityWithAssociations)(req, res, get_single_apis_config_1.getSingleApisConfig.artista); });
 app.get("/artisti/esistenti", (req, res) => { (0, apiroutes_1.getFilteredEntitiesList)(req, res, get_multiple_apis_config_1.getMultipleApisConfig.artista(req)); });
-app.delete("/artisti/esistenti/:id", (req, res) => { (0, apiroutes_1.deleteEntity)(req, res, "artista"); });
+//app.delete("/artisti/esistenti/:id", (req, res) => { deleteEntity(req, res, "artista") });
 //GENERI
 app.get("/generi/esistenti/:id", (req, res) => { (0, apiroutes_1.getEntityWithAssociations)(req, res, get_single_apis_config_1.getSingleApisConfig.genere); });
 app.get("/generi/esistenti", (req, res) => { (0, apiroutes_1.getFilteredEntitiesList)(req, res, get_multiple_apis_config_1.getMultipleApisConfig.genere(req)); });
-app.delete("/generi/esistenti/:id", (req, res) => { (0, apiroutes_1.deleteEntity)(req, res, "genere"); });
+//app.delete("/generi/esistenti/:id", (req, res) => { deleteEntity(req, res, "genere") });
 //FINE API DI GET singola, GET multipla e DELETE delle entità db legate a Deezer
 //SCALETTE
 app.get("/scalette/:id", (req, res) => { (0, apiroutes_1.getEntityWithAssociations)(req, res, get_single_apis_config_1.getSingleApisConfig.scaletta); });
@@ -116,6 +116,10 @@ app.post("/utenti", (req, res) => {
     });
 });
 app.put("/utenti/:id", async (req, res) => {
+    if (req.session.user === undefined || req.session.user.id !== parseInt(req.params.id)) {
+        res.status(403).json({ error: "Accesso negato." });
+        return;
+    }
     if (req.body.oldPassword) {
         const con = await (0, apiroutes_1.getConnection)();
         const [rows] = await con.query("SELECT password FROM utente WHERE id = ? ", [req.params.id]);
@@ -153,6 +157,10 @@ app.put("/utenti/:id", async (req, res) => {
     }
 });
 app.delete("/utenti/:id", (req, res) => {
+    if (req.session.user === undefined || req.session.user.id !== parseInt(req.params.id)) {
+        res.status(403).json({ error: "Accesso negato." });
+        return;
+    }
     if (req.session.user && req.session.user.id === parseInt(req.params.id)) {
         (0, apiroutes_1.deleteEntity)(req, res, "utente");
     }

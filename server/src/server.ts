@@ -70,19 +70,19 @@ app.get("/brani/singolo", (req, res) => { deezerEntityApi(req, res, braniAPIsCon
 app.get("/brani/esistenti/preferiti", (req, res) => { getBraniEsistentiPreferiti(req, res) }); //recupera i brani preferiti dell'utente loggato
 app.get("/brani/esistenti/:id", (req, res) => { getEntityWithAssociations(req, res, getSingleApisConfig.brano) });
 app.get("/brani/esistenti", (req, res) => { getFilteredEntitiesList(req, res, getMultipleApisConfig.brano(req)) });
-app.delete("/brani/esistenti/:id", (req, res) => { deleteEntity(req, res, "brano") });
+//app.delete("/brani/esistenti/:id", (req, res) => { deleteEntity(req, res, "brano") });
 //ALBUM
 app.get("/album/esistenti/:id", (req, res) => { getEntityWithAssociations(req, res, getSingleApisConfig.album) });
 app.get("/album/esistenti", (req, res) => { getFilteredEntitiesList(req, res, getMultipleApisConfig.album(req)) });
-app.delete("/album/esistenti/:id", (req, res) => { deleteEntity(req, res, "album") });
+//app.delete("/album/esistenti/:id", (req, res) => { deleteEntity(req, res, "album") });
 //ARTISTI
 app.get("/artisti/esistenti/:id", (req, res) => { getEntityWithAssociations(req, res, getSingleApisConfig.artista) });
 app.get("/artisti/esistenti", (req, res) => { getFilteredEntitiesList(req, res, getMultipleApisConfig.artista(req)) });
-app.delete("/artisti/esistenti/:id", (req, res) => { deleteEntity(req, res, "artista") });
+//app.delete("/artisti/esistenti/:id", (req, res) => { deleteEntity(req, res, "artista") });
 //GENERI
 app.get("/generi/esistenti/:id", (req, res) => { getEntityWithAssociations(req, res, getSingleApisConfig.genere) });
 app.get("/generi/esistenti", (req, res) => { getFilteredEntitiesList(req, res, getMultipleApisConfig.genere(req)) });
-app.delete("/generi/esistenti/:id", (req, res) => { deleteEntity(req, res, "genere") });
+//app.delete("/generi/esistenti/:id", (req, res) => { deleteEntity(req, res, "genere") });
 //FINE API DI GET singola, GET multipla e DELETE delle entità db legate a Deezer
 
 //SCALETTE
@@ -120,6 +120,10 @@ app.post("/utenti", (req, res) => {
     });
 });
 app.put("/utenti/:id", async (req, res) => {
+    if(req.session.user === undefined || req.session.user.id !== parseInt(req.params.id)){
+        res.status(403).json({ error: "Accesso negato." });
+        return;
+    }
     if (req.body.oldPassword) {
         const con = await getConnection();
         const [rows] = await con.query("SELECT password FROM utente WHERE id = ? ", [req.params.id]);
@@ -156,6 +160,10 @@ app.put("/utenti/:id", async (req, res) => {
     }
 });
 app.delete("/utenti/:id", (req, res) => {
+    if(req.session.user === undefined || req.session.user.id !== parseInt(req.params.id)){
+        res.status(403).json({ error: "Accesso negato." });
+        return;
+    }
     if (req.session.user && req.session.user.id === parseInt(req.params.id)) {
         deleteEntity(req, res, "utente");
     } else {

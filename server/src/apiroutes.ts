@@ -31,7 +31,7 @@ import {
 } from './types';
 import z, { ZodIntersection, ZodObject } from 'zod';
 import dotenv from "dotenv";
-import { isValidDeezerObject, makeDeezerApiCall} from './functions';
+import { isValidDeezerObject, makeDeezerApiCall } from './functions';
 import { upsertEntitaDeezer } from './upserts';
 import { dbTablesAndColumns } from "./get_db_tables_and_columns";
 
@@ -101,9 +101,58 @@ export async function postLogin(req: import("express").Request, res: import("exp
   }
 }
 
+async function blockUnauthorizedUser(req: import("express").Request, res: import("express").Response, tableName: string, newRowValues?: Record<string, string | number>): Promise<boolean> {
+  if (req.session.user === undefined) {
+    res.status(401).json({ error: "Utente non loggato" });
+    return true;
+  }
+  if (newRowValues) {
+    for (const col in newRowValues) {
+      if (col.startsWith("id_utente") && newRowValues[col] !== req.session.user.id) {
+        res.status(400).json({ error: "Operazione non permessa su entità di altri utenti" });
+        return true;
+      }
+    }
+  }
+  const con = await getConnection();
+  if (req.params.id !== undefined /* Undefined per POST*/) {
+    try {
+      const [rows] = await con.execute(
+        `SELECT * FROM ${tableName} WHERE id = ?`,
+        [req.params.id]
+      );
+      const entities = rows as any[];
+      if (entities.length === 0) {
+        res.status(404).json({ error: "Entità non trovata" });
+        await con.end();
+        return true;
+      } else {
+        const entity = entities[0];
+        for (const col in entity) {
+          if (col.startsWith("id_utente") && entity[col] !== req.session.user.id) {
+            res.status(400).json({ error: "Operazione non permessa su entità di altri utenti" });
+            await con.end();
+            return true;
+          }
+        }
+      }
+      await con.end();
+    } catch (err) {
+      console.log(err);
+      res.status(500).json({ error: "Errore durante il recupero dell'entità" });
+      return true;
+    }
+  }
+  return false;
+}
+
 export async function deleteEntity(req: import("express").Request, res: import("express").Response, tableName: string) {
   const id = req.params.id;
   const con = await getConnection();
+  if (await blockUnauthorizedUser(req, res, tableName, undefined)) {
+    //Risposta già inviata dalla funzione, non serve inviarla qui
+    return;
+  }
   try {
     await con.execute(`DELETE FROM ${tableName} WHERE id = ?`, [id]);
     await con.end();
@@ -398,6 +447,10 @@ export async function postEntity(
     mainTableNewRowValues: Record<string, string | number>,
     assocTablesAndIds: Record<string, number[]>, //es. { "Genere": [1, 2, 3], "Artista": [4, 5] } per associare l'entità appena creata con i generi 1, 2, 3 e gli artisti 4, 5
   }) {
+  if (await blockUnauthorizedUser(req, res, config.mainTableName, config.mainTableNewRowValues)) {
+    //Risposta già inviata dalla funzione, non serve inviarla qui
+    return;
+  }
   try {
     const { mainTableName, mainTableNewRowValues, assocTablesAndIds } = config;
     if ("id" in mainTableNewRowValues) {
@@ -463,6 +516,10 @@ export async function putEntity(
     deleteOldAssociationsFirst: boolean, //se true, elimina tutte le associazioni vecchie prima di inserire le nuove
     assocTablesAndIds: Record<string, number[]>, //es. { "Genere": [1, 2, 3], "Artista": [4, 5] } per associare l'entità appena creata con i generi 1, 2, 3 e gli artisti 4, 5
   }) {
+  if (await blockUnauthorizedUser(req, res, config.mainTableName, config.mainTableNewRowValues)) {
+    //Risposta già inviata dalla funzione, non serve inviarla qui
+    return;
+  }
   try {
     const { mainTableName, mainTableNewRowValues, assocTablesAndIds } = config;
     if ("id" in mainTableNewRowValues) {
