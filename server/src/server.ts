@@ -30,10 +30,6 @@ app.use(session({
     saveUninitialized: true,
 }));
 
-app.use("/generi_pictures", express.static(path.join(__dirname, "generi_pictures")));
-app.use("/artisti_pictures", express.static(path.join(__dirname, "artisti_pictures")));
-app.use("/album_pictures", express.static(path.join(__dirname, "album_pictures")));
-
 const swaggerDocument = YAML.load(path.join(__dirname, 'openapi.yaml'));
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));

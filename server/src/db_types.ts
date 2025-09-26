@@ -9,6 +9,7 @@ export type DbEntity = z.infer<typeof DbEntitySchema>;
 //Mostra come sono memorizzati gli artisti nel database
 export const ArtistaDbSchema = DbEntitySchema.extend({
     nome: z.string(),
+    url_immagine: z.url().nullable()
 });
 
 export type ArtistaDb = z.infer<typeof ArtistaDbSchema>;
@@ -29,21 +30,23 @@ export type BranoDb = z.infer<typeof BranoDbSchema>;
 //Mostra come sono memorizzati gli album nel database
 export const AlbumDbSchema = DbEntitySchema.extend({
     titolo: z.string(),
-    data_uscita: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Invalid date format, expected YYYY-MM-DD").nullable()
+    data_uscita: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Invalid date format, expected YYYY-MM-DD").nullable(),
+    url_immagine: z.url().nullable()
 });
 
 export type AlbumDb = z.infer<typeof AlbumDbSchema>;
 
 //Mostra come sono memorizzati i generi nel database
 export const GenereDbSchema = DbEntitySchema.extend({
-    nome: z.string()
+    nome: z.string(),
+    url_immagine: z.url().nullable()
 });
 
 export type GenereDb = z.infer<typeof GenereDbSchema>;
 
 export const AssocBranoArtistaDbSchema = z.object({
     id_brano: z.number(),
-    id_artista: z.number(),
+    id_artista: z.number()
 }).strict();
 
 export type AssocBranoArtistaDb = z.infer<typeof AssocBranoArtistaDbSchema>;

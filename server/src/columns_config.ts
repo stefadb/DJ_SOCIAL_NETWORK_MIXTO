@@ -1,0 +1,10 @@
+export const branoColumns = ["id", "titolo", "durata", "id_album"];
+export const scalettaColumns = ["id", "nome", "descrizione", "id_utente"];
+export const passaggioColumns = ["id", "testo", "inizio_secondo_brano", "cue_secondo_brano", "data_pubblicazione", "id_utente", "id_brano_1", "id_brano_2"];
+export const commentoColumns = ["id", "testo", "data_pubblicazione", "id_utente", "id_passaggio", "id_commento_padre"];
+export const utenteColumns = ["id", "username", "nome", "cognome"];
+export const valutazioneColumns = ["id", "voto", "id_utente", "id_passaggio"];
+export const visualizzazioneColumns = ["id", "data_visualizzazione", "id_utente", "id_passaggio"];
+export const albumColumns = ["id", "titolo", "data_uscita", "url_immagine"];
+export const artistaColumns = ["id", "nome", "url_immagine"];
+export const genereColumns = ["id", "nome", "url_immagine"];

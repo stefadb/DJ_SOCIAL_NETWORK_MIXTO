@@ -1,6 +1,6 @@
 import app from "../src/server";
 import dbInitInsertQueries from "./entities_crud_tests/db_init_insert_queries.json";
-import { checkApiSuccessResponse, checkDbUpsert, createOrDeleteTablesOnTestDb, prepareMocksForDeezerResponseAndImages, testPicturesDownload } from "./common_functions";
+import { checkApiSuccessResponse, checkDbUpsert, createOrDeleteTablesOnTestDb, prepareMocksForDeezerResponse} from "./common_functions";
 import { DeezerGetTestSuiteTestConfig, GetApiTestSuiteTestConfig } from "./types";
 import { DeezerResponseDataItemsArray, DeezerResponseSingleItem } from "../src/deezer_types";
 import axios from "axios";
@@ -18,7 +18,7 @@ export function commonDeezerGetTestSuite(testConfig: DeezerGetTestSuiteTestConfi
             await getDbTablesAndColumns();
             await createOrDeleteTablesOnTestDb(undefined, false);
             await createOrDeleteTablesOnTestDb(testConfig.queriesAfterDbInit, true);
-            await prepareMocksForDeezerResponseAndImages(mockDeezerResponseRaw, deezerApiCallUrl, mockedAxios);
+            await prepareMocksForDeezerResponse(mockDeezerResponseRaw, deezerApiCallUrl, mockedAxios);
         });
         afterEach(async () => {
             await createOrDeleteTablesOnTestDb(undefined, false);
@@ -36,12 +36,6 @@ export function commonDeezerGetTestSuite(testConfig: DeezerGetTestSuiteTestConfi
                 await checkDbUpsert(dbUpsertTest.sqlQuery, testApiCallUrl, app, dbUpsertTest.expectedResult);
             });
         }
-
-
-        if (testConfig.photosIdToDownload !== undefined) {
-            it(`should upload the photo/photos that Deezer returns`, async () => { await testPicturesDownload(testConfig.photosIdToDownload, testApiCallUrl, app) });
-        }
-
     });
 }
 

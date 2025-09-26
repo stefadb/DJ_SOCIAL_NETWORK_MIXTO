@@ -1,11 +1,11 @@
-import { ZodObject } from "zod/v3";
+import {branoColumns, scalettaColumns, passaggioColumns, commentoColumns, utenteColumns, valutazioneColumns, visualizzazioneColumns, albumColumns, artistaColumns, genereColumns} from "./columns_config";
 import { PassaggioDbSchema, ScalettaDbSchema, UtenteDbSchema, VisualizzazioneDbSchema, CommentoDbSchema, ValutazioneDbSchema, BranoDbSchema, AlbumDbSchema, ArtistaDbSchema, GenereDbSchema } from "./db_types";
 
 export const getMultipleApisConfig = {
     scaletta: (req: import("express").Request) => {
         return {
             mainTableName: "scaletta",
-            mainTableColumns: req.query.columns === undefined ? ["id", "nome", "descrizione", "id_utente"] : (req.query.columns as string).split(","),
+            mainTableColumns: req.query.columns === undefined ? scalettaColumns : (req.query.columns as string).split(","),
             mainTableSchema: ScalettaDbSchema,
             filtersAndJoins: [
                 ...(req.query.utente ? [{
@@ -24,7 +24,7 @@ export const getMultipleApisConfig = {
     passaggio: (req: import("express").Request) => {
         return {
             mainTableName: "passaggio",
-            mainTableColumns: req.query.columns === undefined ? ["id", "testo", "inizio_secondo_brano", "cue_secondo_brano", "data_pubblicazione", "id_utente", "id_brano_1", "id_brano_2"] : (req.query.columns as string).split(","),
+            mainTableColumns: req.query.columns === undefined ? passaggioColumns : (req.query.columns as string).split(","),
             mainTableSchema: PassaggioDbSchema,
             orderBys: ["passaggio.data_pubblicazione DESC"],
             filtersAndJoins: [
@@ -36,14 +36,14 @@ export const getMultipleApisConfig = {
                     joinedTableName: "brano",
                     joinColumnSuffix: "1",
 
-                    columns: ["id", "titolo", "durata", "id_album"],
+                    columns: branoColumns,
                     schema: BranoDbSchema
                 },
                 {
                     joinedTableName: "brano",
                     joinColumnSuffix: "2",
 
-                    columns: ["id", "titolo", "durata", "id_album"],
+                    columns: branoColumns,
                     schema: BranoDbSchema
                 }] : []),
                 ...(req.query.primoBrano ? [{
@@ -55,7 +55,7 @@ export const getMultipleApisConfig = {
                     joinedTableName: "brano",
                     joinColumnSuffix: "2",
 
-                    columns: ["id", "titolo", "durata", "id_album"],
+                    columns: branoColumns,
                     schema: BranoDbSchema
                 }] : []),
                 ...(req.query.secondoBrano ? [{
@@ -67,7 +67,7 @@ export const getMultipleApisConfig = {
                     joinedTableName: "brano",
                     joinColumnSuffix: "1",
 
-                    columns: ["id", "titolo", "durata", "id_album"],
+                    columns: branoColumns,
                     schema: BranoDbSchema
                 }] : []),
                 ...(req.query.albumPrimoBrano ? [{
@@ -79,14 +79,14 @@ export const getMultipleApisConfig = {
                     joinedTableName: "brano",
                     joinColumnSuffix: "1",
 
-                    columns: ["id", "titolo", "durata", "id_album"],
+                    columns: branoColumns,
                     schema: BranoDbSchema
                 },
                 {
                     joinedTableName: "brano",
                     joinColumnSuffix: "2",
 
-                    columns: ["id", "titolo", "durata", "id_album"],
+                    columns: branoColumns,
                     schema: BranoDbSchema
                 }] : []),
                 ...(req.query.albumSecondoBrano ? [{
@@ -98,14 +98,14 @@ export const getMultipleApisConfig = {
                     joinedTableName: "brano",
                     joinColumnSuffix: "1",
 
-                    columns: ["id", "titolo", "durata", "id_album"],
+                    columns: branoColumns,
                     schema: BranoDbSchema
                 },
                 {
                     joinedTableName: "brano",
                     joinColumnSuffix: "2",
 
-                    columns: ["id", "titolo", "durata", "id_album"],
+                    columns: branoColumns,
                     schema: BranoDbSchema
                 }] : []),
                 ...(req.query.scaletta ? [{
@@ -123,14 +123,14 @@ export const getMultipleApisConfig = {
                     joinedTableName: "brano",
                     joinColumnSuffix: "1",
 
-                    columns: ["id", "titolo", "durata", "id_album"],
+                    columns: branoColumns,
                     schema: BranoDbSchema
                 },
                 {
                     joinedTableName: "brano",
                     joinColumnSuffix: "2",
 
-                    columns: ["id", "titolo", "durata", "id_album"],
+                    columns: branoColumns,
                     schema: BranoDbSchema
                 }] : []),
                 ...(req.query.artistaSecondoBrano ? [{
@@ -143,14 +143,14 @@ export const getMultipleApisConfig = {
                     joinedTableName: "brano",
                     joinColumnSuffix: "1",
 
-                    columns: ["id", "titolo", "durata", "id_album"],
+                    columns: branoColumns,
                     schema: BranoDbSchema
                 },
                 {
                     joinedTableName: "brano",
                     joinColumnSuffix: "2",
 
-                    columns: ["id", "titolo", "durata", "id_album"],
+                    columns: branoColumns,
                     schema: BranoDbSchema
                 }] : []),
                 ...(req.query.generePrimoBrano ? [{
@@ -163,14 +163,14 @@ export const getMultipleApisConfig = {
                     joinedTableName: "brano",
                     joinColumnSuffix: "1",
 
-                    columns: ["id", "titolo", "durata", "id_album"],
+                    columns: branoColumns,
                     schema: BranoDbSchema
                 },
                 {
                     joinedTableName: "brano",
                     joinColumnSuffix: "2",
 
-                    columns: ["id", "titolo", "durata", "id_album"],
+                    columns: branoColumns,
                     schema: BranoDbSchema
                 }] : []),
                 ...(req.query.genereSecondoBrano ? [{
@@ -183,14 +183,14 @@ export const getMultipleApisConfig = {
                     joinedTableName: "brano",
                     joinColumnSuffix: "1",
 
-                    columns: ["id", "titolo", "durata", "id_album"],
+                    columns: branoColumns,
                     schema: BranoDbSchema
                 },
                 {
                     joinedTableName: "brano",
                     joinColumnSuffix: "2",
 
-                    columns: ["id", "titolo", "durata", "id_album"],
+                    columns: branoColumns,
                     schema: BranoDbSchema
                 }] : []),
             ]
@@ -214,7 +214,7 @@ export const getMultipleApisConfig = {
                     joinedTableName: "brano",
                     joinColumnSuffix: "2",
 
-                    columns: ["id", "titolo", "durata", "id_album"],
+                    columns: branoColumns,
                     schema: BranoDbSchema
                 }] : []),
                 ...(req.query.secondoBrano ? [{
@@ -226,7 +226,7 @@ export const getMultipleApisConfig = {
                     joinedTableName: "brano",
                     joinColumnSuffix: "1",
 
-                    columns: ["id", "titolo", "durata", "id_album"],
+                    columns: branoColumns,
                     schema: BranoDbSchema
                 }] : [])
             ]
@@ -235,7 +235,7 @@ export const getMultipleApisConfig = {
     commento: (req: import("express").Request) => {
         return {
             mainTableName: "commento",
-            mainTableColumns: req.query.columns === undefined ? ["id", "testo", "data_pubblicazione", "id_utente", "id_passaggio", "id_commento_padre"] : (req.query.columns as string).split(","),
+            mainTableColumns: req.query.columns === undefined ? commentoColumns : (req.query.columns as string).split(","),
             mainTableSchema: CommentoDbSchema,
             orderBys: ["commento.data_pubblicazione DESC"],
             filtersAndJoins: [
@@ -255,7 +255,7 @@ export const getMultipleApisConfig = {
                     value: "NULL"
                 },{
                     joinedTableName: "utente",
-                    columns: ["id", "username", "nome", "cognome"],
+                    columns: utenteColumns,
                     schema: UtenteDbSchema
                 }] : []),
                 ...(req.query.commentoPadre ? [{
@@ -265,7 +265,7 @@ export const getMultipleApisConfig = {
                     joinColumnSuffix: "padre"
                 },{
                     joinedTableName: "utente",
-                    columns: ["id", "username", "nome", "cognome"],
+                    columns: utenteColumns,
                     schema: UtenteDbSchema
                 }] : []),
             ]
@@ -274,7 +274,7 @@ export const getMultipleApisConfig = {
     valutazione: (req: import("express").Request) => {
         return {
             mainTableName: "valutazione",
-            mainTableColumns: req.query.columns === undefined ? ["id", "voto", "id_utente", "id_passaggio"] : (req.query.columns as string).split(","),
+            mainTableColumns: req.query.columns === undefined ? valutazioneColumns : (req.query.columns as string).split(","),
             mainTableSchema: ValutazioneDbSchema,
             orderBys: ["valutazione.id DESC"],
             filtersAndJoins: [
@@ -290,7 +290,7 @@ export const getMultipleApisConfig = {
                 }, {
                     joinedTableName: "utente",
 
-                    columns: ["id", "username", "nome", "cognome"],
+                    columns: utenteColumns,
                     schema: UtenteDbSchema
                 }] : [])
             ]
@@ -315,7 +315,7 @@ export const getMultipleApisConfig = {
     visualizzazione: (req: import("express").Request) => {
         return {
             mainTableName: "visualizzazione",
-            mainTableColumns: req.query.columns === undefined ? ["id", "data_visualizzazione", "id_utente", "id_passaggio"] : (req.query.columns as string).split(","),
+            mainTableColumns: req.query.columns === undefined ? visualizzazioneColumns : (req.query.columns as string).split(","),
             mainTableSchema: VisualizzazioneDbSchema,
             filtersAndJoins: [
                 ...(req.query.passaggio ? [{
@@ -329,7 +329,7 @@ export const getMultipleApisConfig = {
     utente: (req: import("express").Request) => {
         return {
             mainTableName: "utente",
-            mainTableColumns: req.query.columns === undefined ? ["id", "username", "nome", "cognome", "password"] : (req.query.columns as string).split(","),
+            mainTableColumns: req.query.columns === undefined ? utenteColumns.concat("password") : (req.query.columns as string).split(","),
             mainTableSchema: UtenteDbSchema,
             filtersAndJoins: []
         }
@@ -337,7 +337,7 @@ export const getMultipleApisConfig = {
     brano: (req: import("express").Request) => {
         return {
             mainTableName: "brano",
-            mainTableColumns: req.query.columns === undefined ? ["id", "titolo", "durata", "id_album"] : (req.query.columns as string).split(","),
+            mainTableColumns: req.query.columns === undefined ? branoColumns : (req.query.columns as string).split(","),
             mainTableSchema: BranoDbSchema,
             filtersAndJoins: [
                 ...(req.query.album ? [{
@@ -373,7 +373,7 @@ export const getMultipleApisConfig = {
     album: (req: import("express").Request) => {
         return {
             mainTableName: "album",
-            mainTableColumns: req.query.columns === undefined ? ["id", "titolo", "data_uscita"] : (req.query.columns as string).split(","),
+            mainTableColumns: req.query.columns === undefined ? albumColumns : (req.query.columns as string).split(","),
             mainTableSchema: AlbumDbSchema,
             filtersAndJoins: [
                 ...(req.query.brano ? [{
@@ -398,7 +398,7 @@ export const getMultipleApisConfig = {
     artista: (req: import("express").Request) => {
         return {
             mainTableName: "artista",
-            mainTableColumns: req.query.columns === undefined ? ["id", "nome"] : (req.query.columns as string).split(","),
+            mainTableColumns: req.query.columns === undefined ? artistaColumns : (req.query.columns as string).split(","),
             mainTableSchema: ArtistaDbSchema,
             filtersAndJoins: [
                 ...(req.query.brano ? [{
@@ -423,7 +423,7 @@ export const getMultipleApisConfig = {
     genere: (req: import("express").Request) => {
         return {
             mainTableName: "genere",
-            mainTableColumns: req.query.columns === undefined ? ["id", "nome"] : (req.query.columns as string).split(","),
+            mainTableColumns: req.query.columns === undefined ? genereColumns : (req.query.columns as string).split(","),
             mainTableSchema: GenereDbSchema,
             filtersAndJoins: [
                 ...(req.query.album ? [{

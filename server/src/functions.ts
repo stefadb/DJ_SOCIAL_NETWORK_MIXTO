@@ -59,39 +59,6 @@ export async function makeDeezerApiCall(res: import("express").Response, urlFirs
   });
 }
 
-//FUNZIONE GIA ADATTATA A TYPESCRIPT
-export async function uploadPhoto(dirName: string, entity: GenericDeezerEntityBasic) {
-  let pictureUrl: string;
-  if ("picture_big" in entity || "cover_big" in entity || "picture" in entity) {
-    pictureUrl = "picture_big" in entity ? entity.picture_big : "cover_big" in entity ? entity.cover_big : entity.picture;
-  } else {
-    //Nessuna immagine da caricare
-    return;
-  }
-  const picturesDir = path.join(__dirname, dirName);
-  if (!fs.existsSync(picturesDir)) {
-    fs.mkdirSync(picturesDir);
-  }
-  return new Promise((resolve, reject) => {
-    const picturesDir = path.join(__dirname, dirName);
-    const imgPath = path.join(picturesDir, `${entity.id}.jpg`);
-    try {
-      axios.get(pictureUrl, { responseType: "stream" })
-        .then((imgResponse) => {
-          const writer = fs.createWriteStream(imgPath);
-          imgResponse.data.pipe(writer);
-          writer.on("finish", () => { resolve("Upload della foto completato"); });
-          writer.on("error", () => { reject(); });
-        })
-        .catch((error) => {
-          reject(error);
-        });
-    } catch (imgErr) {
-      reject(imgErr);
-    }
-  });
-}
-
 /**
  * Restituisce true se l'oggetto Deezer è valido, false altrimenti
  */

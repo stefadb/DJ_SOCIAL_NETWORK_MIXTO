@@ -1,7 +1,7 @@
 [
-  { "id": 338641427, "titolo": "KALAK", "data_uscita": null },
-  { "id": 6937217, "titolo": "From Within", "data_uscita": null },
-  { "id": 341845357, "titolo": "Feorm Falorx", "data_uscita": null },
-  { "id": 10067094, "titolo": "Déjà vu", "data_uscita": null },
-  { "id": 485011955, "titolo": "Monster", "data_uscita": null }
+  { "id": 338641427, "titolo": "KALAK", "data_uscita": null, "url_immagine": "https://cdn-images.dzcdn.net/images/cover/aa37d84df911a9dcc772d9be8e0844d1/500x500-000000-80-0-0.jpg" },
+  { "id": 6937217, "titolo": "From Within", "data_uscita": null, "url_immagine": "https://cdn-images.dzcdn.net/images/cover/fe902bf7b701f3ad67f486572ed10e26/500x500-000000-80-0-0.jpg" },
+  { "id": 341845357, "titolo": "Feorm Falorx", "data_uscita": null, "url_immagine": "https://cdn-images.dzcdn.net/images/cover/97ead41abfe60ab54d89aa989f8ff3b0/500x500-000000-80-0-0.jpg" },
+  { "id": 10067094, "titolo": "Déjà vu", "data_uscita": null, "url_immagine": "https://cdn-images.dzcdn.net/images/cover/947afb97cc36f03f3cedb632cf9d6786/500x500-000000-80-0-0.jpg" },
+  { "id": 485011955, "titolo": "Monster", "data_uscita": null, "url_immagine": "https://cdn-images.dzcdn.net/images/cover/ae90508cb2b97b5723b9abc1ca5b1133/500x500-000000-80-0-0.jpg" }
 ]

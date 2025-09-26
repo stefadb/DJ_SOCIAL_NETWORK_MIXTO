@@ -55,7 +55,7 @@ function Artista() {
             <h1>Artista</h1>
             {artista ? (
                 <div>
-                    <img style={{ width: "200px", height: "200px", borderRadius: "50%" }} src={"http://localhost:3000/artisti_pictures/" + artista.id + ".jpg"} alt={"Immagine di profilo di " + artista.nome} />
+                    <img style={{ width: "200px", height: "200px", borderRadius: "50%" }} src={artista.url_immagine ? artista.url_immagine : "src/assets/artista_empty.jpg"} alt={"Immagine di profilo di " + artista.nome} />
                     <h2>{artista.nome}</h2>
                     <p>Generi: --ancora non so come farli vedere-- //TODO:</p>
                 </div>

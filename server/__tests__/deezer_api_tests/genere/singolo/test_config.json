@@ -3,7 +3,6 @@
   "apiName": "/generi/singolo",
   "testApiCallUrl": "/generi/singolo?genreId=106&limit=1&index=0",
   "entityName": "genre",
-  "photosIdToDownload": { "generi_pictures": [106] },
   "dbUpsertTests": [
     {
       "sqlQuery": "SELECT * FROM genere WHERE id = 106",
@@ -11,7 +10,8 @@
       "expectedResult": [
         {
           "id": 106,
-          "nome": "Electro"
+          "nome": "Electro",
+          "url_immagine": "https://cdn-images.dzcdn.net/images/misc/15df4502c1c58137dae5bdd1cc6f0251/500x500-000000-80-0-0.jpg"
         }
       ]
     }

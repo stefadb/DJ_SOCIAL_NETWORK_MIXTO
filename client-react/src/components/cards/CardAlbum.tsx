@@ -22,7 +22,7 @@ function CardAlbum(props: { album: AlbumDb }) {
     }
     return (
         <div onClick={() => {navigate("/album?id=" + props.album.id);}} style={{ border: "1px solid black", borderRadius: "8px", padding: "10px", margin: "10px", cursor: "pointer" }}>
-            <img style={{ width: "100px", height: "100px" }} src={"http://localhost:3000/album_pictures/" + props.album.id + ".jpg"} alt={"Cover album " + props.album.titolo} />
+            <img style={{ width: "100px", height: "100px" }} src={props.album.url_immagine ? props.album.url_immagine : "src/assets/album_empty.jpg"} alt={"Cover album " + props.album.titolo} />
             <h3>{props.album.titolo}</h3>
             <p>Data di uscita: {props.album.data_uscita ? props.album.data_uscita : "Sconosciuta"}</p>
             <p>Artisti: {artisti ? artisti.map(artista => artista.nome).join(", ") : "Caricamento..."}</p>

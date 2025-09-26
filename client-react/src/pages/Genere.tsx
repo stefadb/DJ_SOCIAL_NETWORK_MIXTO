@@ -53,7 +53,7 @@ function Genere() {
             <h1>Genere</h1>
             {genere ? (
                 <div>
-                    <img style={{ width: "200px", height: "200px", borderRadius: "50%" }} src={"http://localhost:3000/generi_pictures/" + genere.id + ".jpg"} alt={"Immagine del genere " + genere.nome} />
+                    <img style={{ width: "200px", height: "200px", borderRadius: "50%" }} src={genere.url_immagine ? genere.url_immagine : "src/assets/genere_empty.jpg"} alt={"Immagine del genere " + genere.nome} />
                     <h2>{genere.nome}</h2>
                 </div>
             ) : (

@@ -1,22 +1,27 @@
 [
   {
     "id": 13,
-    "nome": "Eminem"
+    "nome": "Eminem",
+    "url_immagine": "https://cdn-images.dzcdn.net/images/artist/0f30bbd33a680030054af004d698d6ac/500x500-000000-80-0-0.jpg"
   },
   {
     "id": 5478540,
-    "nome": "Emine'm"
+    "nome": "Emine'm",
+    "url_immagine": "https://cdn-images.dzcdn.net/images/artist/7fa738468c9a73ff98c1e1b78d622b81/500x500-000000-80-0-0.jpg"
   },
   {
     "id": 763,
-    "nome": "Dr. Dre"
+    "nome": "Dr. Dre",
+    "url_immagine": "https://cdn-images.dzcdn.net/images/artist/5af98b093efb7b818e4e084621c76b85/500x500-000000-80-0-0.jpg"
   },
   {
     "id": 417645,
-    "nome": "D12"
+    "nome": "D12",
+    "url_immagine": "https://cdn-images.dzcdn.net/images/artist/5711b129b168ded148e5898d17fb66ed/500x500-000000-80-0-0.jpg"
   },
   {
     "id": 335647671,
-    "nome": "Eminem-Gospel"
+    "nome": "Eminem-Gospel",
+    "url_immagine": "https://cdn-images.dzcdn.net/images/artist/b26c83a652e8ffeb9a1c65f0f4cc5ab6/500x500-000000-80-0-0.jpg"
   }
 ]

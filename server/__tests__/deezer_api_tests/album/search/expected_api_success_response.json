@@ -2,26 +2,31 @@
   {
     "id": 194219042,
     "titolo": "Music To Be Murdered By - Side B (Deluxe Edition)",
-    "data_uscita": null
+    "data_uscita": null,
+    "url_immagine": "https://cdn-images.dzcdn.net/images/cover/55d424a53904d145b17869ba133843d7/500x500-000000-80-0-0.jpg"
   },
   {
     "id": 103248,
     "titolo": "The Eminem Show",
-    "data_uscita": null
+    "data_uscita": null,
+    "url_immagine": "https://cdn-images.dzcdn.net/images/cover/ec3c8ed67427064c70f67e5815b74cef/500x500-000000-80-0-0.jpg"
   },
   {
     "id": 641646351,
     "titolo": "The Death of Slim Shady (Coup De Grâce): Expanded Mourner’s Edition",
-    "data_uscita": null
+    "data_uscita": null,
+    "url_immagine": "https://cdn-images.dzcdn.net/images/cover/95c08f630c379d8f3ff8e58a2d47569f/500x500-000000-80-0-0.jpg",
   },
   {
     "id": 810703161,
     "titolo": "STANS (The Official Soundtrack)",
-    "data_uscita": null
+    "data_uscita": null,
+    "url_immagine": "https://cdn-images.dzcdn.net/images/cover/5619aa4f4ff24b1f0d5ae344880ab2dc/500x500-000000-80-0-0.jpg"
   },
   {
     "id": 72000342,
     "titolo": "Kamikaze",
-    "data_uscita": null
+    "data_uscita": null,
+    "url_immagine": "https://cdn-images.dzcdn.net/images/cover/bf74fc764097630ba58782ae79cfbee6/500x500-000000-80-0-0.jpg"
   }
 ]

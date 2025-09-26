@@ -45,29 +45,34 @@
       "entityName": "albums",
       "expectedResult": [
         {
+          "data_uscita": null,
           "id": 62482862,
           "titolo": "Ladies Night EP",
-          "data_uscita": null
+          "url_immagine": "https://cdn-images.dzcdn.net/images/cover/05970fa95c8c98fb376dab7545bd5e8f/500x500-000000-80-0-0.jpg"
         },
         {
+          "data_uscita": null,
           "id": 443485285,
           "titolo": "All Night Long",
-          "data_uscita": null
+          "url_immagine": "https://cdn-images.dzcdn.net/images/cover/74968aac2b6342e00228d05c58938a52/500x500-000000-80-0-0.jpg"
         },
         {
+          "data_uscita": null,
           "id": 504321061,
           "titolo": "Across Ocean",
-          "data_uscita": null
+          "url_immagine": "https://cdn-images.dzcdn.net/images/cover/277827444a126b8e6c888e8eb4522c7b/500x500-000000-80-0-0.jpg"
         },
         {
+          "data_uscita": null,
           "id": 558742112,
           "titolo": "Synergy",
-          "data_uscita": null
+          "url_immagine": "https://cdn-images.dzcdn.net/images/cover/82acbc07bfa779f8f8ce65f0dea2bf8e/500x500-000000-80-0-0.jpg"
         },
         {
+          "data_uscita": null,
           "id": 769758471,
           "titolo": "Sakura",
-          "data_uscita": null
+          "url_immagine": "https://cdn-images.dzcdn.net/images/cover/a19691d854608dcb3af1adf1dbf72e95/500x500-000000-80-0-0.jpg"
         }
       ]
     },
@@ -77,23 +82,28 @@
       "expectedResult": [
         {
           "id": 1126553,
-          "nome": "Litmus"
+          "nome": "Litmus",
+          "url_immagine": "https://cdn-images.dzcdn.net/images/artist/6abcd711f24378f68eade36dda4bc3ad/500x500-000000-80-0-0.jpg"
         },
         {
           "id": 4858265,
-          "nome": "Locklead"
+          "nome": "Locklead",
+          "url_immagine": "https://cdn-images.dzcdn.net/images/artist/278622711508dbc656f5b4e18e0b2be6/500x500-000000-80-0-0.jpg"
         },
         {
           "id": 5359276,
-          "nome": "Chris Stussy"
+          "nome": "Chris Stussy",
+          "url_immagine": "https://cdn-images.dzcdn.net/images/artist/915921fa6b4d968c6c187ba4f1d01018/500x500-000000-80-0-0.jpg"
         },
         {
           "id": 5862156,
-          "nome": "Bas Roos"
+          "nome": "Bas Roos",
+          "url_immagine": "https://cdn-images.dzcdn.net/images/artist/185baeefb9bc17790b325f63f1a0cb6d/500x500-000000-80-0-0.jpg"
         },
         {
           "id": 203478207,
-          "nome": "Across Boundaries"
+          "nome": "Across Boundaries",
+          "url_immagine": "https://cdn-images.dzcdn.net/images/artist/a19691d854608dcb3af1adf1dbf72e95/500x500-000000-80-0-0.jpg"
         }
       ]
     },
@@ -114,9 +124,5 @@
         { "id_brano": 3405992021, "id_artista": 203478207 }
       ]
     }
-  ],
-  "photosIdToDownload": {
-    "artisti_pictures": [1126553, 4858265, 5359276, 5862156, 203478207],
-    "album_pictures": [62482862, 443485285, 504321061, 558742112, 769758471]
-  }
+  ]
 }

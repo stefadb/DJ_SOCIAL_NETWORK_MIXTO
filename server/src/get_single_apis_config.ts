@@ -1,191 +1,190 @@
 import { AlbumDbSchema, ArtistaDbSchema, BranoDbSchema, CommentoDbSchema, GenereDbSchema, PassaggioDbSchema, ScalettaDbSchema, UtenteDbSchema, ValutazioneDbSchema, VisualizzazioneDbSchema } from "./db_types";
-
-
+import {branoColumns, scalettaColumns, passaggioColumns, commentoColumns, utenteColumns, valutazioneColumns, visualizzazioneColumns, albumColumns, artistaColumns, genereColumns} from "./columns_config";
 export const getSingleApisConfig = {
     scaletta: {
         mainTableName: "scaletta",
-        mainTableColumns: ["id", "nome", "descrizione", "id_utente"],
+        mainTableColumns: scalettaColumns,
         mainTableSchema: ScalettaDbSchema,
         otherTables: [
             {
                 tableName: "passaggio",
-                columns: ["id", "testo", "inizio_secondo_brano", "cue_secondo_brano", "data_pubblicazione", "id_utente", "id_brano_1", "id_brano_2"],
+                columns: passaggioColumns,
                 schema: PassaggioDbSchema
             },
             {
                 tableName: "utente",
-                columns: ["id", "username", "nome", "cognome", "password"],
+                columns: utenteColumns.concat("password"),
                 schema: UtenteDbSchema
             }
         ]
     },
     passaggio: {
         mainTableName: "passaggio",
-        mainTableColumns: ["id", "testo", "inizio_secondo_brano", "cue_secondo_brano", "data_pubblicazione", "id_utente", "id_brano_1", "id_brano_2"],
+        mainTableColumns: passaggioColumns,
         mainTableSchema: PassaggioDbSchema,
         otherTables: [
             {
                 tableName: "utente",
-                columns: ["id", "username", "nome", "cognome", "password"],
+                columns: utenteColumns.concat("password"),
                 schema: UtenteDbSchema
             },
             {
                 tableName: "commento",
-                columns: ["id", "testo", "data_pubblicazione", "id_utente", "id_passaggio", "id_commento_padre"],
+                columns: commentoColumns,
                 schema: CommentoDbSchema
             },
             {
                 tableName: "valutazione",
-                columns: ["id", "voto", "id_utente", "id_passaggio"],
+                columns: valutazioneColumns,
                 schema: ValutazioneDbSchema
             },
             {
                 tableName: "scaletta",
-                columns: ["id", "nome", "descrizione", "id_utente"],
+                columns: scalettaColumns,
                 schema: ScalettaDbSchema
             },
             {
                 tableName: "visualizzazione",
-                columns: ["id", "data_visualizzazione", "id_utente", "id_passaggio"],
+                columns: visualizzazioneColumns,
                 schema: VisualizzazioneDbSchema
             }
         ]
     },
     utente: {
         mainTableName: "utente",
-        mainTableColumns: ["id", "username", "nome", "cognome", "password"],
+        mainTableColumns: utenteColumns.concat("password"),
         mainTableSchema: UtenteDbSchema,
         otherTables: [
             {
                 tableName: "passaggio",
-                columns: ["id", "testo", "inizio_secondo_brano", "cue_secondo_brano", "data_pubblicazione", "id_utente", "id_brano_1", "id_brano_2"],
+                columns: passaggioColumns,
                 schema: PassaggioDbSchema
             },
             {
                 tableName: "scaletta",
-                columns: ["id", "nome", "descrizione", "id_utente"],
+                columns: scalettaColumns,
                 schema: ScalettaDbSchema
             },
             {
                 tableName: "valutazione",
-                columns: ["id", "voto", "id_utente", "id_passaggio"],
+                columns: valutazioneColumns,
                 schema: ValutazioneDbSchema
             },
             {
                 tableName: "commento",
-                columns: ["id", "testo", "data_pubblicazione", "id_utente", "id_passaggio", "id_commento_padre"],
+                columns: commentoColumns,
                 schema: CommentoDbSchema
             },
             {
                 tableName: "visualizzazione",
-                columns: ["id", "data_visualizzazione", "id_utente", "id_passaggio"],
+                columns: visualizzazioneColumns,
                 schema: VisualizzazioneDbSchema
             }
         ]
     },
     valutazione: {
         mainTableName: "valutazione",
-        mainTableColumns: ["id", "voto", "id_utente", "id_passaggio"],
+        mainTableColumns: valutazioneColumns,
         mainTableSchema: ValutazioneDbSchema,
         otherTables: [
             {
                 tableName: "utente",
-                columns: ["id", "username", "nome", "cognome", "password"],
+                columns: utenteColumns.concat("password"),
                 schema: UtenteDbSchema
             },
             {
                 tableName: "passaggio",
-                columns: ["id", "testo", "inizio_secondo_brano", "cue_secondo_brano", "data_pubblicazione", "id_utente", "id_brano_1", "id_brano_2"],
+                columns: passaggioColumns,
                 schema: PassaggioDbSchema
             }
         ]
     },
     visualizzazione: {
         mainTableName: "visualizzazione",
-        mainTableColumns: ["id", "data_visualizzazione", "id_utente", "id_passaggio"],
+        mainTableColumns: visualizzazioneColumns,
         mainTableSchema: VisualizzazioneDbSchema,
         otherTables: [{
             tableName: "utente",
-            columns: ["id", "username", "nome", "cognome", "password"],
+            columns: utenteColumns.concat("password"),
             schema: UtenteDbSchema
         }],
     },
     commento: {
         mainTableName: "commento",
-        mainTableColumns: ["id", "testo", "data_pubblicazione", "id_utente", "id_passaggio", "id_commento_padre"],
+        mainTableColumns: commentoColumns,
         mainTableSchema: CommentoDbSchema,
         otherTables: [
             {
                 tableName: "utente",
-                columns: ["id", "username", "nome", "cognome", "password"],
+                columns: utenteColumns.concat("password"),
                 schema: UtenteDbSchema
             },
             {
                 tableName: "passaggio",
-                columns: ["id", "testo", "inizio_secondo_brano", "cue_secondo_brano", "data_pubblicazione", "id_utente", "id_brano_1", "id_brano_2"],
+                columns: passaggioColumns,
                 schema: PassaggioDbSchema
             }
         ]
     },
     brano: {
         mainTableName: "brano",
-        mainTableColumns: ["id", "titolo", "durata", "id_album"],
+        mainTableColumns: branoColumns,
         mainTableSchema: BranoDbSchema,
         otherTables: [
             {
                 tableName: "album",
-                columns: ["id", "titolo", "data_uscita"],
+                columns: albumColumns,
                 schema: AlbumDbSchema
             },
             {
                 tableName: "passaggio",
-                columns: ["id", "testo", "inizio_secondo_brano", "cue_secondo_brano", "data_pubblicazione", "id_utente", "id_brano_1", "id_brano_2"],
+                columns: passaggioColumns,
                 schema: PassaggioDbSchema
             },
             {
                 tableName: "artista",
-                columns: ["id", "nome"],
+                columns: artistaColumns,
                 schema: ArtistaDbSchema
             }
         ]
     },
     artista: {
         mainTableName: "artista",
-        mainTableColumns: ["id", "nome"],
+        mainTableColumns: artistaColumns,
         mainTableSchema: ArtistaDbSchema,
         otherTables: [
             {
                 tableName: "brano",
-                columns: ["id", "titolo", "durata", "id_album"],
+                columns: branoColumns,
                 schema: BranoDbSchema
             }
         ]
     },
     album: {
         mainTableName: "album",
-        mainTableColumns: ["id", "titolo", "data_uscita"],
+        mainTableColumns: albumColumns,
         mainTableSchema: AlbumDbSchema,
         otherTables: [
             {
                 tableName: "brano",
-                columns: ["id", "titolo", "durata", "id_album"],
+                columns: branoColumns,
                 schema: BranoDbSchema
             },
             {
                 tableName: "genere",
-                columns: ["id", "nome"],
+                columns: genereColumns,
                 schema: GenereDbSchema
             }
         ]
     },
     genere: {
         mainTableName: "genere",
-        mainTableColumns: ["id", "nome"],
+        mainTableColumns: genereColumns,
         mainTableSchema: GenereDbSchema,
         otherTables: [
             {
                 tableName: "album",
-                columns: ["id", "titolo", "data_uscita"],
+                columns: albumColumns,
                 schema: AlbumDbSchema
             }
         ]

@@ -5,7 +5,7 @@ function CardGenere(props: { genere: GenereDb }) {
     const navigate = useNavigate();
     return (
         <div onClick={() => {navigate("/genere?id=" + props.genere.id);}} style={{ border: "1px solid black", borderRadius: "8px", padding: "10px", margin: "10px", cursor: "pointer" }}>
-            <img style={{ width: "100px", height: "100px"}} src={"http://localhost:3000/generi_pictures/" + props.genere.id + ".jpg"} alt={"Immagine del genere musicale " + props.genere.nome} />
+            <img style={{ width: "100px", height: "100px"}} src={props.genere.url_immagine ? props.genere.url_immagine : "src/assets/genere_empty.jpg"} alt={"Immagine del genere musicale " + props.genere.nome} />
             <h3>{props.genere.nome}</h3>
         </div>
     );

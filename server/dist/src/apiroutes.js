@@ -32,7 +32,6 @@ const dbConfig = {
 async function getConnection() {
     return await promise_1.default.createConnection(dbConfig);
 }
-//FUNZIONI DELLE CHIAMATE API ESPORTATE
 async function logout(req, res) {
     if (req.session.user) {
         req.session.user = undefined;
@@ -68,11 +67,9 @@ async function postLogin(req, res) {
         res.json(req.session.user);
     }
     catch (err) {
-        console.log(err);
         res.status(500).json({ error: "Errore durante il login" });
     }
 }
-//DA QUI IN GIU, LE FUNZIONI GIA ADATTATE A TYPESCRIPT
 async function deleteEntity(req, res, tableName) {
     const id = req.params.id;
     const con = await getConnection();
@@ -271,7 +268,6 @@ async function getFilteredEntitiesList(req, res, config) {
     let joins = "";
     for (const [i, filter] of config.filtersAndJoins.entries()) {
         if (filter.joinedTableName !== undefined) { //Senza la proprietà table, non c'è da fare il join perchè il filtro è sulla tabella principale
-            console.log("Stabilisco la relazione tra " + config.mainTableName + " e " + filter.joinedTableName);
             if (relationIsManyToMany(config.mainTableName, filter.joinedTableName)) {
                 const middleTableName = `${config.mainTableName}_${filter.joinedTableName}` in get_db_tables_and_columns_1.dbTablesAndColumns ? `${config.mainTableName}_${filter.joinedTableName}` : `${filter.joinedTableName}_${config.mainTableName}`;
                 joins += `LEFT JOIN ${middleTableName} AS ${middleTableName}_${i} ON ${config.mainTableName}.id = ${middleTableName}_${i}.id_${config.mainTableName}\n`;
@@ -286,25 +282,18 @@ async function getFilteredEntitiesList(req, res, config) {
         }
     }
     const finalQuery = selectStatement + joins + whereStatement + groupByStatement + orderByStatement + limitOffset;
-    console.log(finalQuery);
     const con = await getConnection();
     try {
         const [rows] = await con.execute(finalQuery);
         for (let row of rows) {
             if (config.mainTableSchema !== undefined && !dbResultIsValid(res, false, row, config.mainTableSchema, config.mainTableName)) {
-                //console.log("Questa row non ha fatto passare la validazione di zod:");
-                //console.log(row);
                 return;
             }
             for (const queryJoin of config.filtersAndJoins) {
                 if (!("value" in queryJoin)) {
                     let keyName = `${queryJoin.joinedTableName}${queryJoin.joinColumnSuffix ? `_${queryJoin.joinColumnSuffix}` : ""}_array`;
                     if (keyName in row) {
-                        console.log("Validazione di questa entità associata:");
-                        console.log(row[keyName]);
                         if (queryJoin.schema !== undefined && !dbResultIsValid(res, true, row[keyName], queryJoin.schema, keyName)) {
-                            //console.log("Questa row non ha fatto passare la validazione di zod:");
-                            //console.log(row);
                             return;
                         }
                     }
@@ -366,7 +355,6 @@ async function postEntity(req, res, config) {
         res.json({ id: insertId });
     }
     catch (err) {
-        console.log(err);
         res.status(500).json({ error: "Errore nella creazione dell'entità", details: err });
     }
 }
@@ -416,7 +404,6 @@ async function putEntity(req, res, config) {
         res.status(200).json();
     }
     catch (err) {
-        console.log(err);
         res.status(500).json({ error: "Errore nella creazione dell'entità", details: err });
     }
 }
@@ -445,14 +432,23 @@ function fromSecondsToTime(seconds) {
     return `${hours.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
 }
 // Overloads for type-safe mapping from Deezer entity to DB entity
+//TODO: modificare
 function fromDeezerEntityToDbEntity(entity, tableName, param) {
+    let pictureUrl;
+    if ("picture_big" in entity || "cover_big" in entity || "picture" in entity) {
+        pictureUrl = "picture_big" in entity ? entity.picture_big : "cover_big" in entity ? entity.cover_big : entity.picture;
+    }
+    else {
+        //Nessuna immagine da caricare
+        pictureUrl = null;
+    }
     switch (tableName) {
         case "Artista":
-            return { id: entity.id, nome: entity.name };
+            return { id: entity.id, nome: entity.name, url_immagine: pictureUrl };
         case "Album":
-            return { id: entity.id, titolo: entity.title, data_uscita: entity.release_date !== undefined ? entity.release_date : null };
+            return { id: entity.id, titolo: entity.title, data_uscita: entity.release_date !== undefined ? entity.release_date : null, url_immagine: pictureUrl };
         case "Genere":
-            return { id: entity.id, nome: entity.name };
+            return { id: entity.id, nome: entity.name, url_immagine: pictureUrl };
         case "Brano":
             const brano = entity;
             const album = brano.album;
@@ -472,20 +468,6 @@ function fromDeezerEntityToDbEntity(entity, tableName, param) {
                     id_album: Number(param)
                 };
             }
-        default:
-            throw new Error("Tabella non supportata");
-    }
-}
-function getPicturesFolder(tableName) {
-    switch (tableName) {
-        case "Artista":
-            return "artisti_pictures";
-        case "Album":
-            return "album_pictures";
-        case "Genere":
-            return "generi_pictures";
-        case "Brano":
-            return ""; //I brani non hanno immagini
         default:
             throw new Error("Tabella non supportata");
     }
@@ -575,7 +557,7 @@ async function getDeezerApiCalls(key) {
 }
 //FUNZIONE GIA ADATTATA A TYPESCRIPT
 async function deezerEntityApi(req, res, apisConfig) {
-    if (apisConfig.maxOneCallPerDay === true && await getDeezerApiCalls(req.originalUrl) == new Date().toISOString().split('T')[0]) {
+    if (process.env.NODE_ENV !== "test" && apisConfig.maxOneCallPerDay === true && await getDeezerApiCalls(req.originalUrl) == new Date().toISOString().split('T')[0]) {
         res.status(200).json({ error: "API già chiamata oggi. Il risultato di questa richiesta è già stato memorizzato. Potrà essere aggiornato domani" });
         return;
     }
@@ -602,7 +584,6 @@ async function deezerEntityApi(req, res, apisConfig) {
                     return;
                 }
                 await (0, upserts_1.upsertEntitaDeezer)(con, fromDeezerEntityToDbEntity(obj, entityConfig.tableName, param), entityConfig.tableName);
-                await (0, functions_1.uploadPhoto)(getPicturesFolder(entityConfig.tableName), obj);
             }
             await con.end();
         }
@@ -618,7 +599,7 @@ async function deezerEntityApi(req, res, apisConfig) {
             if (entityConfig.showEntityInResponse) {
                 const mainEntityObjects = entityConfig.getEntityObjectsFromResponse(response);
                 res.json(mainEntityObjects.map((obj) => { return fromDeezerEntityToDbEntity(obj, entityConfig.tableName, param); }));
-                if (apisConfig.maxOneCallPerDay === true) {
+                if (process.env.NODE_ENV !== "test" && apisConfig.maxOneCallPerDay === true) {
                     //Questa API non è ancora stata chiamata oggi, quindi aggiorna il file
                     await updateDeezerApiCalls(req.originalUrl, new Date().toISOString().split('T')[0]);
                 }
@@ -627,8 +608,6 @@ async function deezerEntityApi(req, res, apisConfig) {
         }
     }
     catch (err) {
-        console.log("Guarda questo errore:");
-        console.log(err);
         res.status(500).json({ error: "Errore su questa Api legata a Deezer" });
     }
 }

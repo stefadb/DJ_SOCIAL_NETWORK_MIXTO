@@ -31,9 +31,6 @@ app.use((0, express_session_1.default)({
     resave: false,
     saveUninitialized: true,
 }));
-app.use("/generi_pictures", express_1.default.static(win32_1.default.join(__dirname, "generi_pictures")));
-app.use("/artisti_pictures", express_1.default.static(win32_1.default.join(__dirname, "artisti_pictures")));
-app.use("/album_pictures", express_1.default.static(win32_1.default.join(__dirname, "album_pictures")));
 const swaggerDocument = yamljs_1.default.load(win32_1.default.join(__dirname, 'openapi.yaml'));
 app.use('/api-docs', swagger_ui_express_1.default.serve, swagger_ui_express_1.default.setup(swaggerDocument));
 //API ROUTES

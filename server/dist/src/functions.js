@@ -4,11 +4,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.makeDeezerApiCall = makeDeezerApiCall;
-exports.uploadPhoto = uploadPhoto;
 exports.isValidDeezerObject = isValidDeezerObject;
 const axios_1 = __importDefault(require("axios"));
-const path_1 = __importDefault(require("path"));
-const fs_1 = __importDefault(require("fs"));
 const bottleneck_1 = __importDefault(require("bottleneck"));
 const deezerAPIUrl = "https://api.deezer.com";
 const deezerLimiter = new bottleneck_1.default({
@@ -60,40 +57,6 @@ async function makeDeezerApiCall(res, urlFirstPart, urlParameter, urlSecondPart,
                 resolve(-1);
             });
         });
-    });
-}
-//FUNZIONE GIA ADATTATA A TYPESCRIPT
-async function uploadPhoto(dirName, entity) {
-    let pictureUrl;
-    if ("picture_big" in entity || "cover_big" in entity || "picture" in entity) {
-        pictureUrl = "picture_big" in entity ? entity.picture_big : "cover_big" in entity ? entity.cover_big : entity.picture;
-    }
-    else {
-        //Nessuna immagine da caricare
-        return;
-    }
-    const picturesDir = path_1.default.join(__dirname, dirName);
-    if (!fs_1.default.existsSync(picturesDir)) {
-        fs_1.default.mkdirSync(picturesDir);
-    }
-    return new Promise((resolve, reject) => {
-        const picturesDir = path_1.default.join(__dirname, dirName);
-        const imgPath = path_1.default.join(picturesDir, `${entity.id}.jpg`);
-        try {
-            axios_1.default.get(pictureUrl, { responseType: "stream" })
-                .then((imgResponse) => {
-                const writer = fs_1.default.createWriteStream(imgPath);
-                imgResponse.data.pipe(writer);
-                writer.on("finish", () => { resolve("Upload della foto completato"); });
-                writer.on("error", () => { reject(); });
-            })
-                .catch((error) => {
-                reject(error);
-            });
-        }
-        catch (imgErr) {
-            reject(imgErr);
-        }
     });
 }
 /**

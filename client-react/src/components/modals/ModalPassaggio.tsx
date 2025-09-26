@@ -14,6 +14,7 @@ import CardValutazione from "../cards/CardValutazione";
 import { openModal } from "../../store/modalNuovoPassaggioSlice";
 import { setBrano1 as setBrano1ToNuovoPassaggio } from "../../store/giradischiSlice";
 import { setBrano2 as setBrano2ToNuovoPassaggio } from "../../store/giradischiSlice";
+import CardBrano from "../cards/CardBrano";
 
 
 const PLACEHOLDER_USER = undefined;
@@ -189,9 +190,13 @@ function ModalPassaggio() {
 
             {/* Cover art */}
             <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: 8, marginTop: 16 }}>
-                <img src={brano1 ? `http://localhost:3000/album_pictures/${brano1.id_album}.jpg` : undefined} alt="cover1" style={{ width: 80, height: 80, objectFit: "cover", borderRadius: 4, background: "#eee" }} />
+                {brano1 &&
+                    <CardBrano brano={brano1} noDeckButtons />
+                }
                 <span style={{ fontWeight: 500, color: "#888" }}>con</span>
-                <img src={brano2 ? `http://localhost:3000/album_pictures/${brano2.id_album}.jpg` : undefined} alt="cover2" style={{ width: 80, height: 80, objectFit: "cover", borderRadius: 4, background: "#eee" }} />
+                {brano2 &&
+                    <CardBrano brano={brano2} noDeckButtons />
+                }
             </div>
 
             {/* Stelle e azioni */}

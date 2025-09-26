@@ -2,51 +2,61 @@
     {
         "id": 769758471,
         "titolo": "Sakura",
-        "data_uscita": "2025-09-05"
+        "data_uscita": "2025-09-05",
+        "url_immagine": "https://cdn-images.dzcdn.net/images/cover/a19691d854608dcb3af1adf1dbf72e95/500x500-000000-80-0-0.jpg"
     },
     {
         "id": 221700932,
         "titolo": "Get Together",
-        "data_uscita": "2021-06-04"
+        "data_uscita": "2021-06-04",
+        "url_immagine": "https://cdn-images.dzcdn.net/images/cover/403fd97bde18c15e057a86d1660db436/500x500-000000-80-0-0.jpg"
     },
     {
         "id": 465945475,
         "titolo": "The Way It Goes (Track 1) (Chris Stussy Remix)",
-        "data_uscita": "2020-06-19"
+        "data_uscita": "2020-06-19",
+        "url_immagine": "https://cdn-images.dzcdn.net/images/cover/97512382da18a6ce95ecddbea4fda7ae/500x500-000000-80-0-0.jpg"
     },
     {
         "id": 558742112,
         "titolo": "Synergy",
-        "data_uscita": "2024-06-07"
+        "data_uscita": "2024-06-07",
+        "url_immagine": "https://cdn-images.dzcdn.net/images/cover/82acbc07bfa779f8f8ce65f0dea2bf8e/500x500-000000-80-0-0.jpg"
     },
     {
         "id": 486048505,
         "titolo": "Midtown Playground EP",
-        "data_uscita": "2023-10-06"
+        "data_uscita": "2023-10-06",
+        "url_immagine": "https://cdn-images.dzcdn.net/images/cover/a8a39628c8c5a489e9cc59f338fdd9ff/500x500-000000-80-0-0.jpg"
     },
     {
         "id": 412232537,
         "titolo": "Sense of Future",
-        "data_uscita": "2023-08-11"
+        "data_uscita": "2023-08-11",
+        "url_immagine": "https://cdn-images.dzcdn.net/images/cover/299d36c22e0ca3207ea1ab23115bca01/500x500-000000-80-0-0.jpg"
     },
     {
         "id": 298097512,
         "titolo": "Mysteries of the Universe",
-        "data_uscita": "2022-06-03"
+        "data_uscita": "2022-06-03",
+        "url_immagine": "https://cdn-images.dzcdn.net/images/cover/26484d236a65f016c0defa4720c4b214/500x500-000000-80-0-0.jpg"
     },
     {
         "id": 249350442,
         "titolo": "A Glimmer of Hope EP",
-        "data_uscita": "2021-09-03"
+        "data_uscita": "2021-09-03",
+        "url_immagine": "https://cdn-images.dzcdn.net/images/cover/588e2f474ad21884bf34895260cb4774/500x500-000000-80-0-0.jpg"
     },
     {
         "id": 199007422,
         "titolo": "Take A Leap Of Faith",
-        "data_uscita": "2021-01-25"
+        "data_uscita": "2021-01-25",
+        "url_immagine": "https://cdn-images.dzcdn.net/images/cover/79582f2377dd3af6fbb6b4208b6d04ed/500x500-000000-80-0-0.jpg"
     },
     {
         "id": 504321061,
         "titolo": "Across Ocean",
-        "data_uscita": "2020-10-12"
+        "data_uscita": "2020-10-12",
+        "url_immagine": "https://cdn-images.dzcdn.net/images/cover/277827444a126b8e6c888e8eb4522c7b/500x500-000000-80-0-0.jpg"
     }
 ]

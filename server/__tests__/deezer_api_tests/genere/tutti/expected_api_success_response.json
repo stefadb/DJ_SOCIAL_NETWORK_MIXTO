@@ -1,106 +1,132 @@
 [
-    {
-        "id": 0,
-        "nome": "Tutti"
-    },
-    {
-        "id": 132,
-        "nome": "Pop"
-    },
-    {
-        "id": 116,
-        "nome": "Rap/Hip Hop"
-    },
-    {
-        "id": 122,
-        "nome": "Reggaeton"
-    },
-    {
-        "id": 152,
-        "nome": "Rock"
-    },
-    {
-        "id": 113,
-        "nome": "Dance"
-    },
-    {
-        "id": 165,
-        "nome": "R&B"
-    },
-    {
-        "id": 85,
-        "nome": "Alternative"
-    },
-    {
-        "id": 106,
-        "nome": "Electro"
-    },
-    {
-        "id": 466,
-        "nome": "Folk"
-    },
-    {
-        "id": 144,
-        "nome": "Reggae"
-    },
-    {
-        "id": 129,
-        "nome": "Jazz"
-    },
-    {
-        "id": 84,
-        "nome": "Country"
-    },
-    {
-        "id": 67,
-        "nome": "Salsa"
-    },
-    {
-        "id": 98,
-        "nome": "Classica"
-    },
-    {
-        "id": 173,
-        "nome": "Film/Videogiochi"
-    },
-    {
-        "id": 464,
-        "nome": "Metal"
-    },
-    {
-        "id": 169,
-        "nome": "Soul & Funk"
-    },
-    {
-        "id": 95,
-        "nome": "Bambini"
-    },
-    {
-        "id": 153,
-        "nome": "Blues"
-    },
-    {
-        "id": 71,
-        "nome": "Cumbia"
-    },
-    {
-        "id": 2,
-        "nome": "Musica Africana"
-    },
-    {
-        "id": 16,
-        "nome": "Musica Asiatica"
-    },
-    {
-        "id": 75,
-        "nome": "Musica Brasiliana"
-    },
-    {
-        "id": 81,
-        "nome": "Musica Indiana"
-    },
-    {
-        "id": 197,
-        "nome": "Musica latina"
-    }
+  {
+    "id": 0,
+    "nome": "Tutti",
+    "url_immagine": "https://cdn-images.dzcdn.net/images/misc//500x500-000000-80-0-0.jpg"
+  },
+  {
+    "id": 132,
+    "nome": "Pop",
+    "url_immagine": "https://cdn-images.dzcdn.net/images/misc/db7a604d9e7634a67d45cfc86b48370a/500x500-000000-80-0-0.jpg"
+  },
+  {
+    "id": 116,
+    "nome": "Rap/Hip Hop",
+    "url_immagine": "https://cdn-images.dzcdn.net/images/misc/5c27115d3b797954afff59199dad98d1/500x500-000000-80-0-0.jpg"
+  },
+  {
+    "id": 122,
+    "nome": "Reggaeton",
+    "url_immagine": "https://cdn-images.dzcdn.net/images/misc/44dfebf3cf943dd82759d9bd9063767a/500x500-000000-80-0-0.jpg"
+  },
+  {
+    "id": 152,
+    "nome": "Rock",
+    "url_immagine": "https://cdn-images.dzcdn.net/images/misc/b36ca681666d617edd0dcb5ab389a6ac/500x500-000000-80-0-0.jpg"
+  },
+  {
+    "id": 113,
+    "nome": "Dance",
+    "url_immagine": "https://cdn-images.dzcdn.net/images/misc/bd5fdfa1a23e02e2697818e09e008e69/500x500-000000-80-0-0.jpg"
+  },
+  {
+    "id": 165,
+    "nome": "R&B",
+    "url_immagine": "https://cdn-images.dzcdn.net/images/misc/68a43aec844708e693cb99f47814153b/500x500-000000-80-0-0.jpg"
+  },
+  {
+    "id": 85,
+    "nome": "Alternative",
+    "url_immagine": "https://cdn-images.dzcdn.net/images/misc/fd252ab727d9a3b0b3c29014873f8f57/500x500-000000-80-0-0.jpg"
+  },
+  {
+    "id": 106,
+    "nome": "Electro",
+    "url_immagine": "https://cdn-images.dzcdn.net/images/misc/15df4502c1c58137dae5bdd1cc6f0251/500x500-000000-80-0-0.jpg"
+  },
+  {
+    "id": 466,
+    "nome": "Folk",
+    "url_immagine": "https://cdn-images.dzcdn.net/images/misc/f9e070848998df8870ba65cd0d22b2b3/500x500-000000-80-0-0.jpg"
+  },
+  {
+    "id": 144,
+    "nome": "Reggae",
+    "url_immagine": "https://cdn-images.dzcdn.net/images/misc/7b901a98628cf879e1465f1dfd697e00/500x500-000000-80-0-0.jpg"
+  },
+  {
+    "id": 129,
+    "nome": "Jazz",
+    "url_immagine": "https://cdn-images.dzcdn.net/images/misc/91468ecc5dfdd19c42a43d2cbdf27059/500x500-000000-80-0-0.jpg"
+  },
+  {
+    "id": 84,
+    "nome": "Country",
+    "url_immagine": "https://cdn-images.dzcdn.net/images/misc/6eca3188f724f04843a15e3e575751a5/500x500-000000-80-0-0.jpg"
+  },
+  {
+    "id": 67,
+    "nome": "Salsa",
+    "url_immagine": "https://cdn-images.dzcdn.net/images/misc/71860f882f1e1d4950b7544e2d0b61ef/500x500-000000-80-0-0.jpg"
+  },
+  {
+    "id": 98,
+    "nome": "Classica",
+    "url_immagine": "https://cdn-images.dzcdn.net/images/misc/609f69b669b242252aa8ee09b5597655/500x500-000000-80-0-0.jpg"
+  },
+  {
+    "id": 173,
+    "nome": "Film/Videogiochi",
+    "url_immagine": "https://cdn-images.dzcdn.net/images/misc/236d8057751d9c557728400dfe71483a/500x500-000000-80-0-0.jpg"
+  },
+  {
+    "id": 464,
+    "nome": "Metal",
+    "url_immagine": "https://cdn-images.dzcdn.net/images/misc/f14f9fde9feb38ca6d61960f00681860/500x500-000000-80-0-0.jpg"
+  },
+  {
+    "id": 169,
+    "nome": "Soul & Funk",
+    "url_immagine": "https://cdn-images.dzcdn.net/images/misc/3d5e8aab99b95bfa7ac7e9e466e7781e/500x500-000000-80-0-0.jpg"
+  },
+  {
+    "id": 95,
+    "nome": "Bambini",
+    "url_immagine": "https://cdn-images.dzcdn.net/images/misc/b0b8efcbc3cb688864ce69da0061e525/500x500-000000-80-0-0.jpg"
+  },
+  {
+    "id": 153,
+    "nome": "Blues",
+    "url_immagine": "https://cdn-images.dzcdn.net/images/misc/1abb6810098d4015bdc860c91bcfd2b6/500x500-000000-80-0-0.jpg"
+  },
+  {
+    "id": 71,
+    "nome": "Cumbia",
+    "url_immagine": "https://cdn-images.dzcdn.net/images/misc/ffd77feba2c8fda79b18183861e4e69f/500x500-000000-80-0-0.jpg"
+  },
+  {
+    "id": 2,
+    "nome": "Musica Africana",
+    "url_immagine": "https://cdn-images.dzcdn.net/images/misc/703413adf47ad8a6001b438f7608a2be/500x500-000000-80-0-0.jpg"
+  },
+  {
+    "id": 16,
+    "nome": "Musica Asiatica",
+    "url_immagine": "https://cdn-images.dzcdn.net/images/misc/dd6d2756465b22488dff5d8663e86688/500x500-000000-80-0-0.jpg"
+  },
+  {
+    "id": 75,
+    "nome": "Musica Brasiliana",
+    "url_immagine": "https://cdn-images.dzcdn.net/images/misc/01b12a3f3582899a13b664cea703a335/500x500-000000-80-0-0.jpg"
+  },
+  {
+    "id": 81,
+    "nome": "Musica Indiana",
+    "url_immagine": "https://cdn-images.dzcdn.net/images/misc/b098161d9a824eef314bc38b985594a1/500x500-000000-80-0-0.jpg"
+  },
+  {
+    "id": 197,
+    "nome": "Musica latina",
+    "url_immagine": "https://cdn-images.dzcdn.net/images/misc/069c9888538799748960781f098b5f4b/500x500-000000-80-0-0.jpg"
+  }
 ]

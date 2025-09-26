@@ -1,22 +1,27 @@
 [
     {
         "id": 6164532,
-        "nome": "Kolter"
+        "nome": "Kolter",
+        "url_immagine": "https://cdn-images.dzcdn.net/images/artist/8427b95e0f78fdc0779a5f5f777fa6f6/500x500-000000-80-0-0.jpg"
     },
     {
         "id": 11389,
-        "nome": "Kerri Chandler"
+        "nome": "Kerri Chandler",
+        "url_immagine": "https://cdn-images.dzcdn.net/images/artist/03e419d90076baed9b7934dd043873b2/500x500-000000-80-0-0.jpg"
     },
     {
         "id": 203478207,
-        "nome": "Across Boundaries"
+        "nome": "Across Boundaries",
+        "url_immagine": "https://cdn-images.dzcdn.net/images/artist/299d36c22e0ca3207ea1ab23115bca01/500x500-000000-80-0-0.jpg"
     },
     {
         "id": 12263646,
-        "nome": "Robbie Doherty"
+        "nome": "Robbie Doherty",
+        "url_immagine": "https://cdn-images.dzcdn.net/images/artist/5da30e6440037d2eb6065ee511e527c5/500x500-000000-80-0-0.jpg"
     },
     {
         "id": 1613691,
-        "nome": "PRUNK"
+        "nome": "PRUNK",
+        "url_immagine": "https://cdn-images.dzcdn.net/images/artist/5a33727d5ce02e410f3e9b2c89bfd019/500x500-000000-80-0-0.jpg"
     }
 ]

@@ -1,178 +1,222 @@
 [
-    {
-        "id": 5992092,
-        "nome": "Kungs"
-    },
-    {
-        "id": 282118,
-        "nome": "Major Lazer"
-    },
-    {
-        "id": 5767206,
-        "nome": "Shouse"
-    },
-    {
-        "id": 1000956,
-        "nome": "Clean Bandit"
-    },
-    {
-        "id": 6032634,
-        "nome": "Ofenbach"
-    },
-    {
-        "id": 493,
-        "nome": "Moby"
-    },
-    {
-        "id": 4830457,
-        "nome": "LIBERATO"
-    },
-    {
-        "id": 262271,
-        "nome": "Dimitri Vegas & Like Mike"
-    },
-    {
-        "id": 87910,
-        "nome": "Ohm Guru"
-    },
-    {
-        "id": 2810121,
-        "nome": "IU"
-    },
-    {
-        "id": 85,
-        "nome": "The Prodigy"
-    },
-    {
-        "id": 6377,
-        "nome": "Paul Kalkbrenner"
-    },
-    {
-        "id": 612,
-        "nome": "Massive Attack"
-    },
-    {
-        "id": 409796,
-        "nome": "Disclosure"
-    },
-    {
-        "id": 5400149,
-        "nome": "Polo & Pan"
-    },
-    {
-        "id": 103103,
-        "nome": "Mabel"
-    },
-    {
-        "id": 366,
-        "nome": "Thievery Corporation"
-    },
-    {
-        "id": 10170,
-        "nome": "Oliver Koletzki"
-    },
-    {
-        "id": 81,
-        "nome": "The Chemical Brothers"
-    },
-    {
-        "id": 3878,
-        "nome": "M.I.A."
-    },
-    {
-        "id": 7537078,
-        "nome": "SG Lewis"
-    },
-    {
-        "id": 419254,
-        "nome": "Kina"
-    },
-    {
-        "id": 76053262,
-        "nome": "Fred again.."
-    },
-    {
-        "id": 5551124,
-        "nome": "Jimmy Sax"
-    },
-    {
-        "id": 369,
-        "nome": "Air"
-    },
-    {
-        "id": 5283366,
-        "nome": "The Avener"
-    },
-    {
-        "id": 827176,
-        "nome": "Mauvé"
-    },
-    {
-        "id": 101793092,
-        "nome": "The Blessed Madonna"
-    },
-    {
-        "id": 90516,
-        "nome": "Klaas"
-    },
-    {
-        "id": 1645,
-        "nome": "Gotan Project"
-    },
-    {
-        "id": 9055824,
-        "nome": "Quarterhead"
-    },
-    {
-        "id": 7912872,
-        "nome": "Petit Biscuit"
-    },
-    {
-        "id": 1336257,
-        "nome": "Somma"
-    },
-    {
-        "id": 4105090,
-        "nome": "Tinlicker"
-    },
-    {
-        "id": 5254467,
-        "nome": "Elderbrook"
-    },
-    {
-        "id": 7790364,
-        "nome": "Ehrling"
-    },
-    {
-        "id": 2456,
-        "nome": "Erasure"
-    },
-    {
-        "id": 13570,
-        "nome": "Metronomy"
-    },
-    {
-        "id": 134340032,
-        "nome": "Nu Genea"
-    },
-    {
-        "id": 6404,
-        "nome": "Justice"
-    },
-    {
-        "id": 2042,
-        "nome": "Brian Eno"
-    },
-    {
-        "id": 174083,
-        "nome": "David Penn"
-    },
-    {
-        "id": 3187,
-        "nome": "The Cinematic Orchestra"
-    },
-    {
-        "id": 4913080,
-        "nome": "Hippie Sabotage"
-    }
+  {
+    "id": 5992092,
+    "nome": "Kungs",
+    "url_immagine": "https://cdn-images.dzcdn.net/images/artist/743afbd7f82e38ddea75e41ecc70c687/500x500-000000-80-0-0.jpg"
+  },
+  {
+    "id": 282118,
+    "nome": "Major Lazer",
+    "url_immagine": "https://cdn-images.dzcdn.net/images/artist/847e0144bf03cd9240e01a16f3baed73/500x500-000000-80-0-0.jpg"
+  },
+  {
+    "id": 5767206,
+    "nome": "Shouse",
+    "url_immagine": "https://cdn-images.dzcdn.net/images/artist/f5e8cb38dfd5a9b88aaef2c9da842311/500x500-000000-80-0-0.jpg"
+  },
+  {
+    "id": 1000956,
+    "nome": "Clean Bandit",
+    "url_immagine": "https://cdn-images.dzcdn.net/images/artist/f305de60e321bbc56de18da0d6d63231/500x500-000000-80-0-0.jpg"
+  },
+  {
+    "id": 6032634,
+    "nome": "Ofenbach",
+    "url_immagine": "https://cdn-images.dzcdn.net/images/artist/da027ee89f7f50b088ac28796269581c/500x500-000000-80-0-0.jpg"
+  },
+  {
+    "id": 493,
+    "nome": "Moby",
+    "url_immagine": "https://cdn-images.dzcdn.net/images/artist/86732eeaa43262de069adc6edf22ea3b/500x500-000000-80-0-0.jpg"
+  },
+  {
+    "id": 4830457,
+    "nome": "LIBERATO",
+    "url_immagine": "https://cdn-images.dzcdn.net/images/artist/b10f910d25b1611817d5b0986a95c131/500x500-000000-80-0-0.jpg"
+  },
+  {
+    "id": 262271,
+    "nome": "Dimitri Vegas & Like Mike",
+    "url_immagine": "https://cdn-images.dzcdn.net/images/artist/00d5711cc1fa5db0a6f3ff4c2876a1cb/500x500-000000-80-0-0.jpg"
+  },
+  {
+    "id": 87910,
+    "nome": "Ohm Guru",
+    "url_immagine": "https://cdn-images.dzcdn.net/images/artist/6e7b0498aac33723d98d3f7dd67d1fbb/500x500-000000-80-0-0.jpg"
+  },
+  {
+    "id": 2810121,
+    "nome": "IU",
+    "url_immagine": "https://cdn-images.dzcdn.net/images/artist/c619e4cef93d6fa98a38018d92106bb6/500x500-000000-80-0-0.jpg"
+  },
+  {
+    "id": 85,
+    "nome": "The Prodigy",
+    "url_immagine": "https://cdn-images.dzcdn.net/images/artist/4d884e6864623a3446040eaa8e9fb18d/500x500-000000-80-0-0.jpg"
+  },
+  {
+    "id": 6377,
+    "nome": "Paul Kalkbrenner",
+    "url_immagine": "https://cdn-images.dzcdn.net/images/artist/d3180b33575d922741dd974f629b0a8c/500x500-000000-80-0-0.jpg"
+  },
+  {
+    "id": 612,
+    "nome": "Massive Attack",
+    "url_immagine": "https://cdn-images.dzcdn.net/images/artist/446ac0e8d882771780696e2b7db0b35e/500x500-000000-80-0-0.jpg"
+  },
+  {
+    "id": 409796,
+    "nome": "Disclosure",
+    "url_immagine": "https://cdn-images.dzcdn.net/images/artist/83aa8d9bb361fe039ee1caf0488eb0c1/500x500-000000-80-0-0.jpg"
+  },
+  {
+    "id": 5400149,
+    "nome": "Polo & Pan",
+    "url_immagine": "https://cdn-images.dzcdn.net/images/artist/9f97b6f50e4b2dd2dfaf006960f155af/500x500-000000-80-0-0.jpg"
+  },
+  {
+    "id": 103103,
+    "nome": "Mabel",
+    "url_immagine": "https://cdn-images.dzcdn.net/images/artist/190bf7450fc19fda4c939737ab060df7/500x500-000000-80-0-0.jpg"
+  },
+  {
+    "id": 366,
+    "nome": "Thievery Corporation",
+    "url_immagine": "https://cdn-images.dzcdn.net/images/artist/5b4d5cc0aeaf942b259956efc72c962b/500x500-000000-80-0-0.jpg"
+  },
+  {
+    "id": 10170,
+    "nome": "Oliver Koletzki",
+    "url_immagine": "https://cdn-images.dzcdn.net/images/artist/9d337e6b8d8f9d845d1cf60f02b53285/500x500-000000-80-0-0.jpg"
+  },
+  {
+    "id": 81,
+    "nome": "The Chemical Brothers",
+    "url_immagine": "https://cdn-images.dzcdn.net/images/artist/5294e68e9ef4f0359237935a4b8388f2/500x500-000000-80-0-0.jpg"
+  },
+  {
+    "id": 3878,
+    "nome": "M.I.A.",
+    "url_immagine": "https://cdn-images.dzcdn.net/images/artist/8d8e35e0ecad629d2091852cc0af4ec0/500x500-000000-80-0-0.jpg"
+  },
+  {
+    "id": 7537078,
+    "nome": "SG Lewis",
+    "url_immagine": "https://cdn-images.dzcdn.net/images/artist/136790ae7ccac3edb093755e1a15a1ec/500x500-000000-80-0-0.jpg"
+  },
+  {
+    "id": 419254,
+    "nome": "Kina",
+    "url_immagine": "https://cdn-images.dzcdn.net/images/artist/60228cf90859285e980e469f87ff3815/500x500-000000-80-0-0.jpg"
+  },
+  {
+    "id": 76053262,
+    "nome": "Fred again..",
+    "url_immagine": "https://cdn-images.dzcdn.net/images/artist/f49a21212bfea7814ecb21096ccb0007/500x500-000000-80-0-0.jpg"
+  },
+  {
+    "id": 5551124,
+    "nome": "Jimmy Sax",
+    "url_immagine": "https://cdn-images.dzcdn.net/images/artist/ffd4a3a4a5185698d8391749e87e4ee4/500x500-000000-80-0-0.jpg"
+  },
+  {
+    "id": 369,
+    "nome": "Air",
+    "url_immagine": "https://cdn-images.dzcdn.net/images/artist/17a623adeeed4bbe95a6b402ca704b76/500x500-000000-80-0-0.jpg"
+  },
+  {
+    "id": 5283366,
+    "nome": "The Avener",
+    "url_immagine": "https://cdn-images.dzcdn.net/images/artist/cbda9a3947dcca675a6e6fda52072638/500x500-000000-80-0-0.jpg"
+  },
+  {
+    "id": 827176,
+    "nome": "Mauvé",
+    "url_immagine": "https://cdn-images.dzcdn.net/images/artist/d61533afdf3c290ede5921be4bc46468/500x500-000000-80-0-0.jpg"
+  },
+  {
+    "id": 101793092,
+    "nome": "The Blessed Madonna",
+    "url_immagine": "https://cdn-images.dzcdn.net/images/artist/69f095a0511196317fb011c2eee82fa4/500x500-000000-80-0-0.jpg"
+  },
+  {
+    "id": 90516,
+    "nome": "Klaas",
+    "url_immagine": "https://cdn-images.dzcdn.net/images/artist/a1ddcba84ef50c73b42586223de988d3/500x500-000000-80-0-0.jpg"
+  },
+  {
+    "id": 1645,
+    "nome": "Gotan Project",
+    "url_immagine": "https://cdn-images.dzcdn.net/images/artist/463c3e87ce974d73410f6000ae26e828/500x500-000000-80-0-0.jpg"
+  },
+  {
+    "id": 9055824,
+    "nome": "Quarterhead",
+    "url_immagine": "https://cdn-images.dzcdn.net/images/artist/456a6346497ae9c1652c35583c90114d/500x500-000000-80-0-0.jpg"
+  },
+  {
+    "id": 7912872,
+    "nome": "Petit Biscuit",
+    "url_immagine": "https://cdn-images.dzcdn.net/images/artist/c0eaf571118220d4b40766c508647549/500x500-000000-80-0-0.jpg"
+  },
+  {
+    "id": 1336257,
+    "nome": "Somma",
+    "url_immagine": "https://cdn-images.dzcdn.net/images/artist/12623ed02b9cca8c49103dfb167cae20/500x500-000000-80-0-0.jpg"
+  },
+  {
+    "id": 4105090,
+    "nome": "Tinlicker",
+    "url_immagine": "https://cdn-images.dzcdn.net/images/artist/14ce38578bbd6e6de2b20b2045430d5f/500x500-000000-80-0-0.jpg"
+  },
+  {
+    "id": 5254467,
+    "nome": "Elderbrook",
+    "url_immagine": "https://cdn-images.dzcdn.net/images/artist/47337773d87fa4cbfe3cafd4b98f609e/500x500-000000-80-0-0.jpg"
+  },
+  {
+    "id": 7790364,
+    "nome": "Ehrling",
+    "url_immagine": "https://cdn-images.dzcdn.net/images/artist/c505c2a1206f257ccff4daf75885565a/500x500-000000-80-0-0.jpg"
+  },
+  {
+    "id": 2456,
+    "nome": "Erasure",
+    "url_immagine": "https://cdn-images.dzcdn.net/images/artist/fd62d5a8fc09271173f94b6b141708d9/500x500-000000-80-0-0.jpg"
+  },
+  {
+    "id": 13570,
+    "nome": "Metronomy",
+    "url_immagine": "https://cdn-images.dzcdn.net/images/artist/77066c79ea71f2ace48af8c59deb5785/500x500-000000-80-0-0.jpg"
+  },
+  {
+    "id": 134340032,
+    "nome": "Nu Genea",
+    "url_immagine": "https://cdn-images.dzcdn.net/images/artist/14c6611fa1f091e54fe2e3186b8714eb/500x500-000000-80-0-0.jpg"
+  },
+  {
+    "id": 6404,
+    "nome": "Justice",
+    "url_immagine": "https://cdn-images.dzcdn.net/images/artist/e5bf29cb99852f92a0079b184ace9479/500x500-000000-80-0-0.jpg"
+  },
+  {
+    "id": 2042,
+    "nome": "Brian Eno",
+    "url_immagine": "https://cdn-images.dzcdn.net/images/artist/206fb71e27938b4e5d40766de12b9f95/500x500-000000-80-0-0.jpg"
+  },
+  {
+    "id": 174083,
+    "nome": "David Penn",
+    "url_immagine": "https://cdn-images.dzcdn.net/images/artist/04f846ed04327f244f17606cff950a25/500x500-000000-80-0-0.jpg"
+  },
+  {
+    "id": 3187,
+    "nome": "The Cinematic Orchestra",
+    "url_immagine": "https://cdn-images.dzcdn.net/images/artist/f6d154a5a1105aa77fcb948290e2fa00/500x500-000000-80-0-0.jpg"
+  },
+  {
+    "id": 4913080,
+    "nome": "Hippie Sabotage",
+    "url_immagine": "https://cdn-images.dzcdn.net/images/artist/ffe81ade25fe9a48943924296e5cc8c0/500x500-000000-80-0-0.jpg"
+  }
 ]

@@ -23,7 +23,8 @@
         {
           "id": 769758471,
           "titolo": "Sakura",
-          "data_uscita": "2025-09-05"
+          "data_uscita": "2025-09-05",
+          "url_immagine": "https://cdn-images.dzcdn.net/images/cover/a19691d854608dcb3af1adf1dbf72e95/500x500-000000-80-0-0.jpg"
         }
       ]
     },
@@ -33,15 +34,18 @@
       "expectedResult": [
         {
           "id": 4858265,
-          "nome": "Locklead"
+          "nome": "Locklead",
+          "url_immagine": "https://cdn-images.dzcdn.net/images/artist/278622711508dbc656f5b4e18e0b2be6/500x500-000000-80-0-0.jpg"
         },
         {
           "id": 5359276,
-          "nome": "Chris Stussy"
+          "nome": "Chris Stussy",
+          "url_immagine": "https://cdn-images.dzcdn.net/images/artist/915921fa6b4d968c6c187ba4f1d01018/500x500-000000-80-0-0.jpg"
         },
         {
           "id": 203478207,
-          "nome": "Across Boundaries"
+          "nome": "Across Boundaries",
+          "url_immagine": "https://cdn-images.dzcdn.net/images/artist/a19691d854608dcb3af1adf1dbf72e95/500x500-000000-80-0-0.jpg"
         }
       ]
     },
@@ -63,9 +67,5 @@
         }
       ]
     }
-  ],
-  "photosIdToDownload": {
-    "artisti_pictures": [4858265, 5359276, 203478207],
-    "album_pictures": [769758471]
-  }
+  ]
 }

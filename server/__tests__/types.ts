@@ -4,7 +4,6 @@ export type DeezerGetTestSuiteTestConfig = {
     testApiCallUrl: string;
     entityName: string;
     queriesAfterDbInit?: string[];
-    photosIdToDownload?: { [picturesFolder: string]: number[]};
     dbUpsertTests: {sqlQuery: string; expectedResult: Record<string, any>[]; entityName: string;}[];
 }
 

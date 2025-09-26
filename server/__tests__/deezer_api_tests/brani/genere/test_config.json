@@ -44,11 +44,31 @@
       "sqlQuery": "SELECT * FROM artista ORDER BY id ASC",
       "entityName": "artists",
       "expectedResult": [
-        { "id": 262264, "nome": "Adam Port" },
-        { "id": 436163, "nome": "Jungle" },
-        { "id": 1390695, "nome": "Mike Di Lorenzo" },
-        { "id": 1462230, "nome": "Charli xcx" },
-        { "id": 208557927, "nome": "MXCCREE" }
+        {
+          "id": 262264,
+          "nome": "Adam Port",
+          "url_immagine": "https://cdn-images.dzcdn.net/images/artist/ae6a1a99ec641a71ca699955430b5471/500x500-000000-80-0-0.jpg"
+        },
+        {
+          "id": 436163,
+          "nome": "Jungle",
+          "url_immagine": "https://cdn-images.dzcdn.net/images/artist/693efdefac1813e0f2b5143c1c13932c/500x500-000000-80-0-0.jpg"
+        },
+        {
+          "id": 1390695,
+          "nome": "Mike Di Lorenzo",
+          "url_immagine": "https://cdn-images.dzcdn.net/images/artist/8efc823551aa128a0f7ef3b7edc5718c/500x500-000000-80-0-0.jpg"
+        },
+        {
+          "id": 1462230,
+          "nome": "Charli xcx",
+          "url_immagine": "https://cdn-images.dzcdn.net/images/artist/89d204250a4e968f9be7171ba8efde00/500x500-000000-80-0-0.jpg"
+        },
+        {
+          "id": 208557927,
+          "nome": "MXCCREE",
+          "url_immagine": "https://cdn-images.dzcdn.net/images/artist/b837c97511b975da9b30485579579ab5/500x500-000000-80-0-0.jpg"
+        }
       ]
     },
     {
@@ -77,8 +97,5 @@
         }
       ]
     }
-  ],
-  "photosIdToDownload": {
-    "artisti_pictures": [1462230, 1390695, 436163, 208557927, 262264]
-  }
+  ]
 }

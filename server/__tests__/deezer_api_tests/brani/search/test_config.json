@@ -45,29 +45,34 @@
       "entityName": "albums",
       "expectedResult": [
         {
+          "data_uscita": null,
           "id": 303652,
           "titolo": "L-O-V-E",
-          "data_uscita": null
+          "url_immagine": "https://cdn-images.dzcdn.net/images/cover/ffc91b767ba0cbf718bdbfa37d2b510c/500x500-000000-80-0-0.jpg"
         },
         {
+          "data_uscita": null,
           "id": 595243,
           "titolo": "Recovery",
-          "data_uscita": null
+          "url_immagine": "https://cdn-images.dzcdn.net/images/cover/be682506145061814eddee648edb7c59/500x500-000000-80-0-0.jpg"
         },
         {
+          "data_uscita": null,
           "id": 13580509,
           "titolo": "Love & Hate",
-          "data_uscita": null
+          "url_immagine": "https://cdn-images.dzcdn.net/images/cover/813f4d7abf1e494e35f8c82f0d77ca5b/500x500-000000-80-0-0.jpg"
         },
         {
+          "data_uscita": null,
           "id": 574707311,
           "titolo": "Love Me Not / Love Is Blind",
-          "data_uscita": null
+          "url_immagine": "https://cdn-images.dzcdn.net/images/cover/9801ef458ad49afbc613ca2abeb79734/500x500-000000-80-0-0.jpg"
         },
         {
+          "data_uscita": null,
           "id": 784874611,
           "titolo": "No Sign of Weakness",
-          "data_uscita": null
+          "url_immagine": "https://cdn-images.dzcdn.net/images/cover/af66f2a3785c256727e0a2b234a3b90a/500x500-000000-80-0-0.jpg"
         }
       ]
     },
@@ -77,23 +82,28 @@
       "expectedResult": [
         {
           "id": 13,
-          "nome": "Eminem"
+          "nome": "Eminem",
+          "url_immagine": "https://cdn-images.dzcdn.net/images/artist/0f30bbd33a680030054af004d698d6ac/500x500-000000-80-0-0.jpg"
         },
         {
           "id": 221,
-          "nome": "Nat King Cole"
+          "nome": "Nat King Cole",
+          "url_immagine": "https://cdn-images.dzcdn.net/images/artist//500x500-000000-80-0-0.jpg"
         },
         {
           "id": 459578,
-          "nome": "Michael Kiwanuka"
+          "nome": "Michael Kiwanuka",
+          "url_immagine": "https://cdn-images.dzcdn.net/images/artist/25bb3c7d3648ee0f2e5d20eda1ef640d/500x500-000000-80-0-0.jpg"
         },
         {
           "id": 4338602,
-          "nome": "Burna Boy"
+          "nome": "Burna Boy",
+          "url_immagine": "https://cdn-images.dzcdn.net/images/artist/ad15b7f03325752d60db9e4d39c079ae/500x500-000000-80-0-0.jpg"
         },
         {
           "id": 8973774,
-          "nome": "Ravyn Lenae"
+          "nome": "Ravyn Lenae",
+          "url_immagine": "https://cdn-images.dzcdn.net/images/artist/4d50b0c9141ab20606f9bca27f5f83c7/500x500-000000-80-0-0.jpg"
         }
       ]
     },
@@ -123,9 +133,5 @@
         }
       ]
     }
-  ],
-  "photosIdToDownload": {
-    "artisti_pictures": [ 13, 221, 459578, 4338602, 8973774 ],
-    "album_pictures": [ 303652, 595243, 13580509, 574707311, 784874611 ]
-  }
+  ]
 }

@@ -63,6 +63,7 @@ function Album() {
             <h1>Album</h1>
             {album ? (
                 <div>
+                    <img style={{ width: "100px", height: "100px" }} src={album.url_immagine ? album.url_immagine : "src/assets/album_empty.jpg"} alt={"Cover album " + album.titolo} />
                     <h2>{album.titolo}</h2>
                     <p>Data di uscita: {album.data_uscita ? album.data_uscita : "Sconosciuta"}</p>
                     <p>Artisti: {artistiAlbum ? artistiAlbum.map(artista => artista.nome).join(", ") : "Caricamento..."}</p>
