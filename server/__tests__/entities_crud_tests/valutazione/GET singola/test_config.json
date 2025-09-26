@@ -1,4 +1,4 @@
 [
     { "testApiCallUrl": "/valutazioni/1?include_utente" },
-    { "testApiCallUrl": "/valutazioni/1?include_passaggio" }
+    { "testApiCallUrl": "/valutazioni/1?include_passaggio"}
 ]
