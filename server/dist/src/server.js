@@ -7,8 +7,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const apiroutes_1 = require("./apiroutes");
 const express_1 = __importDefault(require("express"));
 const express_session_1 = __importDefault(require("express-session"));
-const swagger_ui_express_1 = __importDefault(require("swagger-ui-express"));
-const yamljs_1 = __importDefault(require("yamljs"));
 //Import delle config delle API
 const deezer_apis_config_1 = require("./deezer_apis_config");
 const get_single_apis_config_1 = require("./get_single_apis_config");
@@ -20,7 +18,6 @@ const app = (0, express_1.default)();
 app.use(express_1.default.json());
 //Configura il cors di app per permettere richieste dall'indirizzo http://localnost:5173 (dove gira il client React in dev)
 const cors_1 = __importDefault(require("cors"));
-const win32_1 = __importDefault(require("path/win32"));
 app.use((0, cors_1.default)({
     origin: 'http://localhost:5173', // Sostituisci con l'URL del tuo client React
     methods: ['GET', 'POST', 'PUT', 'DELETE'], // Metodi consentiti
@@ -31,8 +28,6 @@ app.use((0, express_session_1.default)({
     resave: false,
     saveUninitialized: true,
 }));
-const swaggerDocument = yamljs_1.default.load(win32_1.default.join(__dirname, 'openapi.yaml'));
-app.use('/api-docs', swagger_ui_express_1.default.serve, swagger_ui_express_1.default.setup(swaggerDocument));
 //API ROUTES
 //API CHE SCARICANO DATI DA DEEZER, LI RESTITUISCONO E LI METTONO SUL DB
 //GENERI

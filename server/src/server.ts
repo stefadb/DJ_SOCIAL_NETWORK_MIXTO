@@ -3,8 +3,6 @@ import { deezerEntityApi, deleteEntity, getBraniEsistentiPreferiti, getConnectio
 
 import express from "express";
 import session from "express-session";
-import swaggerUi from 'swagger-ui-express';
-import YAML from 'yamljs';
 //Import delle config delle API
 import { albumAPIsConfig, artistiAPIsConfig, braniAPIsConfig, generiAPIsConfig } from "./deezer_apis_config";
 import { getSingleApisConfig } from "./get_single_apis_config";
@@ -17,7 +15,6 @@ app.use(express.json());
 
 //Configura il cors di app per permettere richieste dall'indirizzo http://localnost:5173 (dove gira il client React in dev)
 import cors from "cors";
-import path from "path/win32";
 app.use(cors({
     origin: 'http://localhost:5173', // Sostituisci con l'URL del tuo client React
     methods: ['GET', 'POST', 'PUT', 'DELETE'], // Metodi consentiti
@@ -29,10 +26,6 @@ app.use(session({
     resave: false,
     saveUninitialized: true,
 }));
-
-const swaggerDocument = YAML.load(path.join(__dirname, 'openapi.yaml'));
-
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 //API ROUTES
 
