@@ -11,7 +11,6 @@ import RicercaLocale from "./pages/RicercaLocale";
 import Generi from "./pages/Generi";
 import Genere from "./pages/Genere";
 import Utente from "./pages/Utente";
-import ModalPassaggioTest from "./pages/ModalPassaggioTest";
 import Consolle from "./components/Consolle";
 import ModalPassaggio from "./components/modals/ModalPassaggio";
 import ModalNuovoPassaggio from "./components/modals/ModalNuovoPassaggio";
@@ -28,7 +27,6 @@ function App() {
         </SideContainer>
         <MainContainer>
           <>
-            {/* Qui va messo il React Router con la scelta della pagina*/}
             <Routes>
               <Route path="/brano" element={<Brano key={new URLSearchParams(useLocation().search).get("id")} />} />
               <Route path="/album" element={<Album key={new URLSearchParams(useLocation().search).get("id")} />} />
