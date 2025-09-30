@@ -20,9 +20,9 @@ function CardPassaggio(props: CardPassaggioProps) {
       <h6>Informazioni sul passaggio</h6>
       <BasicUl entity={props.passaggio} />
       <h6>Brano 1</h6>
-      <CardBrano brano={props.brano1} />
+      <CardBrano brano={props.brano1} size={"small"}/>
       <h6>Brano 2</h6>
-      <CardBrano brano={props.brano2} />
+      <CardBrano brano={props.brano2} size={"small"}/>
       <button onClick={() => { dispatch(openModal(props.passaggio.id)); }}>Altre informazioni</button>
     </div>
   );

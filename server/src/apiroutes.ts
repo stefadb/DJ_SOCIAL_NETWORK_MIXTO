@@ -437,6 +437,7 @@ export async function getFilteredEntitiesList(
   const con = await getConnection();
   try {
     const [rows] = await con.execute(finalQuery);
+    console.log(rows);
     for (let row of (rows as any[])) {
       if (config.mainTableSchema !== undefined && !dbResultIsValid(res, false, row, config.mainTableSchema, config.mainTableName)) {
         return;
@@ -473,8 +474,9 @@ export async function postEntity(
     mainTableSchema: ZodObject<any>,
     mainTableNewRowValues: Record<string, string | number>,
     assocTablesAndIds: Record<string, number[]>, //es. { "Genere": [1, 2, 3], "Artista": [4, 5] } per associare l'entità appena creata con i generi 1, 2, 3 e gli artisti 4, 5
+    bypassBlockUnauthorizedUser?: boolean //se true, non viene chiamata la funzione blockUnauthorizedUser (utile per entità che non hanno id_utente, come Genere, Artista, ecc.)
   }) {
-  if (await blockUnauthorizedUser(req, res, config.mainTableName, config.mainTableNewRowValues)) {
+  if (!config.bypassBlockUnauthorizedUser && await blockUnauthorizedUser(req, res, config.mainTableName, config.mainTableNewRowValues)) {
     //Risposta già inviata dalla funzione, non serve inviarla qui
     return;
   }
@@ -712,7 +714,7 @@ async function upsertAssociations(tableName: "album_genere" | "brano_artista", a
           );
           if ((rows as any[]).length === 0) {
             await con.execute(
-              `INSERT INTO ${tableName} (id_album, id_genere) VALUES (?, ?)`,
+              `INSERT IGNORE INTO ${tableName} (id_album, id_genere) VALUES (?, ?)`,
               [assoc.id_album, assoc.id_genere]
             );
           }
@@ -724,7 +726,7 @@ async function upsertAssociations(tableName: "album_genere" | "brano_artista", a
           );
           if ((rows as any[]).length === 0) {
             await con.execute(
-              `INSERT INTO ${tableName} (id_brano, id_artista) VALUES (?, ?)`,
+              `INSERT IGNORE INTO ${tableName} (id_brano, id_artista) VALUES (?, ?)`,
               [assoc.id_brano, assoc.id_artista]
             );
           }
@@ -831,12 +833,12 @@ export async function deezerEntityApi(
   const param = typeof req.query[paramName] === "string" ? req.query[paramName] : undefined;
   const limit = typeof req.query.limit === "string" ? Number(req.query.limit) : undefined;
   const index = typeof req.query.index === "string" ? Number(req.query.index) : undefined;
-  if (!param || limit === undefined || index === undefined || isNaN(limit) || isNaN(index)) {
+  if (!param || (apisConfig.pagination !== false && (limit === undefined || index === undefined || isNaN(limit) || isNaN(index)))) {
     return res.status(400).json({ error: 'Parametri "' + paramName + '", "limit" e "index" obbligatori e devono essere validi' });
   }
   try {
     //FAI LA CHIAMATA API A DEEZER E OTTIENI LA RISPOSTA
-    const response = await apisConfig.deezerAPICallback(res, param, limit.toString(), index.toString());
+    const response = await apisConfig.deezerAPICallback(res, param, limit, index);
     if (response === -1) {
       return; //Errore già gestito in makeDeezerApiCall
     }

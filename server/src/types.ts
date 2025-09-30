@@ -19,8 +19,9 @@ type DeezerEntityConfigs = [
 
 export type DeezerEntityAPIConfig = {
   paramName: string;
-  deezerAPICallback: (res: import("express").Response, param: string, limit: string, index: string) => Promise<axios.AxiosResponse<any, any> | -1>;
+  deezerAPICallback: (res: import("express").Response, param: string, limit: number | undefined, index: number | undefined) => Promise<axios.AxiosResponse<any, any> | -1>;
   entities: DeezerEntityConfigs;
+  pagination?: boolean;
   association?: {
     getAssociationsFromResponse: (response: axios.AxiosResponse<any, any>) => AssocBranoArtistaDb[] | AssocAlbumGenereDb[];
     tableName: "album_genere" | "brano_artista";

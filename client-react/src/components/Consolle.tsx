@@ -6,8 +6,9 @@ import { setBrano2 } from "../store/giradischiSlice";
 import CardBrano from "./cards/CardBrano";
 import type { RootState } from "../store/store";
 import { openModal } from "../store/modalNuovoPassaggioSlice";
+import Modal from "react-modal";
 
-function Consolle() {
+function Consolle(props: {isOpen: boolean, onRequestClose: () => void}) {
     const dispatch = useDispatch();
     const loggedUtente: UtenteDb | null = useSelector((state: RootState) => (state.user as any).utente);
     const brano1: BranoDb | null = useSelector((state: RootState) => (state.giradischi as any).brano1);
@@ -30,7 +31,7 @@ function Consolle() {
         dispatch(setBrano1(brano2));
         dispatch(setBrano2(temp));
     }
-    return <div>
+    return <Modal isOpen={props.isOpen} onRequestClose={props.onRequestClose}>
         <h3>Brano 1</h3>
         {brano1 === null ? <p><i>(vuoto)</i></p> :
         <CardBrano brano={brano1} noDeckButtons/>}
@@ -39,7 +40,7 @@ function Consolle() {
         <CardBrano brano={brano2} noDeckButtons/>}
         <button onClick={scambia}>Scambia</button>
         <button onClick={() => {if(loggedUtente){dispatch(openModal())}else{alert("Accedi per pubblicare un passaggio");}}}>Pubblica un nuovo passaggio</button>
-    </div>;
+    </Modal>;
 }
 
 export default Consolle;

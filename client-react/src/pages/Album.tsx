@@ -1,15 +1,12 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-import axios from "axios";
 import {
     AlbumDbSchema,
     BranoDbSchema,
-    GenereDbSchema,
     PassaggioDbSchema,
     type AlbumDb,
     type ArtistaDb,
     type BranoDb,
-    type GenereDb,
 } from "../types/db_types";
 
 import CardPassaggio from "../components/cards/CardPassaggio";
@@ -18,6 +15,8 @@ import CardBrano from "../components/cards/CardBrano";
 import { getNomiArtistiAlbum } from "../functions/functions";
 import z from "zod";
 import api from "../api";
+import CardAlbum from "../components/cards/CardAlbum";
+import CardArtista from "../components/cards/CardArtista";
 
 // Schema e type per /passaggi?albumPrimoBrano= e /passaggi?albumSecondoBrano=
 const PassaggioConBraniSchema = PassaggioDbSchema.extend({
@@ -33,7 +32,7 @@ function Album() {
     const id = query.get("id");
     const [album, setAlbum] = useState<AlbumDb | null>(null);
     const [artistiAlbum, setArtistiAlbum] = useState<ArtistaDb[] | null>(null);
-
+    const [albumLoaded, setAlbumLoaded] = useState(false);
     //useEffect necessario per recuperare i dati
     useEffect(() => {
         loadAlbum();
@@ -42,15 +41,11 @@ function Album() {
     async function loadAlbum() {
         try {
             await api.get(`/album/singolo?albumId=${id}&limit=1&index=0`);
-            const responseAlbum = await api.get(`/album/esistenti/${id}?include_genere&include_brano`, { headers: { "Cache-Control": "no-cache, no-store, must-revalidate", Pragma: "no-cache", Expires: "0" } });
-            const ApiSchema = AlbumDbSchema.extend({
-                genere: z.array(GenereDbSchema),
-                brano: z.array(BranoDbSchema)
-            });
-            type ApiType = z.infer<typeof ApiSchema>;
-            const responseAlbumData = ApiSchema.parse(responseAlbum.data) as ApiType;
+            setAlbumLoaded(true);
+            const responseAlbum = await api.get(`/album/esistenti/${id}`, { headers: { "Cache-Control": "no-cache, no-store, must-revalidate", Pragma: "no-cache", Expires: "0" } });
+            const responseAlbumData: AlbumDb = AlbumDbSchema.parse(responseAlbum.data) as AlbumDb;
             setAlbum(responseAlbumData);
-            setArtistiAlbum(await getNomiArtistiAlbum((responseAlbumData.brano as BranoDb[]).map((brano: BranoDb) => brano.id), responseAlbumData.id));
+            setArtistiAlbum(await getNomiArtistiAlbum(undefined, responseAlbumData.id));
             //L'album è stato caricato con successo, ora si possono caricare i passaggi
         } catch (error) {
             //TODO: Gestire errore
@@ -60,14 +55,22 @@ function Album() {
 
     return (
         <div>
-            <h1>Album</h1>
             {album ? (
                 <div>
-                    <img style={{ width: "100px", height: "100px" }} src={album.url_immagine ? album.url_immagine : "src/assets/album_empty.jpg"} alt={"Cover album " + album.titolo} />
-                    <h2>{album.titolo}</h2>
-                    <p>Data di uscita: {album.data_uscita ? album.data_uscita : "Sconosciuta"}</p>
-                    <p>Artisti: {artistiAlbum ? artistiAlbum.map(artista => artista.nome).join(", ") : "Caricamento..."}</p>
-                    <p>Generi: {(album.genere as GenereDb[]).map(genere => genere.nome).join(", ")}</p>
+                    <div style={{display: "flex", flexDirection: "row", justifyContent: "center"}}>
+                    <CardAlbum size={"large"} album={album} />
+                    </div>
+                    <h2>Artisti dell'album</h2>
+                    {artistiAlbum &&
+                        <div style={{ display: "flex", flexDirection: "row", justifyContent: "flex-start", overscrollBehaviorX: "contain" }}>
+                            {artistiAlbum.map((artista, index) => {
+                                return <CardArtista key={index} artista={artista} size={"small"} />;
+                            })}
+                        </div>
+                    }
+                    {!artistiAlbum &&
+                        <p>Caricamento</p>
+                    }
                 </div>
             ) : (
                 <p>Caricamento...</p>
@@ -75,9 +78,14 @@ function Album() {
             {album !== null &&
                 <div>
                     <h2>Brani dell'album</h2>
-                    {(album.brano as BranoDb[]).map(brano => (
-                        <CardBrano key={brano.id} brano={brano} />
-                    ))}
+                    {albumLoaded &&
+                        <PagedList itemsPerPage={5} apiCall={`/brani/esistenti?album=${album.id}`} component={(element: BranoDb) => (
+                            <CardBrano size={"small"} key={element.id} brano={element} />
+                        )} scrollMode="horizontal" />
+                    }
+                    {!albumLoaded &&
+                        <div>Caricamento...</div>
+                    }
                 </div>
             }
             {album !== null &&
@@ -88,6 +96,7 @@ function Album() {
                             itemsPerPage={2}
                             apiCall={`/passaggi?albumPrimoBrano=${album.id}`}
                             schema={PassaggioConBraniSchema}
+                            scrollMode="horizontal"
                             component={(element: PassaggioConBrani) => (
                                 <CardPassaggio
                                     key={element.id}
@@ -102,9 +111,11 @@ function Album() {
                     <div>
                         <h2>Passaggi dove il secondo brano è di questo album</h2>
                         <PagedList
+
                             itemsPerPage={2}
                             apiCall={`/passaggi?albumSecondoBrano=${album.id}`}
                             schema={PassaggioConBraniSchema}
+                            scrollMode="horizontal"
                             component={(element: PassaggioConBrani) => (
                                 <CardPassaggio
                                     key={element.id}

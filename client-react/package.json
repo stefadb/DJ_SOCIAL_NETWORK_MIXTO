@@ -15,11 +15,15 @@
     "javascript-time-ago": "^2.5.12",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
+    "react-feather": "^2.0.10",
+    "react-loader-spinner": "^7.0.3",
     "react-modal": "^3.16.3",
     "react-rating": "^2.0.5",
     "react-redux": "^9.2.0",
     "react-router-dom": "^7.9.1",
     "react-time-ago": "^7.3.5",
+    "react-tooltip": "^5.29.1",
+    "uuid": "^13.0.0",
     "zod": "^4.1.8"
   },
   "devDependencies": {

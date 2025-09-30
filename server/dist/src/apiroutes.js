@@ -355,6 +355,7 @@ async function getFilteredEntitiesList(req, res, config) {
     const con = await getConnection();
     try {
         const [rows] = await con.execute(finalQuery);
+        console.log(rows);
         for (let row of rows) {
             if (config.mainTableSchema !== undefined && !dbResultIsValid(res, false, row, config.mainTableSchema, config.mainTableName)) {
                 return;
@@ -384,7 +385,7 @@ async function getFilteredEntitiesList(req, res, config) {
     }
 }
 async function postEntity(req, res, config) {
-    if (await blockUnauthorizedUser(req, res, config.mainTableName, config.mainTableNewRowValues)) {
+    if (!config.bypassBlockUnauthorizedUser && await blockUnauthorizedUser(req, res, config.mainTableName, config.mainTableNewRowValues)) {
         //Risposta già inviata dalla funzione, non serve inviarla qui
         return;
     }
@@ -586,14 +587,14 @@ async function upsertAssociations(tableName, associations) {
                     assoc = assoc;
                     const [rows] = await con.execute(`SELECT * FROM ${tableName} WHERE id_album = ? AND id_genere = ?`, [assoc.id_album, assoc.id_genere]);
                     if (rows.length === 0) {
-                        await con.execute(`INSERT INTO ${tableName} (id_album, id_genere) VALUES (?, ?)`, [assoc.id_album, assoc.id_genere]);
+                        await con.execute(`INSERT IGNORE INTO ${tableName} (id_album, id_genere) VALUES (?, ?)`, [assoc.id_album, assoc.id_genere]);
                     }
                 }
                 else if (tableName === "brano_artista") {
                     assoc = assoc;
                     const [rows] = await con.execute(`SELECT * FROM ${tableName} WHERE id_brano = ? AND id_artista = ?`, [assoc.id_brano, assoc.id_artista]);
                     if (rows.length === 0) {
-                        await con.execute(`INSERT INTO ${tableName} (id_brano, id_artista) VALUES (?, ?)`, [assoc.id_brano, assoc.id_artista]);
+                        await con.execute(`INSERT IGNORE INTO ${tableName} (id_brano, id_artista) VALUES (?, ?)`, [assoc.id_brano, assoc.id_artista]);
                     }
                 }
             }
@@ -679,12 +680,12 @@ async function deezerEntityApi(req, res, apisConfig) {
     const param = typeof req.query[paramName] === "string" ? req.query[paramName] : undefined;
     const limit = typeof req.query.limit === "string" ? Number(req.query.limit) : undefined;
     const index = typeof req.query.index === "string" ? Number(req.query.index) : undefined;
-    if (!param || limit === undefined || index === undefined || isNaN(limit) || isNaN(index)) {
+    if (!param || (apisConfig.pagination !== false && (limit === undefined || index === undefined || isNaN(limit) || isNaN(index)))) {
         return res.status(400).json({ error: 'Parametri "' + paramName + '", "limit" e "index" obbligatori e devono essere validi' });
     }
     try {
         //FAI LA CHIAMATA API A DEEZER E OTTIENI LA RISPOSTA
-        const response = await apisConfig.deezerAPICallback(res, param, limit.toString(), index.toString());
+        const response = await apisConfig.deezerAPICallback(res, param, limit, index);
         if (response === -1) {
             return; //Errore già gestito in makeDeezerApiCall
         }

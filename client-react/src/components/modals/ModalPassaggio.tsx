@@ -262,7 +262,7 @@ function ModalPassaggio() {
                     <div style={{ padding: 12 }}>
                         {savingCommento && <div>Salvataggio in corso...</div>}
                         {!savingCommento &&
-                            <PagedList itemsPerPage={10} apiCall={`/commenti?passaggio=${passaggio.id}`} schema={CommentoEUtenteSchema} component={(element: CommentoEUtente) => {
+                            <PagedList itemsPerPage={10} apiCall={`/commenti?passaggio=${passaggio.id}`} schema={CommentoEUtenteSchema} scrollMode="vertical" component={(element: CommentoEUtente) => {
                                 return <CardCommento commento={element} livello={1} />;
                             }} showMoreButton={(onClick) => <button style={{ width: "100%" }} onClick={onClick}>Carica altri commenti</button>} />
                         }
@@ -282,7 +282,7 @@ function ModalPassaggio() {
                     <div style={{ padding: 12 }}>
                         {savingValutazione && <div>Salvataggio in corso...</div>}
                         {!savingValutazione &&
-                            <PagedList itemsPerPage={10} apiCall={`/valutazioni?passaggio=${passaggio.id}`} schema={ValutazioneEUtenteSchema} component={(element: ValutazioneEUtente) => {
+                            <PagedList itemsPerPage={10} apiCall={`/valutazioni?passaggio=${passaggio.id}`} schema={ValutazioneEUtenteSchema} scrollMode="vertical" component={(element: ValutazioneEUtente) => {
                                 return <CardValutazione valutazione={element} />;
                             }} showMoreButton={(onClick) => <button onClick={onClick}>Carica altre valutazioni</button>} />
                         }

@@ -16,7 +16,7 @@ app.use(express.json());
 //Configura il cors di app per permettere richieste dall'indirizzo http://localnost:5173 (dove gira il client React in dev)
 import cors from "cors";
 app.use(cors({
-    origin: 'http://localhost:5173', // Sostituisci con l'URL del tuo client React
+    origin: 'http://192.168.1.164:5173', // Sostituisci con l'URL del tuo client React
     methods: ['GET', 'POST', 'PUT', 'DELETE'], // Metodi consentiti
     credentials: true // Se hai bisogno di inviare cookie o credenziali
 }));
@@ -109,7 +109,7 @@ app.post("/utenti", (req, res) => {
             return;
         }
         req.body.newRowValues.password = hash;
-        postEntity(req, res, postAndPutApisConfig.utente(req));
+        postEntity(req, res, postAndPutApisConfig.utentePost(req));
     });
 });
 app.put("/utenti/:id", async (req, res) => {
@@ -135,7 +135,7 @@ app.put("/utenti/:id", async (req, res) => {
                 return;
             }
             req.body.newRowValues.password = hash;
-            putEntity(req, res, postAndPutApisConfig.utente(req));
+            putEntity(req, res, postAndPutApisConfig.utentePut(req));
         });
         con.end();
     } else {
@@ -148,7 +148,7 @@ app.put("/utenti/:id", async (req, res) => {
             return;
         }
         req.body.newRowValues.password = (rows as any[])[0].password; //mantieni la password vecchia
-        putEntity(req, res, postAndPutApisConfig.utente(req));
+        putEntity(req, res, postAndPutApisConfig.utentePut(req));
         con.end();
     }
 });

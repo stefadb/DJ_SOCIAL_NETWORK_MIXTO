@@ -331,7 +331,14 @@ export const getMultipleApisConfig = {
             mainTableName: "utente",
             mainTableColumns: req.query.columns === undefined ? utenteColumns.concat("password") : (req.query.columns as string).split(","),
             mainTableSchema: UtenteDbSchema,
-            filtersAndJoins: []
+            filtersAndJoins: [
+                ...(req.query.query ? [{
+                    joinedTableName: undefined,
+                    joinedTableColumnToCheckValueIn: "id",
+                    operator: "IN" as "LIKE" | "=" | "IN" | "IS",
+                    value: `(SELECT id FROM utente WHERE username LIKE '%${req.query.query as string}%' OR nome LIKE '%${req.query.query as string}%' OR cognome LIKE '%${req.query.query as string}%')`
+                }] : [])
+            ]
         }
     },
     brano: (req: import("express").Request) => {
@@ -431,6 +438,12 @@ export const getMultipleApisConfig = {
                     joinedTableColumnToCheckValueIn: "id",
                     value: req.query.album as string
                 }] : []),
+                ...(req.query.query ? [{
+                    joinedTableName: undefined,
+                    joinedTableColumnToCheckValueIn: "nome",
+                    operator: "LIKE" as "LIKE" | "=" | "IN" | "IS",
+                    value: `'%${req.query.query as string}%'`
+                }] : [])
             ]
         }
     }

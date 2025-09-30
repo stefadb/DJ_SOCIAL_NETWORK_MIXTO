@@ -1,7 +1,6 @@
-function SideContainer(props: { children: React.ReactNode }) {
+function SideContainer() {
     return (
         <aside>
-            {props.children}
         </aside>
     );
 }

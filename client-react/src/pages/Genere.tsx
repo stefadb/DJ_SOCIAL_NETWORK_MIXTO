@@ -9,7 +9,6 @@ import {
     type ArtistaDb,
     type BranoDb,
     type GenereDb,
-    type PassaggioDb,
 } from "../types/db_types";
 
 import CardPassaggio from "../components/cards/CardPassaggio";
@@ -17,6 +16,7 @@ import PagedList from "../components/PagedList";
 import CardBrano from "../components/cards/CardBrano";
 import CardArtista from "../components/cards/CardArtista";
 import z from "zod";
+import CardGenere from "../components/cards/CardGenere";
 
 // Schema e type per /passaggi?genereSecondoBrano= e /passaggi?generePrimoBrano=
 const PassaggioConBraniSchema = PassaggioDbSchema.extend({
@@ -50,28 +50,26 @@ function Genere() {
 
     return (
         <div>
-            <h1>Genere</h1>
-            {genere ? (
-                <div>
-                    <img style={{ width: "200px", height: "200px", borderRadius: "50%" }} src={genere.url_immagine ? genere.url_immagine : "src/assets/genere_empty.jpg"} alt={"Immagine del genere " + genere.nome} />
-                    <h2>{genere.nome}</h2>
-                </div>
-            ) : (
-                <p>Caricamento...</p>
-            )}
+            <div style={{ display: "flex", flexDirection: "row", justifyContent: "center" }}>
+                {genere ? (
+                    <CardGenere genere={genere} size="large" />
+                ) : (
+                    <p>Caricamento...</p>
+                )}
+            </div>
             {genere !== null &&
                 <>
                     <div>
                         <h2>Artisti del genere più popolari su Deezer</h2>
-                        <PagedList itemsPerPage={5} apiCall={`/artisti/genere?genreId=${genere.id}`} schema={ArtistaDbSchema} component={(element: ArtistaDb) => (
-                            <CardArtista key={element.id} artista={element} />
-                        )} showMoreButton={(onClick) => <button onClick={onClick}>Carica altri artisti</button>} />
+                        <PagedList noPaging itemsPerPage={5} apiCall={`/artisti/genere?genreId=${genere.id}`} schema={ArtistaDbSchema} scrollMode="horizontal" component={(element: ArtistaDb) => (
+                            <CardArtista key={element.id} artista={element} size="small" />
+                        )} />
                     </div>
                     <div>
                         <h2>Brani del genere più popolari su Deezer</h2>
-                        <PagedList itemsPerPage={5} apiCall={`/brani/genere?genreId=${genere.id}`} schema={BranoDbSchema} component={(element: BranoDb) => (
-                            <CardBrano key={element.id} brano={element} />
-                        )} showMoreButton={(onClick) => <button onClick={onClick}>Carica altri brani</button>} />
+                        <PagedList itemsPerPage={5} apiCall={`/brani/genere?genreId=${genere.id}`} schema={BranoDbSchema} scrollMode="horizontal" component={(element: BranoDb) => (
+                            <CardBrano key={element.id} brano={element} size={"small"}/>
+                        )} />
                     </div>
                     <div>
                         <h2>Cosa mettere prima di un brano del genere {genere.nome}?</h2>
@@ -79,6 +77,7 @@ function Genere() {
                             itemsPerPage={2}
                             apiCall={`/passaggi?genereSecondoBrano=${genere.id}`}
                             schema={PassaggioConBraniSchema}
+                            scrollMode="horizontal"
                             component={(element: PassaggioConBrani) => (
                                 <CardPassaggio
                                     key={element.id}
@@ -96,6 +95,7 @@ function Genere() {
                             itemsPerPage={2}
                             apiCall={`/passaggi?generePrimoBrano=${genere.id}`}
                             schema={PassaggioConBraniSchema}
+                            scrollMode="horizontal"
                             component={(element: PassaggioConBrani) => (
                                 <CardPassaggio
                                     key={element.id}

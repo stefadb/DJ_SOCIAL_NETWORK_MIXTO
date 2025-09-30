@@ -8,7 +8,7 @@ async function upsertEntitaDeezer(con, entita, nomeEntita) {
     let valuesUpdate = Object.entries(entita).filter(([key, _]) => key !== "id").map(([_, val]) => val).concat([entita.id]);
     let columnsUpdate = Object.entries(entita).filter(([key, _]) => key !== "id").map(([key, _]) => `${key} = ?`).join(", ");
     if (rows.length === 0) {
-        let query = `INSERT INTO ${nomeEntita} (${columnsInsert}) VALUES (${valuesInsert})`;
+        let query = `INSERT IGNORE INTO ${nomeEntita} (${columnsInsert}) VALUES (${valuesInsert})`;
         let values = Object.values(entita).map((val) => val === undefined ? null : val);
         await con.execute(query, values);
     }

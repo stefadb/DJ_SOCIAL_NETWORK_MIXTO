@@ -52,35 +52,32 @@ function Artista() {
 
     return (
         <div>
-            <h1>Artista</h1>
-            {artista ? (
-                <div>
-                    <img style={{ width: "200px", height: "200px", borderRadius: "50%" }} src={artista.url_immagine ? artista.url_immagine : "src/assets/artista_empty.jpg"} alt={"Immagine di profilo di " + artista.nome} />
-                    <h2>{artista.nome}</h2>
-                    <p>Generi: --ancora non so come farli vedere-- //TODO:</p>
-                </div>
-            ) : (
-                <p>Caricamento...</p>
-            )}
+            <div style={{display: "flex", flexDirection: "row", justifyContent: "center"}}>
+                {artista ? (
+                    <CardArtista artista={artista} size="large" />
+                ) : (
+                    <p>Caricamento...</p>
+                )}
+            </div>
             {artista !== null &&
                 <>
                     <div>
                         <h2>Album dell'artista</h2>
-                        <PagedList itemsPerPage={5} apiCall={`/album/artista?artistId=${artista.id}`} schema={AlbumDbSchema} component={(element: AlbumDb) => (
+                        <PagedList itemsPerPage={5} apiCall={`/album/artista?artistId=${artista.id}`} schema={AlbumDbSchema} scrollMode="horizontal" component={(element: AlbumDb) => (
                             <CardAlbum key={element.id} album={element} />
-                        )} showMoreButton={(onClick) => <button onClick={onClick}>Carica altri album</button>} />
+                        )} />
                     </div>
                     <div>
                         <h2>Brani dell'artista più popolari su Deezer</h2>
-                        <PagedList itemsPerPage={5} apiCall={`/brani/artista?artistId=${artista.id}`} schema={BranoDbSchema} component={(element: BranoDb) => (
+                        <PagedList itemsPerPage={5} apiCall={`/brani/artista?artistId=${artista.id}`} schema={BranoDbSchema} scrollMode="horizontal" component={(element: BranoDb) => (
                             <CardBrano key={element.id} brano={element} />
-                        )} showMoreButton={(onClick) => <button onClick={onClick}>Carica altri brani</button>} />
+                        )} />
                     </div>
                     <div>
                         <h2>Artisti simili a {artista.nome}</h2>
-                        <PagedList itemsPerPage={5} apiCall={`/artisti/simili?artistId=${artista.id}`} schema={ArtistaDbSchema} component={(element: ArtistaDb) => (
-                            <CardArtista key={element.id} artista={element} />
-                        )} showMoreButton={(onClick) => <button onClick={onClick}>Carica altri artisti</button>} />
+                        <PagedList itemsPerPage={5} apiCall={`/artisti/simili?artistId=${artista.id}`} schema={ArtistaDbSchema} scrollMode="horizontal" component={(element: ArtistaDb) => (
+                            <CardArtista key={element.id} artista={element} size="small" />
+                        )} />
                     </div>
                     <div>
                         <h2>Cosa mettere prima di un brano di {artista.nome}?</h2>
@@ -88,6 +85,7 @@ function Artista() {
                             itemsPerPage={2}
                             apiCall={`/passaggi?artistaSecondoBrano=${artista.id}`}
                             schema={PassaggioConBraniSchema}
+                            scrollMode="horizontal"
                             component={(element: PassaggioConBrani) => (
                                 <CardPassaggio
                                     key={element.id}
@@ -105,6 +103,7 @@ function Artista() {
                             itemsPerPage={2}
                             apiCall={`/passaggi?artistaPrimoBrano=${artista.id}`}
                             schema={PassaggioConBraniSchema}
+                            scrollMode="horizontal"
                             component={(element: PassaggioConBrani) => (
                                 <CardPassaggio
                                     key={element.id}

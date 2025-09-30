@@ -15,7 +15,16 @@ export const postAndPutApisConfig = {
         assocTablesAndIds: req.body.assocTablesAndIds,
         deleteOldAssociationsFirst: req.body.deleteOldAssociationsFirst
     }},
-    utente: (req: import("express").Request) => {
+    utentePost: (req: import("express").Request) => {
+        return{
+        mainTableName: "utente",
+        mainTableSchema: UtenteDbSchema,
+        mainTableNewRowValues: req.body.newRowValues,
+        assocTablesAndIds: req.body.assocTablesAndIds,
+        deleteOldAssociationsFirst: req.body.deleteOldAssociationsFirst,
+        bypassBlockUnauthorizedUser: true
+    }},
+    utentePut: (req: import("express").Request) => {
         return{
         mainTableName: "utente",
         mainTableSchema: UtenteDbSchema,

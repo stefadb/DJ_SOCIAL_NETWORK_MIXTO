@@ -66,6 +66,7 @@ function Utente() {
               component={(element: BranoDb) => (
                 <CardBrano key={element.id} brano={element} />
               )}
+              scrollMode="horizontal"
               showMoreButton={(onClick) => <button onClick={onClick}>Carica altri brani</button>}
             />
           </div>
@@ -83,6 +84,7 @@ function Utente() {
                   brano2={element.brano_2_array[0]}
                 />
               )}
+              scrollMode="horizontal"
               showMoreButton={(onClick) => <button onClick={onClick}>Carica altri passaggi</button>}
             />
           </div>

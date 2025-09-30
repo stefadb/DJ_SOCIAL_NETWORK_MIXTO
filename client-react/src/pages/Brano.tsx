@@ -16,7 +16,6 @@ import CardPassaggio from "../components/cards/CardPassaggio";
 import PagedList from "../components/PagedList";
 import BranoTableRow from "../components/BranoTableRow";
 import z from "zod";
-import SalvaBranoPreferito from "../components/SalvaBranoPreferito";
 import CardBrano from "../components/cards/CardBrano";
 
 // Schema e type per /passaggi/conta?primoBrano= e /passaggi/conta?secondoBrano=
@@ -75,9 +74,10 @@ function Brano() {
 
   return (
     <div>
-      <h1>Brano</h1>
       {brano ? (
-        <CardBrano brano={brano} />
+        <div style={{ display: "flex", flexDirection: "row", justifyContent: "center" }}>
+          <CardBrano brano={brano} size={"large"} />
+        </div>
       ) : (
         <p>Caricamento...</p>
       )}
@@ -99,6 +99,7 @@ function Brano() {
                   itemsPerPage={2}
                   apiCall={`/passaggi/conta?primoBrano=${brano.id}`}
                   schema={ContaPassaggiBrano2Schema}
+                  scrollMode="vertical"
                   component={(element: ContaPassaggiBrano2) => (
                     <BranoTableRow element={element} />
                   )}
@@ -123,6 +124,7 @@ function Brano() {
                   itemsPerPage={2}
                   apiCall={`/passaggi/conta?secondoBrano=${brano.id}`}
                   schema={ContaPassaggiBrano1Schema}
+                  scrollMode="horizontal"
                   component={(element: ContaPassaggiBrano1) => (
                     <BranoTableRow element={element} />
                   )}
@@ -137,7 +139,7 @@ function Brano() {
         <>
           <div>
             <h2>Passaggi dove il brano è il primo</h2>
-            <PagedList itemsPerPage={2} apiCall={`/passaggi?primoBrano=${brano.id}`} schema={PassaggioDbSchema} component={(element: PassaggioDb) => (
+            <PagedList itemsPerPage={2} apiCall={`/passaggi?primoBrano=${brano.id}`} schema={PassaggioDbSchema} scrollMode="horizontal" component={(element: PassaggioDb) => (
               <CardPassaggio
                 key={element.id}
                 passaggio={element}
@@ -148,7 +150,7 @@ function Brano() {
           </div>
           <div>
             <h2>Passaggi dove il brano è il secondo</h2>
-            <PagedList itemsPerPage={2} apiCall={`/passaggi?secondoBrano=${brano.id}`} schema={PassaggioDbSchema} component={(element: PassaggioDb) => (
+            <PagedList itemsPerPage={2} apiCall={`/passaggi?secondoBrano=${brano.id}`} schema={PassaggioDbSchema} scrollMode="horizontal" component={(element: PassaggioDb) => (
               <CardPassaggio
                 key={element.id}
                 passaggio={element}

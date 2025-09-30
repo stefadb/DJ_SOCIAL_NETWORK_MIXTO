@@ -4,6 +4,13 @@ import { DeezerEntityAPIConfig } from "./types";
 import { makeDeezerApiCall } from "./functions";
 import { AssocBranoArtistaDb } from "./db_types";
 
+function limitAndIndex(limit: number | undefined, index: number | undefined): Record<string, string> {
+    return {
+        ...(limit !== undefined ? { limit: limit.toString() } : {}),
+        ...(index !== undefined ? { index: index.toString() } : {})
+    };
+}
+
 type ArtistiAPIsConfig = {
     search: DeezerEntityAPIConfig;
     simili: DeezerEntityAPIConfig;
@@ -34,7 +41,7 @@ type GeneriAPIsConfig = {
 export const artistiAPIsConfig: ArtistiAPIsConfig = {
     search: {
         paramName: "query",
-        deezerAPICallback: (res: import("express").Response, param: string, limit: string, index: string) => makeDeezerApiCall(res, "search", null, "artist", { q: param, limit: limit.toString(), index: index.toString() }),
+        deezerAPICallback: (res: import("express").Response, param: string, limit: number | undefined, index: number | undefined) => makeDeezerApiCall(res, "search", null, "artist", {...limitAndIndex(limit, index), q: param}),
         entities: [{
             tableName: "Artista",
             deezerEntitySchema: ArtistaDeezerBasicSchema,
@@ -46,7 +53,7 @@ export const artistiAPIsConfig: ArtistiAPIsConfig = {
     },
     simili: {
         paramName: "artistId",
-        deezerAPICallback: (res: import("express").Response, param: string, limit: string, index: string) => makeDeezerApiCall(res, "artist", param, "related", { limit: limit.toString(), index: index.toString() }),
+        deezerAPICallback: (res: import("express").Response, param: string, limit: number | undefined, index: number | undefined) => makeDeezerApiCall(res, "artist", param, "related", limitAndIndex(limit, index)),
         entities: [{
             tableName: "Artista",
             deezerEntitySchema: ArtistaDeezerBasicSchema,
@@ -58,7 +65,8 @@ export const artistiAPIsConfig: ArtistiAPIsConfig = {
     },
     genere: {
         paramName: "genreId",
-        deezerAPICallback: (res: import("express").Response, param: string, limit: string, index: string) => makeDeezerApiCall(res, "genre", param, "artists", { limit: limit.toString(), index: index.toString() }),
+        deezerAPICallback: (res: import("express").Response, param: string, limit: number | undefined, index: number | undefined) => makeDeezerApiCall(res, "genre", param, "artists", null),
+        pagination: false,
         entities: [{
             tableName: "Artista",
             deezerEntitySchema: ArtistaDeezerBasicSchema,
@@ -71,7 +79,8 @@ export const artistiAPIsConfig: ArtistiAPIsConfig = {
     singolo: {
         paramName: "artistId",
         maxOneCallPerDay: true,
-        deezerAPICallback: (res: import("express").Response, param: string, limit: string, index: string) => makeDeezerApiCall(res, "artist", param, null, null),
+        pagination: false,
+        deezerAPICallback: (res: import("express").Response, param: string, limit: number | undefined, index: number | undefined) => makeDeezerApiCall(res, "artist", param, null, null),
         entities: [{
             tableName: "Artista",
             deezerEntitySchema: ArtistaDeezerBasicSchema,
@@ -86,7 +95,7 @@ export const artistiAPIsConfig: ArtistiAPIsConfig = {
 export const albumAPIsConfig: AlbumAPIsConfig = {
     search: {
         paramName: "query",
-        deezerAPICallback: (res: import("express").Response, param: string, limit: string, index: string) => makeDeezerApiCall(res, "search", null, "album", { q: param, limit: limit.toString(), index: index.toString() }),
+        deezerAPICallback: (res: import("express").Response, param: string, limit: number | undefined, index: number | undefined) => makeDeezerApiCall(res, "search", null, "album", {...limitAndIndex(limit, index), q: param}),
         entities: [{
             tableName: "Album",
             deezerEntitySchema: AlbumDeezerBasicSchema,
@@ -99,7 +108,8 @@ export const albumAPIsConfig: AlbumAPIsConfig = {
     singolo: {
         paramName: "albumId",
         maxOneCallPerDay: true,
-        deezerAPICallback: (res: import("express").Response, param: string, limit: string, index: string) => makeDeezerApiCall(res, "album", param, null, null),
+        deezerAPICallback: (res: import("express").Response, param: string, limit: number | undefined, index: number | undefined) => makeDeezerApiCall(res, "album", param, null, null),
+        pagination: false,
         entities: [
             {
                 tableName: "Album",
@@ -141,7 +151,7 @@ export const albumAPIsConfig: AlbumAPIsConfig = {
     },
     artista: {
         paramName: "artistId",
-        deezerAPICallback: (res: import("express").Response, param: string, limit: string, index: string) => makeDeezerApiCall(res, "artist", param, "albums", { limit: limit.toString(), index: index.toString() }),
+        deezerAPICallback: (res: import("express").Response, param: string, limit: number | undefined, index: number | undefined) => makeDeezerApiCall(res, "artist", param, "albums", limitAndIndex(limit, index)),
         entities: [
             {
                 tableName: "Album",
@@ -155,7 +165,7 @@ export const albumAPIsConfig: AlbumAPIsConfig = {
     },
     genere: {
         paramName: "genreId",
-        deezerAPICallback: (res: import("express").Response, param: string, limit: string, index: string) => makeDeezerApiCall(res, "chart", param, "albums", { limit: limit.toString(), index: index.toString() }),
+        deezerAPICallback: (res: import("express").Response, param: string, limit: number | undefined, index: number | undefined) => makeDeezerApiCall(res, "chart", param, "albums", limitAndIndex(limit, index)),
         entities: [
             {
                 tableName: "Album",
@@ -172,7 +182,9 @@ export const albumAPIsConfig: AlbumAPIsConfig = {
 export const generiAPIsConfig: GeneriAPIsConfig = {
     singolo: {
         paramName: "genreId",
-        deezerAPICallback: (res: import("express").Response, param: string, limit: string, index: string) => makeDeezerApiCall(res, "genre", param, null, null),
+        maxOneCallPerDay: true,
+        deezerAPICallback: (res: import("express").Response, param: string, limit: number | undefined, index: number | undefined) => makeDeezerApiCall(res, "genre", param, null, null),
+        pagination: false,
         entities: [{
             tableName: "Genere",
             deezerEntitySchema: GenereDeezerBasicSchema,
@@ -185,7 +197,8 @@ export const generiAPIsConfig: GeneriAPIsConfig = {
     tutti: {
         paramName: "uselessParam",
         maxOneCallPerDay: true,
-        deezerAPICallback: (res: import("express").Response, param: string, limit: string, index: string) => makeDeezerApiCall(res, "genre", null, null, null),
+        deezerAPICallback: (res: import("express").Response, param: string, limit: number | undefined, index: number | undefined) => makeDeezerApiCall(res, "genre", null, null, null),
+        pagination: false,
         entities: [{
             tableName: "Genere",
             deezerEntitySchema: GenereDeezerBasicSchema,
@@ -200,7 +213,7 @@ export const generiAPIsConfig: GeneriAPIsConfig = {
 export const braniAPIsConfig: BraniAPIsConfig = {
     album: {
         paramName: "albumId",
-        deezerAPICallback: (res: import("express").Response, param: string, limit: string, index: string) => makeDeezerApiCall(res, "album", param, "tracks", { limit: limit.toString(), index: index.toString() }),
+        deezerAPICallback: (res: import("express").Response, param: string, limit: number | undefined, index: number | undefined) => makeDeezerApiCall(res, "album", param, "tracks", limitAndIndex(limit, index)),
         entities: [{
             tableName: "Brano",
             deezerEntitySchema: BranoDeezerBasicSchema,
@@ -212,7 +225,7 @@ export const braniAPIsConfig: BraniAPIsConfig = {
     },
     search: {
         paramName: "query",
-        deezerAPICallback: (res: import("express").Response, param: string, limit: string, index: string) => makeDeezerApiCall(res, "search", null, "track", { q: param, limit: limit.toString(), index: index.toString() }),
+        deezerAPICallback: (res: import("express").Response, param: string, limit: number | undefined, index: number | undefined) => makeDeezerApiCall(res, "search", null, "track", {...limitAndIndex(limit, index), q: param}),
         entities: [
             {
                 tableName: "Album",
@@ -255,7 +268,7 @@ export const braniAPIsConfig: BraniAPIsConfig = {
     },
     genere: {
         paramName: "genreId",
-        deezerAPICallback: (res: import("express").Response, param: string, limit: string, index: string) => makeDeezerApiCall(res, "chart", param, "tracks", { limit: limit.toString(), index: index.toString() }),
+        deezerAPICallback: (res: import("express").Response, param: string, limit: number | undefined, index: number | undefined) => makeDeezerApiCall(res, "chart", param, "tracks", limitAndIndex(limit, index)),
         entities: [
             {
                 tableName: "Album",
@@ -297,7 +310,7 @@ export const braniAPIsConfig: BraniAPIsConfig = {
     },
     artista: {
         paramName: "artistId",
-        deezerAPICallback: (res: import("express").Response, param: string, limit: string, index: string) => makeDeezerApiCall(res, "artist", param, "top", { limit: limit.toString(), index: index.toString() }),
+        deezerAPICallback: (res: import("express").Response, param: string, limit: number | undefined, index: number | undefined) => makeDeezerApiCall(res, "artist", param, "top", limitAndIndex(limit, index)),
         entities: [
             {
                 tableName: "Album",
@@ -346,7 +359,8 @@ export const braniAPIsConfig: BraniAPIsConfig = {
     singolo: {
         paramName: "trackId",
         maxOneCallPerDay: true,
-        deezerAPICallback: (res: import("express").Response, param: string, limit: string, index: string) => makeDeezerApiCall(res, "track", param, null, null),
+        deezerAPICallback: (res: import("express").Response, param: string, limit: number | undefined, index: number | undefined) => makeDeezerApiCall(res, "track", param, null, null),
+        pagination: false,
         entities: [
             {
                 tableName: "Album",

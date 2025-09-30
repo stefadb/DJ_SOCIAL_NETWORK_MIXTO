@@ -1,4 +1,3 @@
-import axios from "axios";
 import { ArtistaDbSchema, BranoDbSchema, type ArtistaDb, type BranoDb, type UtenteDb } from "../types/db_types";
 import z from "zod";
 import api from "../api";
@@ -15,6 +14,7 @@ export async function getNomiArtistiBrano(id: number): Promise<ArtistaDb[]> {
 }
 
 export async function getNomiArtistiAlbum(idBrani: number[] | undefined, idAlbum: number): Promise<ArtistaDb[]> {
+    //TODO: questa funzione deve essere messa in useMemo o useCallback o quello che è, perche fa troppe chiamate API
     if (idBrani) {
         for (const idBrano of idBrani) {
             await api.get(`/brani/singolo?trackId=${idBrano}&limit=1&index=0`);
@@ -64,4 +64,10 @@ export async function rimuoviBranoPreferito(utente: UtenteDb, idBrano: number): 
     } catch (error) {
         throw new Error("Errore nel rimuovere il brano dai preferiti:", error);
     }
+}
+
+export function dataItaliana(data: string): string {
+    z.string().regex(/^\d{4}-\d{2}-\d{2}$/).parse(data);
+    const [anno, mese, giorno] = data.split("-");
+    return `${giorno}/${mese}/${anno}`;
 }
