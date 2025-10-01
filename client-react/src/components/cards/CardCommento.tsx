@@ -126,7 +126,7 @@ function CardCommento(props: { commento: CommentoEUtente, livello: number }) {
                     <PagedList itemsPerPage={5} apiCall={`/commenti?commentoPadre=${commento.id}`} schema={CommentoEUtenteSchema} scrollMode="vertical" component={(element: CommentoEUtente) => {
                         return <CardCommento commento={element} livello={props.livello + 1} />;
                     }} showMoreButton={(onClick) => <div style={{ display: "flex", justifyContent: "flex-end" }}><button style={{ width: minWidth + ((1.0 / (props.livello + 1)) * (100 - minWidth)) + "%" }} onClick={onClick}>Carica altre risposte</button></div>
-                    } />
+                    } emptyMessage={<></>}/>
                 }
             </div>
         </>

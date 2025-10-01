@@ -1,13 +1,15 @@
-import type { DigitDotDigit } from "../types/types";
+import Stella from "./icons/Stella";
 
-function Stelle(props: { rating: DigitDotDigit}) {
+function Stelle(props: { rating: number, bgColor: string}) {
     //Se rating è un numero decimale, le stelle devono essere riempite parzialmente
     return (
-        <span>
-            {Array.from({ length: 5}, (_, i) => (
-                <span key={i} style={{ color: i < parseFloat(props.rating) ? "#FFD600" : "#CCC", fontSize: 20 }}>★</span>
-            ))}
-        </span>
+        <>
+        <Stella fill={props.rating} size={24} bgColor={props.bgColor} />
+        <Stella fill={props.rating-1} size={24} bgColor={props.bgColor} />
+        <Stella fill={props.rating-2} size={24} bgColor={props.bgColor} />
+        <Stella fill={props.rating-3} size={24} bgColor={props.bgColor} />
+        <Stella fill={props.rating-4} size={24} bgColor={props.bgColor} />
+        </>
     );
 }
 

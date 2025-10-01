@@ -11,8 +11,9 @@ import { Clock, Disc, Users } from "react-feather";
 import ListaArtistiOGeneri from "../ListaArtistiOGeneri";
 import AscoltaSuDeezer from "../buttons/AscoltaSuDeezer";
 import Badge from "../Badge";
+import VediAlbum from "../buttons/VediAlbum";
 
-function CardBrano(props: { brano: BranoDb, noDeckButtons?: boolean, size: "small" | "large" }) {
+function CardBrano(props: { brano: BranoDb, noDeckButtons?: boolean, noButtons?: boolean, size: "tiny" | "small" | "large" }) {
     const [artisti, setArtisti] = useState<ArtistaDb[] | null>(null);
     const [album, setAlbum] = useState<AlbumDb | null>(null);
 
@@ -24,6 +25,7 @@ function CardBrano(props: { brano: BranoDb, noDeckButtons?: boolean, size: "smal
     }, []);
 
     const scales = {
+        tiny: 0.75,
         small: 1,
         large: 1.5
     };
@@ -91,14 +93,17 @@ function CardBrano(props: { brano: BranoDb, noDeckButtons?: boolean, size: "smal
                         </div>
                     </div>
                 </div>
-                <div style={{ display: "flex", alignItems: "flex-start", flexWrap: "wrap" }}>
-                    {props.noDeckButtons !== true && <>
-                        <PosizionaBrano deck={1} brano={props.brano} scale={scale} />
-                        <PosizionaBrano deck={2} brano={props.brano} scale={scale} />
-                    </>}
-                    <SalvaBranoPreferito idBrano={props.brano.id} scale={scale} />
-                    <AscoltaSuDeezer id={props.brano.id} entity={"track"} scale={scale} />
-                </div>
+                {props.noButtons !== true &&
+                    <div style={{ display: "flex", alignItems: "flex-start", flexWrap: "wrap" }}>
+                        {props.noDeckButtons !== true && <>
+                            <PosizionaBrano deck={1} brano={props.brano} scale={scale} />
+                            <PosizionaBrano deck={2} brano={props.brano} scale={scale} />
+                        </>}
+                        <SalvaBranoPreferito idBrano={props.brano.id} scale={scale} />
+                        <VediAlbum idAlbum={props.brano.id_album} scale={scale} />
+                        <AscoltaSuDeezer id={props.brano.id} entity={"track"} scale={scale} />
+                    </div>
+                }
             </div>
         </div>
     );

@@ -104,6 +104,7 @@ function Brano() {
                     <BranoTableRow element={element} />
                   )}
                   showMoreButton={(onClick) => <tr><td colSpan={4}><button onClick={onClick}>Carica altri brani</button></td></tr>}
+                  emptyMessage="😮 Nessun passaggio trovato"
                 />
               </tbody>
             </table>
@@ -129,6 +130,7 @@ function Brano() {
                     <BranoTableRow element={element} />
                   )}
                   showMoreButton={(onClick) => <tr><td colSpan={4}><button onClick={onClick}>Carica altri brani</button></td></tr>}
+                  emptyMessage="😮 Nessun passaggio trovato"
                 />
               </tbody>
             </table>
@@ -145,8 +147,12 @@ function Brano() {
                 passaggio={element}
                 brano1={brano}
                 brano2={(element.brano_2_array as BranoDb[])[0] as BranoDb}
+                utente={element.utente_array[0] ? element.utente_array[0] : null}
+                size={"small"}
               />
-            )} showMoreButton={(onClick) => <button onClick={onClick}>Carica altri passaggi</button>} />
+            )}
+            emptyMessage="😮 Nessun passaggio trovato"
+            />
           </div>
           <div>
             <h2>Passaggi dove il brano è il secondo</h2>
@@ -156,8 +162,12 @@ function Brano() {
                 passaggio={element}
                 brano1={(element.brano_1_array as BranoDb[])[0] as BranoDb}
                 brano2={brano}
+                size={"small"}
+                utente={element.utente_array[0] ? element.utente_array[0] : null}
               />
-            )} showMoreButton={(onClick) => <button onClick={onClick}>Carica altri passaggi</button>} />
+            )}
+            emptyMessage="😮 Nessun passaggio trovato"
+            />
           </div>
         </>
       }

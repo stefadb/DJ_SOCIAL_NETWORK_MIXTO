@@ -13,6 +13,7 @@ import CardPassaggio from "../components/cards/CardPassaggio";
 import PagedList from "../components/PagedList";
 import z from "zod";
 import CardBrano from "../components/cards/CardBrano";
+import CardUtente from "../components/cards/CardUtente";
 
 // Schema e type per /passaggi?utente=...
 const PassaggioConBraniSchema = PassaggioDbSchema.extend({
@@ -47,10 +48,9 @@ function Utente() {
 
   return (
     <div>
-      <h1>Scheda utente</h1>
       {utente ? (
-        <div>
-          <h2>{utente.nome} {utente.cognome}</h2>
+        <div style={{ display: "flex", flexDirection: "row", justifyContent: "center" }}>
+          <CardUtente utente={utente} size="large" />
         </div>
       ) : (
         <p>Caricamento...</p>
@@ -64,10 +64,11 @@ function Utente() {
               apiCall={`/brani/esistenti?utente=${utente.id}`}
               schema={BranoDbSchema}
               component={(element: BranoDb) => (
-                <CardBrano key={element.id} brano={element} />
+                <CardBrano key={element.id} brano={element} size={"small"} />
               )}
               scrollMode="horizontal"
               showMoreButton={(onClick) => <button onClick={onClick}>Carica altri brani</button>}
+              emptyMessage="😮 L'utente non ha ancora salvato nessun brano nei preferiti"
             />
           </div>
           <div>
@@ -82,10 +83,12 @@ function Utente() {
                   passaggio={element}
                   brano1={element.brano_1_array[0]}
                   brano2={element.brano_2_array[0]}
+                  size={"small"}
+                  utente={utente}
                 />
               )}
               scrollMode="horizontal"
-              showMoreButton={(onClick) => <button onClick={onClick}>Carica altri passaggi</button>}
+              emptyMessage="😮 L'utente non ha ancora pubblicato nessun passaggio"
             />
           </div>
         </div>

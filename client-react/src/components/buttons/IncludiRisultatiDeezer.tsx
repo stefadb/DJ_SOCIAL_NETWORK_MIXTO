@@ -1,4 +1,4 @@
-import DeezerLogo from "../DeezerLogo";
+import DeezerLogo from "../icons/DeezerLogo";
 
 function IncludiRisultatiDeezer(props: { inclusi: boolean, onClick: () => void }) {
     return <>

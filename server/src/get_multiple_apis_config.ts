@@ -35,14 +35,12 @@ export const getMultipleApisConfig = {
                 }, {
                     joinedTableName: "brano",
                     joinColumnSuffix: "1",
-
                     columns: branoColumns,
                     schema: BranoDbSchema
                 },
                 {
                     joinedTableName: "brano",
                     joinColumnSuffix: "2",
-
                     columns: branoColumns,
                     schema: BranoDbSchema
                 }] : []),
@@ -54,9 +52,12 @@ export const getMultipleApisConfig = {
                 }, {
                     joinedTableName: "brano",
                     joinColumnSuffix: "2",
-
                     columns: branoColumns,
                     schema: BranoDbSchema
+                },{
+                    joinedTableName: "utente",
+                    columns: utenteColumns,
+                    schema: UtenteDbSchema
                 }] : []),
                 ...(req.query.secondoBrano ? [{
                     joinedTableName: "brano",
@@ -66,9 +67,12 @@ export const getMultipleApisConfig = {
                 }, {
                     joinedTableName: "brano",
                     joinColumnSuffix: "1",
-
                     columns: branoColumns,
                     schema: BranoDbSchema
+                },{
+                    joinedTableName: "utente",
+                    columns: utenteColumns,
+                    schema: UtenteDbSchema
                 }] : []),
                 ...(req.query.albumPrimoBrano ? [{
                     joinedTableName: "brano",
@@ -78,16 +82,18 @@ export const getMultipleApisConfig = {
                 }, {
                     joinedTableName: "brano",
                     joinColumnSuffix: "1",
-
                     columns: branoColumns,
                     schema: BranoDbSchema
                 },
                 {
                     joinedTableName: "brano",
                     joinColumnSuffix: "2",
-
                     columns: branoColumns,
                     schema: BranoDbSchema
+                },{
+                    joinedTableName: "utente",
+                    columns: utenteColumns,
+                    schema: UtenteDbSchema
                 }] : []),
                 ...(req.query.albumSecondoBrano ? [{
                     joinedTableName: "brano",
@@ -97,21 +103,27 @@ export const getMultipleApisConfig = {
                 }, {
                     joinedTableName: "brano",
                     joinColumnSuffix: "1",
-
                     columns: branoColumns,
                     schema: BranoDbSchema
                 },
                 {
                     joinedTableName: "brano",
                     joinColumnSuffix: "2",
-
                     columns: branoColumns,
                     schema: BranoDbSchema
+                },{
+                    joinedTableName: "utente",
+                    columns: utenteColumns,
+                    schema: UtenteDbSchema
                 }] : []),
                 ...(req.query.scaletta ? [{
                     joinedTableName: "scaletta",
                     joinedTableColumnToCheckValueIn: "id",
                     value: req.query.scaletta as string
+                },{
+                    joinedTableName: "utente",
+                    columns: utenteColumns,
+                    schema: UtenteDbSchema
                 }] : []),
                 ...(req.query.artistaPrimoBrano ? [{
                     joinedTableName: "brano",
@@ -122,16 +134,18 @@ export const getMultipleApisConfig = {
                 }, {
                     joinedTableName: "brano",
                     joinColumnSuffix: "1",
-
                     columns: branoColumns,
                     schema: BranoDbSchema
                 },
                 {
                     joinedTableName: "brano",
                     joinColumnSuffix: "2",
-
                     columns: branoColumns,
                     schema: BranoDbSchema
+                },{
+                    joinedTableName: "utente",
+                    columns: utenteColumns,
+                    schema: UtenteDbSchema
                 }] : []),
                 ...(req.query.artistaSecondoBrano ? [{
                     joinedTableName: "brano",
@@ -142,16 +156,18 @@ export const getMultipleApisConfig = {
                 }, {
                     joinedTableName: "brano",
                     joinColumnSuffix: "1",
-
                     columns: branoColumns,
                     schema: BranoDbSchema
                 },
                 {
                     joinedTableName: "brano",
                     joinColumnSuffix: "2",
-
                     columns: branoColumns,
                     schema: BranoDbSchema
+                },{
+                    joinedTableName: "utente",
+                    columns: utenteColumns,
+                    schema: UtenteDbSchema
                 }] : []),
                 ...(req.query.generePrimoBrano ? [{
                     joinedTableName: "brano",
@@ -162,16 +178,18 @@ export const getMultipleApisConfig = {
                 }, {
                     joinedTableName: "brano",
                     joinColumnSuffix: "1",
-
                     columns: branoColumns,
                     schema: BranoDbSchema
                 },
                 {
                     joinedTableName: "brano",
                     joinColumnSuffix: "2",
-
                     columns: branoColumns,
                     schema: BranoDbSchema
+                },{
+                    joinedTableName: "utente",
+                    columns: utenteColumns,
+                    schema: UtenteDbSchema
                 }] : []),
                 ...(req.query.genereSecondoBrano ? [{
                     joinedTableName: "brano",
@@ -182,16 +200,18 @@ export const getMultipleApisConfig = {
                 }, {
                     joinedTableName: "brano",
                     joinColumnSuffix: "1",
-
                     columns: branoColumns,
                     schema: BranoDbSchema
                 },
                 {
                     joinedTableName: "brano",
                     joinColumnSuffix: "2",
-
                     columns: branoColumns,
                     schema: BranoDbSchema
+                },{
+                    joinedTableName: "utente",
+                    columns: utenteColumns,
+                    schema: UtenteDbSchema
                 }] : []),
             ]
         }
@@ -299,7 +319,7 @@ export const getMultipleApisConfig = {
     valutazioneMedia: (req: import("express").Request) => {
         return {
             mainTableName: "valutazione",
-            selectCustomColumns: ["CAST(AVG(valutazione.voto) AS DECIMAL(1,1)) AS voto_medio"],
+            selectCustomColumns: ["CAST(AVG(valutazione.voto) AS FLOAT) AS voto_medio", "COUNT(valutazione.voto) AS numero_voti"],
             mainTableSchema: undefined, //perchè non vengono restituite tutte le colonne del passaggio
             customGroupBys: ["valutazione.id_passaggio"],
             mainTableColumns: ["id_passaggio"],

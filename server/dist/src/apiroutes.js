@@ -353,9 +353,9 @@ async function getFilteredEntitiesList(req, res, config) {
     }
     const finalQuery = selectStatement + joins + whereStatement + groupByStatement + orderByStatement + limitOffset;
     const con = await getConnection();
+    console.log(finalQuery);
     try {
         const [rows] = await con.execute(finalQuery);
-        console.log(rows);
         for (let row of rows) {
             if (config.mainTableSchema !== undefined && !dbResultIsValid(res, false, row, config.mainTableSchema, config.mainTableName)) {
                 return;

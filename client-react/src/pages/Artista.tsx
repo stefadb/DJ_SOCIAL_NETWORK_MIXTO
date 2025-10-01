@@ -17,13 +17,7 @@ import CardAlbum from "../components/cards/CardAlbum";
 import CardBrano from "../components/cards/CardBrano";
 import CardArtista from "../components/cards/CardArtista";
 import z from "zod";
-
-// Schema e type per /passaggi?artistaSecondoBrano= e /passaggi?artistaPrimoBrano=
-const PassaggioConBraniSchema = PassaggioDbSchema.extend({
-    brano_1_array: z.array(BranoDbSchema),
-    brano_2_array: z.array(BranoDbSchema)
-});
-type PassaggioConBrani = z.infer<typeof PassaggioConBraniSchema>;
+import { PassaggioConBraniEUtenteSchema, type PassaggioConBraniEUtente } from "../types/types";
 
 function Artista() {
     //Il componente deve prendere in input l'id del brano (da passare come parametro di query nell'URL) e fare una chiamata al backend per ottenere i dati del brano
@@ -64,37 +58,44 @@ function Artista() {
                     <div>
                         <h2>Album dell'artista</h2>
                         <PagedList itemsPerPage={5} apiCall={`/album/artista?artistId=${artista.id}`} schema={AlbumDbSchema} scrollMode="horizontal" component={(element: AlbumDb) => (
-                            <CardAlbum key={element.id} album={element} />
-                        )} />
+                            <CardAlbum key={element.id} album={element} size={"small"}/>
+                        )} 
+                        emptyMessage="😮 Questo artista non ha pubblicato nessun album"/>
                     </div>
                     <div>
                         <h2>Brani dell'artista più popolari su Deezer</h2>
                         <PagedList itemsPerPage={5} apiCall={`/brani/artista?artistId=${artista.id}`} schema={BranoDbSchema} scrollMode="horizontal" component={(element: BranoDb) => (
-                            <CardBrano key={element.id} brano={element} />
-                        )} />
+                            <CardBrano key={element.id} brano={element} size={"small"}/>
+                        )}
+                        emptyMessage="😮 Non ci sono brani particolarmente popolari di questo artista"
+                        />
                     </div>
                     <div>
                         <h2>Artisti simili a {artista.nome}</h2>
                         <PagedList itemsPerPage={5} apiCall={`/artisti/simili?artistId=${artista.id}`} schema={ArtistaDbSchema} scrollMode="horizontal" component={(element: ArtistaDb) => (
                             <CardArtista key={element.id} artista={element} size="small" />
-                        )} />
+                        )}
+                        emptyMessage={`😮 Non ci sono artisti simili a ${artista.nome}. Hai trovato un artista davvero unico!`}
+                        />
                     </div>
                     <div>
                         <h2>Cosa mettere prima di un brano di {artista.nome}?</h2>
                         <PagedList
                             itemsPerPage={2}
                             apiCall={`/passaggi?artistaSecondoBrano=${artista.id}`}
-                            schema={PassaggioConBraniSchema}
+                            schema={PassaggioConBraniEUtenteSchema}
                             scrollMode="horizontal"
-                            component={(element: PassaggioConBrani) => (
+                            component={(element: PassaggioConBraniEUtente) => (
                                 <CardPassaggio
                                     key={element.id}
                                     passaggio={element}
                                     brano1={element.brano_1_array[0]}
                                     brano2={element.brano_2_array[0]}
+                                    utente={element.utente_array[0] ? element.utente_array[0] : null}
+                                    size={"small"}
                                 />
                             )}
-                            showMoreButton={(onClick) => <button onClick={onClick}>Carica altri passaggi</button>}
+                            emptyMessage="😮 Nessun passaggio trovato"
                         />
                     </div>
                     <div>
@@ -102,17 +103,19 @@ function Artista() {
                         <PagedList
                             itemsPerPage={2}
                             apiCall={`/passaggi?artistaPrimoBrano=${artista.id}`}
-                            schema={PassaggioConBraniSchema}
+                            schema={PassaggioConBraniEUtenteSchema}
                             scrollMode="horizontal"
-                            component={(element: PassaggioConBrani) => (
+                            component={(element: PassaggioConBraniEUtente) => (
                                 <CardPassaggio
                                     key={element.id}
                                     passaggio={element}
                                     brano1={element.brano_1_array[0]}
                                     brano2={element.brano_2_array[0]}
+                                    utente={element.utente_array[0] ? element.utente_array[0] : null}
+                                    size={"small"}
                                 />
                             )}
-                            showMoreButton={(onClick) => <button onClick={onClick}>Carica altri passaggi</button>}
+                            emptyMessage="😮 Nessun passaggio trovato"
                         />
                     </div>
                 </>

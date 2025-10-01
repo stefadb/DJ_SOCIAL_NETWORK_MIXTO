@@ -35,7 +35,6 @@ function App() {
         </MainContainer>
         <SideContainer />
       </div>
-      <ModalPassaggio />
       <ModalNuovoPassaggio />
     </div>
 

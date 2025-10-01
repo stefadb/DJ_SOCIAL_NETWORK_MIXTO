@@ -9,7 +9,7 @@ import api from "../../api";
 import z from "zod";
 import ListaArtistiOGeneri from "../ListaArtistiOGeneri";
 import AscoltaSuDeezer from "../buttons/AscoltaSuDeezer";
-import AlbumIcon from "../AlbumIcon";
+import AlbumIcon from "../icons/AlbumIcon";
 import Badge from "../Badge";
 
 function CardAlbum(props: { album: AlbumDb, size: "small" | "large" }) {

@@ -1,7 +1,7 @@
 import { Headphones } from "react-feather";
 import { Tooltip } from "react-tooltip";
 import { v4 as uuidv4 } from 'uuid';
-import DeezerLogo from "../DeezerLogo";
+import DeezerLogo from "../icons/DeezerLogo";
 
 function AscoltaSuDeezer(props: { id: number, entity: "track" | "album", scale: number}) {
     const buttonPadding = `${8*props.scale}px ${4*props.scale}px ${7*props.scale}px ${4*props.scale}px`;

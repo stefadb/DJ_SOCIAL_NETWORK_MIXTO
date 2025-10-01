@@ -4,6 +4,7 @@ import {
     AlbumDbSchema,
     BranoDbSchema,
     PassaggioDbSchema,
+    UtenteDbSchema,
     type AlbumDb,
     type ArtistaDb,
     type BranoDb,
@@ -17,13 +18,7 @@ import z from "zod";
 import api from "../api";
 import CardAlbum from "../components/cards/CardAlbum";
 import CardArtista from "../components/cards/CardArtista";
-
-// Schema e type per /passaggi?albumPrimoBrano= e /passaggi?albumSecondoBrano=
-const PassaggioConBraniSchema = PassaggioDbSchema.extend({
-    brano_1_array: z.array(BranoDbSchema),
-    brano_2_array: z.array(BranoDbSchema)
-});
-type PassaggioConBrani = z.infer<typeof PassaggioConBraniSchema>;
+import { PassaggioConBraniEUtenteSchema, type PassaggioConBraniEUtente } from "../types/types";
 
 function Album() {
     //Il componente deve prendere in input l'id del brano (da passare come parametro di query nell'URL) e fare una chiamata al backend per ottenere i dati del brano
@@ -81,7 +76,8 @@ function Album() {
                     {albumLoaded &&
                         <PagedList itemsPerPage={5} apiCall={`/brani/esistenti?album=${album.id}`} component={(element: BranoDb) => (
                             <CardBrano size={"small"} key={element.id} brano={element} />
-                        )} scrollMode="horizontal" />
+                        )} scrollMode="horizontal" 
+                        emptyMessage="😮 Non ci sono brani in questo album"/>
                     }
                     {!albumLoaded &&
                         <div>Caricamento...</div>
@@ -95,17 +91,19 @@ function Album() {
                         <PagedList
                             itemsPerPage={2}
                             apiCall={`/passaggi?albumPrimoBrano=${album.id}`}
-                            schema={PassaggioConBraniSchema}
+                            schema={PassaggioConBraniEUtenteSchema}
                             scrollMode="horizontal"
-                            component={(element: PassaggioConBrani) => (
+                            component={(element: PassaggioConBraniEUtente) => (
                                 <CardPassaggio
                                     key={element.id}
                                     passaggio={element}
                                     brano1={element.brano_1_array[0]}
                                     brano2={element.brano_2_array[0]}
+                                    utente={element.utente_array[0] ? element.utente_array[0] : null}
+                                    size={"small"}
                                 />
                             )}
-                            showMoreButton={(onClick) => <button onClick={onClick}>Carica altri passaggi</button>}
+                            emptyMessage="😮 Nessun passaggio trovato"
                         />
                     </div>
                     <div>
@@ -114,17 +112,19 @@ function Album() {
 
                             itemsPerPage={2}
                             apiCall={`/passaggi?albumSecondoBrano=${album.id}`}
-                            schema={PassaggioConBraniSchema}
+                            schema={PassaggioConBraniEUtenteSchema}
                             scrollMode="horizontal"
-                            component={(element: PassaggioConBrani) => (
+                            component={(element: PassaggioConBraniEUtente) => (
                                 <CardPassaggio
                                     key={element.id}
                                     passaggio={element}
                                     brano1={element.brano_1_array[0]}
                                     brano2={element.brano_2_array[0]}
+                                    utente={element.utente_array[0] ? element.utente_array[0] : null}
+                                    size={"small"}
                                 />
                             )}
-                            showMoreButton={(onClick) => <button onClick={onClick}>Carica altri passaggi</button>}
+                            emptyMessage="😮 Nessun passaggio trovato"
                         />
                     </div>
                 </>

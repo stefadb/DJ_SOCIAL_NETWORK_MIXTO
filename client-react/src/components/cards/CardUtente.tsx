@@ -12,7 +12,7 @@ function CardUtente(props: { utente: UtenteDb, size: "small" | "large" }) {
 
     const scales = {
         small: 1,
-        large: 1.5
+        large: 2
     };
 
     const scale = scales[props.size] || 1;
@@ -26,15 +26,15 @@ function CardUtente(props: { utente: UtenteDb, size: "small" | "large" }) {
         }
     }
     return (
-        <div ref={containerRef} onClick={() => { navigate("/utente?id=" + props.utente.id); }} style={{ padding: props.size === "large" ? "24px" : "12px", cursor: "pointer", opacity: 0, transition: "opacity 0.5s", width: props.size === "large" ? "200px" : "100px" }}>
+        <div ref={containerRef} onClick={() => { navigate("/utente?id=" + props.utente.id); }} style={{ padding: 12 * scale, cursor: "pointer", opacity: 0, transition: "opacity 0.5s", width: 100 * scale }}>
             <div style={{ position: "relative" }}>
                 <Badge scale={scale}>
                     <User size={14 * scale} />
                 </Badge>
-                <img style={{ width: props.size === "large" ? "200px" : "100px", height: props.size === "large" ? "200px" : "100px", borderRadius: "50%", boxShadow: `0 0 ${props.size === "small" ? "5" : "10"}px rgba(0,0,0,0.5)` }} src={"src/assets/artista_empty.jpg"} alt={"Immagine di profilo di " + props.utente.nome + " " + props.utente.cognome} />
+                <img style={{ width: 100 * scale, height: 100 * scale, borderRadius: "50%", boxShadow: `0 0 ${5 * scale}px rgba(0,0,0,0.5)` }} src={"src/assets/artista_empty.jpg"} alt={"Immagine di profilo di " + props.utente.nome + " " + props.utente.cognome} />
             </div>
-            <h3 style={{ width: "100%", textAlign: "center", marginTop: props.size === "large" ? "16px" : "8px", marginBottom: props.size === "large" ? "16px" : "8px", fontSize: props.size === "large" ? "36px" : "18px" }}>{props.utente.nome + " " + props.utente.cognome}</h3>
-            <h4 style={{ width: "100%", textAlign: "center", marginTop: props.size === "large" ? "14px" : "7px", marginBottom: props.size === "large" ? "14px" : "7px", fontSize: props.size === "large" ? "24px" : "12px" }}>@{props.utente.username}</h4>
+            <h3 style={{ width: "100%", textAlign: "center", marginTop: 8 * scale, marginBottom: 8 * scale, fontSize: 18 * scale }}>{props.utente.nome + " " + props.utente.cognome}</h3>
+            <h4 style={{ width: "100%", textAlign: "center", marginTop: 7 * scale, marginBottom: 7 * scale, fontSize: 12 * scale }}>@{props.utente.username}</h4>
         </div>
     );
 }

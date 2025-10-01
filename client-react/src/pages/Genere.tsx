@@ -17,13 +17,7 @@ import CardBrano from "../components/cards/CardBrano";
 import CardArtista from "../components/cards/CardArtista";
 import z from "zod";
 import CardGenere from "../components/cards/CardGenere";
-
-// Schema e type per /passaggi?genereSecondoBrano= e /passaggi?generePrimoBrano=
-const PassaggioConBraniSchema = PassaggioDbSchema.extend({
-    brano_1_array: z.array(BranoDbSchema),
-    brano_2_array: z.array(BranoDbSchema)
-});
-type PassaggioConBrani = z.infer<typeof PassaggioConBraniSchema>;
+import { PassaggioConBraniEUtenteSchema, type PassaggioConBraniEUtente } from "../types/types";
 
 function Genere() {
     //Il componente deve prendere in input l'id del brano (da passare come parametro di query nell'URL) e fare una chiamata al backend per ottenere i dati del brano
@@ -63,30 +57,36 @@ function Genere() {
                         <h2>Artisti del genere più popolari su Deezer</h2>
                         <PagedList noPaging itemsPerPage={5} apiCall={`/artisti/genere?genreId=${genere.id}`} schema={ArtistaDbSchema} scrollMode="horizontal" component={(element: ArtistaDb) => (
                             <CardArtista key={element.id} artista={element} size="small" />
-                        )} />
+                        )}
+                            emptyMessage="😮 Nessun artista trovato"
+                        />
                     </div>
                     <div>
                         <h2>Brani del genere più popolari su Deezer</h2>
                         <PagedList itemsPerPage={5} apiCall={`/brani/genere?genreId=${genere.id}`} schema={BranoDbSchema} scrollMode="horizontal" component={(element: BranoDb) => (
                             <CardBrano key={element.id} brano={element} size={"small"}/>
-                        )} />
+                        )}
+                        emptyMessage="😮 Nessun brano trovato"
+                        />
                     </div>
                     <div>
                         <h2>Cosa mettere prima di un brano del genere {genere.nome}?</h2>
                         <PagedList
                             itemsPerPage={2}
                             apiCall={`/passaggi?genereSecondoBrano=${genere.id}`}
-                            schema={PassaggioConBraniSchema}
+                            schema={PassaggioConBraniEUtenteSchema}
                             scrollMode="horizontal"
-                            component={(element: PassaggioConBrani) => (
+                            component={(element: PassaggioConBraniEUtente) => (
                                 <CardPassaggio
                                     key={element.id}
                                     passaggio={element}
                                     brano1={element.brano_1_array[0]}
                                     brano2={element.brano_2_array[0]}
+                                    utente={element.utente_array[0] ? element.utente_array[0] : null}
+                                    size={"small"}
                                 />
                             )}
-                            showMoreButton={(onClick) => <button onClick={onClick}>Carica altri passaggi</button>}
+                            emptyMessage="😮 Nessun passaggio trovato"
                         />
                     </div>
                     <div>
@@ -94,17 +94,19 @@ function Genere() {
                         <PagedList
                             itemsPerPage={2}
                             apiCall={`/passaggi?generePrimoBrano=${genere.id}`}
-                            schema={PassaggioConBraniSchema}
+                            schema={PassaggioConBraniEUtenteSchema}
                             scrollMode="horizontal"
-                            component={(element: PassaggioConBrani) => (
+                            component={(element: PassaggioConBraniEUtente) => (
                                 <CardPassaggio
                                     key={element.id}
                                     passaggio={element}
                                     brano1={element.brano_1_array[0]}
                                     brano2={element.brano_2_array[0]}
+                                    utente={element.utente_array[0] ? element.utente_array[0] : null}
+                                    size={"small"}
                                 />
                             )}
-                            showMoreButton={(onClick) => <button onClick={onClick}>Carica altri passaggi</button>}
+                            emptyMessage="😮 Nessun passaggio trovato"
                         />
                     </div>
                 </>
