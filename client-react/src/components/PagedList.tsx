@@ -1,7 +1,7 @@
 import { Fragment, useEffect, useRef, useState, type ReactNode } from "react";
 import type { ZodObject } from "zod";
 import api from "../api";
-import { Oval } from "react-loader-spinner";
+import Caricamento from "./icons/Caricamento";
 
 function PagedList<T>(props: { itemsPerPage: number; apiCall: string; schema?: ZodObject<any>; component: (element: T, index: number) => ReactNode, showMoreButton?: (onClick: () => void) => ReactNode, scrollMode: "horizontal" | "vertical", noPaging?: boolean, emptyMessage: ReactNode }) {
     const [elements, setElements] = useState<T[]>([]);
@@ -10,13 +10,13 @@ function PagedList<T>(props: { itemsPerPage: number; apiCall: string; schema?: Z
     const lastLoadedPage = useRef<number>(0);
     const [endNotReached, setEndNotReached] = useState<boolean>(true);
     const loading = useRef<boolean>(false);
-    const ovalRef = useRef<HTMLDivElement>(null);
+    const caricamentoRef = useRef<HTMLDivElement>(null);
 
     const disableValidation = false; //In produzione deve essere false
     async function loadElements() {
         loading.current = true;
-        if (ovalRef.current) {
-            ovalRef.current.style.display = "block";
+        if (caricamentoRef.current) {
+            caricamentoRef.current.style.display = "block";
         }
         try {
             const response = await api.get(`${props.apiCall}${props.apiCall.includes("?") ? "&" : "?"}` + (!props.noPaging ? `limit=${props.itemsPerPage}&index=${(currentPage - 1) * props.itemsPerPage}` : ""), { headers: { "Cache-Control": "no-cache, no-store, must-revalidate", Pragma: "no-cache", Expires: "0" } })
@@ -52,12 +52,16 @@ function PagedList<T>(props: { itemsPerPage: number; apiCall: string; schema?: Z
             setElements(newElementsTemp);
             lastLoadedPage.current = currentPage;
             loading.current = false;
-            ovalRef.current!.style.display = "none";
+            if (caricamentoRef.current) {
+                caricamentoRef.current.style.display = "none";
+            }
             handleScroll();
         } catch (error) {
             console.error(`Error loading elements: ${error}`);
             loading.current = false;
-            ovalRef.current!.style.display = "none";
+            if (caricamentoRef.current) {
+                caricamentoRef.current.style.display = "none";
+            }
             handleScroll();
         }
     }
@@ -105,20 +109,9 @@ function PagedList<T>(props: { itemsPerPage: number; apiCall: string; schema?: Z
             {props.showMoreButton &&
                 props.showMoreButton(() => nextPage())
             }
-            {!props.showMoreButton && <>
-                <div style={{ width: props.scrollMode === "horizontal" ? "80px" : "100%", height: props.scrollMode === "horizontal" ? "100%" : "80px", padding: "15px", display: "flex", alignItems: "center", justifyContent: "center", boxSizing: "border-box" }}>
-                    <div ref={ovalRef} style={{ width: "50px", height: "50px", display: "none" }}>
-                        <Oval
-                            visible={true}
-                            height={50}
-                            width={50}
-                            color="#474747ff"
-                            ariaLabel="oval-loading"
-                        />
-                    </div>
-                </div>
-            </>
-            }
+            <div ref={caricamentoRef} style={{display: "none", justifyContent: "center", alignItems: "center", [props.scrollMode === "vertical" ? "width" : "height"]: "100%"}}>
+                <Caricamento size={"tiny"} />
+            </div>
         </Fragment>
         }
     </div >;

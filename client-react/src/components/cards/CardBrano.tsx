@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AlbumDbSchema, type AlbumDb, type ArtistaDb, type BranoDb } from "../../types/db_types";
 import { getNomiArtistiBrano } from "../../functions/functions";
 import { useNavigate } from "react-router-dom";
@@ -15,7 +15,8 @@ import VediAlbum from "../buttons/VediAlbum";
 
 function CardBrano(props: { brano: BranoDb, noDeckButtons?: boolean, noButtons?: boolean, size: "tiny" | "small" | "large" }) {
     const [artisti, setArtisti] = useState<ArtistaDb[] | null>(null);
-    const [album, setAlbum] = useState<AlbumDb | null>(null);
+
+    const imgRef = useRef<HTMLImageElement>(null);
 
     const navigate = useNavigate();
 
@@ -45,10 +46,20 @@ function CardBrano(props: { brano: BranoDb, noDeckButtons?: boolean, noButtons?:
     async function loadAlbum() {
         try {
             const response = await api.get(`/album/esistenti/${props.brano.id_album}`);
-            AlbumDbSchema.parse(response.data);
-            setAlbum(response.data as AlbumDb);
+            const album: AlbumDb = AlbumDbSchema.parse(response.data);
+            setImgRefSrc(album.url_immagine);
         } catch (error) {
             console.error("Errore nel recupero dell'album:", error);
+        }
+    }
+
+    function setImgRefSrc(src: string | null) {
+        if (imgRef.current) {
+            imgRef.current.src = src ? src : "src/assets/album_empty.jpg";
+        } else {
+            setTimeout(() => {
+                setImgRefSrc(src);
+            }, 10);
         }
     }
     return (
@@ -60,7 +71,7 @@ function CardBrano(props: { brano: BranoDb, noDeckButtons?: boolean, noButtons?:
                             <Badge scale={scale}>
                                 <Disc size={14 * scale} color={"#A238FF"} />
                             </Badge>
-                            <img style={{ width: 100 * scale, height: 100 * scale, boxShadow: `0 0 ${scale * 5}px rgba(0,0,0,0.5)` }} src={album && album.url_immagine ? album.url_immagine : "src/assets/album_empty.jpg"} alt={"Cover del brano " + props.brano.titolo} />
+                            <img ref={imgRef} style={{ width: 100 * scale, height: 100 * scale, boxShadow: `0 0 ${scale * 5}px rgba(0,0,0,0.5)` }} src={"src/assets/album_empty.jpg"} alt={"Cover del brano " + props.brano.titolo} />
                         </div>
                         <MezzoDisco radius={scale * 50} />
                     </div>

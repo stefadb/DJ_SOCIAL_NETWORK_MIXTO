@@ -4,7 +4,7 @@ import DynamicText from "../DynamicText";
 import MezzoDisco from "../MezzoDisco";
 import { Calendar, Music } from "react-feather";
 import { dataItaliana } from "../../functions/functions";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import api from "../../api";
 import z from "zod";
 import ListaArtistiOGeneri from "../ListaArtistiOGeneri";
@@ -14,10 +14,20 @@ import Badge from "../Badge";
 
 function CardAlbum(props: { album: AlbumDb, size: "small" | "large" }) {
     const [generi, setGeneri] = useState<GenereDb[] | null>(null);
-    const [dataUscita, setDataUscita] = useState<string | null>(null);
     useEffect(() => {
         loadAlbum();
+        scriviDataUscita(props.album.data_uscita);
     }, []);
+
+    function scriviDataUscita(dataUscita: string | null) {
+        if (dataUscitaRef.current) {
+            dataUscitaRef.current.innerHTML = dataUscita ? dataItaliana(dataUscita) : "<i style='color: gray'>Sconosciuta</i>";
+        } else {
+            setTimeout(() => { scriviDataUscita(dataUscita); }, 100);
+        }
+    }
+
+
 
     const scales = {
         small: 1,
@@ -25,6 +35,8 @@ function CardAlbum(props: { album: AlbumDb, size: "small" | "large" }) {
     };
 
     const scale = scales[props.size] || 1;
+
+    const dataUscitaRef = useRef<HTMLDivElement | null>(null);
 
     useEffect(() => {
         loadAlbum();
@@ -38,7 +50,7 @@ function CardAlbum(props: { album: AlbumDb, size: "small" | "large" }) {
             const albumResponse = await api.get(`/album/esistenti/${props.album.id}`);
             const album: AlbumDb = AlbumDbSchema.parse(albumResponse.data);
             setGeneri(generi);
-            setDataUscita(album.data_uscita);
+            scriviDataUscita(album.data_uscita);
         } catch (error) {
             console.error("Errore nel recupero dell'album:", error);
         }
@@ -49,8 +61,8 @@ function CardAlbum(props: { album: AlbumDb, size: "small" | "large" }) {
         <div style={{ padding: 10 * scale }}>
             <div style={{ padding: 10 * scale, width: 150 * scale, borderRadius: 8 * scale, boxShadow: `0 0 ${5 * scale}px rgba(192,192,192,0.5)` }}>
                 <div>
-                    <div style={{ display: "flex", flexDirection: "row"}}>
-                        <div style={{ position: "relative"}}>
+                    <div style={{ display: "flex", flexDirection: "row" }}>
+                        <div style={{ position: "relative" }}>
                             <Badge scale={scale}>
                                 <AlbumIcon size={14 * scale} color={"#A238FF"} />
                             </Badge>
@@ -69,8 +81,8 @@ function CardAlbum(props: { album: AlbumDb, size: "small" | "large" }) {
                                 </div>
                             </div>
                         </div>
-                        <div style={{ fontSize: 16 * scale }}>
-                            {props.album.data_uscita ? dataItaliana(props.album.data_uscita) : (dataUscita ? dataItaliana(dataUscita) : <i style={{ color: "gray" }}>Sconosciuta</i>)}
+                        <div ref={dataUscitaRef} style={{ fontSize: 16 * scale }}>
+                            <i style={{ color: "gray" }}>Sconosciuta</i>
                         </div>
                     </div>
                     <div style={{ display: "flex", flexDirection: "row", paddingTop: 2 * scale, paddingBottom: 8 * scale, alignItems: "center" }}>

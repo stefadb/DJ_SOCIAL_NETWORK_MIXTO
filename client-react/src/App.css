@@ -67,3 +67,59 @@ body {
 .card-brano-button:active {
   background-color: #f0f0f0;
 }
+
+@keyframes swing1 {
+  0%   { transform: rotate(-4deg); }
+  16.66%   { transform: rotate(-2deg); }
+  33.33%   { transform: rotate(-4deg); }
+  50%   { transform: rotate(4deg); }
+  66.66%   { transform: rotate(2deg); }
+  83.33%   { transform: rotate(4deg); }
+  100%   { transform: rotate(-4deg); }
+}
+
+.swing1 {
+  animation: swing1 2s ease-in-out infinite;
+  transform-box: fill-box; /* importante per SVG */
+}
+
+@keyframes swing2 {
+  0%   { transform: rotate(4deg); }
+  16.66%   { transform: rotate(2deg); }
+  33.33%   { transform: rotate(4deg); }
+  50%   { transform: rotate(-4deg); }
+  66.66%   { transform: rotate(-2deg); }
+  83.33%   { transform: rotate(-4deg); }
+  100%   { transform: rotate(4deg); }
+}
+
+.swing2 {
+  animation: swing2 2s ease-in-out infinite;
+  transform-box: fill-box; /* importante per SVG */
+}
+
+@keyframes swing3 {
+  0%   { transform: rotate(15deg); }
+  16.66%   { transform: rotate(14.5deg); }
+  33.33%   { transform: rotate(15deg); }
+  50%   { transform: rotate(13deg); }
+  66.66%   { transform: rotate(13.5deg); }
+  83.33%   { transform: rotate(13deg); }
+  100%   { transform: rotate(15deg); }
+}
+
+.swing3 {
+  animation: swing3 2s ease-in-out infinite;
+  transform-box: fill-box; /* importante per SVG */
+}
+
+@keyframes discRotation {
+  0%   { transform: rotate(0deg); }
+  50%  { transform: rotate(180deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.discRotation {
+  animation: discRotation 2s linear infinite;
+  transform-box: fill-box; /* importante per SVG */
+}
