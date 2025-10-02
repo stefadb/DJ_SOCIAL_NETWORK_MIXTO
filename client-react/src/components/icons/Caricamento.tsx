@@ -138,7 +138,7 @@ function Caricamento(props: {size: "tiny" | "small" | "large" | "giant"}) {
                 </svg>
             </div >
         </div>
-        <h4 ref={h4Ref} style={{fontSize: 16 * scale * (1/0.75)}}>Caricamento.</h4>
+        <h4 ref={h4Ref} style={{fontSize: 16 * (1/0.75) * scale}}>Caricamento.</h4>
     </div>);
 }
 

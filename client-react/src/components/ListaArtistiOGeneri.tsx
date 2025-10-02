@@ -126,7 +126,7 @@ function ListaArtistiOGeneri(props: { list: ArtistaDb[], noClick?: boolean, enti
                     <div className="flex flex-col gap-2">
                         {props.list.map((element) => {
                             return <div key={element.id} className="flex flex-row">
-                                <div className="relative" style={{ padding: smallPadding(), width: 24, height: 24 }}>
+                                <div className="relative p-1" style={{ width: 24, height: 24 }}>
                                     <Badge scale={1}>
                                         {props.entity == "artista" &&
                                             <User size={14} color={"#A238FF"} />
@@ -136,7 +136,7 @@ function ListaArtistiOGeneri(props: { list: ArtistaDb[], noClick?: boolean, enti
                                         }
                                     </Badge>
                                 </div>
-                                <div style={{ padding: smallPadding() }}>
+                                <div className="p-1">
                                     <Link className="" style={linksStyle} to={"/" + props.entity + "?id=" + element.id}>{element.nome}</Link>
                                 </div>
                             </div>

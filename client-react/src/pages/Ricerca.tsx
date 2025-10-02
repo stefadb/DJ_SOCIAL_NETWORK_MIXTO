@@ -130,8 +130,8 @@ function Ricerca() {
                                 return null;
                             } else {
                                 return <div key={index} className="flex cursor-pointer" onMouseDown={(event) => { event.stopPropagation(); navigate(`/ricerca?q=${item}`); setShowDropdown(false); setViewedQueryText(item); }}>
-                                    <div className="" style={{ padding: smallPadding() }}><Clock size={14} /></div>
-                                    <div style={{ padding: smallPadding() }}>{item}</div>
+                                    <div className="p-1"><Clock size={14} /></div>
+                                    <div className="p-1">{item}</div>
                                 </div>;
                             }
                         })}

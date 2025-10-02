@@ -32,7 +32,7 @@ function CardBrano(props: { brano: BranoDb, noDeckButtons?: boolean, noButtons?:
 
     const scale = scales[props.size] || 1;
 
-    const stableMezzoDisco = useMemo(() => <MezzoDisco radius={scale * 50} />, []);
+    const stableMezzoDisco = useMemo(() => <MezzoDisco radius={50 * scale} />, []);
 
     useEffect(() => {
         loadArtisti();
@@ -57,7 +57,7 @@ function CardBrano(props: { brano: BranoDb, noDeckButtons?: boolean, noButtons?:
         <div style={{ padding: largePadding(scale) }}>
             <div style={{ padding: largePadding(scale), width: 150 * scale, borderRadius: 8 * scale, boxShadow: grayBoxShadow(scale) }}>
                 <div>
-                    <div onClick={() => navigate(`/brano?id=${props.brano.id}`)} style={{ display: "flex", flexDirection: "row", cursor: "pointer" }}>
+                    <div onClick={() => navigate(`/brano?id=${props.brano.id}`)} className="flex flex-row cursor-pointer">
                         <div style={{ position: "relative" }}>
                             <Badge scale={scale}>
                                 <Disc size={14 * scale} color={"#A238FF"} />
@@ -66,10 +66,10 @@ function CardBrano(props: { brano: BranoDb, noDeckButtons?: boolean, noButtons?:
                         </div>
                         {stableMezzoDisco}
                     </div>
-                    <div style={{ paddingTop: scale * 4, paddingBottom: scale * 8, cursor: "pointer" }} onClick={() => navigate(`/brano?id=${props.brano.id}`)}>
+                    <div style={{ paddingTop: 4 * scale, paddingBottom: 8 * scale, cursor: "pointer" }} onClick={() => navigate(`/brano?id=${props.brano.id}`)}>
                         <DynamicText text={props.brano.titolo} width={150 * scale} scale={scale} />
                     </div>
-                    <div style={{ display: "flex", flexDirection: "row", paddingTop: 2 * scale, paddingBottom: 2 * scale, alignItems: "center" }}>
+                    <div style={{ display: "flex", flexDirection: "row", alignItems: "center", paddingTop: 2 * scale, paddingBottom: 2 * scale }}>
                         <div style={{ paddingRight: 8 * scale }}>
                             <div style={{ width: 14 * scale, height: 14 * scale }}>
                                 <div style={{ position: "relative", width: 14 * scale, height: 14 * scale, top: -1 * scale }}>
@@ -81,7 +81,7 @@ function CardBrano(props: { brano: BranoDb, noDeckButtons?: boolean, noButtons?:
                             {props.brano.durata}
                         </div>
                     </div>
-                    <div style={{ display: "flex", flexDirection: "row", paddingTop: 2 * scale, paddingBottom: 8 * scale, alignItems: "center" }}>
+                    <div style={{ display: "flex", flexDirection: "row", alignItems: "center", paddingTop: 2 * scale, paddingBottom: 8 * scale }}>
                         <div style={{ paddingRight: 8 * scale }}>
                             <Users size={14 * scale} color={"#A238FF"}/>
                         </div>
