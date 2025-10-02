@@ -14,11 +14,9 @@ import Ricerca from "./pages/Ricerca";
 
 function App() {
   return (
-    <div
-      style={{ display: "flex", flexDirection: "column", height: "100vh" }}
-    >
+    <div className="flex flex-col h-screen">
       <Navbar />
-      <div style={{ display: "flex", flexDirection: "row", flexGrow: 1 }}>
+  <div className="flex flex-row flex-grow">
         <SideContainer />
         <MainContainer>
           <ScrollToTop />

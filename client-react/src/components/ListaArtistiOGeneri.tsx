@@ -119,14 +119,14 @@ function ListaArtistiOGeneri(props: { list: ArtistaDb[], noClick?: boolean, enti
                         margin: "auto"
                     }
                 }} isOpen={true} onRequestClose={() => setShowingMore(false)}>
-                    <div style={{ display: "flex", justifyContent: "flex-end" }}>
-                        <button onClick={() => setShowingMore(false)} style={{ position: "absolute", padding: mediumPadding(), background: "none", border: "none", fontSize: 22, cursor: "pointer" }}>×</button>
+                    <div className="flex justify-end">
+                        <button onClick={() => setShowingMore(false)} className="absolute bg-none border-none cursor-pointer" style={{ padding: mediumPadding(), fontSize: 22 }}>×</button>
                     </div>
                     <h2>Tutti {props.entity == "artista" ? "gli artisti" : "i generi"} di questo {props.entity == "artista" ? "brano" : "album"}</h2>
-                    <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                    <div className="flex flex-col gap-2">
                         {props.list.map((element) => {
-                            return <div key={element.id} style={{ display: "flex", flexDirection: "row" }}>
-                                <div style={{ padding: smallPadding(), position: "relative", width: 24, height: 24 }}>
+                            return <div key={element.id} className="flex flex-row">
+                                <div className="relative" style={{ padding: smallPadding(), width: 24, height: 24 }}>
                                     <Badge scale={1}>
                                         {props.entity == "artista" &&
                                             <User size={14} color={"#A238FF"} />
