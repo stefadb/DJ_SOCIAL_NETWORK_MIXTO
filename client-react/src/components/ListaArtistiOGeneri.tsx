@@ -94,33 +94,33 @@ function ListaArtistiOGeneri(props: { list: ArtistaDb[], noClick?: boolean, enti
     }, []); // Deve eseguire solo al mount
 
     return <>
-        <div ref={maxHeightDivRef} style={{ overflowY: "hidden" }}>
-            <div ref={actualDivRef} style={{ display: "none" /* diventa "flex" quando è tutto pronto*/, flexDirection: "column", justifyContent: "center" }}>
+    <div ref={maxHeightDivRef} className="overflow-y-hidden">
+            <div ref={actualDivRef} className="flex flex-col justify-center hidden">
                 <div>
                     {shownList.map((element, index) => {
-                        return <Fragment key={element.id}><Link style={linksStyle} to={props.noClick ? "" : "/" + props.entity + "?id=" + element.id}>{element.nome}</Link>
+                        return <Fragment key={element.id}><Link className="" style={linksStyle} to={props.noClick ? "" : "/" + props.entity + "?id=" + element.id}>{element.nome}</Link>
                             {index < shownList.length - 1 && ", "}</Fragment>
                     })}
                     {shownList.length < props.list.length &&
-                        <span onClick={() => setShowingMore(true)} style={{ cursor: "pointer", fontSize: 14, fontFamily: "Roboto Condensed" }}> e altri {props.list.length - shownList.length}</span>
+                        <span onClick={() => setShowingMore(true)} className="cursor-pointer font-roboto-condensed text-[14px]"> e altri {props.list.length - shownList.length}</span>
                     }
                 </div>
             </div>
-            <div ref={testDivRef} style={{ opacity: 0 }}>
+            <div ref={testDivRef} className="opacity-0">
                 {lineNumbers.map((lineNumber) => {
-                    return <div style={{ display: "block" }} key={lineNumber}><Link style={linksStyle} to={"blablabla"}>Test</Link></div>
+                    return <div className="block" key={lineNumber}><Link className="" style={linksStyle} to={"blablabla"}>Test</Link></div>
                 })}
             </div>
             {showingMore &&
-                <Modal style={{
-                    content: {
+                <Modal
+                    style={{content: {
                         maxWidth: "400px",
                         width: "100%",
                         margin: "auto"
                     }
                 }} isOpen={true} onRequestClose={() => setShowingMore(false)}>
                     <div className="flex justify-end">
-                        <button onClick={() => setShowingMore(false)} className="absolute bg-none border-none cursor-pointer" style={{ padding: mediumPadding(), fontSize: 22 }}>×</button>
+                        <button onClick={() => setShowingMore(false)} className="absolute bg-none border-none cursor-pointer text-[22px]" style={{ padding: mediumPadding() }}>×</button>
                     </div>
                     <h2>Tutti {props.entity == "artista" ? "gli artisti" : "i generi"} di questo {props.entity == "artista" ? "brano" : "album"}</h2>
                     <div className="flex flex-col gap-2">
@@ -137,7 +137,7 @@ function ListaArtistiOGeneri(props: { list: ArtistaDb[], noClick?: boolean, enti
                                     </Badge>
                                 </div>
                                 <div style={{ padding: smallPadding() }}>
-                                    <Link style={linksStyle} to={"/" + props.entity + "?id=" + element.id}>{element.nome}</Link>
+                                    <Link className="" style={linksStyle} to={"/" + props.entity + "?id=" + element.id}>{element.nome}</Link>
                                 </div>
                             </div>
                         })}

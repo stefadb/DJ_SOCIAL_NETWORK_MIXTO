@@ -59,9 +59,9 @@ function CardPassaggio(props: CardPassaggioProps) {
   }, [props.passaggio.id]);
 
   return (
-    <div style={{ padding: largePadding(scale) }}>
-      <div style={{ padding: largePadding(scale), borderRadius: 8 * scale, boxShadow: grayBoxShadow(scale) }}>
-        <div style={{ display: "flex", justifyContent: "center", alignItems: "center"}}>
+  <div style={{ padding: largePadding(scale) }}>
+  <div style={{ padding: largePadding(scale), borderRadius: 8 * scale, boxShadow: grayBoxShadow(scale) }}>
+  <div className="flex justify-center items-center">
           {props.brano1 &&
             <CardBrano brano={props.brano1} size={props.insideModal ? "small" : "tiny"} noButtons={!props.insideModal}/>
           }
@@ -71,7 +71,7 @@ function CardPassaggio(props: CardPassaggioProps) {
           }
         </div>
         {props.insideModal !== true &&
-          <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", flexWrap: "wrap" }}>
+          <div className="flex flex-row justify-between flex-wrap">
             <button className={"card-brano-button"} style={{ borderRadius: 4 * scale, padding: smallPadding(scale) }} onClick={() => { setShowModal(true); }}>Commenti e voti <ExternalLink size={14 * scale} /></button>
             <button className={"card-brano-button"} style={{ borderRadius: 4 * scale, padding: smallPadding(scale) }} onClick={() => {
               dispatch(setBrano1ToNuovoPassaggio(props.brano1));
@@ -83,49 +83,49 @@ function CardPassaggio(props: CardPassaggioProps) {
         }
         {/* Stelle e azioni */}
         {valutazioneMedia !== null &&
-          <div style={{ display: "flex", alignItems: "center", margin: "12px 16px 0 16px" }}>
+          <div className="flex items-center" style={{ margin: "12px 16px 0 16px" }}>
             <Stelle
               rating={valutazioneMedia.voto_medio}
               bgColor="white"
             />
-            <span style={{ marginLeft: 8, color: "#888" }}><b>{valutazioneMedia.voto_medio}/{5}</b> ({valutazioneMedia.numero_voti} {valutazioneMedia.numero_voti === 1 ? "voto" : "voti"})</span>
-            <div style={{ marginLeft: "auto" }}>
+            <span className="ml-2 text-gray-500"><b>{valutazioneMedia.voto_medio}/{5}</b> ({valutazioneMedia.numero_voti} {valutazioneMedia.numero_voti === 1 ? "voto" : "voti"})</span>
+            <div className="ml-auto">
             </div>
           </div>
         }
         {valutazioneMedia === null &&
-          <div style={{ display: "flex", alignItems: "center", margin: "12px 16px 0 16px" }}>
-            <span style={{ color: "#888" }}>Nessuna valutazione</span>
+          <div className="flex items-center" style={{ margin: "12px 16px 0 16px" }}>
+            <span className="text-gray-500">Nessuna valutazione</span>
           </div>
         }
         {/* Autore e dettagli passaggio */}
-        <div style={{ margin: "12px 16px 0 16px" }}>
-          <div style={{ display: "flex", alignItems: "center", cursor: props.utente ? "pointer" : "default" }} onClick={props.utente ? () => { navigate("/utente?id=" + props.utente?.id) } : undefined}>
+  <div style={{ margin: "12px 16px 0 16px" }}>
+          <div className={"flex items-center" + (props.utente ? " cursor-pointer" : " cursor-default")} onClick={props.utente ? () => { navigate("/utente?id=" + props.utente?.id) } : undefined}>
             {props.utente &&
               <>
-                <img style={{ width: 32 * scale, height: 32 * scale, borderRadius: "50%", boxShadow: blackBoxShadow(scale) }} src={"src/assets/artista_empty.jpg"} alt={"Immagine di profilo di " + props.utente.nome + " " + props.utente.cognome} />
+                <img className="rounded-full" style={{ width: 32 * scale, height: 32 * scale, boxShadow: blackBoxShadow(scale) }} src={"src/assets/artista_empty.jpg"} alt={"Immagine di profilo di " + props.utente.nome + " " + props.utente.cognome} />
                 <b>&nbsp;&nbsp;{props.utente.nome} {props.utente.cognome}</b>
                 <i>  (@{props.utente.username})</i>
               </>
             }
             {!props.utente &&
               <>
-                <img style={{ width: 32 * scale, height: 32 * scale, borderRadius: "50%", boxShadow: blackBoxShadow(scale) }} src={"src/assets/artista_empty.jpg"} alt={"Immagine di profilo vuota"} />
+                <img className="rounded-full" style={{ width: 32 * scale, height: 32 * scale, boxShadow: blackBoxShadow(scale) }} src={"src/assets/artista_empty.jpg"} alt={"Immagine di profilo vuota"} />
                 <b>&nbsp;&nbsp;Utente eliminato</b>
-                <span style={{ marginLeft: 8, color: "#888", fontSize: 13 }}></span>
+                <span className="ml-2 text-gray-500 text-[13px]"></span>
               </>
             }
           </div>
-          <div style={{ marginTop: 8, color: "#222" }}>
-            <div style={{ color: "#888", fontStyle: "italic", display: "flex", alignItems: "center", gap: 8 }}>
+          <div className="text-gray-800" style={{ marginTop: 8 }}>
+            <div className="flex items-center gap-2 italic text-gray-500">
               <MessageSquare size={14 * scale} />
               {props.passaggio.testo}
             </div>
-            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <div className="flex items-center gap-2">
               <Clock size={14 * scale} />
-              Posizione CUE secondo brano: <span style={{ color: "#1976d2" }}>{props.passaggio.cue_secondo_brano}</span>
+              Posizione CUE secondo brano: <span className="text-blue-600">{props.passaggio.cue_secondo_brano}</span>
             </div>
-            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <div className="flex items-center gap-2">
               <Clock size={14 * scale} />
               Partenza secondo brano: <span style={{ color: "#1976d2" }}>{props.passaggio.inizio_secondo_brano}</span>
             </div>

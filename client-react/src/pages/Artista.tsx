@@ -47,7 +47,7 @@ function Artista() {
 
     return (
         <div>
-            <div style={{display: "flex", flexDirection: "row", justifyContent: "center"}}>
+            <div className="flex flex-row justify-center">
                 {artista ? (
                     <CardArtista artista={artista} size="large" />
                 ) : (

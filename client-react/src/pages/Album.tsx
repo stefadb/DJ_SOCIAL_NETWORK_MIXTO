@@ -48,11 +48,11 @@ function Album() {
     return (
         <div>
             {album ? (
-                <div style={{ display: "flex", flexDirection: "row", justifyContent: "center" }}>
+                <div className="flex flex-row justify-center">
                     <CardAlbum size={"large"} album={album} />
                 </div>
             ) : (
-                <div style={{ display: "flex", flexDirection: "row", justifyContent: "center" }}>
+                <div className="flex flex-row justify-center">
                     <Caricamento size="giant" />
                 </div>
             )}
@@ -61,7 +61,7 @@ function Album() {
                     <div>
                         <h2>Artisti dell'album</h2>
                         {artistiAlbum &&
-                            <div style={{ display: "flex", flexDirection: "row", justifyContent: "flex-start", overscrollBehaviorX: "contain" }}>
+                            <div className="flex flex-row justify-start overscroll-x-contain">
                                 {artistiAlbum.map((artista, index) => {
                                     return <CardArtista key={index} artista={artista} size={"small"} />;
                                 })}

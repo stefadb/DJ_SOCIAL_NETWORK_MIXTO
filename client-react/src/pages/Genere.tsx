@@ -45,7 +45,7 @@ function Genere() {
 
     return (
         <div>
-            <div style={{ display: "flex", flexDirection: "row", justifyContent: "center" }}>
+            <div className="flex flex-row justify-center">
                 {genere ? (
                     <CardGenere genere={genere} size="large" />
                 ) : (

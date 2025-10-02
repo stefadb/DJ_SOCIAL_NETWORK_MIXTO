@@ -8,7 +8,7 @@ function Navbar() {
   const navigate = useNavigate();
   return (
     <>
-      <nav style={{ backgroundColor: "#eee" }}>
+  <nav className="bg-gray-200">
         <h4>DJ Social Network. Qui andranno tutte le cose della navbar</h4>
       </nav>
       <CardUtenteLoggato />

@@ -86,7 +86,7 @@ function ModalPassaggio(props: {passaggio: PassaggioDb, brano1: BranoDb | null, 
             onRequestClose={props.onClose}
             style={{ content: { maxWidth: "400px", width: "100%", margin: "auto" } }}
         >
-            <button onClick={props.onClose} style={{ position: "absolute", top: 8, right: 8, background: "none", border: "none", fontSize: 22, cursor: "pointer" }}>×</button>
+            <button onClick={props.onClose} className="absolute top-2 right-2 bg-none border-none text-[22px] cursor-pointer">×</button>
 
             {props.brano1 && props.brano2 &&
                 <CardPassaggio insideModal passaggio={props.passaggio} brano1={props.brano1} brano2={props.brano2} utente={props.utente} size={"small"}/>

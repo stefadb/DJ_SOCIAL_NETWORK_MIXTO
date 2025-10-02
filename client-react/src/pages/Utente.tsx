@@ -50,11 +50,11 @@ function Utente() {
   return (
     <div>
       {utente ? (
-        <div style={{ display: "flex", flexDirection: "row", justifyContent: "center" }}>
+  <div className="flex flex-row justify-center">
           <CardUtente utente={utente} size="large" />
         </div>
       ) : (
-        <div style={{ display: "flex", flexDirection: "row", justifyContent: "center" }}>
+  <div className="flex flex-row justify-center">
           <Caricamento size="giant" />
         </div>
       )}

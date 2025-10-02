@@ -10,11 +10,11 @@ function VediAlbum(props: { idAlbum: number, scale: number}) {
   const buttonPadding = `${8*props.scale}px ${4*props.scale}px ${7*props.scale}px ${4*props.scale}px`;
   const navigate = useNavigate();
 
-  return <div style={{ padding: smallPadding(props.scale), display: "inline-block" }}>
+  return <div className="inline-block" style={{ padding: smallPadding(props.scale) }}>
     <button 
       id={randomId} 
-      style={{ padding: buttonPadding, borderRadius: 4*props.scale}} 
-      className={"card-brano-button"} 
+  className="card-brano-button" style={{ padding: buttonPadding, borderRadius: 4*props.scale}} 
+       
       onClick={() => {navigate(`/album?id=${props.idAlbum}`);}}
     >
       <AlbumIcon 

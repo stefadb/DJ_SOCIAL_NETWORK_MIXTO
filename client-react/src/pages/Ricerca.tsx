@@ -108,13 +108,13 @@ function Ricerca() {
 
     return (
         <div>
-            <div style={{ textAlign: "center" }}><h1>Cerca</h1></div>
-            <div style={{ position: "relative"}}>
+            <div className="text-center"><h1>Cerca</h1></div>
+            <div className="relative">
                 <input
                     ref={inputRef}
                     type="text"
                     value={viewedQueryText}
-                    style={{width: "100%", borderTop: 0, borderLeft: 0, borderRight: 0, borderBottom: "1px solid black", padding: mediumPadding(), fontSize: "16px", textAlign: "center", outline: "none", boxSizing: "border-box"}}
+                    className="w-full border-b border-black text-center outline-none box-border text-[16px]" style={{padding: mediumPadding()}}
                     onChange={handleInputChange}
                     onClick={handleInputClick}
                     placeholder="Scrivi qui quello che stai cercando..."
@@ -123,14 +123,14 @@ function Ricerca() {
                     <div className={"dropdown-ricerca"}>
                         {/* Qui puoi aggiungere il contenuto della tendina */}
                         {JSON.parse(localStorage.getItem('ultimeRicerche') || '[]').length === 0 &&
-                            <div style={{ padding: smallPadding() }}><i>Qui compariranno tutte le ricerche recenti</i></div>
+                            <div className="" style={{ padding: smallPadding() }}><i>Qui compariranno tutte le ricerche recenti</i></div>
                         }
                         {JSON.parse(localStorage.getItem('ultimeRicerche') || '[]').map((item: string, index: number) => {
                             if (item === "") {
                                 return null;
                             } else {
-                                return <div key={index} style={{ cursor: "pointer", display: "flex" }} onMouseDown={(event) => { event.stopPropagation(); navigate(`/ricerca?q=${item}`); setShowDropdown(false); setViewedQueryText(item); }}>
-                                    <div style={{ padding: smallPadding() }}><Clock size={14} /></div>
+                                return <div key={index} className="flex cursor-pointer" onMouseDown={(event) => { event.stopPropagation(); navigate(`/ricerca?q=${item}`); setShowDropdown(false); setViewedQueryText(item); }}>
+                                    <div className="" style={{ padding: smallPadding() }}><Clock size={14} /></div>
                                     <div style={{ padding: smallPadding() }}>{item}</div>
                                 </div>;
                             }

@@ -24,11 +24,11 @@ function SalvaBranoPreferito(props: { idBrano: number, scale: number}) {
     loadPreferito();
   }, []);
 
-  return <div style={{ padding: smallPadding(props.scale), display: "inline-block" }}>
+  return <div className="inline-block" style={{ padding: smallPadding(props.scale) }}>
     <button 
       id={randomId} 
-      style={{ padding: buttonPadding, borderRadius: 4*props.scale}} 
-      className={"card-brano-button"} 
+  className="card-brano-button" style={{ padding: buttonPadding, borderRadius: 4*props.scale}} 
+      
       onClick={async () => {
         if (loggedUtente === null) {
           alert("Accedi per salvare questo brano tra i preferiti");

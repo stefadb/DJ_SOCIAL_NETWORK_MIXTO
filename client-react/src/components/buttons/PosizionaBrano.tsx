@@ -27,10 +27,10 @@ function PosizionaBrano(props: { deck: 1 | 2, brano: BranoDb, scale: number}) {
             dispatch(setBrano2(brano));
         }
     }
-    return <div style={{ padding: smallPadding(props.scale), display: "inline-block" }}>
-        <button id={randomId} style={{ padding: smallPadding(props.scale), borderRadius: 4*props.scale }} className={"card-brano-button"} onClick={() => posizionaBranoNelDeck(props.deck, props.brano)}>
-            <div style={{ display: "flex", flexDirection: "column" }}>
-                <div style={{ display: "flex", flexDirection: "row" }}>
+    return <div className="inline-block" style={{ padding: smallPadding(props.scale) }}>
+    <button id={randomId} className="card-brano-button" style={{ padding: smallPadding(props.scale), borderRadius: 4*props.scale }} onClick={() => posizionaBranoNelDeck(props.deck, props.brano)}>
+            <div className="flex flex-col">
+                <div className="flex flex-row">
                     <div style={{ width: 14*props.scale, height: 14*props.scale }}>
                         <Disc size={14*props.scale} color={props.deck == 1 ? "red" : "gray"} />
                     </div>
@@ -38,7 +38,7 @@ function PosizionaBrano(props: { deck: 1 | 2, brano: BranoDb, scale: number}) {
                         <Disc size={14*props.scale} color={props.deck == 2 ? "blue" : "gray"} />
                     </div>
                 </div>
-                <div style={{ position: "relative", display: "flex", flexDirection: "row", top: -shift }}>
+                <div className="relative flex flex-row" style={{ top: -shift }}>
                     <div style={{ width: 14*props.scale, height: 14*props.scale - shift }}>
                         {props.deck === 1 &&
                             <ChevronUp size={14*props.scale} color={"red"} />

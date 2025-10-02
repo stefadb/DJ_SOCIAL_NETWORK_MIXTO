@@ -3,7 +3,7 @@ import DeezerLogo from "../icons/DeezerLogo";
 
 function IncludiRisultatiDeezer(props: { inclusi: boolean, onClick: () => void }) {
     return <>
-        {!props.inclusi ? <button style={{padding: smallPadding()}} className={"card-brano-button"} onClick={props.onClick}><DeezerLogo size={14} /> Cerca anche da Deezer</button> : <span style={{ color: "#A238FF" }}><DeezerLogo size={14} /><b> Risultati di Deezer aggiunti!</b></span>}
+    {!props.inclusi ? <button className={"card-brano-button"} style={{padding: smallPadding()}} onClick={props.onClick}><DeezerLogo size={14} /> Cerca anche da Deezer</button> : <span className="text-[#A238FF]"><DeezerLogo size={14} /><b> Risultati di Deezer aggiunti!</b></span>}
     </>;
 }
 

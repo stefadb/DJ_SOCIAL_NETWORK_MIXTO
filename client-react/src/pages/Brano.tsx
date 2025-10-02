@@ -66,18 +66,18 @@ function Brano() {
   return (
     <div>
       {brano ? (
-        <div style={{ display: "flex", flexDirection: "row", justifyContent: "center" }}>
+  <div className="flex flex-row justify-center">
           <CardBrano brano={brano} size={"large"} />
         </div>
       ) : (
-        <div style={{ display: "flex", flexDirection: "row", justifyContent: "center" }}>
+  <div className="flex flex-row justify-center">
           <Caricamento size="giant" />
         </div>
       )}
       {brano !== null &&
         <>
-          <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-evenly", flexWrap: "wrap", gap: 20 }}>
-            <div style={{ padding: largePadding(), borderRadius: 8, boxShadow: grayBoxShadow(), textAlign: "center" }}>
+          <div className="flex flex-row justify-evenly flex-wrap gap-5">
+            <div className="text-center" style={{ padding: largePadding(), borderRadius: 8, boxShadow: grayBoxShadow() }}>
               <h3>Top brani più mixati dopo di <i>{brano.titolo}</i></h3>
               <div>
                 <div className="classifica-row">
@@ -86,7 +86,7 @@ function Brano() {
                   <div className="classifica-cell classifica-cell-header"><b>Durata</b></div>
                   <div className="classifica-cell classifica-cell-header"><b>Artisti</b></div>
                 </div>
-                <div style={{ maxHeight: 300, overflowY: "auto" }}>
+                <div className="overflow-y-auto" style={{ maxHeight: 300 }}>
                   <PagedList
                     itemsPerPage={2}
                     apiCall={`/passaggi/conta?primoBrano=${brano.id}`}
@@ -95,13 +95,13 @@ function Brano() {
                     component={(element: ContaPassaggiBrano2) => (
                       <BranoTableRow element={element} />
                     )}
-                    showMoreButton={(onClick) => <div style={{ cursor: "pointer" }} className="classifica-big-cell" onClick={onClick}>Carica altri brani</div>}
+                    showMoreButton={(onClick) => <div className="classifica-big-cell cursor-pointer" onClick={onClick}>Carica altri brani</div>}
                     emptyMessage={<div className="classifica-big-cell">😮 Nessun passaggio trovato</div>}
                   />
                 </div>
               </div>
             </div>
-            <div style={{ padding: largePadding(), borderRadius: 8, boxShadow: grayBoxShadow(), textAlign: "center" }}>
+            <div className="text-center" style={{ padding: largePadding(), borderRadius: 8, boxShadow: grayBoxShadow() }}>
               <h3>Top brani più mixati prima di <i>{brano.titolo}</i></h3>
               <div>
                 <div className="classifica-row">
@@ -110,7 +110,7 @@ function Brano() {
                   <div className="classifica-cell classifica-cell-header"><b>Durata</b></div>
                   <div className="classifica-cell classifica-cell-header"><b>Artisti</b></div>
                 </div>
-                <div style={{ maxHeight: 300, overflowY: "auto" }}>
+                <div className="overflow-y-auto" style={{ maxHeight: 300 }}>
                   <PagedList
                     itemsPerPage={2}
                     apiCall={`/passaggi/conta?secondoBrano=${brano.id}`}
@@ -119,7 +119,7 @@ function Brano() {
                     component={(element: ContaPassaggiBrano1) => (
                       <BranoTableRow element={element} />
                     )}
-                    showMoreButton={(onClick) => <div style={{ cursor: "pointer" }} className="classifica-big-cell" onClick={onClick}>Carica altri brani</div>}
+                    showMoreButton={(onClick) => <div className="classifica-big-cell cursor-pointer" onClick={onClick}>Carica altri brani</div>}
                     emptyMessage={<div className="classifica-big-cell">😮 Nessun passaggio trovato</div>}
                   />
                 </div>
