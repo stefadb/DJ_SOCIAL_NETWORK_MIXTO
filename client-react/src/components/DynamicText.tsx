@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+import { noPadding } from "../functions/functions";
 
 function DynamicText(props: { text: string, width: number, scale: number}) {
     const fontFamily = "Roboto Condensed";
-    const minFontSize = 10 * props.scale;
-    const maxFontSize = 18 * props.scale;
+    const minFontSize = 10 * props.scale; //lascia cosi
+    const maxFontSize = 18 * props.scale; //lascia cosi
     const [chosenFontSize, setChosenFontSize] = useState<number>(0);
     const [divHeight, setDivHeight] = useState<number>(0);
     const textRef = useRef<HTMLHeadingElement>(null);
@@ -76,7 +77,7 @@ function DynamicText(props: { text: string, width: number, scale: number}) {
     return (
         <div style={{ width: props.width, opacity: divHeight !== 0 && chosenFontSize !== 0 ? 1 : 0, transition: "opacity 0.5s", height: divHeight, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
             <div style={{ width: props.width }}>
-                <h3 ref={textRef} style={{ width: props.width, maxWidth: props.width, fontFamily: fontFamily, margin: 0, padding: 0, fontSize: chosenFontSize, textOverflow: "ellipsis", whiteSpace: "nowrap", overflowX: "hidden", wordBreak: "keep-all" }}>{props.text}</h3>
+                <h3 ref={textRef} style={{ width: props.width, maxWidth: props.width, fontFamily: fontFamily, margin: 0, padding: noPadding(), fontSize: chosenFontSize, textOverflow: "ellipsis", whiteSpace: "nowrap", overflowX: "hidden", wordBreak: "keep-all" }}>{props.text}</h3>
             </div>
         </div>);
 }

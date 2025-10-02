@@ -2,12 +2,17 @@ import { Fragment } from "react/jsx-runtime";
 import type { ArtistaDb, GenereDb } from "../types/db_types";
 import { Link } from "react-router-dom";
 import { useLayoutEffect, useRef, useState } from "react";
+import Modal from "react-modal";
+import Badge from "./Badge";
+import { Music, User } from "react-feather";
+import { mediumPadding, smallPadding } from "../functions/functions";
 
-function ListaArtistiOGeneri(props: { list: ArtistaDb[], noClick?: boolean, entity: "artista", fontSize: number} | { list: GenereDb[], noClick?: boolean, entity: "genere", fontSize: number}) {
-    const lines = 3;
+function ListaArtistiOGeneri(props: { list: ArtistaDb[], noClick?: boolean, entity: "artista", fontSize: number, lines: number } | { list: GenereDb[], noClick?: boolean, entity: "genere", fontSize: number, lines: number }) {
+    const lines = props.lines;
     //ARRAY DI NUMERI DA 1 a lines
     const lineNumbers = Array.from({ length: lines }, (_, i) => i + 1);
     const [shownList, setShownList] = useState<ArtistaDb[] | GenereDb[]>(props.list);
+    const [showingMore, setShowingMore] = useState<boolean>(false);
 
     const testDivRef = useRef<HTMLDivElement>(null);
     const actualDivRef = useRef<HTMLDivElement>(null);
@@ -82,9 +87,9 @@ function ListaArtistiOGeneri(props: { list: ArtistaDb[], noClick?: boolean, enti
                 setTimeout(measureHeight, 10);
             }
         };
-        
+
         measureHeight();
-        
+
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []); // Deve eseguire solo al mount
 
@@ -93,11 +98,11 @@ function ListaArtistiOGeneri(props: { list: ArtistaDb[], noClick?: boolean, enti
             <div ref={actualDivRef} style={{ display: "none" /* diventa "flex" quando è tutto pronto*/, flexDirection: "column", justifyContent: "center" }}>
                 <div>
                     {shownList.map((element, index) => {
-                        return <Fragment key={element.id}><Link style={linksStyle} to={props.noClick ? "" : "/"+props.entity+"?id=" + element.id}>{element.nome}</Link>
+                        return <Fragment key={element.id}><Link style={linksStyle} to={props.noClick ? "" : "/" + props.entity + "?id=" + element.id}>{element.nome}</Link>
                             {index < shownList.length - 1 && ", "}</Fragment>
                     })}
                     {shownList.length < props.list.length &&
-                        <span style={{ fontSize: 14, fontFamily: "Roboto Condensed" }}> e altri {props.list.length - shownList.length}</span>
+                        <span onClick={() => setShowingMore(true)} style={{ cursor: "pointer", fontSize: 14, fontFamily: "Roboto Condensed" }}> e altri {props.list.length - shownList.length}</span>
                     }
                 </div>
             </div>
@@ -106,6 +111,39 @@ function ListaArtistiOGeneri(props: { list: ArtistaDb[], noClick?: boolean, enti
                     return <div style={{ display: "block" }} key={lineNumber}><Link style={linksStyle} to={"blablabla"}>Test</Link></div>
                 })}
             </div>
+            {showingMore &&
+                <Modal style={{
+                    content: {
+                        maxWidth: "400px",
+                        width: "100%",
+                        margin: "auto"
+                    }
+                }} isOpen={true} onRequestClose={() => setShowingMore(false)}>
+                    <div style={{ display: "flex", justifyContent: "flex-end" }}>
+                        <button onClick={() => setShowingMore(false)} style={{ position: "absolute", padding: mediumPadding(), background: "none", border: "none", fontSize: 22, cursor: "pointer" }}>×</button>
+                    </div>
+                    <h2>Tutti {props.entity == "artista" ? "gli artisti" : "i generi"} di questo {props.entity == "artista" ? "brano" : "album"}</h2>
+                    <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                        {props.list.map((element) => {
+                            return <div key={element.id} style={{ display: "flex", flexDirection: "row" }}>
+                                <div style={{ padding: smallPadding(), position: "relative", width: 24, height: 24 }}>
+                                    <Badge scale={1}>
+                                        {props.entity == "artista" &&
+                                            <User size={14} color={"#A238FF"} />
+                                        }
+                                        {props.entity == "genere" &&
+                                            <Music size={14} color={"#A238FF"} />
+                                        }
+                                    </Badge>
+                                </div>
+                                <div style={{ padding: smallPadding() }}>
+                                    <Link style={linksStyle} to={"/" + props.entity + "?id=" + element.id}>{element.nome}</Link>
+                                </div>
+                            </div>
+                        })}
+                    </div>
+                </Modal>
+            }
         </div>
     </>;
 }

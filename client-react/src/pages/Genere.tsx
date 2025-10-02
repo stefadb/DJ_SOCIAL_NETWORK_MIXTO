@@ -18,6 +18,7 @@ import CardArtista from "../components/cards/CardArtista";
 import z from "zod";
 import CardGenere from "../components/cards/CardGenere";
 import { PassaggioConBraniEUtenteSchema, type PassaggioConBraniEUtente } from "../types/types";
+import Caricamento from "../components/icons/Caricamento";
 
 function Genere() {
     //Il componente deve prendere in input l'id del brano (da passare come parametro di query nell'URL) e fare una chiamata al backend per ottenere i dati del brano
@@ -48,7 +49,7 @@ function Genere() {
                 {genere ? (
                     <CardGenere genere={genere} size="large" />
                 ) : (
-                    <p>Caricamento...</p>
+                    <Caricamento size="giant"/>
                 )}
             </div>
             {genere !== null &&

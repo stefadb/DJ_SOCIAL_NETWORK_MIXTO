@@ -11,6 +11,7 @@ import api from "../api";
 import CardGenere from "../components/cards/CardGenere";
 import { Clock } from "react-feather";
 import CardUtente from "../components/cards/CardUtente";
+import { mediumPadding, smallPadding } from "../functions/functions";
 
 function Ricerca() {
     const { search } = useLocation();
@@ -113,24 +114,24 @@ function Ricerca() {
                     ref={inputRef}
                     type="text"
                     value={viewedQueryText}
-                    style={{width: "100%", borderTop: 0, borderLeft: 0, borderRight: 0, borderBottom: "1px solid black", padding: "8px", fontSize: "16px", textAlign: "center", outline: "none", boxSizing: "border-box"}}
+                    style={{width: "100%", borderTop: 0, borderLeft: 0, borderRight: 0, borderBottom: "1px solid black", padding: mediumPadding(), fontSize: "16px", textAlign: "center", outline: "none", boxSizing: "border-box"}}
                     onChange={handleInputChange}
                     onClick={handleInputClick}
                     placeholder="Scrivi qui quello che stai cercando..."
                 />
                 {showDropdown && (
-                    <div style={{ position: "absolute", top: "100%", left: 0, width: "100%", background: "white", border: "1px solid #ccc", boxShadow: "0 2px 8px rgba(0,0,0,0.1)", zIndex: 100 }}>
+                    <div className={"dropdown-ricerca"}>
                         {/* Qui puoi aggiungere il contenuto della tendina */}
                         {JSON.parse(localStorage.getItem('ultimeRicerche') || '[]').length === 0 &&
-                            <div style={{ padding: "4px" }}><i>Qui compariranno tutte le ricerche recenti</i></div>
+                            <div style={{ padding: smallPadding() }}><i>Qui compariranno tutte le ricerche recenti</i></div>
                         }
                         {JSON.parse(localStorage.getItem('ultimeRicerche') || '[]').map((item: string, index: number) => {
                             if (item === "") {
                                 return null;
                             } else {
                                 return <div key={index} style={{ cursor: "pointer", display: "flex" }} onMouseDown={(event) => { event.stopPropagation(); navigate(`/ricerca?q=${item}`); setShowDropdown(false); setViewedQueryText(item); }}>
-                                    <div style={{ padding: "4px" }}><Clock size={14} /></div>
-                                    <div style={{ padding: "4px" }}>{item}</div>
+                                    <div style={{ padding: smallPadding() }}><Clock size={14} /></div>
+                                    <div style={{ padding: smallPadding() }}>{item}</div>
                                 </div>;
                             }
                         })}

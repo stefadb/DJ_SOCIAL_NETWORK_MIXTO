@@ -1,6 +1,6 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { AlbumDbSchema, type AlbumDb, type ArtistaDb, type BranoDb } from "../../types/db_types";
-import { getNomiArtistiBrano } from "../../functions/functions";
+import { blackBoxShadow, getNomiArtistiBrano, grayBoxShadow, largePadding } from "../../functions/functions";
 import { useNavigate } from "react-router-dom";
 import SalvaBranoPreferito from "../buttons/SalvaBranoPreferito";
 import PosizionaBrano from "../buttons/PosizionaBrano";
@@ -15,8 +15,7 @@ import VediAlbum from "../buttons/VediAlbum";
 
 function CardBrano(props: { brano: BranoDb, noDeckButtons?: boolean, noButtons?: boolean, size: "tiny" | "small" | "large" }) {
     const [artisti, setArtisti] = useState<ArtistaDb[] | null>(null);
-
-    const imgRef = useRef<HTMLImageElement>(null);
+    const [album, setAlbum] = useState<AlbumDb | null>(null);
 
     const navigate = useNavigate();
 
@@ -33,6 +32,8 @@ function CardBrano(props: { brano: BranoDb, noDeckButtons?: boolean, noButtons?:
 
     const scale = scales[props.size] || 1;
 
+    const stableMezzoDisco = useMemo(() => <MezzoDisco radius={scale * 50} />, []);
+
     useEffect(() => {
         loadArtisti();
         loadAlbum();
@@ -46,34 +47,24 @@ function CardBrano(props: { brano: BranoDb, noDeckButtons?: boolean, noButtons?:
     async function loadAlbum() {
         try {
             const response = await api.get(`/album/esistenti/${props.brano.id_album}`);
-            const album: AlbumDb = AlbumDbSchema.parse(response.data);
-            setImgRefSrc(album.url_immagine);
+            AlbumDbSchema.parse(response.data);
+            setAlbum(response.data as AlbumDb);
         } catch (error) {
             console.error("Errore nel recupero dell'album:", error);
         }
     }
-
-    function setImgRefSrc(src: string | null) {
-        if (imgRef.current) {
-            imgRef.current.src = src ? src : "src/assets/album_empty.jpg";
-        } else {
-            setTimeout(() => {
-                setImgRefSrc(src);
-            }, 10);
-        }
-    }
     return (
-        <div style={{ padding: 10 * scale }}>
-            <div style={{ padding: 10 * scale, width: 150 * scale, borderRadius: 8 * scale, boxShadow: `0 0 ${scale * 5}px rgba(192,192,192,0.5)` }}>
+        <div style={{ padding: largePadding(scale) }}>
+            <div style={{ padding: largePadding(scale), width: 150 * scale, borderRadius: 8 * scale, boxShadow: grayBoxShadow(scale) }}>
                 <div>
-                    <div style={{ display: "flex", flexDirection: "row" }}>
+                    <div onClick={() => navigate(`/brano?id=${props.brano.id}`)} style={{ display: "flex", flexDirection: "row", cursor: "pointer" }}>
                         <div style={{ position: "relative" }}>
                             <Badge scale={scale}>
                                 <Disc size={14 * scale} color={"#A238FF"} />
                             </Badge>
-                            <img ref={imgRef} style={{ width: 100 * scale, height: 100 * scale, boxShadow: `0 0 ${scale * 5}px rgba(0,0,0,0.5)` }} src={"src/assets/album_empty.jpg"} alt={"Cover del brano " + props.brano.titolo} />
+                            <img style={{ width: 100 * scale, height: 100 * scale, boxShadow: blackBoxShadow(scale) }} src={album && album.url_immagine ? album.url_immagine : "src/assets/album_empty.jpg"} alt={"Cover del brano " + props.brano.titolo} />
                         </div>
-                        <MezzoDisco radius={scale * 50} />
+                        {stableMezzoDisco}
                     </div>
                     <div style={{ paddingTop: scale * 4, paddingBottom: scale * 8, cursor: "pointer" }} onClick={() => navigate(`/brano?id=${props.brano.id}`)}>
                         <DynamicText text={props.brano.titolo} width={150 * scale} scale={scale} />
@@ -92,14 +83,14 @@ function CardBrano(props: { brano: BranoDb, noDeckButtons?: boolean, noButtons?:
                     </div>
                     <div style={{ display: "flex", flexDirection: "row", paddingTop: 2 * scale, paddingBottom: 8 * scale, alignItems: "center" }}>
                         <div style={{ paddingRight: 8 * scale }}>
-                            <Users size={14 * scale} />
+                            <Users size={14 * scale} color={"#A238FF"}/>
                         </div>
                         <div>
                             {artisti &&
-                                <ListaArtistiOGeneri key={artisti.map(artista => artista.id).join(",")} list={artisti} entity={"artista"} fontSize={14 * scale} />
+                                <ListaArtistiOGeneri key={artisti.map(artista => artista.id).join(",")} lines={3} list={artisti} entity={"artista"} fontSize={14 * scale} />
                             }
                             {!artisti &&
-                                <ListaArtistiOGeneri list={[{ id: 0, nome: "Caricamento...", url_immagine: "" }]} noClick={true} entity={"artista"} fontSize={14 * scale} />
+                                <ListaArtistiOGeneri lines={3} list={[{ id: 0, nome: "Caricamento...", url_immagine: "" }]} noClick={true} entity={"artista"} fontSize={14 * scale} />
                             }
                         </div>
                     </div>

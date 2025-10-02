@@ -5,6 +5,7 @@ import type { RootState } from '../../store/store';
 import api from '../../api';
 import { type UtenteDb } from '../../types/db_types';
 import { closeModal } from '../../store/modalNuovoPassaggioSlice';
+import { largePadding, mediumPadding } from '../../functions/functions';
 
 function ModalNuovoPassaggio() {
     const dispatch = useDispatch();
@@ -73,7 +74,7 @@ function ModalNuovoPassaggio() {
             )}
 
             {brano1 && brano2 && (
-                <div style={{ marginBottom: '20px', padding: '10px', border: '1px solid #ccc' }}>
+                <div style={{ marginBottom: '20px', padding: largePadding(), border: '1px solid #ccc' }}>
                     <h4>Brani selezionati:</h4>
                     <p><strong>Brano 1:</strong> {brano1.titolo}</p>
                     <p><strong>Brano 2:</strong> {brano2.titolo}</p>
@@ -90,7 +91,7 @@ function ModalNuovoPassaggio() {
                         placeholder="Descrivi come eseguire questo passaggio..."
                         required
                         rows={4}
-                        style={{ width: '100%', padding: '8px' }}
+                        style={{ width: '100%', padding: mediumPadding() }}
                     />
                 </div>
 
@@ -104,7 +105,7 @@ function ModalNuovoPassaggio() {
                         placeholder="es. 00:02:30"
                         pattern="[0-9]{2}:[0-9]{2}:[0-9]{2}"
                         required
-                        style={{ width: '100%', padding: '8px' }}
+                        style={{ width: '100%', padding: mediumPadding() }}
                     />
                 </div>
 
@@ -118,7 +119,7 @@ function ModalNuovoPassaggio() {
                         placeholder="es. 00:01:45"
                         pattern="[0-9]{2}:[0-9]{2}:[0-9]{2}"
                         required
-                        style={{ width: '100%', padding: '8px' }}
+                        style={{ width: '100%', padding: mediumPadding() }}
                     />
                 </div>
 

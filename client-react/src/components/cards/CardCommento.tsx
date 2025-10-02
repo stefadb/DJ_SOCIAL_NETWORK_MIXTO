@@ -8,6 +8,7 @@ import type { RootState } from "../../store/store";
 import ReactTimeAgo from "react-time-ago";
 import TimeAgo from 'javascript-time-ago';
 import it from 'javascript-time-ago/locale/it';
+import { mediumPadding } from "../../functions/functions";
 
 TimeAgo.addLocale(it);
 
@@ -86,7 +87,7 @@ function CardCommento(props: { commento: CommentoEUtente, livello: number }) {
         <>
             <div style={{ display: "flex", flexDirection: "column" }}>
                 <div style={{ width: "100%", display: "flex", justifyContent: "flex-end", boxSizing: "border-box", paddingTop: 4, paddingBottom: 4, paddingLeft: 0, paddingRight: 0 }}>
-                    <div style={{ width: minWidth + ((1.0 / props.livello) * (100 - minWidth)) + "%", border: "1px solid black", borderRadius: 8, backgroundColor: "#f0f0f0", boxSizing: "border-box", padding: 8 }}>
+                    <div style={{ width: minWidth + ((1.0 / props.livello) * (100 - minWidth)) + "%", border: "1px solid black", borderRadius: 8, backgroundColor: "#f0f0f0", boxSizing: "border-box", padding: mediumPadding() }}>
                         {!editing &&
                             <>
                                 <p>{commento.testo}</p>
@@ -114,7 +115,7 @@ function CardCommento(props: { commento: CommentoEUtente, livello: number }) {
                 </div>
                 {showAnswerBox &&
                     <div style={{ width: "100%", display: "flex", justifyContent: "flex-end", boxSizing: "border-box", paddingTop: 4, paddingBottom: 4, paddingLeft: 0, paddingRight: 0 }}>
-                        <div style={{ width: minWidth + ((1.0 / (props.livello + 1)) * (100 - minWidth)) + "%", boxSizing: "border-box", padding: 8 }}>
+                        <div style={{ width: minWidth + ((1.0 / (props.livello + 1)) * (100 - minWidth)) + "%", boxSizing: "border-box", padding: mediumPadding() }}>
                             <textarea placeholder="Scrivi una risposta..." style={{ width: "100%", height: 100 }} value={answer} onChange={(e) => setAnswer(e.target.value)} />
                             <br />
                             <button onClick={() => { sendAnswer(); }} style={{ marginTop: 4 }}>Invia</button>

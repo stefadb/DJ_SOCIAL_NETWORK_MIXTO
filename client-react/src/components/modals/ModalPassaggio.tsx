@@ -9,6 +9,7 @@ import { CommentoEUtenteSchema, ValutazioneEUtenteSchema, type CommentoEUtente, 
 import PagedList from "../PagedList";
 import CardValutazione from "../cards/CardValutazione";
 import CardPassaggio from "../cards/CardPassaggio";
+import { largePadding, smallPadding } from "../../functions/functions";
 
 function ModalPassaggio(props: {passaggio: PassaggioDb, brano1: BranoDb | null, brano2: BranoDb | null, utente: UtenteDb | null, onClose: () => void}) {
     const loggedUtente: UtenteDb | null = useSelector((state: RootState) => (state.user as any).utente as UtenteDb | null);
@@ -85,7 +86,6 @@ function ModalPassaggio(props: {passaggio: PassaggioDb, brano1: BranoDb | null, 
             onRequestClose={props.onClose}
             style={{ content: { maxWidth: "400px", width: "100%", margin: "auto" } }}
         >
-            {/* Chiudi */}
             <button onClick={props.onClose} style={{ position: "absolute", top: 8, right: 8, background: "none", border: "none", fontSize: 22, cursor: "pointer" }}>×</button>
 
             {props.brano1 && props.brano2 &&
@@ -101,7 +101,7 @@ function ModalPassaggio(props: {passaggio: PassaggioDb, brano1: BranoDb | null, 
                     </button>
                 </div>
                 {!showValutazioni &&
-                    <div style={{ padding: 12 }}>
+                    <div style={{ padding: largePadding() }}>
                         {savingCommento && <div>Salvataggio in corso...</div>}
                         {!savingCommento &&
                             <PagedList itemsPerPage={10} apiCall={`/commenti?passaggio=${props.passaggio.id}`} schema={CommentoEUtenteSchema} scrollMode="vertical" component={(element: CommentoEUtente) => {
@@ -115,14 +115,14 @@ function ModalPassaggio(props: {passaggio: PassaggioDb, brano1: BranoDb | null, 
                                 value={commentoInput}
                                 onChange={e => setCommentoInput(e.target.value)}
                                 placeholder="Aggiungi un commento"
-                                style={{ flex: 1, border: "1px solid #ccc", borderRadius: 4, padding: 6, fontSize: 14 }}
+                                style={{ flex: 1, border: "1px solid #ccc", borderRadius: 4, padding: smallPadding(), fontSize: 14 }}
                             />
-                            <button disabled={commentoInput.length === 0} onClick={inviaCommento} style={{ marginLeft: 8, padding: "6px 16px", background: "#1976d2", color: "#fff", border: "none", borderRadius: 4, fontSize: 14, cursor: "pointer" }}>Invia</button>
+                            <button disabled={commentoInput.length === 0} onClick={inviaCommento} style={{ marginLeft: 8, padding: "8px 16px", background: "#1976d2", color: "#fff", border: "none", borderRadius: 4, fontSize: 14, cursor: "pointer" }}>Invia</button>
                         </div>
                     </div>
                 }
                 {showValutazioni &&
-                    <div style={{ padding: 12 }}>
+                    <div style={{ padding: largePadding() }}>
                         {savingValutazione && <div>Salvataggio in corso...</div>}
                         {!savingValutazione &&
                             <PagedList itemsPerPage={10} apiCall={`/valutazioni?passaggio=${props.passaggio.id}`} schema={ValutazioneEUtenteSchema} scrollMode="vertical" component={(element: ValutazioneEUtente) => {
@@ -132,7 +132,7 @@ function ModalPassaggio(props: {passaggio: PassaggioDb, brano1: BranoDb | null, 
                         }
                         <div style={{ display: "flex", alignItems: "center", marginTop: 12 }}>
                             <input type="number" min={1} max={5} value={votoInput} onChange={e => setVotoInput(e.target.value)} />
-                            <button disabled={votoInput.length === 0} onClick={inviaValutazione} style={{ marginLeft: 8, padding: "6px 16px", background: "#1976d2", color: "#fff", border: "none", borderRadius: 4, fontSize: 14, cursor: "pointer" }}>Vota</button>
+                            <button disabled={votoInput.length === 0} onClick={inviaValutazione} style={{ marginLeft: 8, padding: "8px 16px", background: "#1976d2", color: "#fff", border: "none", borderRadius: 4, fontSize: 14, cursor: "pointer" }}>Vota</button>
                         </div>
                     </div>
                 }

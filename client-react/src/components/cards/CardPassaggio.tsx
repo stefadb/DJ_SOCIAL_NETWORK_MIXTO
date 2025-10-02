@@ -12,6 +12,7 @@ import z from "zod";
 import ModalPassaggio from "../modals/ModalPassaggio";
 import { ArrowRight, Clock, Copy, ExternalLink, MessageSquare } from "react-feather";
 import { useNavigate } from "react-router-dom";
+import { blackBoxShadow, grayBoxShadow, largePadding, smallPadding } from "../../functions/functions";
 
 type CardPassaggioProps = {
   passaggio: PassaggioDb;
@@ -58,8 +59,8 @@ function CardPassaggio(props: CardPassaggioProps) {
   }, [props.passaggio.id]);
 
   return (
-    <div style={{ padding: 10 * scale }}>
-      <div style={{ padding: 10 * scale, borderRadius: 8 * scale, boxShadow: `0 0 ${scale * 5}px rgba(192,192,192,0.5)` }}>
+    <div style={{ padding: largePadding(scale) }}>
+      <div style={{ padding: largePadding(scale), borderRadius: 8 * scale, boxShadow: grayBoxShadow(scale) }}>
         <div style={{ display: "flex", justifyContent: "center", alignItems: "center"}}>
           {props.brano1 &&
             <CardBrano brano={props.brano1} size={props.insideModal ? "small" : "tiny"} noButtons={!props.insideModal}/>
@@ -71,8 +72,8 @@ function CardPassaggio(props: CardPassaggioProps) {
         </div>
         {props.insideModal !== true &&
           <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", flexWrap: "wrap" }}>
-            <button className={"card-brano-button"} style={{ borderRadius: 4 * scale, padding: 4 * scale }} onClick={() => { setShowModal(true); }}>Commenti e voti <ExternalLink size={14 * scale} /></button>
-            <button className={"card-brano-button"} style={{ borderRadius: 4 * scale, padding: 4 * scale }} onClick={() => {
+            <button className={"card-brano-button"} style={{ borderRadius: 4 * scale, padding: smallPadding(scale) }} onClick={() => { setShowModal(true); }}>Commenti e voti <ExternalLink size={14 * scale} /></button>
+            <button className={"card-brano-button"} style={{ borderRadius: 4 * scale, padding: smallPadding(scale) }} onClick={() => {
               dispatch(setBrano1ToNuovoPassaggio(props.brano1));
               dispatch(setBrano2ToNuovoPassaggio(props.brano2));
               dispatch(closeModal())
@@ -102,14 +103,14 @@ function CardPassaggio(props: CardPassaggioProps) {
           <div style={{ display: "flex", alignItems: "center", cursor: props.utente ? "pointer" : "default" }} onClick={props.utente ? () => { navigate("/utente?id=" + props.utente?.id) } : undefined}>
             {props.utente &&
               <>
-                <img style={{ width: 32 * scale, height: 32 * scale, borderRadius: "50%", boxShadow: `0 0 ${5 * scale}px rgba(0,0,0,0.5)` }} src={"src/assets/artista_empty.jpg"} alt={"Immagine di profilo di " + props.utente.nome + " " + props.utente.cognome} />
+                <img style={{ width: 32 * scale, height: 32 * scale, borderRadius: "50%", boxShadow: blackBoxShadow(scale) }} src={"src/assets/artista_empty.jpg"} alt={"Immagine di profilo di " + props.utente.nome + " " + props.utente.cognome} />
                 <b>&nbsp;&nbsp;{props.utente.nome} {props.utente.cognome}</b>
                 <i>  (@{props.utente.username})</i>
               </>
             }
             {!props.utente &&
               <>
-                <img style={{ width: 32 * scale, height: 32 * scale, borderRadius: "50%", boxShadow: `0 0 ${5 * scale}px rgba(0,0,0,0.5)` }} src={"src/assets/artista_empty.jpg"} alt={"Immagine di profilo vuota"} />
+                <img style={{ width: 32 * scale, height: 32 * scale, borderRadius: "50%", boxShadow: blackBoxShadow(scale) }} src={"src/assets/artista_empty.jpg"} alt={"Immagine di profilo vuota"} />
                 <b>&nbsp;&nbsp;Utente eliminato</b>
                 <span style={{ marginLeft: 8, color: "#888", fontSize: 13 }}></span>
               </>

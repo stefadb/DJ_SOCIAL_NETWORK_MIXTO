@@ -2,9 +2,6 @@ import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import {
     AlbumDbSchema,
-    BranoDbSchema,
-    PassaggioDbSchema,
-    UtenteDbSchema,
     type AlbumDb,
     type ArtistaDb,
     type BranoDb,
@@ -14,11 +11,11 @@ import CardPassaggio from "../components/cards/CardPassaggio";
 import PagedList from "../components/PagedList";
 import CardBrano from "../components/cards/CardBrano";
 import { getNomiArtistiAlbum } from "../functions/functions";
-import z from "zod";
 import api from "../api";
 import CardAlbum from "../components/cards/CardAlbum";
 import CardArtista from "../components/cards/CardArtista";
 import { PassaggioConBraniEUtenteSchema, type PassaggioConBraniEUtente } from "../types/types";
+import Caricamento from "../components/icons/Caricamento";
 
 function Album() {
     //Il componente deve prendere in input l'id del brano (da passare come parametro di query nell'URL) e fare una chiamata al backend per ottenere i dati del brano
@@ -51,41 +48,41 @@ function Album() {
     return (
         <div>
             {album ? (
-                <div>
-                    <div style={{display: "flex", flexDirection: "row", justifyContent: "center"}}>
+                <div style={{ display: "flex", flexDirection: "row", justifyContent: "center" }}>
                     <CardAlbum size={"large"} album={album} />
-                    </div>
-                    <h2>Artisti dell'album</h2>
-                    {artistiAlbum &&
-                        <div style={{ display: "flex", flexDirection: "row", justifyContent: "flex-start", overscrollBehaviorX: "contain" }}>
-                            {artistiAlbum.map((artista, index) => {
-                                return <CardArtista key={index} artista={artista} size={"small"} />;
-                            })}
-                        </div>
-                    }
-                    {!artistiAlbum &&
-                        <p>Caricamento</p>
-                    }
                 </div>
             ) : (
-                <p>Caricamento...</p>
+                <div style={{ display: "flex", flexDirection: "row", justifyContent: "center" }}>
+                    <Caricamento size="giant" />
+                </div>
             )}
             {album !== null &&
-                <div>
-                    <h2>Brani dell'album</h2>
-                    {albumLoaded &&
-                        <PagedList itemsPerPage={5} apiCall={`/brani/esistenti?album=${album.id}`} component={(element: BranoDb) => (
-                            <CardBrano size={"small"} key={element.id} brano={element} />
-                        )} scrollMode="horizontal" 
-                        emptyMessage="😮 Non ci sono brani in questo album"/>
-                    }
-                    {!albumLoaded &&
-                        <div>Caricamento...</div>
-                    }
-                </div>
-            }
-            {album !== null &&
                 <>
+                    <div>
+                        <h2>Artisti dell'album</h2>
+                        {artistiAlbum &&
+                            <div style={{ display: "flex", flexDirection: "row", justifyContent: "flex-start", overscrollBehaviorX: "contain" }}>
+                                {artistiAlbum.map((artista, index) => {
+                                    return <CardArtista key={index} artista={artista} size={"small"} />;
+                                })}
+                            </div>
+                        }
+                        {!artistiAlbum &&
+                            <Caricamento size="tiny" />
+                        }
+                    </div>
+                    <div>
+                        <h2>Brani dell'album</h2>
+                        {albumLoaded &&
+                            <PagedList itemsPerPage={5} apiCall={`/brani/esistenti?album=${album.id}`} component={(element: BranoDb) => (
+                                <CardBrano size={"small"} key={element.id} brano={element} />
+                            )} scrollMode="horizontal"
+                                emptyMessage="😮 Non ci sono brani in questo album" />
+                        }
+                        {!albumLoaded &&
+                            <Caricamento size="small" />
+                        }
+                    </div>
                     <div>
                         <h2>Passaggi dove il primo brano è di questo album</h2>
                         <PagedList
@@ -109,7 +106,6 @@ function Album() {
                     <div>
                         <h2>Passaggi dove il secondo brano è di questo album</h2>
                         <PagedList
-
                             itemsPerPage={2}
                             apiCall={`/passaggi?albumSecondoBrano=${album.id}`}
                             schema={PassaggioConBraniEUtenteSchema}

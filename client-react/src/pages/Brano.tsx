@@ -5,10 +5,8 @@ import {
   AlbumDbSchema,
   ArtistaDbSchema,
   BranoDbSchema,
-  GenereDbSchema,
   PassaggioDbSchema,
   type BranoDb,
-  type GenereDb,
   type PassaggioDb,
 } from "../types/db_types";
 
@@ -17,6 +15,8 @@ import PagedList from "../components/PagedList";
 import BranoTableRow from "../components/BranoTableRow";
 import z from "zod";
 import CardBrano from "../components/cards/CardBrano";
+import Caricamento from "../components/icons/Caricamento";
+import { grayBoxShadow, largePadding } from "../functions/functions";
 
 // Schema e type per /passaggi/conta?primoBrano= e /passaggi/conta?secondoBrano=
 const ContaPassaggiBrano2Schema = z.object({
@@ -44,7 +44,6 @@ function Brano() {
   });
   type ApiType = z.infer<typeof ApiSchema>;
   const [brano, setBrano] = useState<ApiType | null>(null);
-  const [generi, setGeneri] = useState<GenereDb[] | null>(null);
 
   //useEffect necessario per recuperare i dati
   useEffect(() => {
@@ -56,15 +55,7 @@ function Brano() {
       await api.get(`/brani/singolo?trackId=${id}&limit=1&index=0`);
       const response = await api.get(`/brani/esistenti/${id}?include_artista&include_album`, { headers: { "Cache-Control": "no-cache, no-store, must-revalidate", Pragma: "no-cache", Expires: "0" } });
       const responseData = ApiSchema.parse(response.data) as ApiType;
-      await api.get(`/album/singolo?albumId=${responseData.id_album}&limit=1&index=0`);
-      const responseAlbum = await api.get(`/album/esistenti/${responseData.id_album}?include_genere`, { headers: { "Cache-Control": "no-cache, no-store, must-revalidate", Pragma: "no-cache", Expires: "0" } });
-      const ApiSchemaAlbum = AlbumDbSchema.extend({
-        genere: z.array(GenereDbSchema)
-      });
-      type ApiTypeAlbum = z.infer<typeof ApiSchemaAlbum>;
-      const responseAlbumData = ApiSchemaAlbum.parse(responseAlbum.data) as ApiTypeAlbum;
       setBrano(responseData);
-      setGeneri(responseAlbumData.genere as GenereDb[]);
       //Il brano è stato caricato con successo, ora si possono caricare i passaggi
     } catch (error) {
       //TODO: Gestire errore
@@ -79,68 +70,65 @@ function Brano() {
           <CardBrano brano={brano} size={"large"} />
         </div>
       ) : (
-        <p>Caricamento...</p>
+        <div style={{ display: "flex", flexDirection: "row", justifyContent: "center" }}>
+          <Caricamento size="giant" />
+        </div>
       )}
       {brano !== null &&
-        <div>
-          <div>
-            <h3>Passaggi dove il brano è il primo (conteggio per brano 2)</h3>
-            <table>
-              <thead>
-                <tr>
-                  <th>Numero passaggi</th>
-                  <th>Titolo</th>
-                  <th>Durata</th>
-                  <th>Artisti</th>
-                </tr>
-              </thead>
-              <tbody>
-                <PagedList
-                  itemsPerPage={2}
-                  apiCall={`/passaggi/conta?primoBrano=${brano.id}`}
-                  schema={ContaPassaggiBrano2Schema}
-                  scrollMode="vertical"
-                  component={(element: ContaPassaggiBrano2) => (
-                    <BranoTableRow element={element} />
-                  )}
-                  showMoreButton={(onClick) => <tr><td colSpan={4}><button onClick={onClick}>Carica altri brani</button></td></tr>}
-                  emptyMessage="😮 Nessun passaggio trovato"
-                />
-              </tbody>
-            </table>
-          </div>
-          <div>
-            <h3>Passaggi dove il brano è il secondo (conteggio per brano 1)</h3>
-            <table>
-              <thead>
-                <tr>
-                  <th>Numero passaggi</th>
-                  <th>Titolo</th>
-                  <th>Durata</th>
-                  <th>Artisti</th>
-                </tr>
-              </thead>
-              <tbody>
-                <PagedList
-                  itemsPerPage={2}
-                  apiCall={`/passaggi/conta?secondoBrano=${brano.id}`}
-                  schema={ContaPassaggiBrano1Schema}
-                  scrollMode="horizontal"
-                  component={(element: ContaPassaggiBrano1) => (
-                    <BranoTableRow element={element} />
-                  )}
-                  showMoreButton={(onClick) => <tr><td colSpan={4}><button onClick={onClick}>Carica altri brani</button></td></tr>}
-                  emptyMessage="😮 Nessun passaggio trovato"
-                />
-              </tbody>
-            </table>
-          </div>
-        </div>
-      }
-      {brano !== null &&
         <>
+          <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-evenly", flexWrap: "wrap", gap: 20 }}>
+            <div style={{ padding: largePadding(), borderRadius: 8, boxShadow: grayBoxShadow(), textAlign: "center" }}>
+              <h3>Top brani più mixati dopo di <i>{brano.titolo}</i></h3>
+              <div>
+                <div className="classifica-row">
+                  <div className="classifica-cell classifica-cell-header"><b>#&nbsp;passaggi</b></div>
+                  <div className="classifica-cell classifica-cell-header"><b>Titolo</b></div>
+                  <div className="classifica-cell classifica-cell-header"><b>Durata</b></div>
+                  <div className="classifica-cell classifica-cell-header"><b>Artisti</b></div>
+                </div>
+                <div style={{ maxHeight: 300, overflowY: "auto" }}>
+                  <PagedList
+                    itemsPerPage={2}
+                    apiCall={`/passaggi/conta?primoBrano=${brano.id}`}
+                    schema={ContaPassaggiBrano2Schema}
+                    scrollMode="vertical"
+                    component={(element: ContaPassaggiBrano2) => (
+                      <BranoTableRow element={element} />
+                    )}
+                    showMoreButton={(onClick) => <div style={{ cursor: "pointer" }} className="classifica-big-cell" onClick={onClick}>Carica altri brani</div>}
+                    emptyMessage={<div className="classifica-big-cell">😮 Nessun passaggio trovato</div>}
+                  />
+                </div>
+              </div>
+            </div>
+            <div style={{ padding: largePadding(), borderRadius: 8, boxShadow: grayBoxShadow(), textAlign: "center" }}>
+              <h3>Top brani più mixati prima di <i>{brano.titolo}</i></h3>
+              <div>
+                <div className="classifica-row">
+                  <div className="classifica-cell classifica-cell-header"><b># passaggi</b></div>
+                  <div className="classifica-cell classifica-cell-header"><b>Titolo</b></div>
+                  <div className="classifica-cell classifica-cell-header"><b>Durata</b></div>
+                  <div className="classifica-cell classifica-cell-header"><b>Artisti</b></div>
+                </div>
+                <div style={{ maxHeight: 300, overflowY: "auto" }}>
+                  <PagedList
+                    itemsPerPage={2}
+                    apiCall={`/passaggi/conta?secondoBrano=${brano.id}`}
+                    schema={ContaPassaggiBrano1Schema}
+                    scrollMode="vertical"
+                    component={(element: ContaPassaggiBrano1) => (
+                      <BranoTableRow element={element} />
+                    )}
+                    showMoreButton={(onClick) => <div style={{ cursor: "pointer" }} className="classifica-big-cell" onClick={onClick}>Carica altri brani</div>}
+                    emptyMessage={<div className="classifica-big-cell">😮 Nessun passaggio trovato</div>}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
           <div>
-            <h2>Passaggi dove il brano è il primo</h2>
+            <h2>Brani mixati dopo di <i>{brano.titolo}</i></h2>
             <PagedList itemsPerPage={2} apiCall={`/passaggi?primoBrano=${brano.id}`} schema={PassaggioDbSchema} scrollMode="horizontal" component={(element: PassaggioDb) => (
               <CardPassaggio
                 key={element.id}
@@ -151,11 +139,11 @@ function Brano() {
                 size={"small"}
               />
             )}
-            emptyMessage="😮 Nessun passaggio trovato"
+              emptyMessage="😮 Nessun passaggio trovato"
             />
           </div>
           <div>
-            <h2>Passaggi dove il brano è il secondo</h2>
+            <h2>Brani mixati prima di <i>{brano.titolo}</i></h2>
             <PagedList itemsPerPage={2} apiCall={`/passaggi?secondoBrano=${brano.id}`} schema={PassaggioDbSchema} scrollMode="horizontal" component={(element: PassaggioDb) => (
               <CardPassaggio
                 key={element.id}
@@ -166,7 +154,7 @@ function Brano() {
                 utente={element.utente_array[0] ? element.utente_array[0] : null}
               />
             )}
-            emptyMessage="😮 Nessun passaggio trovato"
+              emptyMessage="😮 Nessun passaggio trovato"
             />
           </div>
         </>

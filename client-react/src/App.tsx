@@ -8,7 +8,6 @@ import Album from "./pages/Album";
 import Artista from "./pages/Artista";
 import Genere from "./pages/Genere";
 import Utente from "./pages/Utente";
-import ModalPassaggio from "./components/modals/ModalPassaggio";
 import ModalNuovoPassaggio from "./components/modals/ModalNuovoPassaggio";
 import ScrollToTop from "./components/ScrollToTop";
 import Ricerca from "./pages/Ricerca";

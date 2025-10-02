@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { rimuoviBranoPreferito, salvaBranoPreferito } from "../../functions/functions";
+import { rimuoviBranoPreferito, salvaBranoPreferito, smallPadding } from "../../functions/functions";
 import { useSelector } from "react-redux";
 import type { UtenteDb } from "../../types/db_types";
 import type { RootState } from "../../store/store";
@@ -11,7 +11,7 @@ import { v4 as uuidv4 } from 'uuid';
 function SalvaBranoPreferito(props: { idBrano: number, scale: number}) {
   // ID stabile che non cambia ad ogni render
   const randomId = `preferiti-${uuidv4()}`;
-  const buttonPadding = `${props.scale*8}px ${props.scale*4}px ${props.scale*7}px ${props.scale*4}px`;
+  const buttonPadding = `${8*props.scale}px ${4*props.scale}px ${7*props.scale}px ${4*props.scale}px`;
   const [preferito, setPreferito] = useState<boolean>(false);
   const loggedUtente: UtenteDb | null = useSelector((state: RootState) => (state.user as any).utente as UtenteDb | null);
   async function loadPreferito() {
@@ -24,7 +24,7 @@ function SalvaBranoPreferito(props: { idBrano: number, scale: number}) {
     loadPreferito();
   }, []);
 
-  return <div style={{ padding: 4*props.scale, display: "inline-block" }}>
+  return <div style={{ padding: smallPadding(props.scale), display: "inline-block" }}>
     <button 
       id={randomId} 
       style={{ padding: buttonPadding, borderRadius: 4*props.scale}} 

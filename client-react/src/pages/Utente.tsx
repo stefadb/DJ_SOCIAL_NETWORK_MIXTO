@@ -14,6 +14,7 @@ import PagedList from "../components/PagedList";
 import z from "zod";
 import CardBrano from "../components/cards/CardBrano";
 import CardUtente from "../components/cards/CardUtente";
+import Caricamento from "../components/icons/Caricamento";
 
 // Schema e type per /passaggi?utente=...
 const PassaggioConBraniSchema = PassaggioDbSchema.extend({
@@ -53,7 +54,9 @@ function Utente() {
           <CardUtente utente={utente} size="large" />
         </div>
       ) : (
-        <p>Caricamento...</p>
+        <div style={{ display: "flex", flexDirection: "row", justifyContent: "center" }}>
+          <Caricamento size="giant" />
+        </div>
       )}
       {utente !== null &&
         <div>

@@ -6,11 +6,12 @@ import type { RootState } from "../../store/store";
 import { ChevronUp, Disc } from "react-feather";
 import { Tooltip } from "react-tooltip";
 import { v4 as uuidv4 } from 'uuid';
+import { smallPadding } from "../../functions/functions";
 
 function PosizionaBrano(props: { deck: 1 | 2, brano: BranoDb, scale: number}) {
     const randomId = `brano-${props.deck}-${uuidv4()}`;
     const dispatch = useDispatch();
-    const shift = 3 * props.scale;
+    const shift = 3 * props.scale; //lascia cosi
     const brano1: BranoDb | null = useSelector((state: RootState) => (state.giradischi as any).brano1);
     const brano2: BranoDb | null = useSelector((state: RootState) => (state.giradischi as any).brano2);
     function posizionaBranoNelDeck(deck: 1 | 2, brano: BranoDb) {
@@ -26,8 +27,8 @@ function PosizionaBrano(props: { deck: 1 | 2, brano: BranoDb, scale: number}) {
             dispatch(setBrano2(brano));
         }
     }
-    return <div style={{ padding: 4*props.scale, display: "inline-block" }}>
-        <button id={randomId} style={{ padding: 4*props.scale, borderRadius: 4*props.scale }} className={"card-brano-button"} onClick={() => posizionaBranoNelDeck(props.deck, props.brano)}>
+    return <div style={{ padding: smallPadding(props.scale), display: "inline-block" }}>
+        <button id={randomId} style={{ padding: smallPadding(props.scale), borderRadius: 4*props.scale }} className={"card-brano-button"} onClick={() => posizionaBranoNelDeck(props.deck, props.brano)}>
             <div style={{ display: "flex", flexDirection: "column" }}>
                 <div style={{ display: "flex", flexDirection: "row" }}>
                     <div style={{ width: 14*props.scale, height: 14*props.scale }}>

@@ -71,3 +71,32 @@ export function dataItaliana(data: string): string {
     const [anno, mese, giorno] = data.split("-");
     return `${giorno}/${mese}/${anno}`;
 }
+
+export function blackBoxShadow(scale: number = 1){
+    return `0 0 ${5 * scale}px rgba(0,0,0,0.5)`;
+}
+
+export function grayBoxShadow(scale: number = 1){
+    return `0 0 ${5 * scale}px rgba(192,192,192,0.5)`;
+}
+
+export function noPadding(){
+    return "0";
+}
+
+export function smallPadding(scale: number = 1){
+    return `${4*scale}px`;
+}
+
+export function mediumPadding(scale: number = 1){
+    return `${8*scale}px`;
+}
+
+export function largePadding(scale: number = 1){
+    return `${12*scale}px`;
+}
+
+export function extraLargePadding(scale: number = 1){
+    return `${12*scale}px`;
+}
+
