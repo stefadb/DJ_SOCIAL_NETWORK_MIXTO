@@ -3,13 +3,14 @@ import { type PassaggioDb, type BranoDb, type UtenteDb } from "../../types/db_ty
 import CardCommento from "../cards/CardCommento";
 import api from "../../api";
 import Modal from 'react-modal';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import type { RootState } from '../../store/store';
 import { CommentoEUtenteSchema, ValutazioneEUtenteSchema, type CommentoEUtente, type ValutazioneEUtente } from "../../types/types";
 import PagedList from "../PagedList";
 import CardValutazione from "../cards/CardValutazione";
 import CardPassaggio from "../cards/CardPassaggio";
-import { scaleTwProps } from "../../functions/functions";
+import { checkConnError, scaleTwProps } from "../../functions/functions";
+import { setGenericError } from "../../store/errorSlice";
 
 function ModalPassaggio(props: { passaggio: PassaggioDb, brano1: BranoDb | null, brano2: BranoDb | null, utente: UtenteDb | null, onClose: () => void }) {
     const loggedUtente: UtenteDb | null = useSelector((state: RootState) => (state.user as any).utente as UtenteDb | null);
@@ -18,7 +19,7 @@ function ModalPassaggio(props: { passaggio: PassaggioDb, brano1: BranoDb | null,
     const [showValutazioni, setShowValutazioni] = useState<boolean>(false);
     const [savingCommento, setSavingCommento] = useState<boolean>(false);
     const [savingValutazione, setSavingValutazione] = useState<boolean>(false);
-
+    const dispatch = useDispatch();
     async function inviaCommento() {
         if (commentoInput.length > 0 && loggedUtente) {
             try {
@@ -75,7 +76,8 @@ function ModalPassaggio(props: { passaggio: PassaggioDb, brano1: BranoDb | null,
                 await api.delete(`/passaggi/${props.passaggio.id}`);
                 props.onClose();
             } catch (error) {
-                console.error("Errore durante l'eliminazione del passaggio:", error);
+                
+                
             }
         }
     }

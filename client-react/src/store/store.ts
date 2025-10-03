@@ -3,6 +3,7 @@ import userReducer from './userSlice';
 import giradischiReducer from './giradischiSlice';
 import modalPassaggioReducer from './modalPassaggioSlice';
 import modalNuovoPassaggioReducer from './modalNuovoPassaggioSlice';
+import errorReducer from './errorSlice';
 
 export const store = configureStore({
   reducer: {
@@ -10,6 +11,7 @@ export const store = configureStore({
     giradischi: giradischiReducer,
     modalPassaggio: modalPassaggioReducer,
     modalNuovoPassaggio: modalNuovoPassaggioReducer,
+    error: errorReducer,
   },
 });
 

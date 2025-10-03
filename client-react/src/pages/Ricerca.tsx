@@ -11,6 +11,7 @@ import api from "../api";
 import CardGenere from "../components/cards/CardGenere";
 import { Clock } from "react-feather";
 import CardUtente from "../components/cards/CardUtente";
+import Caricamento from "../components/icons/Caricamento";
 
 function Ricerca() {
     const { search } = useLocation();

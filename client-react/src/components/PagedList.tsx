@@ -9,17 +9,15 @@ function PagedList<T>(props: { itemsPerPage: number; apiCall: string; schema?: Z
     const [currentPage, setCurrentPage] = useState<number>(1);
     const lastLoadedPage = useRef<number>(0);
     const [endNotReached, setEndNotReached] = useState<boolean>(true);
-    const loading = useRef<boolean>(false);
-    const caricamentoRef = useRef<HTMLDivElement>(null);
+    const [loading, setLoading] = useState<boolean>(true);
+    const [error, setError] = useState<boolean>(false);
 
     const disableValidation = false; //In produzione deve essere false
     async function loadElements() {
-        loading.current = true;
-        if (caricamentoRef.current) {
-            caricamentoRef.current.style.display = "block";
-        }
+        setLoading(true);
         try {
             const response = await api.get(`${props.apiCall}${props.apiCall.includes("?") ? "&" : "?"}` + (!props.noPaging ? `limit=${props.itemsPerPage}&index=${(currentPage - 1) * props.itemsPerPage}` : ""), { headers: { "Cache-Control": "no-cache, no-store, must-revalidate", Pragma: "no-cache", Expires: "0" } })
+            setError(false);
             if (response.data.length == 0) {
                 setEndNotReached(false);
                 if ((currentPage - 1) == 0 || props.noPaging) {
@@ -51,18 +49,12 @@ function PagedList<T>(props: { itemsPerPage: number; apiCall: string; schema?: Z
             const newElementsTemp = newElements.slice(0, maxIndex + 1);
             setElements(newElementsTemp);
             lastLoadedPage.current = currentPage;
-            loading.current = false;
-            if (caricamentoRef.current) {
-                caricamentoRef.current.style.display = "none";
-            }
+            setLoading(false);
             handleScroll();
-        } catch (error) {
-            console.error(`Error loading elements: ${error}`);
-            loading.current = false;
-            if (caricamentoRef.current) {
-                caricamentoRef.current.style.display = "none";
-            }
+        } catch {
+            setLoading(false);
             handleScroll();
+            setError(true);
         }
     }
 
@@ -92,7 +84,7 @@ function PagedList<T>(props: { itemsPerPage: number; apiCall: string; schema?: Z
     const containerRef = useRef<HTMLDivElement>(null);
 
     const handleScroll = () => {
-        if (!props.noPaging && !loading.current && endNotReached && props.showMoreButton === undefined) { // Se non c'è il bottone "Carica altri", carica automaticamente quando si arriva alla fine
+        if (!props.noPaging && endNotReached && props.showMoreButton === undefined) { // Se non c'è il bottone "Carica altri", carica automaticamente quando si arriva alla fine
             const div = containerRef.current;
             if (!div) return;
             // Controlla se siamo alla fine
@@ -109,8 +101,11 @@ function PagedList<T>(props: { itemsPerPage: number; apiCall: string; schema?: Z
             {props.showMoreButton &&
                 props.showMoreButton(() => nextPage())
             }
-            <div ref={caricamentoRef} className={"justify-center items-center hidden" + (props.scrollMode === "vertical" ? "w-full" : "h-full")}>
-                <Caricamento size={"tiny"} />
+            <div className={"justify-center items-center " + (props.scrollMode === "vertical" ? "w-full" : "h-full") + (!loading ? " hidden" : "")}>
+                <Caricamento size={"small"} status={"loading"}/>
+            </div>
+            <div className={"justify-center items-center " + (props.scrollMode === "vertical" ? "w-full" : "h-full") + (!error ? " hidden" : "")}>
+                <Caricamento size={"small"} status={"error"}/>
             </div>
         </Fragment>
         }

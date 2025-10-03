@@ -11,8 +11,27 @@ import Utente from "./pages/Utente";
 import ModalNuovoPassaggio from "./components/modals/ModalNuovoPassaggio";
 import ScrollToTop from "./components/ScrollToTop";
 import Ricerca from "./pages/Ricerca";
+import { toast, ToastContainer } from 'react-toastify';
+import { useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import type { RootState } from "./store/store";
+import { clearGenericError } from "./store/errorSlice";
 
 function App() {
+  const genericError = useSelector((state: RootState) => state.error.genericError);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (genericError != null) {
+      toast.dismiss();
+      toast.error(genericError, {
+        onClose: () => dispatch(clearGenericError()),  // resettare lo stato dopo che il toast chiude
+        autoClose: 5000,
+      });
+    } else {
+      toast.dismiss();
+    }
+  }, [genericError, dispatch]);
 
   return (
     <div className="flex flex-col h-screen">
@@ -34,6 +53,7 @@ function App() {
         <SideContainer />
       </div>
       <ModalNuovoPassaggio />
+      <ToastContainer />
     </div>
 
   );

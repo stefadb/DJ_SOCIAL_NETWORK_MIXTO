@@ -3,6 +3,9 @@ import z from "zod";
 import api from "../api";
 import type { CSSProperties } from "react";
 import { twj } from "tw-to-css";
+import axios from "axios";
+import { useDispatch } from "react-redux";
+import { setGenericError } from "../store/errorSlice";
 
 
 export async function getNomiArtistiBrano(id: number): Promise<ArtistaDb[]> {
@@ -17,25 +20,24 @@ export async function getNomiArtistiBrano(id: number): Promise<ArtistaDb[]> {
 }
 
 export async function getNomiArtistiAlbum(idBrani: number[] | undefined, idAlbum: number): Promise<ArtistaDb[]> {
-    //TODO: questa funzione deve essere messa in useMemo o useCallback o quello che è, perche fa troppe chiamate API
-    if (idBrani) {
-        for (const idBrano of idBrani) {
-            await api.get(`/brani/singolo?trackId=${idBrano}&limit=1&index=0`);
+    try {
+        if (idBrani) {
+            for (const idBrano of idBrani) {
+                await api.get(`/brani/singolo?trackId=${idBrano}&limit=1&index=0`);
+            }
+        } else {
+            await api.get(`/album/singolo?albumId=${idAlbum}&limit=1&index=0`);
+            const responseBrani = await api.get(`/brani/esistenti?album=${idAlbum}`);
+            z.array(BranoDbSchema).parse(responseBrani.data);
+            for (const brano of responseBrani.data) {
+                await api.get(`/brani/singolo?trackId=${(brano as BranoDb).id}&limit=1&index=0`);
+            }
         }
-    } else {
-        await api.get(`/album/singolo?albumId=${idAlbum}&limit=1&index=0`);
-        const responseBrani = await api.get(`/brani/esistenti?album=${idAlbum}`);
-        z.array(BranoDbSchema).parse(responseBrani.data);
-        for (const brano of responseBrani.data) {
-            await api.get(`/brani/singolo?trackId=${(brano as BranoDb).id}&limit=1&index=0`);
-        }
-    }
-    const response = await api.get(`/artisti/esistenti?album=${idAlbum}`);
-    if (response.status === 200) {
+        const response = await api.get(`/artisti/esistenti?album=${idAlbum}`);
         z.array(ArtistaDbSchema).parse(response.data);
         return response.data as ArtistaDb[];
-    } else {
-        throw new Error("Errore nel recupero degli artisti");
+    } catch (error) {
+        throw new Error(error);
     }
 }
 
@@ -76,14 +78,14 @@ export function dataItaliana(data: string): string {
 }
 
 function scaleCssValues(cssValue: string, scale: number) {
-  return cssValue.replace(/(-?\d*\.?\d+)(px|rem)/g, (match, number, unit) => {
-    const scaledNumber = parseFloat(number) * scale;
-    return `${scaledNumber}${unit}`;
-  });
+    return cssValue.replace(/(-?\d*\.?\d+)(px|rem)/g, (match, number, unit) => {
+        const scaledNumber = parseFloat(number) * scale;
+        return `${scaledNumber}${unit}`;
+    });
 }
 
 function makeMutableStyle(style: CSSProperties): CSSProperties {
-  return { ...style };
+    return { ...style };
 }
 
 function scaleCssProps(properties: Record<string, any>, scale: number): CSSProperties {
@@ -112,6 +114,21 @@ export function cachedTwj(className: string): CSSProperties {
 
 export function scaleTwProps(twClassNames: string, scale: number): CSSProperties {
     return scaleCssProps(cachedTwj(twClassNames), scale);
+}
+
+export function check404(error: unknown) {
+    return typeof error == "object" && error && "response" in error && typeof error.response == "object" && error.response && "status" in error.response && error.response.status == "404";
+}
+
+export function checkConnError(error: unknown): boolean {
+    return (
+        axios.isAxiosError(error) &&
+        (!error.response ||
+            error.code === "ECONNABORTED" ||
+            error.code === "ERR_NETWORK" ||
+            error.code === "ECONNREFUSED" ||
+            error.code === "ETIMEDOUT")
+    );
 }
 
 

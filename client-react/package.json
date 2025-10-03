@@ -23,6 +23,7 @@
     "react-redux": "^9.2.0",
     "react-router-dom": "^7.9.1",
     "react-time-ago": "^7.3.5",
+    "react-toastify": "^11.0.5",
     "react-tooltip": "^5.29.1",
     "tw-to-css": "0.0.12",
     "uuid": "^13.0.0",

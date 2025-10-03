@@ -53,7 +53,7 @@ function Album() {
                 </div>
             ) : (
                 <div className="flex flex-row justify-center">
-                    <Caricamento size="giant" />
+                    <Caricamento size="giant" status={"loading"}/>
                 </div>
             )}
             {album !== null &&
@@ -68,7 +68,7 @@ function Album() {
                             </div>
                         }
                         {!artistiAlbum &&
-                            <Caricamento size="tiny" />
+                            <Caricamento size="tiny" status={"loading"}/>
                         }
                     </div>
                     <div>
@@ -80,7 +80,7 @@ function Album() {
                                 emptyMessage="😮 Non ci sono brani in questo album" />
                         }
                         {!albumLoaded &&
-                            <Caricamento size="small" />
+                            <Caricamento size="small" status={"loading"}/>
                         }
                     </div>
                     <div>

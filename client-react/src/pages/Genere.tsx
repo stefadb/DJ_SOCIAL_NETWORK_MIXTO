@@ -49,7 +49,7 @@ function Genere() {
                 {genere ? (
                     <CardGenere genere={genere} size="large" />
                 ) : (
-                    <Caricamento size="giant"/>
+                    <Caricamento size="giant" status={"loading"}/>
                 )}
             </div>
             {genere !== null &&

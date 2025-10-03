@@ -51,7 +51,7 @@ function Artista() {
                 {artista ? (
                     <CardArtista artista={artista} size="large" />
                 ) : (
-                    <Caricamento size="giant"/>
+                    <Caricamento size="giant" status={"loading"}/>
                 )}
             </div>
             {artista !== null &&

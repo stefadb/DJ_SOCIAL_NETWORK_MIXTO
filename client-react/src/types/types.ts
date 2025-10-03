@@ -21,3 +21,13 @@ export const PassaggioConBraniEUtenteSchema = PassaggioDbSchema.extend({
     utente_array: z.array(UtenteDbSchema)
 });
 export type PassaggioConBraniEUtente = z.infer<typeof PassaggioConBraniEUtenteSchema>;
+
+export const ScratchSchema = z.object({
+    x1: z.number(),
+    y1: z.number(),
+    x2: z.number(),
+    y2: z.number(),
+    scratchDepth: z.number()
+});
+
+export type Scratch = z.infer<typeof ScratchSchema>;

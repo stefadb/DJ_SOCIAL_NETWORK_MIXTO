@@ -5,7 +5,8 @@ import { setUtente } from '../../store/userSlice';
 import { useSelector } from 'react-redux';
 import type { RootState } from '../../store/store';
 import api from '../../api';
-import { scaleTwProps } from '../../functions/functions';
+import { checkConnError, scaleTwProps } from '../../functions/functions';
+import { setGenericError } from '../../store/errorSlice';
 
 function ModalAggiornaUtente(props: { isOpen: boolean; onRequestClose: () => void; }) {
     const dispatch = useDispatch();
@@ -59,7 +60,7 @@ function ModalAggiornaUtente(props: { isOpen: boolean; onRequestClose: () => voi
             dispatch(setUtente(null));
             props.onRequestClose();
         } catch (error) {
-            console.error("Errore nel logout:", error);
+
         }
     }
 

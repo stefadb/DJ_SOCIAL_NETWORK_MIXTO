@@ -70,7 +70,7 @@ function Brano() {
         </div>
       ) : (
   <div className="flex flex-row justify-center">
-          <Caricamento size="giant" />
+          <Caricamento size="giant" status={"loading"}/>
         </div>
       )}
       {brano !== null &&
