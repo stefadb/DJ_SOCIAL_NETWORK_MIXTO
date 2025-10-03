@@ -5,7 +5,6 @@ import type { RootState } from '../../store/store';
 import api from '../../api';
 import { type UtenteDb } from '../../types/db_types';
 import { closeModal } from '../../store/modalNuovoPassaggioSlice';
-import { largePadding, mediumPadding } from '../../functions/functions';
 
 function ModalNuovoPassaggio() {
     const dispatch = useDispatch();
@@ -55,26 +54,18 @@ function ModalNuovoPassaggio() {
         <Modal
             isOpen={isOpen}
             onRequestClose={() => dispatch(closeModal())}
-            style={{
-                content: {
-                    maxWidth: "500px",
-                    width: "100%",
-                    margin: "auto",
-                    maxHeight: "80vh",
-                    overflow: "auto"
-                }
-            }}
+            className="max-w-[500px] w-full mx-auto max-h-[80vh] overflow-auto"
         >
             <h2>Pubblica Nuovo Passaggio</h2>
 
             {(!brano1 || !brano2) && (
-                <div style={{ color: 'red', marginBottom: '10px' }}>
+                <div className="text-red-500 mb-3">
                     ⚠️ Seleziona entrambi i brani sulla consolle prima di continuare
                 </div>
             )}
 
             {brano1 && brano2 && (
-                <div style={{ marginBottom: '20px', padding: largePadding(), border: '1px solid #ccc' }}>
+                <div className="mb-[20px] p-3 border border-[#ccc]">
                     <h4>Brani selezionati:</h4>
                     <p><strong>Brano 1:</strong> {brano1.titolo}</p>
                     <p><strong>Brano 2:</strong> {brano2.titolo}</p>
@@ -82,22 +73,21 @@ function ModalNuovoPassaggio() {
             )}
 
             <form onSubmit={onSubmit}>
-                <div style={{ marginBottom: '15px' }}>
+                <div className="mb-4">
                     <label htmlFor="testo">Descrizione del passaggio:</label>
-                    <textarea
+                    <textarea className="p-2 w-full"
                         id="testo"
                         value={testo}
                         onChange={(e) => setTesto(e.target.value)}
                         placeholder="Descrivi come eseguire questo passaggio..."
                         required
                         rows={4}
-                        style={{ width: '100%', padding: mediumPadding() }}
                     />
                 </div>
 
-                <div style={{ marginBottom: '15px' }}>
+                <div className="mb-4">
                     <label htmlFor="inizioSecondoBrano">Inizio secondo brano (HH:MM:SS):</label>
-                    <input
+                    <input className="p-2 w-full"
                         type="text"
                         id="inizioSecondoBrano"
                         value={inizioSecondoBrano}
@@ -105,13 +95,12 @@ function ModalNuovoPassaggio() {
                         placeholder="es. 00:02:30"
                         pattern="[0-9]{2}:[0-9]{2}:[0-9]{2}"
                         required
-                        style={{ width: '100%', padding: mediumPadding() }}
                     />
                 </div>
 
-                <div style={{ marginBottom: '15px' }}>
+                <div className="mb-4">
                     <label htmlFor="cueSecondoBrano">Cue secondo brano (HH:MM:SS):</label>
-                    <input
+                    <input className="p-2 w-full"
                         type="text"
                         id="cueSecondoBrano"
                         value={cueSecondoBrano}
@@ -119,11 +108,10 @@ function ModalNuovoPassaggio() {
                         placeholder="es. 00:01:45"
                         pattern="[0-9]{2}:[0-9]{2}:[0-9]{2}"
                         required
-                        style={{ width: '100%', padding: mediumPadding() }}
                     />
                 </div>
 
-                <div style={{ display: 'flex', gap: '10px', justifyContent: 'flex-end' }}>
+                <div className="flex justify-end gap-3">
                     <button type="button" onClick={() => dispatch(closeModal())}>
                         Annulla
                     </button>

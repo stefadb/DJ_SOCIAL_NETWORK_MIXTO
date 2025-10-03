@@ -34,10 +34,10 @@ function Consolle(props: {isOpen: boolean, onRequestClose: () => void}) {
     return <Modal isOpen={props.isOpen} onRequestClose={props.onRequestClose}>
         <h3>Brano 1</h3>
         {brano1 === null ? <p><i>(vuoto)</i></p> :
-        <CardBrano brano={brano1} noDeckButtons/>}
+        <CardBrano brano={brano1} noDeckButtons size={"small"}/>}
         <h3>Brano 2</h3>
         {brano2 === null ? <p><i>(vuoto)</i></p> :
-        <CardBrano brano={brano2} noDeckButtons/>}
+        <CardBrano brano={brano2} noDeckButtons size={"small"}/>}
         <button onClick={scambia}>Scambia</button>
         <button onClick={() => {if(loggedUtente){dispatch(openModal())}else{alert("Accedi per pubblicare un passaggio");}}}>Pubblica un nuovo passaggio</button>
     </Modal>;

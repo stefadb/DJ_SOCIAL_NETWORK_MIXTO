@@ -102,14 +102,14 @@ function PagedList<T>(props: { itemsPerPage: number; apiCall: string; schema?: Z
         }
     };
 
-    return <div ref={containerRef} onScroll={handleScroll} className={"flex justify-start overscroll-x-contain" + (props.scrollMode === "vertical" ? " flex-col" : " flex-row") } style={{ [props.scrollMode === "vertical" ? "overflowY" : "overflowX"]: "auto" }}>
+    return <div ref={containerRef} onScroll={handleScroll} className={"flex justify-start overscroll-x-contain" + (props.scrollMode === "vertical" ? " flex-col overflow-y-auto" : " flex-row overflow-x-auto") }>
         {elements.map((element, index) => <Fragment key={index}>{props.component(element, index)}</Fragment>)}
         {empty && <>{props.emptyMessage}</>}
         {!props.noPaging && endNotReached && <Fragment>
             {props.showMoreButton &&
                 props.showMoreButton(() => nextPage())
             }
-            <div ref={caricamentoRef} className="justify-center items-center hidden" style={{ [props.scrollMode === "vertical" ? "width" : "height"]: "100%"}}>
+            <div ref={caricamentoRef} className={"justify-center items-center hidden" + (props.scrollMode === "vertical" ? "w-full" : "h-full")}>
                 <Caricamento size={"tiny"} />
             </div>
         </Fragment>

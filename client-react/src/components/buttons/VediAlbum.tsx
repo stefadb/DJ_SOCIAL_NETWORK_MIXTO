@@ -2,18 +2,17 @@ import { Tooltip } from "react-tooltip";
 import { v4 as uuidv4 } from 'uuid';
 import AlbumIcon from "../icons/AlbumIcon";
 import { useNavigate } from "react-router-dom";
-import { smallPadding } from "../../functions/functions";
+import { scaleTwProps} from "../../functions/functions";
 
 function VediAlbum(props: { idAlbum: number, scale: number}) {
   // ID stabile che non cambia ad ogni render
   const randomId = `album-${uuidv4()}`;
-  const buttonPadding = `${8*props.scale}px ${4*props.scale}px ${7*props.scale}px ${4*props.scale}px`;
   const navigate = useNavigate();
 
-  return <div className="inline-block" style={{ padding: smallPadding(props.scale) }}>
+  return <div className="inline-block" style={scaleTwProps("p-1",props.scale)}>
     <button 
       id={randomId} 
-  className="card-brano-button" style={{ padding: buttonPadding, borderRadius: 4*props.scale}} 
+  className="card-brano-button" style={scaleTwProps("py-2 px-1 rounded", props.scale)} 
        
       onClick={() => {navigate(`/album?id=${props.idAlbum}`);}}
     >

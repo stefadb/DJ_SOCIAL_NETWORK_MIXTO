@@ -6,12 +6,11 @@ import type { RootState } from "../../store/store";
 import { ChevronUp, Disc } from "react-feather";
 import { Tooltip } from "react-tooltip";
 import { v4 as uuidv4 } from 'uuid';
-import { smallPadding } from "../../functions/functions";
+import { scaleTwProps } from "../../functions/functions";
 
 function PosizionaBrano(props: { deck: 1 | 2, brano: BranoDb, scale: number}) {
     const randomId = `brano-${props.deck}-${uuidv4()}`;
     const dispatch = useDispatch();
-    const shift = 3 * props.scale; //lascia cosi
     const brano1: BranoDb | null = useSelector((state: RootState) => (state.giradischi as any).brano1);
     const brano2: BranoDb | null = useSelector((state: RootState) => (state.giradischi as any).brano2);
     function posizionaBranoNelDeck(deck: 1 | 2, brano: BranoDb) {
@@ -27,26 +26,26 @@ function PosizionaBrano(props: { deck: 1 | 2, brano: BranoDb, scale: number}) {
             dispatch(setBrano2(brano));
         }
     }
-    return <div className="inline-block" style={{ padding: smallPadding(props.scale) }}>
-    <button id={randomId} className="card-brano-button" style={{ padding: smallPadding(props.scale), borderRadius: 4*props.scale }} onClick={() => posizionaBranoNelDeck(props.deck, props.brano)}>
+    return <div className="inline-block" style={scaleTwProps("p-1", props.scale)}>
+    <button id={randomId} className="card-brano-button" style={scaleTwProps("p-1 rounded",props.scale)} onClick={() => posizionaBranoNelDeck(props.deck, props.brano)}>
             <div className="flex flex-col">
                 <div className="flex flex-row">
-                    <div style={{ width: 14*props.scale, height: 14*props.scale }}>
-                        <Disc size={14*props.scale} color={props.deck == 1 ? "red" : "gray"} />
+                    <div style={scaleTwProps("w-4 h-4",props.scale)}>
+                        <Disc size={16*props.scale} color={props.deck == 1 ? "red" : "gray"} />
                     </div>
-                    <div style={{ width: 14*props.scale, height: 14*props.scale }}>
-                        <Disc size={14*props.scale} color={props.deck == 2 ? "blue" : "gray"} />
+                    <div style={scaleTwProps("w-4 h-4",props.scale)}>
+                        <Disc size={16*props.scale} color={props.deck == 2 ? "blue" : "gray"} />
                     </div>
                 </div>
-                <div className="relative flex flex-row" style={{ top: -shift }}>
-                    <div style={{ width: 14*props.scale, height: 14*props.scale - shift }}>
+                <div className="relative flex flex-row" style={scaleTwProps("top-[-3px]", props.scale)}>
+                    <div style={scaleTwProps("w-4 h-[13px]",props.scale)}>
                         {props.deck === 1 &&
-                            <ChevronUp size={14*props.scale} color={"red"} />
+                            <ChevronUp size={16*props.scale} color={"red"} />
                         }
                     </div>
-                    <div style={{ width: 14*props.scale, height: 14*props.scale - shift }}>
+                    <div style={scaleTwProps("w-4 h-[13px]",props.scale)}>
                         {props.deck === 2 &&
-                            <ChevronUp size={14*props.scale} color={"blue"} />
+                            <ChevronUp size={16*props.scale} color={"blue"} />
                         }
                     </div>
                 </div>

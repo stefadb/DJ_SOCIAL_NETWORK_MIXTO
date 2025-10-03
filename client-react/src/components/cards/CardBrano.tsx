@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { AlbumDbSchema, type AlbumDb, type ArtistaDb, type BranoDb } from "../../types/db_types";
-import { blackBoxShadow, getNomiArtistiBrano, grayBoxShadow, largePadding } from "../../functions/functions";
+import { getNomiArtistiBrano, scaleTwProps} from "../../functions/functions";
 import { useNavigate } from "react-router-dom";
 import SalvaBranoPreferito from "../buttons/SalvaBranoPreferito";
 import PosizionaBrano from "../buttons/PosizionaBrano";
@@ -54,49 +54,49 @@ function CardBrano(props: { brano: BranoDb, noDeckButtons?: boolean, noButtons?:
         }
     }
     return (
-        <div style={{ padding: largePadding(scale) }}>
-            <div style={{ padding: largePadding(scale), width: 150 * scale, borderRadius: 8 * scale, boxShadow: grayBoxShadow(scale) }}>
+        <div style={scaleTwProps("p-3",scale)}>
+            <div style={scaleTwProps("p-3 w-[150px] rounded-lg shadow-md",scale)}>
                 <div>
                     <div onClick={() => navigate(`/brano?id=${props.brano.id}`)} className="flex flex-row cursor-pointer">
-                        <div style={{ position: "relative" }}>
+                        <div className="relative">
                             <Badge scale={scale}>
                                 <Disc size={14 * scale} color={"#A238FF"} />
                             </Badge>
-                            <img style={{ width: 100 * scale, height: 100 * scale, boxShadow: blackBoxShadow(scale) }} src={album && album.url_immagine ? album.url_immagine : "src/assets/album_empty.jpg"} alt={"Cover del brano " + props.brano.titolo} />
+                            <img style={scaleTwProps("w-[100px] h-[100px] shadow-md",scale)} src={album && album.url_immagine ? album.url_immagine : "src/assets/album_empty.jpg"} alt={"Cover del brano " + props.brano.titolo} />
                         </div>
                         {stableMezzoDisco}
                     </div>
-                    <div style={{ paddingTop: 4 * scale, paddingBottom: 8 * scale, cursor: "pointer" }} onClick={() => navigate(`/brano?id=${props.brano.id}`)}>
+                    <div style={scaleTwProps("pt-1 pb-2 cursor-pointer",scale)} onClick={() => navigate(`/brano?id=${props.brano.id}`)}>
                         <DynamicText text={props.brano.titolo} width={150 * scale} scale={scale} />
                     </div>
-                    <div style={{ display: "flex", flexDirection: "row", alignItems: "center", paddingTop: 2 * scale, paddingBottom: 2 * scale }}>
-                        <div style={{ paddingRight: 8 * scale }}>
-                            <div style={{ width: 14 * scale, height: 14 * scale }}>
-                                <div style={{ position: "relative", width: 14 * scale, height: 14 * scale, top: -1 * scale }}>
-                                    <Clock size={14 * scale} />
+                    <div style={scaleTwProps("flex flex-row items-center pt-1 pb-2",scale)}>
+                        <div style={scaleTwProps("pr-2",scale)}>
+                            <div style={scaleTwProps("w-4 h-4",scale)}>
+                                <div style={scaleTwProps("relative w-4 h-4 top-[-1px]",scale)}>
+                                    <Clock size={16 * scale} />
                                 </div>
                             </div>
                         </div>
-                        <div style={{ paddingRight: 8 * scale, fontSize: 16 * scale }}>
+                        <div style={scaleTwProps("pr-2 text-base",scale)}>
                             {props.brano.durata}
                         </div>
                     </div>
-                    <div style={{ display: "flex", flexDirection: "row", alignItems: "center", paddingTop: 2 * scale, paddingBottom: 8 * scale }}>
-                        <div style={{ paddingRight: 8 * scale }}>
+                    <div style={scaleTwProps("flex flex-row items-center pt-px pb-2", scale)}>
+                        <div style={scaleTwProps("pr-2",scale)}>
                             <Users size={14 * scale} color={"#A238FF"}/>
                         </div>
                         <div>
                             {artisti &&
-                                <ListaArtistiOGeneri key={artisti.map(artista => artista.id).join(",")} lines={3} list={artisti} entity={"artista"} fontSize={14 * scale} />
+                                <ListaArtistiOGeneri key={artisti.map(artista => artista.id).join(",")} lines={3} list={artisti} entity={"artista"} scale={scale}/>
                             }
                             {!artisti &&
-                                <ListaArtistiOGeneri lines={3} list={[{ id: 0, nome: "Caricamento...", url_immagine: "" }]} noClick={true} entity={"artista"} fontSize={14 * scale} />
+                                <ListaArtistiOGeneri lines={3} list={[{ id: 0, nome: "Caricamento...", url_immagine: "" }]} noClick={true} entity={"artista"} scale={scale}/>
                             }
                         </div>
                     </div>
                 </div>
                 {props.noButtons !== true &&
-                    <div style={{ display: "flex", alignItems: "flex-start", flexWrap: "wrap" }}>
+                    <div className="flex items-start flex-wrap">
                         {props.noDeckButtons !== true && <>
                             <PosizionaBrano deck={1} brano={props.brano} scale={scale} />
                             <PosizionaBrano deck={2} brano={props.brano} scale={scale} />

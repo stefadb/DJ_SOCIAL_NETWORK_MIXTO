@@ -3,7 +3,7 @@ import type { ArtistaDb } from "../../types/db_types";
 import { useEffect, useRef } from "react";
 import Badge from "../Badge";
 import { Music, User } from "react-feather";
-import { blackBoxShadow, largePadding } from "../../functions/functions";
+import {scaleTwProps} from "../../functions/functions";
 
 function CardArtista(props: { artista: ArtistaDb, size: "small" | "large" }) {
     const navigate = useNavigate();
@@ -28,14 +28,14 @@ function CardArtista(props: { artista: ArtistaDb, size: "small" | "large" }) {
         }
     }
     return (
-        <div ref={containerRef} onClick={() => { navigate("/artista?id=" + props.artista.id); }} style={{ padding: largePadding(scale), cursor: "pointer", opacity: 0, transition: "opacity 0.5s", width: 100*scale }}>
-            <div style={{ position: "relative" }}>
+        <div ref={containerRef} onClick={() => { navigate("/artista?id=" + props.artista.id); }} style={scaleTwProps("p-3 cursor-pointer opacity-0 transition-opacity duration-500 w-[100px]",scale)}>
+            <div className="relative">
                 <Badge scale={scale}>
                     <User size={14 * scale} color={"#A238FF"} />
                 </Badge>
-                <img style={{ width: 100*scale, height: 100*scale, borderRadius: "50%", boxShadow: blackBoxShadow(scale) }} src={props.artista.url_immagine ? props.artista.url_immagine : "src/assets/artista_empty.jpg"} alt={"Immagine di profilo di " + props.artista.nome} />
+                <img style={scaleTwProps("w-[100px] h-[100px] rounded-full shadow-md",scale)} src={props.artista.url_immagine ? props.artista.url_immagine : "src/assets/artista_empty.jpg"} alt={"Immagine di profilo di " + props.artista.nome} />
             </div>
-            <h3 style={{ width: "100%", textAlign: "center", marginTop: 8*scale, marginBottom: 8*scale, fontSize: 18*scale }}>{props.artista.nome}</h3>
+            <h3 style={scaleTwProps("w-full text-center mt-2 mb-2 text-base",scale)}>{props.artista.nome}</h3>
         </div>
     );
 }

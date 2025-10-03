@@ -1,6 +1,9 @@
 import { ArtistaDbSchema, BranoDbSchema, type ArtistaDb, type BranoDb, type UtenteDb } from "../types/db_types";
 import z from "zod";
 import api from "../api";
+import type { CSSProperties } from "react";
+import { twj } from "tw-to-css";
+
 
 export async function getNomiArtistiBrano(id: number): Promise<ArtistaDb[]> {
     await api.get(`/brani/singolo?trackId=${id}&limit=1&index=0`);
@@ -37,8 +40,8 @@ export async function getNomiArtistiAlbum(idBrani: number[] | undefined, idAlbum
 }
 
 function noId<T extends { id?: number }>(obj: T): Omit<T, "id"> {
-  const { id, ...rest } = obj;
-  return rest;
+    const { id, ...rest } = obj;
+    return rest;
 }
 
 export async function salvaBranoPreferito(utente: UtenteDb, idBrano: number): Promise<void> {
@@ -72,31 +75,43 @@ export function dataItaliana(data: string): string {
     return `${giorno}/${mese}/${anno}`;
 }
 
-export function blackBoxShadow(scale: number = 1){
-    return `0 0 ${5 * scale}px rgba(0,0,0,0.5)`;
+function scaleCssValues(cssValue: string, scale: number) {
+  return cssValue.replace(/(-?\d*\.?\d+)(px|rem)/g, (match, number, unit) => {
+    const scaledNumber = parseFloat(number) * scale;
+    return `${scaledNumber}${unit}`;
+  });
 }
 
-export function grayBoxShadow(scale: number = 1){
-    return `0 0 ${5 * scale}px rgba(192,192,192,0.5)`;
+function makeMutableStyle(style: CSSProperties): CSSProperties {
+  return { ...style };
 }
 
-export function noPadding(){
-    return "0";
+function scaleCssProps(properties: Record<string, any>, scale: number): CSSProperties {
+    properties = makeMutableStyle(properties);
+    const keys = Object.keys(properties);
+    for (const key of keys) {
+        if (typeof properties[key] == "number") {
+            properties[key] *= scale;
+        } else if (typeof properties[key] == "string") {
+            properties[key] = scaleCssValues(properties[key], scale);
+        }
+    }
+    return properties as CSSProperties;
 }
 
-export function smallPadding(scale: number = 1){
-    return `${4*scale}px`;
+const twjCache = new Map<string, CSSProperties>();
+
+export function cachedTwj(className: string): CSSProperties {
+    if (twjCache.has(className)) {
+        return twjCache.get(className)!;
+    }
+    const style = twj(className);
+    twjCache.set(className, style);
+    return style;
 }
 
-export function mediumPadding(scale: number = 1){
-    return `${8*scale}px`;
+export function scaleTwProps(twClassNames: string, scale: number): CSSProperties {
+    return scaleCssProps(cachedTwj(twClassNames), scale);
 }
 
-export function largePadding(scale: number = 1){
-    return `${12*scale}px`;
-}
-
-export function extraLargePadding(scale: number = 1){
-    return `${12*scale}px`;
-}
 

@@ -16,7 +16,6 @@ import BranoTableRow from "../components/BranoTableRow";
 import z from "zod";
 import CardBrano from "../components/cards/CardBrano";
 import Caricamento from "../components/icons/Caricamento";
-import { grayBoxShadow, largePadding } from "../functions/functions";
 
 // Schema e type per /passaggi/conta?primoBrano= e /passaggi/conta?secondoBrano=
 const ContaPassaggiBrano2Schema = z.object({
@@ -77,7 +76,7 @@ function Brano() {
       {brano !== null &&
         <>
           <div className="flex flex-row justify-evenly flex-wrap gap-5">
-            <div className="text-center" style={{ padding: largePadding(), borderRadius: 8, boxShadow: grayBoxShadow() }}>
+            <div className="text-center p-3 rounded-lg shadow-md">
               <h3>Top brani più mixati dopo di <i>{brano.titolo}</i></h3>
               <div>
                 <div className="classifica-row">
@@ -86,7 +85,7 @@ function Brano() {
                   <div className="classifica-cell classifica-cell-header"><b>Durata</b></div>
                   <div className="classifica-cell classifica-cell-header"><b>Artisti</b></div>
                 </div>
-                <div className="overflow-y-auto" style={{ maxHeight: 300 }}>
+                <div className="overflow-y-auto max-h-[300px]">
                   <PagedList
                     itemsPerPage={2}
                     apiCall={`/passaggi/conta?primoBrano=${brano.id}`}
@@ -101,7 +100,7 @@ function Brano() {
                 </div>
               </div>
             </div>
-            <div className="text-center" style={{ padding: largePadding(), borderRadius: 8, boxShadow: grayBoxShadow() }}>
+            <div className="text-center p-3 rounded-lg shadow-md">
               <h3>Top brani più mixati prima di <i>{brano.titolo}</i></h3>
               <div>
                 <div className="classifica-row">
@@ -110,7 +109,7 @@ function Brano() {
                   <div className="classifica-cell classifica-cell-header"><b>Durata</b></div>
                   <div className="classifica-cell classifica-cell-header"><b>Artisti</b></div>
                 </div>
-                <div className="overflow-y-auto" style={{ maxHeight: 300 }}>
+                <div className="overflow-y-auto max-h-[300px]">
                   <PagedList
                     itemsPerPage={2}
                     apiCall={`/passaggi/conta?secondoBrano=${brano.id}`}

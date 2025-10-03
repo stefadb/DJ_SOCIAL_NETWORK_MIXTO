@@ -36,7 +36,7 @@ function CardUtenteLoggato() {
     return (
         <>
             {loggedUtente &&
-                <div onClick={() => setIsModalAggiornaUtenteOpen(true)} style={{ cursor: "pointer" }}>
+                <div className="cursor-pointer" onClick={() => setIsModalAggiornaUtenteOpen(true)}>
                     <b><i>{loggedUtente.nome} {loggedUtente.cognome}</i></b>
                 </div>
             }

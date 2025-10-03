@@ -8,7 +8,6 @@ import type { RootState } from "../../store/store";
 import ReactTimeAgo from "react-time-ago";
 import TimeAgo from 'javascript-time-ago';
 import it from 'javascript-time-ago/locale/it';
-import { mediumPadding } from "../../functions/functions";
 
 TimeAgo.addLocale(it);
 
@@ -85,9 +84,9 @@ function CardCommento(props: { commento: CommentoEUtente, livello: number }) {
 
     return (
         <>
-            <div style={{ display: "flex", flexDirection: "column" }}>
-                <div style={{ width: "100%", display: "flex", justifyContent: "flex-end", boxSizing: "border-box", paddingTop: 4, paddingBottom: 4, paddingLeft: 0, paddingRight: 0 }}>
-                    <div style={{ width: minWidth + ((1.0 / props.livello) * (100 - minWidth)) + "%", border: "1px solid black", borderRadius: 8, backgroundColor: "#f0f0f0", boxSizing: "border-box", padding: mediumPadding() }}>
+            <div className="flex flex-col">
+                <div className="w-full flex justify-end box-border py-1 px-0">
+                    <div className="border border-black rounded-lg bg-[#f0f0f0] box-border p-2" style={{ width: minWidth + ((1.0 / props.livello) * (100 - minWidth)) + "%" }}>
                         {!editing &&
                             <>
                                 <p>{commento.testo}</p>
@@ -99,7 +98,7 @@ function CardCommento(props: { commento: CommentoEUtente, livello: number }) {
                         }
                         {editing &&
                             <>
-                                <textarea style={{ width: "100%", height: 100 }} value={nuovoTesto} onChange={(e) => { setNuovoTesto(e.target.value); }} />
+                                <textarea className="w-full h-[100px]" value={nuovoTesto} onChange={(e) => { setNuovoTesto(e.target.value); }} />
                                 <br />
                                 <button onClick={() => { salvaCommento();}}>Salva</button>
                                 <button onClick={() => { setEditing(false); setNuovoTesto(commento.testo);}}>Annulla</button>
@@ -109,24 +108,24 @@ function CardCommento(props: { commento: CommentoEUtente, livello: number }) {
                         <b>{getNomeUtente()}</b>
                         <br />
                         {!showAnswerBox &&
-                            <a className="hover-underline" style={{ cursor: "pointer", color: "blue" }} onClick={openAnswerBox}>Rispondi</a>
+                            <a className="hover-underline cursor-pointer text-blue-500" onClick={openAnswerBox}>Rispondi</a>
                         }
                     </div>
                 </div>
                 {showAnswerBox &&
-                    <div style={{ width: "100%", display: "flex", justifyContent: "flex-end", boxSizing: "border-box", paddingTop: 4, paddingBottom: 4, paddingLeft: 0, paddingRight: 0 }}>
-                        <div style={{ width: minWidth + ((1.0 / (props.livello + 1)) * (100 - minWidth)) + "%", boxSizing: "border-box", padding: mediumPadding() }}>
-                            <textarea placeholder="Scrivi una risposta..." style={{ width: "100%", height: 100 }} value={answer} onChange={(e) => setAnswer(e.target.value)} />
+                    <div className="w-full flex justify-end box-border pt-1 pb-1 pl-0 pr-0">
+                        <div className="box-border p-2" style={{ width: minWidth + ((1.0 / (props.livello + 1)) * (100 - minWidth)) + "%" }}>
+                            <textarea className="w-full h-[100px]" placeholder="Scrivi una risposta..." value={answer} onChange={(e) => setAnswer(e.target.value)} />
                             <br />
-                            <button onClick={() => { sendAnswer(); }} style={{ marginTop: 4 }}>Invia</button>
-                            <button onClick={() => { setShowAnswerBox(false); setAnswer(""); }} style={{ marginTop: 4 }}>Annulla</button>
+                            <button onClick={() => { sendAnswer(); }} className="mt-4">Invia</button>
+                            <button onClick={() => { setShowAnswerBox(false); setAnswer(""); }} className="mt-4">Annulla</button>
                         </div>
                     </div>
                 }
                 {!sendingAnswer &&
                     <PagedList itemsPerPage={5} apiCall={`/commenti?commentoPadre=${commento.id}`} schema={CommentoEUtenteSchema} scrollMode="vertical" component={(element: CommentoEUtente) => {
                         return <CardCommento commento={element} livello={props.livello + 1} />;
-                    }} showMoreButton={(onClick) => <div style={{ display: "flex", justifyContent: "flex-end" }}><button style={{ width: minWidth + ((1.0 / (props.livello + 1)) * (100 - minWidth)) + "%" }} onClick={onClick}>Carica altre risposte</button></div>
+                    }} showMoreButton={(onClick) => <div className="flex justify-end"><button style={{ width: minWidth + ((1.0 / (props.livello + 1)) * (100 - minWidth)) + "%" }} onClick={onClick}>Carica altre risposte</button></div>
                     } emptyMessage={<></>}/>
                 }
             </div>

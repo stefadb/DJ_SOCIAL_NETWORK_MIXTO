@@ -1,4 +1,5 @@
 import { useRef } from "react";
+import { scaleTwProps } from "../../functions/functions";
 
 function Caricamento(props: {size: "tiny" | "small" | "large" | "giant"}) {
     const scales = {
@@ -90,14 +91,8 @@ function Caricamento(props: {size: "tiny" | "small" | "large" | "giant"}) {
         const greyValue = Math.floor(Math.random() * (maximumGreyScale - minimumGreyScale + 1)) + minimumGreyScale;
         return `rgb(${greyValue}, ${greyValue}, ${greyValue})`;
     }
-    return (<div style={{
-        width: 125 * scale,
-        height: 100 * scale,
-        borderRadius: 10 * scale,
-        backgroundColor: '#ddd',
-        border: `${4 * scale}px inset #eee`
-    }}>
-        <div style={{ position: "relative", left: 10 * scale, top: 10 * scale, width: 80 * scale, height: 80 * scale }}>
+    return (<div id="guardami" style={scaleTwProps("w-[125px] h-[100px] rounded-[10px] bg-[#ddd] [border-style:inset] border-[4px] border-[#eee]",scale)}>
+        <div style={scaleTwProps("relative left-[10px] top-[10px] w-[80px] h-[80px]",scale)}>
             <div>
                 <svg width={radius * 3} height={radius * 2} viewBox={`0 0 ${radius * 3} ${radius * 2}`}>
                     {segments.map((segment) => (
@@ -132,13 +127,13 @@ function Caricamento(props: {size: "tiny" | "small" | "large" | "giant"}) {
                     <g className="discRotation" style={{ transformOrigin: `${0.6 * (innerCircleRadius)}px ${0.6 * (innerCircleRadius)}px` }}>
                         <polygon points={mPoints.map(point => (radius - innerCircleRadius) + (point * (2*innerCircleRadius))).join(" ")} fill="black" />
                     </g>
-                    <g className="swing3" style={{ transformOrigin: `${(88 - 72 + 4.6)*scale}px ${4.5*scale}px` }}>
+                    <g className="swing3" style={{ transformOrigin: `${(88 - 72 + 4.6)* scale}px ${4.5* scale}px` }}>
                         <polygon points={testinaPoints.map(point => point * scale).join(" ")} fill="#A238FF" />
                     </g>
                 </svg>
             </div >
         </div>
-        <h4 ref={h4Ref} style={{fontSize: 16 * (1/0.75) * scale}}>Caricamento.</h4>
+        <h4 ref={h4Ref} style={scaleTwProps("text-[21.3333px]",scale)}>Caricamento.</h4>
     </div>);
 }
 

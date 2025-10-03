@@ -24,13 +24,7 @@ function ModalSignIn(props: { isOpen: boolean; onRequestClose: () => void; }) {
         <Modal
             isOpen={props.isOpen}
             onRequestClose={props.onRequestClose}
-            style={{
-                content: {
-                    maxWidth: "400px",
-                    width: "100%",
-                    margin: "auto"
-                }
-            }}
+            className="max-w-[400px] w-full mx-auto"
         >
             <h2>Sign In</h2>
             <form onSubmit={onSubmit}>

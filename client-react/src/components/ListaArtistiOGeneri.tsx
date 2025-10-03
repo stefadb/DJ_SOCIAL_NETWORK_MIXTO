@@ -5,9 +5,9 @@ import { useLayoutEffect, useRef, useState } from "react";
 import Modal from "react-modal";
 import Badge from "./Badge";
 import { Music, User } from "react-feather";
-import { mediumPadding, smallPadding } from "../functions/functions";
+import { scaleTwProps } from "../functions/functions";
 
-function ListaArtistiOGeneri(props: { list: ArtistaDb[], noClick?: boolean, entity: "artista", fontSize: number, lines: number } | { list: GenereDb[], noClick?: boolean, entity: "genere", fontSize: number, lines: number }) {
+function ListaArtistiOGeneri(props: { list: ArtistaDb[], noClick?: boolean, entity: "artista", lines: number, scale: number } | { list: GenereDb[], noClick?: boolean, entity: "genere", lines: number, scale: number }) {
     const lines = props.lines;
     //ARRAY DI NUMERI DA 1 a lines
     const lineNumbers = Array.from({ length: lines }, (_, i) => i + 1);
@@ -17,11 +17,6 @@ function ListaArtistiOGeneri(props: { list: ArtistaDb[], noClick?: boolean, enti
     const testDivRef = useRef<HTMLDivElement>(null);
     const actualDivRef = useRef<HTMLDivElement>(null);
     const maxHeightDivRef = useRef<HTMLDivElement>(null);
-
-    const linksStyle = {
-        fontSize: props.fontSize,
-        fontFamily: "Roboto Condensed"
-    }
 
     const maxHeight = useRef<number>(0);
 
@@ -94,39 +89,35 @@ function ListaArtistiOGeneri(props: { list: ArtistaDb[], noClick?: boolean, enti
     }, []); // Deve eseguire solo al mount
 
     return <>
-    <div ref={maxHeightDivRef} className="overflow-y-hidden">
+        <div ref={maxHeightDivRef} className="overflow-y-hidden">
             <div ref={actualDivRef} className="flex flex-col justify-center hidden">
                 <div>
                     {shownList.map((element, index) => {
-                        return <Fragment key={element.id}><Link className="" style={linksStyle} to={props.noClick ? "" : "/" + props.entity + "?id=" + element.id}>{element.nome}</Link>
+                        return <Fragment key={element.id}><Link style={scaleTwProps("text-base font-['Roboto_Condensed']", props.scale)} to={props.noClick ? "" : "/" + props.entity + "?id=" + element.id}>{element.nome}</Link>
                             {index < shownList.length - 1 && ", "}</Fragment>
                     })}
                     {shownList.length < props.list.length &&
-                        <span onClick={() => setShowingMore(true)} className="cursor-pointer font-roboto-condensed text-[14px]"> e altri {props.list.length - shownList.length}</span>
+                        <span onClick={() => setShowingMore(true)} style={scaleTwProps("cursor-pointer text-base font-['Roboto_Condensed']", props.scale)}> e altri {props.list.length - shownList.length}</span>
                     }
                 </div>
             </div>
             <div ref={testDivRef} className="opacity-0">
                 {lineNumbers.map((lineNumber) => {
-                    return <div className="block" key={lineNumber}><Link className="" style={linksStyle} to={"blablabla"}>Test</Link></div>
+                    return <div className="block" key={lineNumber}><Link style={scaleTwProps("text-base font-['Roboto_Condensed']", props.scale)} to={"blablabla"}>Test</Link></div>
                 })}
             </div>
             {showingMore &&
                 <Modal
-                    style={{content: {
-                        maxWidth: "400px",
-                        width: "100%",
-                        margin: "auto"
-                    }
-                }} isOpen={true} onRequestClose={() => setShowingMore(false)}>
+                    className="max-w-[400px] w-full mx-auto"
+                    isOpen={true} onRequestClose={() => setShowingMore(false)}>
                     <div className="flex justify-end">
-                        <button onClick={() => setShowingMore(false)} className="absolute bg-none border-none cursor-pointer text-[22px]" style={{ padding: mediumPadding() }}>×</button>
+                        <button onClick={() => setShowingMore(false)} className="absolute bg-none border-none cursor-pointer text-[22px] p-2">×</button>
                     </div>
                     <h2>Tutti {props.entity == "artista" ? "gli artisti" : "i generi"} di questo {props.entity == "artista" ? "brano" : "album"}</h2>
                     <div className="flex flex-col gap-2">
                         {props.list.map((element) => {
                             return <div key={element.id} className="flex flex-row">
-                                <div className="relative p-1" style={{ width: 24, height: 24 }}>
+                                <div className="relative p-1 w-6 h-6">
                                     <Badge scale={1}>
                                         {props.entity == "artista" &&
                                             <User size={14} color={"#A238FF"} />
@@ -137,7 +128,7 @@ function ListaArtistiOGeneri(props: { list: ArtistaDb[], noClick?: boolean, enti
                                     </Badge>
                                 </div>
                                 <div className="p-1">
-                                    <Link className="" style={linksStyle} to={"/" + props.entity + "?id=" + element.id}>{element.nome}</Link>
+                                    <Link className="text-base font-['Roboto_Condensed']" to={"/" + props.entity + "?id=" + element.id}>{element.nome}</Link>
                                 </div>
                             </div>
                         })}

@@ -9,7 +9,6 @@ import { CommentoEUtenteSchema, ValutazioneEUtenteSchema, type CommentoEUtente, 
 import PagedList from "../PagedList";
 import CardValutazione from "../cards/CardValutazione";
 import CardPassaggio from "../cards/CardPassaggio";
-import { largePadding, smallPadding } from "../../functions/functions";
 
 function ModalPassaggio(props: {passaggio: PassaggioDb, brano1: BranoDb | null, brano2: BranoDb | null, utente: UtenteDb | null, onClose: () => void}) {
     const loggedUtente: UtenteDb | null = useSelector((state: RootState) => (state.user as any).utente as UtenteDb | null);
@@ -84,7 +83,7 @@ function ModalPassaggio(props: {passaggio: PassaggioDb, brano1: BranoDb | null, 
         <Modal
             isOpen={true}
             onRequestClose={props.onClose}
-            style={{ content: { maxWidth: "400px", width: "100%", margin: "auto" } }}
+            className="max-w-[400px] w-full mx-auto"
         >
             <button onClick={props.onClose} className="absolute top-2 right-2 bg-none border-none text-[22px] cursor-pointer">×</button>
 
@@ -93,36 +92,36 @@ function ModalPassaggio(props: {passaggio: PassaggioDb, brano1: BranoDb | null, 
             }
 
             {/* Commenti o valutazioni */}
-            <div style={{ margin: "16px 16px 0 16px", border: "1px solid #eee", borderRadius: 8, background: "#fafafa" }}>
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "8px 12px", borderBottom: "1px solid #eee" }}>
-                    <b style={{ fontSize: 15 }}>{showValutazioni ? "Valutazioni" : "Commenti"}</b>
-                    <button style={{ fontSize: 13, background: "none", border: "none", color: "#1976d2", cursor: "pointer" }} onClick={() => setShowValutazioni(v => !v)}>
+            <div className="mt-4 mx-4 mb-0 border border-[#eee] rounded-lg bg-[#fafafa]">
+                <div className="flex items-center justify-between px-3 py-2 border-b border-[#eee]">
+                    <b className="text-base">{showValutazioni ? "Valutazioni" : "Commenti"}</b>
+                    <button className="text-xs bg-none border-none text-[#1976d2] cursor-pointer" onClick={() => setShowValutazioni(v => !v)}>
                         {showValutazioni ? "Torna ai commenti" : "Dai un voto anche tu"}
                     </button>
                 </div>
                 {!showValutazioni &&
-                    <div style={{ padding: largePadding() }}>
+                    <div className="p-3">
                         {savingCommento && <div>Salvataggio in corso...</div>}
                         {!savingCommento &&
                             <PagedList itemsPerPage={10} apiCall={`/commenti?passaggio=${props.passaggio.id}`} schema={CommentoEUtenteSchema} scrollMode="vertical" component={(element: CommentoEUtente) => {
                                 return <CardCommento commento={element} livello={1} />;
-                            }} showMoreButton={(onClick) => <button style={{ width: "100%" }} onClick={onClick}>Carica altri commenti</button>}
+                            }} showMoreButton={(onClick) => <button className="w-full" onClick={onClick}>Carica altri commenti</button>}
                                 emptyMessage="😮 Non c'è ancora nessun commento qui" />
                         }
-                        <div style={{ display: "flex", alignItems: "center", marginTop: 12 }}>
+                        <div className={"flex items-center mt-3"}>
                             <input
                                 type="text"
                                 value={commentoInput}
                                 onChange={e => setCommentoInput(e.target.value)}
                                 placeholder="Aggiungi un commento"
-                                style={{ flex: 1, border: "1px solid #ccc", borderRadius: 4, padding: smallPadding(), fontSize: 14 }}
+                               className="flex-1 border border-[#ccc] rounded p-1 text-base"
                             />
-                            <button disabled={commentoInput.length === 0} onClick={inviaCommento} style={{ marginLeft: 8, padding: "8px 16px", background: "#1976d2", color: "#fff", border: "none", borderRadius: 4, fontSize: 14, cursor: "pointer" }}>Invia</button>
+                            <button disabled={commentoInput.length === 0} onClick={inviaCommento} className="ml-2 px-4 py-2 bg-[#1976d2] text-white border-none rounded text-base cursor-pointer">Invia</button>
                         </div>
                     </div>
                 }
                 {showValutazioni &&
-                    <div style={{ padding: largePadding() }}>
+                    <div className="p-3">
                         {savingValutazione && <div>Salvataggio in corso...</div>}
                         {!savingValutazione &&
                             <PagedList itemsPerPage={10} apiCall={`/valutazioni?passaggio=${props.passaggio.id}`} schema={ValutazioneEUtenteSchema} scrollMode="vertical" component={(element: ValutazioneEUtente) => {
@@ -130,17 +129,17 @@ function ModalPassaggio(props: {passaggio: PassaggioDb, brano1: BranoDb | null, 
                             }} showMoreButton={(onClick) => <button onClick={onClick}>Carica altre valutazioni</button>}
                                 emptyMessage="😮 Nessuno ha ancora valutato questo passaggio" />
                         }
-                        <div style={{ display: "flex", alignItems: "center", marginTop: 12 }}>
+                        <div className="flex items-center mt-3">
                             <input type="number" min={1} max={5} value={votoInput} onChange={e => setVotoInput(e.target.value)} />
-                            <button disabled={votoInput.length === 0} onClick={inviaValutazione} style={{ marginLeft: 8, padding: "8px 16px", background: "#1976d2", color: "#fff", border: "none", borderRadius: 4, fontSize: 14, cursor: "pointer" }}>Vota</button>
+                            <button className="ml-2 px-[16px] py-2 bg-[#1976d2] text-white border-none rounded text-base cursor-pointer" disabled={votoInput.length === 0} onClick={inviaValutazione}>Vota</button>
                         </div>
                     </div>
                 }
             </div>
             {loggedUtente && props.passaggio.id_utente === loggedUtente.id &&
-                <button onClick={eliminaPassaggio} style={{ margin: "16px", padding: "8px 12px", background: "red", color: "#fff", border: "none", borderRadius: 4, cursor: "pointer" }}>Elimina il passaggio dalla community</button>
+                <button onClick={eliminaPassaggio} className="m-4 px-3 py-2 bg-red-500 text-white border-none rounded cursor-pointer">Elimina il passaggio dalla community</button>
             }
-            <div style={{ height: 16 }} />
+            <div className="h-4" />
         </Modal>
     );
 };

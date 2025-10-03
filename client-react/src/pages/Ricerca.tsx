@@ -11,7 +11,6 @@ import api from "../api";
 import CardGenere from "../components/cards/CardGenere";
 import { Clock } from "react-feather";
 import CardUtente from "../components/cards/CardUtente";
-import { mediumPadding, smallPadding } from "../functions/functions";
 
 function Ricerca() {
     const { search } = useLocation();
@@ -114,7 +113,7 @@ function Ricerca() {
                     ref={inputRef}
                     type="text"
                     value={viewedQueryText}
-                    className="w-full border-b border-black text-center outline-none box-border text-[16px]" style={{padding: mediumPadding()}}
+                    className="w-full border-b border-black text-center outline-none box-border text-[16px] p-2"
                     onChange={handleInputChange}
                     onClick={handleInputClick}
                     placeholder="Scrivi qui quello che stai cercando..."
@@ -123,7 +122,7 @@ function Ricerca() {
                     <div className={"dropdown-ricerca"}>
                         {/* Qui puoi aggiungere il contenuto della tendina */}
                         {JSON.parse(localStorage.getItem('ultimeRicerche') || '[]').length === 0 &&
-                            <div className="" style={{ padding: smallPadding() }}><i>Qui compariranno tutte le ricerche recenti</i></div>
+                            <div className="p-1"><i>Qui compariranno tutte le ricerche recenti</i></div>
                         }
                         {JSON.parse(localStorage.getItem('ultimeRicerche') || '[]').map((item: string, index: number) => {
                             if (item === "") {

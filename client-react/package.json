@@ -24,6 +24,7 @@
     "react-router-dom": "^7.9.1",
     "react-time-ago": "^7.3.5",
     "react-tooltip": "^5.29.1",
+    "tw-to-css": "0.0.12",
     "uuid": "^13.0.0",
     "zod": "^4.1.8"
   },

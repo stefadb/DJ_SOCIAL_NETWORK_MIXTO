@@ -12,7 +12,7 @@ import z from "zod";
 import ModalPassaggio from "../modals/ModalPassaggio";
 import { ArrowRight, Clock, Copy, ExternalLink, MessageSquare } from "react-feather";
 import { useNavigate } from "react-router-dom";
-import { blackBoxShadow, grayBoxShadow, largePadding, smallPadding } from "../../functions/functions";
+import {  scaleTwProps} from "../../functions/functions";
 
 type CardPassaggioProps = {
   passaggio: PassaggioDb;
@@ -59,8 +59,8 @@ function CardPassaggio(props: CardPassaggioProps) {
   }, [props.passaggio.id]);
 
   return (
-  <div style={{ padding: largePadding(scale) }}>
-  <div style={{ padding: largePadding(scale), borderRadius: 8 * scale, boxShadow: grayBoxShadow(scale) }}>
+  <div style={scaleTwProps("p-3",scale)}>
+  <div style={scaleTwProps("p-3 rounded-lg shadow-md",scale)}>
   <div className="flex justify-center items-center">
           {props.brano1 &&
             <CardBrano brano={props.brano1} size={props.insideModal ? "small" : "tiny"} noButtons={!props.insideModal}/>
@@ -72,8 +72,8 @@ function CardPassaggio(props: CardPassaggioProps) {
         </div>
         {props.insideModal !== true &&
           <div className="flex flex-row justify-between flex-wrap">
-            <button className={"card-brano-button"} style={{ borderRadius: 4 * scale, padding: smallPadding(scale) }} onClick={() => { setShowModal(true); }}>Commenti e voti <ExternalLink size={14 * scale} /></button>
-            <button className={"card-brano-button"} style={{ borderRadius: 4 * scale, padding: smallPadding(scale) }} onClick={() => {
+            <button className={"card-brano-button"} style={scaleTwProps("p-1 rounded",scale)} onClick={() => { setShowModal(true); }}>Commenti e voti <ExternalLink size={14 * scale} /></button>
+            <button className={"card-brano-button"} style={scaleTwProps("p-1 rounded",scale)} onClick={() => {
               dispatch(setBrano1ToNuovoPassaggio(props.brano1));
               dispatch(setBrano2ToNuovoPassaggio(props.brano2));
               dispatch(closeModal())
@@ -83,7 +83,7 @@ function CardPassaggio(props: CardPassaggioProps) {
         }
         {/* Stelle e azioni */}
         {valutazioneMedia !== null &&
-          <div className="flex items-center" style={{ margin: "12px 16px 0 16px" }}>
+          <div className="flex items-center mt-3 mx-4 mb-0">
             <Stelle
               rating={valutazioneMedia.voto_medio}
               bgColor="white"
@@ -94,29 +94,29 @@ function CardPassaggio(props: CardPassaggioProps) {
           </div>
         }
         {valutazioneMedia === null &&
-          <div className="flex items-center" style={{ margin: "12px 16px 0 16px" }}>
+          <div className="flex items-center mt-3 mx-4 mb-0">
             <span className="text-gray-500">Nessuna valutazione</span>
           </div>
         }
         {/* Autore e dettagli passaggio */}
-  <div style={{ margin: "12px 16px 0 16px" }}>
+  <div className="mt-3 mx-4 mb-0">
           <div className={"flex items-center" + (props.utente ? " cursor-pointer" : " cursor-default")} onClick={props.utente ? () => { navigate("/utente?id=" + props.utente?.id) } : undefined}>
             {props.utente &&
               <>
-                <img className="rounded-full" style={{ width: 32 * scale, height: 32 * scale, boxShadow: blackBoxShadow(scale) }} src={"src/assets/artista_empty.jpg"} alt={"Immagine di profilo di " + props.utente.nome + " " + props.utente.cognome} />
+                <img className="rounded-full" style={scaleTwProps("w-8 h-8 shadow-md",scale)} src={"src/assets/artista_empty.jpg"} alt={"Immagine di profilo di " + props.utente.nome + " " + props.utente.cognome} />
                 <b>&nbsp;&nbsp;{props.utente.nome} {props.utente.cognome}</b>
                 <i>  (@{props.utente.username})</i>
               </>
             }
             {!props.utente &&
               <>
-                <img className="rounded-full" style={{ width: 32 * scale, height: 32 * scale, boxShadow: blackBoxShadow(scale) }} src={"src/assets/artista_empty.jpg"} alt={"Immagine di profilo vuota"} />
+                <img className="rounded-full" style={scaleTwProps("w-8 h-8 shadow-md",scale)} src={"src/assets/artista_empty.jpg"} alt={"Immagine di profilo vuota"} />
                 <b>&nbsp;&nbsp;Utente eliminato</b>
                 <span className="ml-2 text-gray-500 text-[13px]"></span>
               </>
             }
           </div>
-          <div className="text-gray-800" style={{ marginTop: 8 }}>
+          <div className="text-gray-800 mt-2">
             <div className="flex items-center gap-2 italic text-gray-500">
               <MessageSquare size={14 * scale} />
               {props.passaggio.testo}
@@ -127,7 +127,7 @@ function CardPassaggio(props: CardPassaggioProps) {
             </div>
             <div className="flex items-center gap-2">
               <Clock size={14 * scale} />
-              Partenza secondo brano: <span style={{ color: "#1976d2" }}>{props.passaggio.inizio_secondo_brano}</span>
+              Partenza secondo brano: <span className="text-blue-600">{props.passaggio.inizio_secondo_brano}</span>
             </div>
           </div>
         </div>

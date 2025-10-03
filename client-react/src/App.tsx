@@ -13,10 +13,11 @@ import ScrollToTop from "./components/ScrollToTop";
 import Ricerca from "./pages/Ricerca";
 
 function App() {
+
   return (
     <div className="flex flex-col h-screen">
       <Navbar />
-  <div className="flex flex-row flex-grow">
+      <div className="flex flex-row flex-grow">
         <SideContainer />
         <MainContainer>
           <ScrollToTop />

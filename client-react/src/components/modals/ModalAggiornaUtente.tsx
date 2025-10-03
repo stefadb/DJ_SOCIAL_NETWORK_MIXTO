@@ -66,7 +66,7 @@ function ModalAggiornaUtente(props: { isOpen: boolean; onRequestClose: () => voi
         <Modal
             isOpen={props.isOpen}
             onRequestClose={props.onRequestClose}
-            style={{ content: { maxWidth: "400px", width: "100%", margin: "auto" } }}
+            className="max-w-[400px] w-full mx-auto"
         >
             <button onClick={() => {logout();}}>Logout</button>
             <h2>Le mie informazioni</h2>
