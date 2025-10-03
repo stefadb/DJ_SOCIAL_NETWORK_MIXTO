@@ -5,6 +5,7 @@ import { setUtente } from '../../store/userSlice';
 import { useSelector } from 'react-redux';
 import type { RootState } from '../../store/store';
 import api from '../../api';
+import { scaleTwProps } from '../../functions/functions';
 
 function ModalAggiornaUtente(props: { isOpen: boolean; onRequestClose: () => void; }) {
     const dispatch = useDispatch();
@@ -22,7 +23,7 @@ function ModalAggiornaUtente(props: { isOpen: boolean; onRequestClose: () => voi
                 alert("Le password non coincidono");
                 return;
             }
-            if(vecchiaPassword == "" && (password !== "" || confermaPassword !== "")){
+            if (vecchiaPassword == "" && (password !== "" || confermaPassword !== "")) {
                 alert("Per modificare la password, inserire anche la password attuale");
             }
             try {
@@ -66,9 +67,11 @@ function ModalAggiornaUtente(props: { isOpen: boolean; onRequestClose: () => voi
         <Modal
             isOpen={props.isOpen}
             onRequestClose={props.onRequestClose}
-            className="max-w-[400px] w-full mx-auto"
+            style={{
+                content: scaleTwProps("max-w-[400px] w-full mx-auto", 1)
+            }}
         >
-            <button onClick={() => {logout();}}>Logout</button>
+            <button onClick={() => { logout(); }}>Logout</button>
             <h2>Le mie informazioni</h2>
             <form onSubmit={onSubmit}>
                 <input type="text" defaultValue={loggedUtente ? loggedUtente.username : ''} placeholder="Username" required />

@@ -108,7 +108,9 @@ function ListaArtistiOGeneri(props: { list: ArtistaDb[], noClick?: boolean, enti
             </div>
             {showingMore &&
                 <Modal
-                    className="max-w-[400px] w-full mx-auto"
+                    style={{
+                        content: scaleTwProps("max-w-[400px] w-full mx-auto", 1)
+                    }}
                     isOpen={true} onRequestClose={() => setShowingMore(false)}>
                     <div className="flex justify-end">
                         <button onClick={() => setShowingMore(false)} className="absolute bg-none border-none cursor-pointer text-[22px] p-2">×</button>

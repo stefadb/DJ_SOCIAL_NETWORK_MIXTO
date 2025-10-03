@@ -1,16 +1,17 @@
 import { useState } from "react";
-import { type PassaggioDb, type BranoDb, type UtenteDb} from "../../types/db_types";
+import { type PassaggioDb, type BranoDb, type UtenteDb } from "../../types/db_types";
 import CardCommento from "../cards/CardCommento";
 import api from "../../api";
 import Modal from 'react-modal';
-import { useSelector} from 'react-redux';
+import { useSelector } from 'react-redux';
 import type { RootState } from '../../store/store';
 import { CommentoEUtenteSchema, ValutazioneEUtenteSchema, type CommentoEUtente, type ValutazioneEUtente } from "../../types/types";
 import PagedList from "../PagedList";
 import CardValutazione from "../cards/CardValutazione";
 import CardPassaggio from "../cards/CardPassaggio";
+import { scaleTwProps } from "../../functions/functions";
 
-function ModalPassaggio(props: {passaggio: PassaggioDb, brano1: BranoDb | null, brano2: BranoDb | null, utente: UtenteDb | null, onClose: () => void}) {
+function ModalPassaggio(props: { passaggio: PassaggioDb, brano1: BranoDb | null, brano2: BranoDb | null, utente: UtenteDb | null, onClose: () => void }) {
     const loggedUtente: UtenteDb | null = useSelector((state: RootState) => (state.user as any).utente as UtenteDb | null);
     const [commentoInput, setCommentoInput] = useState<string>("");
     const [votoInput, setVotoInput] = useState<string>("");
@@ -83,12 +84,14 @@ function ModalPassaggio(props: {passaggio: PassaggioDb, brano1: BranoDb | null, 
         <Modal
             isOpen={true}
             onRequestClose={props.onClose}
-            className="max-w-[400px] w-full mx-auto"
+            style={{
+                content: scaleTwProps("max-w-[400px] w-full mx-auto", 1)
+            }}
         >
             <button onClick={props.onClose} className="absolute top-2 right-2 bg-none border-none text-[22px] cursor-pointer">×</button>
 
             {props.brano1 && props.brano2 &&
-                <CardPassaggio insideModal passaggio={props.passaggio} brano1={props.brano1} brano2={props.brano2} utente={props.utente} size={"small"}/>
+                <CardPassaggio insideModal passaggio={props.passaggio} brano1={props.brano1} brano2={props.brano2} utente={props.utente} size={"small"} />
             }
 
             {/* Commenti o valutazioni */}
@@ -114,7 +117,7 @@ function ModalPassaggio(props: {passaggio: PassaggioDb, brano1: BranoDb | null, 
                                 value={commentoInput}
                                 onChange={e => setCommentoInput(e.target.value)}
                                 placeholder="Aggiungi un commento"
-                               className="flex-1 border border-[#ccc] rounded p-1 text-base"
+                                className="flex-1 border border-[#ccc] rounded p-1 text-base"
                             />
                             <button disabled={commentoInput.length === 0} onClick={inviaCommento} className="ml-2 px-4 py-2 bg-[#1976d2] text-white border-none rounded text-base cursor-pointer">Invia</button>
                         </div>

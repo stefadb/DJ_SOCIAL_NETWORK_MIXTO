@@ -4,6 +4,7 @@ import { UtenteDbSchema } from '../../types/db_types';
 import { useDispatch } from 'react-redux';
 import { setUtente } from '../../store/userSlice';
 import api from '../../api';
+import { scaleTwProps } from '../../functions/functions';
 
 function ModalSignIn(props: { isOpen: boolean; onRequestClose: () => void; }) {
     const dispatch = useDispatch();
@@ -24,7 +25,9 @@ function ModalSignIn(props: { isOpen: boolean; onRequestClose: () => void; }) {
         <Modal
             isOpen={props.isOpen}
             onRequestClose={props.onRequestClose}
-            className="max-w-[400px] w-full mx-auto"
+            style={{
+                content: scaleTwProps("max-w-[400px] w-full mx-auto", 1)
+            }}
         >
             <h2>Sign In</h2>
             <form onSubmit={onSubmit}>

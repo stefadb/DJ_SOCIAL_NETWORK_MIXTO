@@ -1,6 +1,7 @@
 import axios from 'axios';
 import Modal from 'react-modal';
 import api from '../../api';
+import { scaleTwProps } from '../../functions/functions';
 
 function ModalSignUp(props: { isOpen: boolean; onRequestClose: () => void; }) {
     async function onSubmit(event: React.FormEvent) {
@@ -28,7 +29,9 @@ function ModalSignUp(props: { isOpen: boolean; onRequestClose: () => void; }) {
         <Modal
             isOpen={props.isOpen}
             onRequestClose={props.onRequestClose}
-            className="max-w-[400px] w-full mx-auto"
+            style={{
+                content: scaleTwProps("max-w-[400px] w-full mx-auto",1)
+            }}
         >
             <h2>Sign Up</h2>
             <form onSubmit={onSubmit}>

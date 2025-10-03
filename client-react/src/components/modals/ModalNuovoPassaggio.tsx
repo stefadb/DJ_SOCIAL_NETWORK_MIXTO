@@ -5,6 +5,7 @@ import type { RootState } from '../../store/store';
 import api from '../../api';
 import { type UtenteDb } from '../../types/db_types';
 import { closeModal } from '../../store/modalNuovoPassaggioSlice';
+import { scaleTwProps } from '../../functions/functions';
 
 function ModalNuovoPassaggio() {
     const dispatch = useDispatch();
@@ -54,7 +55,9 @@ function ModalNuovoPassaggio() {
         <Modal
             isOpen={isOpen}
             onRequestClose={() => dispatch(closeModal())}
-            className="max-w-[500px] w-full mx-auto max-h-[80vh] overflow-auto"
+            style={{
+                content: scaleTwProps("max-w-[500px] w-full mx-auto max-h-[80vh] overflow-auto", 1)
+            }}
         >
             <h2>Pubblica Nuovo Passaggio</h2>
 
