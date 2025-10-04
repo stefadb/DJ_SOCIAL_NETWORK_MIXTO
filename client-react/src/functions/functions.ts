@@ -134,7 +134,8 @@ export function checkConnError(error: unknown): boolean {
 }
 
 export function deezerColor(){
-    return "#A238FF";
+    const color = import.meta.env.VITE_DEEZER_COLOR as string;
+    return color;
 }
 
 export function modalsOverlayClassName(){

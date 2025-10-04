@@ -120,7 +120,7 @@ function ModalPassaggio(props: { passaggio: PassaggioDb, brano1: BranoDb | null,
                         <div className="p-3">
                             {savingCommento && <div>Salvataggio in corso...</div>}
                             {!savingCommento &&
-                                <PagedList itemsPerPage={10} apiCall={`/commenti?passaggio=${props.passaggio.id}`} schema={CommentoEUtenteSchema} scrollMode="vertical" component={(element: CommentoEUtente) => {
+                                <PagedList itemsPerPage={5} apiCall={`/commenti?passaggio=${props.passaggio.id}`} schema={CommentoEUtenteSchema} scrollMode="vertical" component={(element: CommentoEUtente) => {
                                     return <CardCommento commento={element} livello={1} />;
                                 }} showMoreButton={(onClick) => <button className="w-full" onClick={onClick}>Carica altri commenti</button>}
                                     emptyMessage="😮 Non c'è ancora nessun commento qui" />

@@ -1,7 +1,7 @@
 import { useDispatch } from "react-redux";
 import type { BranoDb, PassaggioDb, UtenteDb } from "../../types/db_types";
 import CardBrano from "./CardBrano";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { setBrano1 as setBrano1ToNuovoPassaggio } from "../../store/giradischiSlice";
 import { setBrano2 as setBrano2ToNuovoPassaggio } from "../../store/giradischiSlice";
 import { openModal as openNuovoPassaggioModal } from "../../store/modalNuovoPassaggioSlice";
@@ -32,6 +32,31 @@ function CardPassaggio(props: CardPassaggioProps) {
   const [showModal, setShowModal] = useState<boolean>(false);
   const [braniScale, setBraniScale] = useState<number>(1);
 
+  const cardPassaggioRef = useRef<HTMLDivElement>(null);
+
+  // ResizeObserver per aggiornare braniScale
+  useEffect(() => {
+    const node = cardPassaggioRef.current;
+    if (!node) return;
+
+    const updateScale = () => {
+      const width = node.offsetWidth;
+      setBraniScale(Math.min(width / 412, 1));
+    };
+
+    updateScale(); // iniziale
+
+    const resizeObserver = new window.ResizeObserver(() => {
+      updateScale();
+    });
+
+    resizeObserver.observe(node);
+
+    return () => {
+      resizeObserver.disconnect();
+    };
+  }, []);
+
   async function loadValutazioneMedia() {
     try {
       setValutazioneMedia(null);
@@ -55,13 +80,17 @@ function CardPassaggio(props: CardPassaggioProps) {
   return (
     <div style={scaleTwProps("p-3", 1)}>
       <div style={scaleTwProps("p-3 rounded-lg shadow-md", 1)}>
-        <div id="card-passaggio" className="flex justify-center items-center">
+        <div
+          id="card-passaggio"
+          className="flex justify-center items-center"
+          ref={cardPassaggioRef}
+        >
           {props.brano1 &&
-            <CardBrano brano={props.brano1} scale={props.insideModal ? braniScale : 0.75} noButtons={!props.insideModal} />
+            <CardBrano brano={props.brano1} scale={props.insideModal ? braniScale : 0.75} noButtons={props.insideModal} />
           }
           <ArrowRight size={16 * braniScale} />
           {props.brano2 &&
-            <CardBrano brano={props.brano2} scale={props.insideModal ? braniScale : 0.75} noButtons={!props.insideModal} />
+            <CardBrano brano={props.brano2} scale={props.insideModal ? braniScale : 0.75} noButtons={props.insideModal} />
           }
         </div>
         {props.insideModal !== true &&
@@ -103,14 +132,14 @@ function CardPassaggio(props: CardPassaggioProps) {
             {props.utente &&
               <>
                 <img className="rounded-full" style={scaleTwProps("w-8 h-8 shadow-md", 1)} src={"src/assets/artista_empty.jpg"} alt={"Immagine di profilo di " + props.utente.nome + " " + props.utente.cognome} />
-                <b>&nbsp;&nbsp;{props.utente.nome} {props.utente.cognome}</b>
+                <b className="pl-2">{props.utente.nome} {props.utente.cognome}</b>
                 (@{props.utente.username})
               </>
             }
             {!props.utente &&
               <>
                 <img className="rounded-full" style={scaleTwProps("w-8 h-8 shadow-md", 1)} src={"src/assets/artista_empty.jpg"} alt={"Immagine di profilo vuota"} />
-                <b>&nbsp;&nbsp;Utente eliminato</b>
+                <b className="pl-2">Utente eliminato</b>
                 <span className="ml-2 text-gray-500 text-[13px]"></span>
               </>
             }

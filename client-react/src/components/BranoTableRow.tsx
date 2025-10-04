@@ -30,7 +30,7 @@ function BranoTableRow(props: { element: { numero_passaggi: number; id_brano_1: 
     return <div className="classifica-row">
     <div className="classifica-cell cursor-pointer" onClick={navigateToBrano}><div className="classifica-cell-inside">{props.element.numero_passaggi}</div></div>
     <div className="classifica-cell cursor-pointer" onClick={navigateToBrano}><div className="classifica-cell-inside">{"brano_1_array" in props.element ? props.element.brano_1_array[0].titolo : props.element.brano_2_array[0].titolo}</div></div>
-    <div className="classifica-cell cursor-pointer" onClick={navigateToBrano}><div className="classifica-cell-inside">{"brano_1_array" in props.element ? props.element.brano_1_array[0].durata : props.element.brano_2_array[0].durata}</div></div>
+    <div className="classifica-cell cursor-pointer" onClick={navigateToBrano}><div className="classifica-cell-inside">{"brano_1_array" in props.element ? props.element.brano_1_array[0].durata.substring(0,8) : props.element.brano_2_array[0].durata.substring(0,8)}</div></div>
         <div className="classifica-cell">
             {artistiBrano &&
                 <ListaArtistiOGeneri key={artistiBrano.map(artista => artista.id).join(",")} lines={2} list={artistiBrano} entity={"artista"} scale={1}/>

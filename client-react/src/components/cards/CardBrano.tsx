@@ -27,7 +27,6 @@ function CardBrano(props: { brano: BranoDb, noDeckButtons?: boolean, noButtons?:
 
     const scale = props.scale;
 
-    const stableMezzoDisco = useMemo(() => <MezzoDisco radius={50 * scale} />, []);
 
     useEffect(() => {
         loadArtisti();
@@ -67,7 +66,7 @@ function CardBrano(props: { brano: BranoDb, noDeckButtons?: boolean, noButtons?:
                             </Badge>
                             <img style={scaleTwProps("w-[100px] h-[100px] shadow-md",scale)} src={album && album.url_immagine ? album.url_immagine : "src/assets/album_empty.jpg"} alt={"Cover del brano " + props.brano.titolo} />
                         </div>
-                        {stableMezzoDisco}
+                        <MezzoDisco radius={50 * scale} />
                     </div>
                     <div style={scaleTwProps("pt-1 pb-2 cursor-pointer",scale)} onClick={() => navigate(`/brano?id=${props.brano.id}`)}>
                         <DynamicText text={props.brano.titolo} width={150 * scale} scale={scale} />
@@ -81,7 +80,7 @@ function CardBrano(props: { brano: BranoDb, noDeckButtons?: boolean, noButtons?:
                             </div>
                         </div>
                         <div style={scaleTwProps("pr-2 text-base",scale)}>
-                            {props.brano.durata}
+                            {props.brano.durata.substring(0,8)}
                         </div>
                     </div>
                     <div style={scaleTwProps("flex flex-row items-center pt-px pb-2", scale)}>

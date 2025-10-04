@@ -92,7 +92,7 @@ function Brano() {
                 </div>
                 <div className="overflow-y-auto max-h-[300px]">
                   <PagedList
-                    itemsPerPage={2}
+                    itemsPerPage={5}
                     apiCall={`/passaggi/conta?primoBrano=${brano.id}`}
                     schema={ContaPassaggiBrano2Schema}
                     scrollMode="vertical"
@@ -116,7 +116,7 @@ function Brano() {
                 </div>
                 <div className="overflow-y-auto max-h-[300px]">
                   <PagedList
-                    itemsPerPage={2}
+                    itemsPerPage={5}
                     apiCall={`/passaggi/conta?secondoBrano=${brano.id}`}
                     schema={ContaPassaggiBrano1Schema}
                     scrollMode="vertical"

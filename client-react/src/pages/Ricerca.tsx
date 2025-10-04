@@ -116,7 +116,7 @@ function Ricerca() {
                     ref={inputRef}
                     type="text"
                     value={viewedQueryText}
-                    className="w-full border-b border-black text-center outline-none box-border text-[16px] p-2"
+                    className="w-full border-b border-black border-t-0 border-l-0 border-r-0 text-center outline-none box-border text-[16px] p-2"
                     onChange={handleInputChange}
                     onClick={handleInputClick}
                     placeholder="Scrivi qui quello che stai cercando..."
@@ -146,7 +146,7 @@ function Ricerca() {
                     {generiLoaded && (
                         <>
                             <h3>Generi:</h3>
-                            <PagedList key={q} itemsPerPage={10} apiCall={`/generi/esistenti?query=${q}`} schema={GenereDbSchema} scrollMode="horizontal" component={(element: GenereDb) => (
+                            <PagedList key={q} itemsPerPage={5} apiCall={`/generi/esistenti?query=${q}`} schema={GenereDbSchema} scrollMode="horizontal" component={(element: GenereDb) => (
                                 <CardGenere key={element.id} genere={element} size={"small"} />
                             )} 
                             emptyMessage={`😮 Non ho trovato nessun genere che si chiama '${q}'`}
@@ -159,14 +159,14 @@ function Ricerca() {
                     <h3>Artisti:</h3>
                     <IncludiRisultatiDeezer inclusi={artistiDeezer} onClick={() => setArtistiDeezer(true)} />
                     {artistiDeezer &&
-                        <PagedList key={"artisti-search-" + q} itemsPerPage={10} apiCall={`/artisti/search?query=${q}`} schema={ArtistaDbSchema} scrollMode="horizontal" component={(element: ArtistaDb) => (
+                        <PagedList key={"artisti-search-" + q} itemsPerPage={5} apiCall={`/artisti/search?query=${q}`} schema={ArtistaDbSchema} scrollMode="horizontal" component={(element: ArtistaDb) => (
                             <CardArtista key={element.id} artista={element} size="small" />
                         )}
                         emptyMessage={`😮 Non ho trovato nessun artista che si chiama '${q}', ${!artistiDeezer?"prova a cercarlo anche da Deezer!": "neanche su Deezer!"}`}
                         />
                     }
                     {!artistiDeezer &&
-                        <PagedList key={"artisti-esistenti-" + q} itemsPerPage={10} apiCall={`/artisti/esistenti?query=${q}`} schema={ArtistaDbSchema} scrollMode="horizontal" component={(element: ArtistaDb) => (
+                        <PagedList key={"artisti-esistenti-" + q} itemsPerPage={5} apiCall={`/artisti/esistenti?query=${q}`} schema={ArtistaDbSchema} scrollMode="horizontal" component={(element: ArtistaDb) => (
                             <CardArtista key={element.id} artista={element} size="small" />
                         )} 
                         emptyMessage={`😮 Non ho trovato nessun artista che si chiama '${q}', ${!artistiDeezer?"prova a cercarlo anche da Deezer!": "neanche su Deezer!"}`}
@@ -175,14 +175,14 @@ function Ricerca() {
                     <h3>Album:</h3>
                     <IncludiRisultatiDeezer inclusi={albumDeezer} onClick={() => setAlbumDeezer(true)} />
                     {albumDeezer &&
-                        <PagedList key={"album-search-" + q} itemsPerPage={10} apiCall={`/album/search?query=${q}`} schema={AlbumDbSchema} scrollMode="horizontal" component={(element: AlbumDb) => (
+                        <PagedList key={"album-search-" + q} itemsPerPage={5} apiCall={`/album/search?query=${q}`} schema={AlbumDbSchema} scrollMode="horizontal" component={(element: AlbumDb) => (
                             <CardAlbum key={element.id} album={element} size="small" />
                         )} 
                         emptyMessage={`😮 Non ho trovato nessun album che si chiama '${q}', ${!albumDeezer?"prova a cercarlo anche da Deezer!": "neanche su Deezer!"}`}
                         />
                     }
                     {!albumDeezer &&
-                        <PagedList key={"album-esistenti-" + q} itemsPerPage={10} apiCall={`/album/esistenti?query=${q}`} schema={AlbumDbSchema} scrollMode="horizontal" component={(element: AlbumDb) => (
+                        <PagedList key={"album-esistenti-" + q} itemsPerPage={5} apiCall={`/album/esistenti?query=${q}`} schema={AlbumDbSchema} scrollMode="horizontal" component={(element: AlbumDb) => (
                             <CardAlbum key={element.id} album={element} size="small" />
                         )}
                         emptyMessage={`😮 Non ho trovato nessun album che si chiama '${q}', ${!albumDeezer?"prova a cercarlo anche da Deezer!": "neanche su Deezer!"}`}
@@ -191,21 +191,21 @@ function Ricerca() {
                     <h3>Brani:</h3>
                     <IncludiRisultatiDeezer inclusi={braniDeezer} onClick={() => setBraniDeezer(true)} />
                     {braniDeezer &&
-                        <PagedList key={"brani-search-" + q} itemsPerPage={10} apiCall={`/brani/search?query=${q}`} schema={BranoDbSchema} scrollMode="horizontal" component={(element: BranoDb) => (
+                        <PagedList key={"brani-search-" + q} itemsPerPage={5} apiCall={`/brani/search?query=${q}`} schema={BranoDbSchema} scrollMode="horizontal" component={(element: BranoDb) => (
                             <CardBrano key={element.id} brano={element} scale={1} />
                         )}
                         emptyMessage={`😮 Non ho trovato nessun brano che si chiama '${q}', ${!braniDeezer?"prova a cercarlo anche da Deezer!": "neanche su Deezer!"}`}
                         />
                     }
                     {!braniDeezer &&
-                        <PagedList key={"brani-esistenti-" + q} itemsPerPage={10} apiCall={`/brani/esistenti?query=${q}`} schema={BranoDbSchema} scrollMode="horizontal" component={(element: BranoDb) => (
+                        <PagedList key={"brani-esistenti-" + q} itemsPerPage={5} apiCall={`/brani/esistenti?query=${q}`} schema={BranoDbSchema} scrollMode="horizontal" component={(element: BranoDb) => (
                             <CardBrano key={element.id} brano={element} scale={1} />
                         )}
                         emptyMessage={`😮 Non ho trovato nessun brano che si chiama '${q}', ${!braniDeezer?"prova a cercarlo anche da Deezer!": "neanche su Deezer!"}`}
                         />
                     }
                     <h3>Utenti:</h3>
-                    <PagedList key={"utenti-esistenti-" + q} itemsPerPage={10} apiCall={`/utenti?query=${q}`} scrollMode="horizontal" schema={UtenteDbSchema} component={(element: UtenteDb) => (
+                    <PagedList key={"utenti-esistenti-" + q} itemsPerPage={5} apiCall={`/utenti?query=${q}`} scrollMode="horizontal" schema={UtenteDbSchema} component={(element: UtenteDb) => (
                         <CardUtente key={element.id} utente={element} size="small" />
                     )}
                     emptyMessage={`😮 Non ho trovato nessun utente che si chiama '${q}'.`}

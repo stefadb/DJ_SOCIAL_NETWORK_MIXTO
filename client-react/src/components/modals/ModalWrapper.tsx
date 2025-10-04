@@ -7,7 +7,7 @@ function ModalWrapper(props: { children: React.ReactNode; title: string; onReque
                 {props.title}
             </div>
             <div>
-                <button className="card-brano-button rounded" onClick={props.onRequestClose} ><X size={24} /></button>
+                <button className="border-none bg-transparent cursor-pointer" onClick={props.onRequestClose} ><X size={24} /></button>
             </div>
         </div>
         <div className="w-full h-[calc(100%-30px)]">
