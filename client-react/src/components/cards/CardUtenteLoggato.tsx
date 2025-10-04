@@ -7,7 +7,7 @@ import ModalAggiornaUtente from '../modals/ModalAggiornaUtente';
 import ModalSignUp from '../modals/ModalSignUp';
 import { setUtente } from '../../store/userSlice';
 import api from '../../api';
-import { checkConnError } from '../../functions/functions';
+import { scaleTwProps } from '../../functions/functions';
 import { setGenericAlert } from '../../store/errorSlice';
 
 function CardUtenteLoggato() {
@@ -27,7 +27,7 @@ function CardUtenteLoggato() {
                 dispatch(setUtente(utente));
             }
         } catch {
-            dispatch(setGenericAlert({message:"Impossibile connettersi al server. Controlla la tua connessione ad internet.", type: "error"}));
+            dispatch(setGenericAlert({ message: "Impossibile connettersi al server. Controlla la tua connessione ad internet.", type: "error" }));
         }
     }
     useEffect(() => {
@@ -37,19 +37,24 @@ function CardUtenteLoggato() {
     return (
         <>
             {loggedUtente &&
-                <div className="cursor-pointer" onClick={() => setIsModalAggiornaUtenteOpen(true)}>
-                    <b><i>{loggedUtente.nome} {loggedUtente.cognome}</i></b>
+                <div>
+                    <img className="rounded-full cursor-pointer" onClick={() => setIsModalAggiornaUtenteOpen(true)} style={scaleTwProps("w-12 h-12 shadow-md", 1)} src={"src/assets/artista_empty.jpg"} alt={"Immagine di profilo di " + loggedUtente.nome + " " + loggedUtente.cognome} />
                 </div>
             }
             {!loggedUtente &&
-                <>
-                    <button onClick={() => setIsModalSignInOpen(true)}>Entra</button>
-                    <button onClick={() => setIsModalSignUpOpen(true)}>Registrati</button>
-                </>
+                <div>
+                    <button onClick={() => setIsModalSignInOpen(true)} className="card-button rounded-lg p-4 text-[16px]">Accedi</button>
+                </div>
             }
-            <ModalSignIn isOpen={isModalSignInOpen} onRequestClose={() => setIsModalSignInOpen(false)} />
-            <ModalAggiornaUtente isOpen={isModalAggiornaUtenteOpen} onRequestClose={() => setIsModalAggiornaUtenteOpen(false)} />
-            <ModalSignUp isOpen={isModalSignUpOpen} onRequestClose={() => setIsModalSignUpOpen(false)} />
+            {isModalSignInOpen &&
+                <ModalSignIn isOpen={true} onRequestClose={() => setIsModalSignInOpen(false)} openSignUp={() => setIsModalSignUpOpen(true)} />
+            }
+            {isModalAggiornaUtenteOpen &&
+                <ModalAggiornaUtente isOpen={true} onRequestClose={() => setIsModalAggiornaUtenteOpen(false)} />
+            }
+            {isModalSignUpOpen &&
+                <ModalSignUp isOpen={true} onRequestClose={() => setIsModalSignUpOpen(false)} />
+            }
         </>
     );
 }

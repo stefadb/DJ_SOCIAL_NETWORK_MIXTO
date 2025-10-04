@@ -42,7 +42,7 @@ function PosizionaBrano(props: { deck: 1 | 2, brano: BranoDb, scale: number}) {
         }
     }
     return <div className="inline-block" style={scaleTwProps("p-1", props.scale)}>
-    <button id={randomId} className="card-brano-button" style={scaleTwProps("p-1 rounded",props.scale)} onClick={() => posizionaOChiedi()}>
+    <button id={randomId} className="card-button" style={scaleTwProps("p-1 rounded",props.scale)} onClick={() => posizionaOChiedi()}>
             <div className="flex flex-col">
                 <div className="flex flex-row">
                     <div style={scaleTwProps("w-4 h-4",props.scale)}>

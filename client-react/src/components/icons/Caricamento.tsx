@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { deezerColor, scaleTwProps } from "../../functions/functions";
+import { deezerColor, mPoints, scaleTwProps } from "../../functions/functions";
 import type { Scratch } from "../../types/types";
 
 function Caricamento(props: { size: "tiny" | "small" | "large" | "giant", status: "loading" | "error" | "not-found" }) {
@@ -51,23 +51,6 @@ function Caricamento(props: { size: "tiny" | "small" | "large" | "giant", status
         91, 12,
         88, 12,
         88, 3
-    ];
-
-    const sqrt2 = Math.sqrt(2);
-
-    const mPoints: number[] = [
-        0.2, 0.2,
-        0.3, 0.2,
-        0.5, 0.4,
-        0.7, 0.2,
-        0.8, 0.2,
-        0.8, 0.8,
-        0.7, 0.8,
-        0.7, 0.2 + sqrt2 * 0.1,
-        0.5, 0.4 + sqrt2 * 0.1,
-        0.3, 0.2 + sqrt2 * 0.1,
-        0.3, 0.8,
-        0.2, 0.8
     ];
 
     const minimumGreyScale = 32;
@@ -159,7 +142,7 @@ function Caricamento(props: { size: "tiny" | "small" | "large" | "giant", status
                                 <circle cx={radius} cy={radius} r={innerCircleRadius} fill="white">
                                 </circle>
                                 <g className={props.status == "loading" ? "discRotation" : undefined} style={{ transformOrigin: `${0.6 * (innerCircleRadius)}px ${0.6 * (innerCircleRadius)}px` }}>
-                                    <polygon points={mPoints.map(point => (radius - innerCircleRadius) + (point * (2 * innerCircleRadius))).join(" ")} fill="black" />
+                                    <polygon points={mPoints().map(point => (radius - innerCircleRadius) + (point * (2 * innerCircleRadius))).join(" ")} fill="black" />
                                 </g>
                             </>
                         }

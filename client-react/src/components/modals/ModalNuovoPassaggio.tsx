@@ -8,6 +8,7 @@ import { closeModal } from '../../store/modalNuovoPassaggioSlice';
 import { checkConnError, modalsContentClassName, modalsOverlayClassName, scaleTwProps } from '../../functions/functions';
 import { setGenericAlert } from '../../store/errorSlice';
 import ModalWrapper from './ModalWrapper';
+import { setBrano1, setBrano2 } from '../../store/giradischiSlice';
 
 function ModalNuovoPassaggio() {
     Modal.setAppElement('#root');
@@ -46,6 +47,8 @@ function ModalNuovoPassaggio() {
                     id_brano_2: brano2.id
                 }
             });
+            dispatch(setBrano2(null));
+            dispatch(setBrano1(null));
             dispatch(setGenericAlert({ message: "Passaggio pubblicato con successo. Lo trovi nella pagina dedicata al tuo utente!", type: "info" }));
             setPubblicaDisabled(false);
             // Resetta i campi del form
@@ -53,7 +56,6 @@ function ModalNuovoPassaggio() {
             setInizioSecondoBrano('00:00:00');
             setCueSecondoBrano('00:00:00');
             dispatch(closeModal());
-            dispatch(setGenericAlert({ message: "Passaggio pubblicato con successo. Lo trovi nella pagina dedicata al tuo utente!", type: "info" }));
         } catch (error) {
             setPubblicaDisabled(false);
             if (checkConnError(error)) {

@@ -12,7 +12,7 @@ function VediAlbum(props: { idAlbum: number, scale: number}) {
   return <div className="inline-block" style={scaleTwProps("p-1",props.scale)}>
     <button 
       id={randomId} 
-  className="card-brano-button" style={scaleTwProps("py-2 px-1 rounded", props.scale)} 
+  className="card-button" style={scaleTwProps("py-2 px-1 rounded", props.scale)} 
        
       onClick={() => {navigate(`/album?id=${props.idAlbum}`);}}
     >

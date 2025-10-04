@@ -3,12 +3,12 @@ import { UtenteDbSchema } from '../../types/db_types';
 import { useDispatch } from 'react-redux';
 import { setUtente } from '../../store/userSlice';
 import api from '../../api';
-import { checkConnError, modalsContentClassName, modalsOverlayClassName, scaleTwProps } from '../../functions/functions';
+import { checkConnError, inputTextClassName, modalsContentClassName, modalsOverlayClassName, scaleTwProps } from '../../functions/functions';
 import { cleargenericMessage, setGenericAlert } from '../../store/errorSlice';
 import ModalWrapper from './ModalWrapper';
 import { useState } from 'react';
 
-function ModalSignIn(props: { isOpen: boolean; onRequestClose: () => void; }) {
+function ModalSignIn(props: { isOpen: boolean; onRequestClose: () => void; openSignUp: () => void; }) {
     Modal.setAppElement('#root');
     const dispatch = useDispatch();
     const [loginDisabled, setLoginDisabled] = useState<boolean>(false);
@@ -41,12 +41,21 @@ function ModalSignIn(props: { isOpen: boolean; onRequestClose: () => void; }) {
             overlayClassName={modalsOverlayClassName()}
             className={modalsContentClassName()}
         >
-            <ModalWrapper title="Sign In" onRequestClose={props.onRequestClose}>
+            <ModalWrapper title="Accedi" onRequestClose={props.onRequestClose}>
                 <form onSubmit={onSubmit}>
-                    <input type="username" placeholder="Username" required />
-                    <input type="password" placeholder="Password" required />
-                    <button disabled={loginDisabled} type="submit">Sign In</button>
+                    <div className="py-2">
+                        <input type="username" className={inputTextClassName()} placeholder="Username" required />
+                    </div>
+                    <div className="py-2">
+                        <input type="password" className={inputTextClassName()} placeholder="Password" required />
+                    </div>
+                    <div className="py-2">
+                        <button className="card-button rounded p-2 w-full" disabled={loginDisabled} type="submit">Accedi</button>
+                    </div>
                 </form>
+                <div className="pt-2">
+                    <span className="text-blue-500 text-center cursor-pointer w-full inline-block" onClick={() => { props.onRequestClose(); props.openSignUp(); }}>Non hai un account? Registrati</span>
+                </div>
             </ModalWrapper>
         </Modal>);
 }

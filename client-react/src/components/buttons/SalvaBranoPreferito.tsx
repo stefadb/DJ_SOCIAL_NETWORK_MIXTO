@@ -30,7 +30,7 @@ function SalvaBranoPreferito(props: { idBrano: number, scale: number }) {
     <button
       disabled={buttonDisabled}
       id={randomId}
-      className="card-brano-button" style={scaleTwProps("py-2 px-1 rounded", props.scale)}
+      className="card-button" style={scaleTwProps("py-2 px-1 rounded", props.scale)}
 
       onClick={async () => {
         if (loggedUtente === null) {

@@ -357,7 +357,13 @@ export const getMultipleApisConfig = {
                     joinedTableColumnToCheckValueIn: "id",
                     operator: "IN" as "LIKE" | "=" | "IN" | "IS",
                     value: `(SELECT id FROM utente WHERE username LIKE '%${req.query.query as string}%' OR nome LIKE '%${req.query.query as string}%' OR cognome LIKE '%${req.query.query as string}%')`
-                }] : [])
+                }] : []),
+                ...(req.query.username ? [{
+                    joinedTableName: undefined,
+                    joinedTableColumnToCheckValueIn: "username",
+                    operator: "=" as "LIKE" | "=" | "IN" | "IS",
+                    value: `'${req.query.username as string}'`
+                }] : []),
             ]
         }
     },

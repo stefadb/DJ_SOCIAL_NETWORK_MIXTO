@@ -5,16 +5,19 @@ import { setUtente } from '../../store/userSlice';
 import { useSelector } from 'react-redux';
 import type { RootState } from '../../store/store';
 import api from '../../api';
-import { checkConnError, modalsContentClassName, modalsOverlayClassName, scaleTwProps } from '../../functions/functions';
+import { checkConnError, inputTextClassName, modalsContentClassName, modalsOverlayClassName, scaleTwProps } from '../../functions/functions';
 import { cleargenericMessage, setGenericAlert } from '../../store/errorSlice';
 import ModalWrapper from './ModalWrapper';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
+import { AlertCircle, Search, User, UserCheck, UserX } from 'react-feather';
+import z from 'zod';
 
 function ModalAggiornaUtente(props: { isOpen: boolean; onRequestClose: () => void; }) {
     Modal.setAppElement('#root');
     const dispatch = useDispatch();
     const [logoutDisabled, setLogoutDisabled] = useState<boolean>(false);
     const [aggiornaDisabled, setAggiornaDisabled] = useState<boolean>(false);
+    const [usernameAvailable, setUsernameAvailable] = useState<"not-checking" | "checking" | "available" | "unavailable" | "error">("not-checking");
     const loggedUtente: UtenteDb | null = useSelector((state: RootState) => (state.user as any).utente as UtenteDb | null);
     async function onSubmit(event: React.FormEvent) {
         event.preventDefault();
@@ -87,6 +90,36 @@ function ModalAggiornaUtente(props: { isOpen: boolean; onRequestClose: () => voi
         }
     }
 
+    const debounceTimeout = useRef<number | undefined>(undefined);
+    function handleUsernameInput(e: React.ChangeEvent<HTMLInputElement>) {
+        setUsernameAvailable("not-checking");
+        const newValue = e.target.value;
+        clearTimeout(debounceTimeout.current);
+        debounceTimeout.current = setTimeout(() => { checkUsernameAvailable(newValue) }, 500);
+    }
+
+    async function checkUsernameAvailable(username: string) {
+        if (username == "") {
+            setUsernameAvailable("not-checking");
+            return;
+        }
+        try {
+            setUsernameAvailable("checking");
+            const response = await api.get(`/utenti?username=${encodeURIComponent(username)}`);
+            const users = z.array(UtenteDbSchema).parse(response.data);
+            if (users.length == 0 || (loggedUtente && users.length == 1 && users[0].id == loggedUtente.id)) {
+                setUsernameAvailable("available");
+            } else {
+                setUsernameAvailable("unavailable");
+            }
+        } catch (error) {
+            if (checkConnError(error)) {
+                dispatch(setGenericAlert({ message: "Impossibile connettersi al server. Controlla la tua connessione ad internet.", type: "error" }));
+            }
+            setUsernameAvailable("error");
+        }
+    }
+
     return (
         <Modal
             isOpen={props.isOpen}
@@ -94,17 +127,40 @@ function ModalAggiornaUtente(props: { isOpen: boolean; onRequestClose: () => voi
             overlayClassName={modalsOverlayClassName()}
             className={modalsContentClassName()}
         >
-            <ModalWrapper title="Aggiorna Utente" onRequestClose={props.onRequestClose}>
-                <button onClick={() => { logout(); }} disabled={logoutDisabled}>Logout</button>
+            <ModalWrapper title="" onRequestClose={props.onRequestClose}>
+                <div className="py-2">
+                    <button className="card-button rounded p-2 w-full" onClick={() => { logout(); }} disabled={logoutDisabled}>Logout</button>
+                </div>
                 <h2>Le mie informazioni</h2>
                 <form onSubmit={onSubmit}>
-                    <input type="text" defaultValue={loggedUtente ? loggedUtente.username : ''} placeholder="Username" required />
-                    <input type="text" defaultValue={loggedUtente ? loggedUtente.nome : ''} placeholder="Nome" required />
-                    <input type="text" defaultValue={loggedUtente ? loggedUtente.cognome : ''} placeholder="Cognome" required />
-                    <input type="password" placeholder="Nuova Password" />
-                    <input type="password" placeholder="Conferma Nuova Password" />
-                    <input type="password" placeholder="Password Attuale" />
-                    <button disabled={aggiornaDisabled} type="submit">Aggiorna</button>
+                    <div className="py-2">
+                        <input type="text" className={inputTextClassName()} defaultValue={loggedUtente ? loggedUtente.username : ''} placeholder="Username" onInput={handleUsernameInput} required />
+                    </div>
+                    <div className="py-2 max-w-[210px]">
+                        {usernameAvailable === "unavailable" && <span className="text-red-500"><UserX size={16} /> Username già occupato</span>}
+                        {usernameAvailable === "available" && <span className="text-green-500"><UserCheck size={16} /> Username libero. Puoi usarlo!</span>}
+                        {usernameAvailable === "not-checking" && <span className="text-gray-500"><User size={16} /> Digita uno username e controlleremo se è libero o già occupato!</span>}
+                        {usernameAvailable === "checking" && <span className="text-gray-500"><Search size={16} /> Stiamo controllando se questo username è libero...</span>}
+                        {usernameAvailable === "error" && <span className="text-red-500"><AlertCircle size={16} /> Errore durante il controllo disponibilità!</span>}
+                    </div>
+                    <div className="py-2">
+                        <input type="text" className={inputTextClassName()} defaultValue={loggedUtente ? loggedUtente.nome : ''} placeholder="Nome" required />
+                    </div>
+                    <div className="py-2">
+                        <input type="text" className={inputTextClassName()} defaultValue={loggedUtente ? loggedUtente.cognome : ''} placeholder="Cognome" required />
+                    </div>
+                    <div className="py-2">
+                        <input type="password" className={inputTextClassName()} placeholder="Nuova Password" />
+                    </div>
+                    <div className="py-2">
+                        <input type="password" className={inputTextClassName()} placeholder="Conferma Nuova Password" />
+                    </div>
+                    <div className="py-2">
+                        <input type="password" className={inputTextClassName()} placeholder="Password Attuale" />
+                    </div>
+                    <div className="py-2">
+                        <button className="card-button rounded p-2 w-full" disabled={aggiornaDisabled || usernameAvailable !== "available"} type="submit">Aggiorna</button>
+                    </div>
                 </form>
             </ModalWrapper>
         </Modal>

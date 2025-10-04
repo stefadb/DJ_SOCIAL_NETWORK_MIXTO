@@ -41,6 +41,7 @@ function CardPassaggio(props: CardPassaggioProps) {
 
     const updateScale = () => {
       const width = node.offsetWidth;
+      /* 412 = 150 + 12*4 + 150 + 12*4 + 16 (150 = larghezza card brano, 12*4 = padding totali delle card brano, 16 = dimensione icona freccia in mezzo)*/
       setBraniScale(Math.min(width / 412, 1));
     };
 
@@ -95,8 +96,8 @@ function CardPassaggio(props: CardPassaggioProps) {
         </div>
         {props.insideModal !== true &&
           <div className="flex flex-row justify-between flex-wrap">
-            <button className={"card-brano-button"} style={scaleTwProps("p-1 rounded", 1)} onClick={() => { setShowModal(true); }}>Commenti e voti <ExternalLink size={14} /></button>
-            <button className={"card-brano-button"} style={scaleTwProps("p-1 rounded", 1)} onClick={() => {
+            <button className={"card-button"} style={scaleTwProps("p-1 rounded", 1)} onClick={() => { setShowModal(true); }}>Commenti e voti <ExternalLink size={14} /></button>
+            <button className={"card-button"} style={scaleTwProps("p-1 rounded", 1)} onClick={() => {
               dispatch(setBrano1ToNuovoPassaggio(props.brano1));
               dispatch(setBrano2ToNuovoPassaggio(props.brano2));
               dispatch(closeModal())

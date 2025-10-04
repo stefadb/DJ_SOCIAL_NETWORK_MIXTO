@@ -146,4 +146,26 @@ export function modalsContentClassName(){
     return "relative max-w-[calc(100vw-80px)] max-h-[calc(100vh-80px)] bg-white p-6 rounded box-border overflow-y-auto";
 }
 
+export function inputTextClassName(){
+    return "w-full border-b border-black border-t-0 border-l-0 border-r-0 text-center outline-none box-border text-[16px] p-2";
+}
+
+//Restituisce i punti che rappresentano il poligono della M dell logo di Mixto
+export function mPoints(): number[]{
+    return [
+        0.2, 0.2,
+        0.3, 0.2,
+        0.5, 0.4,
+        0.7, 0.2,
+        0.8, 0.2,
+        0.8, 0.8,
+        0.7, 0.8,
+        0.7, 0.2 + Math.sqrt(2) * 0.1,
+        0.5, 0.4 + Math.sqrt(2) * 0.1,
+        0.3, 0.2 + Math.sqrt(2) * 0.1,
+        0.3, 0.8,
+        0.2, 0.8
+    ];
+}
+
 
