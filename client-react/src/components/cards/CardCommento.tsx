@@ -9,7 +9,8 @@ import ReactTimeAgo from "react-time-ago";
 import TimeAgo from 'javascript-time-ago';
 import it from 'javascript-time-ago/locale/it';
 import { checkConnError } from "../../functions/functions";
-import { setGenericAlert } from "../../store/errorSlice";
+import { cleargenericMessage, setGenericAlert } from "../../store/errorSlice";
+import { set } from "zod";
 
 TimeAgo.addLocale(it);
 
@@ -19,6 +20,8 @@ function CardCommento(props: { commento: CommentoEUtente, livello: number }) {
     const loggedUtente: UtenteDb | null = useSelector((state: RootState) => (state.user as any).utente as UtenteDb | null);
     const [showAnswerBox, setShowAnswerBox] = useState(false);
     const [editing, setEditing] = useState(false);
+    const [salvaCommentoDisabled, setSalvaCommentoDisabled] = useState<boolean>(false); // Stato per disabilitare il pulsante di salvataggio del commento
+    const [inviaRispostaDisabled, setInviaRispostaDisabled] = useState<boolean>(false); // Stato per disabilitare il pulsante di invio risposta
     const [answer, setAnswer] = useState(""); // Stato per il contenuto della risposta
     const [nuovoTesto, setNuovoTesto] = useState(commento.testo); // Stato per il testo modificato del commento
     const [sendingAnswer, setSendingAnswer] = useState(false); // Stato per indicare se la risposta è in fase di invio
@@ -27,6 +30,8 @@ function CardCommento(props: { commento: CommentoEUtente, livello: number }) {
         if (loggedUtente) {
             try {
                 setSendingAnswer(true);
+                setInviaRispostaDisabled(true);
+                dispatch(setGenericAlert({ message: "Invio della risposta in corso...", type: "info" }));
                 await api.post("/commenti", {
                     newRowValues: {
                         testo: answer,
@@ -36,16 +41,19 @@ function CardCommento(props: { commento: CommentoEUtente, livello: number }) {
                         id_commento_padre: commento.id
                     }
                 });
+                dispatch(cleargenericMessage());
+                setInviaRispostaDisabled(false);
                 setShowAnswerBox(false);
                 setAnswer("");
                 setSendingAnswer(false);
             } catch (error) {
+                setInviaRispostaDisabled(false);
+                setSendingAnswer(false);
                 if (checkConnError(error)) {
                     dispatch(setGenericAlert({message:"Impossibile connettersi al server. Controlla la tua connessione ad internet.", type: "error"}));
                 } else {
                     dispatch(setGenericAlert({message:"Impossibile salvare il commento. Si è verificato un errore.", type: "error"}));
                 }
-                setSendingAnswer(false);
             }
         }
     }
@@ -55,6 +63,8 @@ function CardCommento(props: { commento: CommentoEUtente, livello: number }) {
         if (loggedUtente) {
             try {
                 const newData = new Date().toISOString().slice(0, 19).replace('T', ' ');
+                setSalvaCommentoDisabled(true);
+                dispatch(setGenericAlert({ message: "Salvataggio del commento in corso...", type: "info" }));
                 await api.put(`/commenti/${commento.id}`, {
                     newRowValues: {
                         testo: nuovoTesto,
@@ -64,9 +74,12 @@ function CardCommento(props: { commento: CommentoEUtente, livello: number }) {
                         id_commento_padre: commento.id_commento_padre
                     }
                 });
+                dispatch(cleargenericMessage());
+                setSalvaCommentoDisabled(false);
                 setCommento({ ...commento, testo: nuovoTesto, data_pubblicazione: newData });
                 setEditing(false);
             } catch (error) {
+                setSalvaCommentoDisabled(false);
                 if (checkConnError(error)) {
                     dispatch(setGenericAlert({message:"Impossibile connettersi al server. Controlla la tua connessione ad internet.", type: "error"}));
                 } else {
@@ -110,7 +123,7 @@ function CardCommento(props: { commento: CommentoEUtente, livello: number }) {
                             <>
                                 <textarea className="w-full h-[100px]" value={nuovoTesto} onChange={(e) => { setNuovoTesto(e.target.value); }} />
                                 <br />
-                                <button onClick={() => { salvaCommento(); }}>Salva</button>
+                                <button disabled={salvaCommentoDisabled} onClick={() => { salvaCommento(); }}>Salva</button>
                                 <button onClick={() => { setEditing(false); setNuovoTesto(commento.testo); }}>Annulla</button>
                             </>
                         }
@@ -127,7 +140,7 @@ function CardCommento(props: { commento: CommentoEUtente, livello: number }) {
                         <div className="box-border p-2" style={{ width: minWidth + ((1.0 / (props.livello + 1)) * (100 - minWidth)) + "%" }}>
                             <textarea className="w-full h-[100px]" placeholder="Scrivi una risposta..." value={answer} onChange={(e) => setAnswer(e.target.value)} />
                             <br />
-                            <button onClick={() => { sendAnswer(); }} className="mt-4">Invia</button>
+                            <button disabled={inviaRispostaDisabled} onClick={() => { sendAnswer(); }} className="mt-4">Invia</button>
                             <button onClick={() => { setShowAnswerBox(false); setAnswer(""); }} className="mt-4">Annulla</button>
                         </div>
                     </div>

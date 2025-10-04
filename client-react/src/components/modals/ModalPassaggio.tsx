@@ -10,7 +10,7 @@ import PagedList from "../PagedList";
 import CardValutazione from "../cards/CardValutazione";
 import CardPassaggio from "../cards/CardPassaggio";
 import { checkConnError, modalsContentClassName, modalsOverlayClassName, scaleTwProps } from "../../functions/functions";
-import { setGenericAlert } from "../../store/errorSlice";
+import { cleargenericMessage, setGenericAlert } from "../../store/errorSlice";
 import ModalWrapper from "./ModalWrapper";
 
 function ModalPassaggio(props: { passaggio: PassaggioDb, brano1: BranoDb | null, brano2: BranoDb | null, utente: UtenteDb | null, onClose: () => void }) {
@@ -21,11 +21,16 @@ function ModalPassaggio(props: { passaggio: PassaggioDb, brano1: BranoDb | null,
     const [showValutazioni, setShowValutazioni] = useState<boolean>(false);
     const [savingCommento, setSavingCommento] = useState<boolean>(false);
     const [savingValutazione, setSavingValutazione] = useState<boolean>(false);
+    const [salvaCommentoDisabled, setSalvaCommentoDisabled] = useState<boolean>(false);
+    const [salvaValutazioneDisabled, setSalvaValutazioneDisabled] = useState<boolean>(false);
+    const [eliminaDisabled, setEliminaDisabled] = useState<boolean>(false);
     const dispatch = useDispatch();
     async function inviaCommento() {
         if (commentoInput.length > 0 && loggedUtente) {
             try {
                 setSavingCommento(true);
+                setSalvaCommentoDisabled(true);
+                dispatch(setGenericAlert({ message: "Salvataggio del commento in corso...", type: "info" }));
                 await api.post("/commenti", {
                     newRowValues: {
                         testo: commentoInput,
@@ -35,15 +40,18 @@ function ModalPassaggio(props: { passaggio: PassaggioDb, brano1: BranoDb | null,
                         id_commento_padre: null
                     }
                 });
+                dispatch(cleargenericMessage());
                 setCommentoInput("");
                 setSavingCommento(false);
+                setSalvaCommentoDisabled(false);
             } catch (error) {
+                setSavingCommento(false);
+                setSalvaCommentoDisabled(false);
                 if (checkConnError(error)) {
                     dispatch(setGenericAlert({ message: "Impossibile connettersi al server. Controlla la tua connessione ad internet.", type: "error" }));
                 } else {
                     dispatch(setGenericAlert({ message: "Impossibile salvare il commento. Si è verificato un errore.", type: "error" }));
                 }
-                setSavingCommento(false);
             }
         }
         if (!loggedUtente) {
@@ -55,6 +63,8 @@ function ModalPassaggio(props: { passaggio: PassaggioDb, brano1: BranoDb | null,
         if (votoInput.length > 0 && loggedUtente && !isNaN(parseInt(votoInput)) && parseInt(votoInput) >= 1 && parseInt(votoInput) <= 5) {
             try {
                 setSavingValutazione(true);
+                setSalvaValutazioneDisabled(true);
+                dispatch(setGenericAlert({ message: "Salvataggio della valutazione in corso...", type: "info" }));
                 await api.post("/valutazioni", {
                     newRowValues: {
                         voto: parseInt(votoInput),
@@ -62,6 +72,8 @@ function ModalPassaggio(props: { passaggio: PassaggioDb, brano1: BranoDb | null,
                         id_passaggio: props.passaggio.id
                     }
                 });
+                dispatch(cleargenericMessage());
+                setSalvaValutazioneDisabled(false);
                 setVotoInput("");
                 setSavingValutazione(false);
             } catch (error) {
@@ -83,9 +95,14 @@ function ModalPassaggio(props: { passaggio: PassaggioDb, brano1: BranoDb | null,
             //Chiedi conferma prima di eliminare
             if (!confirm("Sei sicuro di voler eliminare questo passaggio dalla community?")) return;
             try {
+                setEliminaDisabled(true);
+                dispatch(setGenericAlert({ message: "Eliminazione del passaggio in corso...", type: "info" }));
                 await api.delete(`/passaggi/${props.passaggio.id}`);
+                dispatch(cleargenericMessage());
+                setEliminaDisabled(false);
                 props.onClose();
             } catch (error) {
+                setEliminaDisabled(false);
                 if (checkConnError(error)) {
                     dispatch(setGenericAlert({ message: "Impossibile connettersi al server. Controlla la tua connessione ad internet.", type: "error" }));
                 } else {
@@ -133,7 +150,7 @@ function ModalPassaggio(props: { passaggio: PassaggioDb, brano1: BranoDb | null,
                                     placeholder="Aggiungi un commento"
                                     className="flex-1 border border-[#ccc] rounded p-1 text-base"
                                 />
-                                <button disabled={commentoInput.length === 0} onClick={inviaCommento} className="ml-2 px-4 py-2 bg-[#1976d2] text-white border-none rounded text-base cursor-pointer">Invia</button>
+                                <button disabled={commentoInput.length === 0 || salvaCommentoDisabled} onClick={inviaCommento} className="ml-2 px-4 py-2 bg-[#1976d2] text-white border-none rounded text-base cursor-pointer">Invia</button>
                             </div>
                         </div>
                     }
@@ -148,13 +165,13 @@ function ModalPassaggio(props: { passaggio: PassaggioDb, brano1: BranoDb | null,
                             }
                             <div className="flex items-center mt-3">
                                 <input type="number" min={1} max={5} value={votoInput} onChange={e => setVotoInput(e.target.value)} />
-                                <button className="ml-2 px-[16px] py-2 bg-[#1976d2] text-white border-none rounded text-base cursor-pointer" disabled={votoInput.length === 0} onClick={inviaValutazione}>Vota</button>
+                                <button className="ml-2 px-[16px] py-2 bg-[#1976d2] text-white border-none rounded text-base cursor-pointer" disabled={votoInput.length === 0 || salvaValutazioneDisabled} onClick={inviaValutazione}>Vota</button>
                             </div>
                         </div>
                     }
                 </div>
                 {loggedUtente && props.passaggio.id_utente === loggedUtente.id &&
-                    <button onClick={eliminaPassaggio} className="m-4 px-3 py-2 bg-red-500 text-white border-none rounded cursor-pointer">Elimina il passaggio dalla community</button>
+                    <button disabled={eliminaDisabled} onClick={eliminaPassaggio} className="m-4 px-3 py-2 bg-red-500 text-white border-none rounded cursor-pointer">Elimina il passaggio dalla community</button>
                 }
                 <div className="h-4" />
             </ModalWrapper>

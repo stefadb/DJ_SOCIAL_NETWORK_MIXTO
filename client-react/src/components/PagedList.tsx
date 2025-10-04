@@ -84,16 +84,30 @@ function PagedList<T>(props: { itemsPerPage: number; apiCall: string; schema?: Z
 
     const handleScroll = () => {
         if (!props.noPaging && endNotReached && props.showMoreButton === undefined) { // Se non c'è il bottone "Carica altri", carica automaticamente quando si arriva alla fine
-            const div = containerRef.current;
-            if (!div) return;
-            // Controlla se siamo alla fine
-            if (div.scrollLeft + div.clientWidth >= div.scrollWidth - 1) {
-                nextPage();
-            }
+            nextPageIfNecessary();
         }
     };
 
-    return <div ref={containerRef} onScroll={handleScroll} className={"flex justify-start overscroll-x-contain" + (props.scrollMode === "vertical" ? " flex-col overflow-y-auto" : " flex-row overflow-x-auto") }>
+    function nextPageIfNecessary() {
+        const div = containerRef.current;
+        if (!div || div.clientWidth === 0 || div.scrollWidth === 0) {
+            setTimeout(nextPageIfNecessary, 10);
+        } else {
+            // Controlla se siamo alla fine
+            //Se la larghezza del contenuto è minore della larghezza del contenitore, allora devi caricare un'altra pagina per riempire lo spazio
+            if(div.clientWidth > div.scrollWidth){
+                nextPage();
+            }else if (div.scrollLeft !== 0 && div.scrollLeft + div.clientWidth == div.scrollWidth) {
+                //Problema: questa funzione viene chiamata troppo!!!
+                //console.log("Next page perchè");
+                //console.log(div.scrollLeft + " + " + div.clientWidth + " >= " + div.scrollWidth);
+                nextPage();
+            }
+        }
+
+    }
+
+    return <div ref={containerRef} onScroll={handleScroll} className={"flex justify-start overscroll-x-contain" + (props.scrollMode === "vertical" ? " flex-col overflow-y-auto" : " flex-row overflow-x-auto")}>
         {elements.map((element, index) => <Fragment key={index}>{props.component(element, index)}</Fragment>)}
         {empty && <>{props.emptyMessage}</>}
         {!props.noPaging && endNotReached && <Fragment>
@@ -101,10 +115,10 @@ function PagedList<T>(props: { itemsPerPage: number; apiCall: string; schema?: Z
                 props.showMoreButton(() => nextPage())
             }
             <div className={"justify-center items-center " + (props.scrollMode === "vertical" ? "w-full" : "h-full") + (!loading ? " hidden" : "")}>
-                <Caricamento size={"small"} status={"loading"}/>
+                <Caricamento size={"small"} status={"loading"} />
             </div>
             <div className={"justify-center items-center " + (props.scrollMode === "vertical" ? "w-full" : "h-full") + (!error ? " hidden" : "")}>
-                <Caricamento size={"small"} status={"error"}/>
+                <Caricamento size={"small"} status={"error"} />
             </div>
         </Fragment>
         }

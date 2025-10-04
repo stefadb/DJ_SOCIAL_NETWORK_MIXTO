@@ -22,10 +22,10 @@ function App() {
   const genericMessage: { message: string, type: 'error' | 'warning' | 'info' } | null = useSelector((state: RootState) => state.error.genericMessage as any);
   const genericMessageToast = useRef<Id>(null);
   const dispatch = useDispatch();
-  const toastClassName= "shadow-md font-['Roboto_Condensed']";
+  const toastClassName = "shadow-md font-['Roboto_Condensed']";
 
-  function getToastIcon(messageType: 'error' | 'warning' | 'info') : ToastIcon{
-    switch(messageType){
+  function getToastIcon(messageType: 'error' | 'warning' | 'info'): ToastIcon {
+    switch (messageType) {
       case 'error':
         return <AlertCircle size={24} className="text-red-600" />;
       case 'warning':
@@ -44,7 +44,7 @@ function App() {
           type: genericMessage.type,
           autoClose: 5000,
           className: toastClassName,
-          onClose: () => {dispatch(cleargenericMessage());genericMessageToast.current = null;},
+          onClose: () => { dispatch(cleargenericMessage()); genericMessageToast.current = null; },
           icon: getToastIcon(genericMessage.type)
         });
       } else {
@@ -53,10 +53,16 @@ function App() {
           type: genericMessage.type,
           autoClose: 5000,
           className: toastClassName,
-          onClose: () => {dispatch(cleargenericMessage());genericMessageToast.current = null;},
+          onClose: () => { dispatch(cleargenericMessage()); genericMessageToast.current = null; },
           icon: getToastIcon(genericMessage.type)
         });
       }
+    } else {
+      setTimeout(() => {
+        if (genericMessageToast.current) {
+          toast.dismiss(genericMessageToast.current);
+        }
+      }, 200);
     }
   }, [genericMessage, dispatch]);
 
@@ -67,7 +73,7 @@ function App() {
         <SideContainer />
         <MainContainer>
           <ScrollToTop />
-            <Routes>
+          <Routes>
             <Route path="/brano" element={<Brano key={new URLSearchParams(useLocation().search).get("id")} />} />
             <Route path="/album" element={<Album key={new URLSearchParams(useLocation().search).get("id")} />} />
             <Route path="/artista" element={<Artista key={new URLSearchParams(useLocation().search).get("id")} />} />
@@ -75,7 +81,7 @@ function App() {
             <Route path="/utente" element={<Utente key={new URLSearchParams(useLocation().search).get("id")} />} />
             <Route path="/ricerca" element={<Ricerca key={new URLSearchParams(useLocation().search).get("id")} />} />
             <Route path="*" element={<Navigate to="/ricerca" replace />} />
-            </Routes>
+          </Routes>
         </MainContainer>
         <SideContainer />
       </div>

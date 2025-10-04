@@ -1,25 +1,31 @@
-import axios from 'axios';
 import Modal from 'react-modal';
 import { UtenteDbSchema } from '../../types/db_types';
 import { useDispatch } from 'react-redux';
 import { setUtente } from '../../store/userSlice';
 import api from '../../api';
 import { checkConnError, modalsContentClassName, modalsOverlayClassName, scaleTwProps } from '../../functions/functions';
-import { setGenericAlert } from '../../store/errorSlice';
+import { cleargenericMessage, setGenericAlert } from '../../store/errorSlice';
 import ModalWrapper from './ModalWrapper';
+import { useState } from 'react';
 
 function ModalSignIn(props: { isOpen: boolean; onRequestClose: () => void; }) {
     Modal.setAppElement('#root');
     const dispatch = useDispatch();
+    const [loginDisabled, setLoginDisabled] = useState<boolean>(false);
     async function onSubmit(event: React.FormEvent) {
         event.preventDefault();
         // Gestisci il submit del form di login qui
         try {
+            setLoginDisabled(true);
+            dispatch(setGenericAlert({ message: "Login in corso...", type: "info" }));
             const response = await api.post("/login", { username: (event.target as any)[0].value, password: (event.target as any)[1].value }, { withCredentials: true });
+            setLoginDisabled(false);
+            dispatch(cleargenericMessage())
             const utente = UtenteDbSchema.parse(response.data);
             dispatch(setUtente(utente));
             props.onRequestClose();
         } catch (error) {
+            setLoginDisabled(false);
             if (checkConnError(error)) {
                 dispatch(setGenericAlert({ message: "Impossibile connettersi al server. Controlla la tua connessione ad internet.", type: "error" }));
             } else {
@@ -39,7 +45,7 @@ function ModalSignIn(props: { isOpen: boolean; onRequestClose: () => void; }) {
                 <form onSubmit={onSubmit}>
                     <input type="username" placeholder="Username" required />
                     <input type="password" placeholder="Password" required />
-                    <button type="submit">Sign In</button>
+                    <button disabled={loginDisabled} type="submit">Sign In</button>
                 </form>
             </ModalWrapper>
         </Modal>);

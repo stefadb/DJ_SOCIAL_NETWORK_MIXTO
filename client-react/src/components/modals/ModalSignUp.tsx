@@ -1,14 +1,15 @@
-import axios from 'axios';
 import Modal from 'react-modal';
 import api from '../../api';
 import { checkConnError, modalsContentClassName, modalsOverlayClassName, scaleTwProps } from '../../functions/functions';
 import { setGenericAlert } from '../../store/errorSlice';
 import { useDispatch } from 'react-redux';
 import ModalWrapper from './ModalWrapper';
+import { useState } from 'react';
 
 function ModalSignUp(props: { isOpen: boolean; onRequestClose: () => void; }) {
     Modal.setAppElement('#root');
     const dispatch = useDispatch();
+    const [registrazioneDisabled, setRegistrazioneDisabled] = useState<boolean>(false);
     async function onSubmit(event: React.FormEvent) {
         event.preventDefault();
         const username = (event.target as any)[0].value;
@@ -21,11 +22,16 @@ function ModalSignUp(props: { isOpen: boolean; onRequestClose: () => void; }) {
             return;
         }
         try {
+            setRegistrazioneDisabled(true);
+            dispatch(setGenericAlert({ message: "Registrazione in corso...", type: "info" }));
             await api.post("/utenti", {
                 newRowValues: { username, nome, cognome, password }
             });
+            dispatch(setGenericAlert({ message: "Registrazione avvenuta con successo. Effettua il login per continuare.", type: "info" }));
+            setRegistrazioneDisabled(false);
             props.onRequestClose();
         } catch (error) {
+            setRegistrazioneDisabled(false);
             if (checkConnError(error)) {
                 dispatch(setGenericAlert({ message: "Impossibile connettersi al server. Controlla la tua connessione ad internet.", type: "error" }));
             } else {
@@ -48,7 +54,7 @@ function ModalSignUp(props: { isOpen: boolean; onRequestClose: () => void; }) {
                     <input type="text" placeholder="Cognome" required />
                     <input type="password" placeholder="Password" required />
                     <input type="password" placeholder="Conferma Password" required />
-                    <button type="submit">Sign Up</button>
+                    <button disabled={registrazioneDisabled} type="submit">Sign Up</button>
                 </form>
             </ModalWrapper>
         </Modal>

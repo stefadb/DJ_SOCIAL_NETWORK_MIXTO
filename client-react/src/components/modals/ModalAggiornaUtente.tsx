@@ -6,12 +6,15 @@ import { useSelector } from 'react-redux';
 import type { RootState } from '../../store/store';
 import api from '../../api';
 import { checkConnError, modalsContentClassName, modalsOverlayClassName, scaleTwProps } from '../../functions/functions';
-import { setGenericAlert } from '../../store/errorSlice';
+import { cleargenericMessage, setGenericAlert } from '../../store/errorSlice';
 import ModalWrapper from './ModalWrapper';
+import { useState } from 'react';
 
 function ModalAggiornaUtente(props: { isOpen: boolean; onRequestClose: () => void; }) {
     Modal.setAppElement('#root');
     const dispatch = useDispatch();
+    const [logoutDisabled, setLogoutDisabled] = useState<boolean>(false);
+    const [aggiornaDisabled, setAggiornaDisabled] = useState<boolean>(false);
     const loggedUtente: UtenteDb | null = useSelector((state: RootState) => (state.user as any).utente as UtenteDb | null);
     async function onSubmit(event: React.FormEvent) {
         event.preventDefault();
@@ -31,6 +34,8 @@ function ModalAggiornaUtente(props: { isOpen: boolean; onRequestClose: () => voi
             }
             try {
                 const newRowValues = { username, nome, cognome, password };
+                setAggiornaDisabled(true);
+                dispatch(setGenericAlert({ message: "Aggiornamento in corso...", type: "info" }));
                 const response = await api.put(`/utenti/${loggedUtente.id}`, {
                     newRowValues,
                     assocTablesAndIds: {
@@ -39,6 +44,8 @@ function ModalAggiornaUtente(props: { isOpen: boolean; onRequestClose: () => voi
                     deleteOldAssociationsFirst: false, // Non eliminare le associazioni esistenti con i brani
                     oldPassword: vecchiaPassword // Per sicurezza, chiedi la vecchia password
                 });
+                dispatch(cleargenericMessage());
+                setAggiornaDisabled(false);
                 const utente = UtenteDbSchema.parse(response.data);
                 dispatch(setUtente({
                     id: loggedUtente.id,
@@ -49,6 +56,7 @@ function ModalAggiornaUtente(props: { isOpen: boolean; onRequestClose: () => voi
                 }));
                 props.onRequestClose();
             } catch (error) {
+                setAggiornaDisabled(false);
                 if (checkConnError(error)) {
                     dispatch(setGenericAlert({ message: "Impossibile connettersi al server. Controlla la tua connessione ad internet.", type: "error" }));
                 } else {
@@ -62,11 +70,20 @@ function ModalAggiornaUtente(props: { isOpen: boolean; onRequestClose: () => voi
 
     async function logout() {
         try {
+            setLogoutDisabled(true);
+            dispatch(setGenericAlert({ message: "Logout in corso...", type: "info" }));
             await api.delete("/logout", { withCredentials: true });
+            dispatch(cleargenericMessage());
+            setLogoutDisabled(false);
             dispatch(setUtente(null));
             props.onRequestClose();
         } catch (error) {
-            //Qui devi mostrare un toast di errore
+            setLogoutDisabled(false);
+            if (checkConnError(error)) {
+                dispatch(setGenericAlert({ message: "Impossibile connettersi al server. Controlla la tua connessione ad internet.", type: "error" }));
+            } else {
+                dispatch(setGenericAlert({ message: "Impossibile effettuare il logout. Si è verificato un errore.", type: "error" }));
+            }
         }
     }
 
@@ -78,7 +95,7 @@ function ModalAggiornaUtente(props: { isOpen: boolean; onRequestClose: () => voi
             className={modalsContentClassName()}
         >
             <ModalWrapper title="Aggiorna Utente" onRequestClose={props.onRequestClose}>
-                <button onClick={() => { logout(); }}>Logout</button>
+                <button onClick={() => { logout(); }} disabled={logoutDisabled}>Logout</button>
                 <h2>Le mie informazioni</h2>
                 <form onSubmit={onSubmit}>
                     <input type="text" defaultValue={loggedUtente ? loggedUtente.username : ''} placeholder="Username" required />
@@ -87,7 +104,7 @@ function ModalAggiornaUtente(props: { isOpen: boolean; onRequestClose: () => voi
                     <input type="password" placeholder="Nuova Password" />
                     <input type="password" placeholder="Conferma Nuova Password" />
                     <input type="password" placeholder="Password Attuale" />
-                    <button type="submit">Aggiorna</button>
+                    <button disabled={aggiornaDisabled} type="submit">Aggiorna</button>
                 </form>
             </ModalWrapper>
         </Modal>

@@ -14,6 +14,7 @@ function SalvaBranoPreferito(props: { idBrano: number, scale: number }) {
   const randomId = `preferiti-${uuidv4()}`;
   const dispatch = useDispatch();
   const [preferito, setPreferito] = useState<boolean>(false);
+  const [buttonDisabled, setButtonDisabled] = useState<boolean>(false);
   const loggedUtente: UtenteDb | null = useSelector((state: RootState) => (state.user as any).utente as UtenteDb | null);
   async function loadPreferito() {
     if (loggedUtente) {
@@ -27,6 +28,7 @@ function SalvaBranoPreferito(props: { idBrano: number, scale: number }) {
 
   return <div className="inline-block" style={scaleTwProps("p-1", props.scale)}>
     <button
+      disabled={buttonDisabled}
       id={randomId}
       className="card-brano-button" style={scaleTwProps("py-2 px-1 rounded", props.scale)}
 
@@ -37,6 +39,7 @@ function SalvaBranoPreferito(props: { idBrano: number, scale: number }) {
         }
 
         try {
+          setButtonDisabled(true);
           if (preferito) {
             await rimuoviBranoPreferito(loggedUtente, props.idBrano);
             setPreferito(false);
@@ -44,7 +47,9 @@ function SalvaBranoPreferito(props: { idBrano: number, scale: number }) {
             await salvaBranoPreferito(loggedUtente, props.idBrano);
             setPreferito(true);
           }
+          setButtonDisabled(false);
         } catch(error){
+          setButtonDisabled(false);
           if(checkConnError(error)){
             dispatch(setGenericAlert({message:"Impossibile connettersi al server. Controlla la tua connessione ad internet.", type: "error"}));
           }else{

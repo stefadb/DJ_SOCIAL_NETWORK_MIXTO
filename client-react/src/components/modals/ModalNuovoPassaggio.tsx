@@ -17,6 +17,7 @@ function ModalNuovoPassaggio() {
     const brano2 = useSelector((state: RootState) => state.giradischi.brano2);
     const loggedUtente: UtenteDb | null = useSelector((state: RootState) => (state.user as any).utente as UtenteDb | null);
     const [testo, setTesto] = useState<string>('');
+    const [pubblicaDisabled, setPubblicaDisabled] = useState<boolean>(false);
     const [inizioSecondoBrano, setInizioSecondoBrano] = useState<string>('00:00:00');
     const [cueSecondoBrano, setCueSecondoBrano] = useState<string>('00:00:00');
 
@@ -32,6 +33,8 @@ function ModalNuovoPassaggio() {
         }
         try {
             const timestamp = new Date().toISOString().slice(0, 19).replace('T', ' ');
+            setPubblicaDisabled(true);
+            dispatch(setGenericAlert({ message: "Pubblicazione del passaggio in corso...", type: "info" }));
             await api.post('/passaggi', {
                 newRowValues: {
                     testo,
@@ -43,12 +46,16 @@ function ModalNuovoPassaggio() {
                     id_brano_2: brano2.id
                 }
             });
+            dispatch(setGenericAlert({ message: "Passaggio pubblicato con successo. Lo trovi nella pagina dedicata al tuo utente!", type: "info" }));
+            setPubblicaDisabled(false);
+            // Resetta i campi del form
             setTesto('');
             setInizioSecondoBrano('00:00:00');
             setCueSecondoBrano('00:00:00');
             dispatch(closeModal());
             dispatch(setGenericAlert({ message: "Passaggio pubblicato con successo. Lo trovi nella pagina dedicata al tuo utente!", type: "info" }));
         } catch (error) {
+            setPubblicaDisabled(false);
             if (checkConnError(error)) {
                 dispatch(setGenericAlert({ message: "Impossibile connettersi al server. Controlla la tua connessione ad internet.", type: "error" }));
             } else {
@@ -122,7 +129,7 @@ function ModalNuovoPassaggio() {
                         <button type="button" onClick={() => dispatch(closeModal())}>
                             Annulla
                         </button>
-                        <button type="submit" disabled={!brano1 || !brano2 || !loggedUtente}>
+                        <button type="submit" disabled={!brano1 || !brano2 || !loggedUtente || pubblicaDisabled}>
                             Pubblica Passaggio
                         </button>
                     </div>
