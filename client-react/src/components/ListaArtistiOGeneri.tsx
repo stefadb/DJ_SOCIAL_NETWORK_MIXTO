@@ -6,6 +6,7 @@ import Modal from "react-modal";
 import Badge from "./Badge";
 import { Music, User } from "react-feather";
 import { deezerColor, modalsContentClassName, modalsOverlayClassName, scaleTwProps } from "../functions/functions";
+import ModalWrapper from "./modals/ModalWrapper";
 
 function ListaArtistiOGeneri(props: { list: ArtistaDb[], noClick?: boolean, entity: "artista", lines: number, scale: number } | { list: GenereDb[], noClick?: boolean, entity: "genere", lines: number, scale: number }) {
     Modal.setAppElement('#root');
@@ -121,11 +122,7 @@ function ListaArtistiOGeneri(props: { list: ArtistaDb[], noClick?: boolean, enti
                     overlayClassName={modalsOverlayClassName()}
                     className={modalsContentClassName()}
                     isOpen={true} onRequestClose={() => setShowingMore(false)}>
-                    <div className="flex justify-end">
-                        <button onClick={() => setShowingMore(false)} className="absolute bg-none border-none cursor-pointer text-[22px] p-2">×</button>
-                    </div>
-                    <h2>Tutti {props.entity == "artista" ? "gli artisti" : "i generi"} di questo {props.entity == "artista" ? "brano" : "album"}</h2>
-                    <div className="flex flex-col gap-2">
+                    <ModalWrapper title={`Tutti ${props.entity == "artista" ? "gli artisti" : "i generi"} di questo ${props.entity == "artista" ? "brano" : "album"}`} onRequestClose={() => setShowingMore(false)}>
                         {props.list.map((element) => {
                             return <div key={element.id} className="flex flex-row">
                                 <div className="relative p-1 w-6 h-6">
@@ -143,7 +140,7 @@ function ListaArtistiOGeneri(props: { list: ArtistaDb[], noClick?: boolean, enti
                                 </div>
                             </div>
                         })}
-                    </div>
+                    </ModalWrapper>
                 </Modal>
             }
         </div>

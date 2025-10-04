@@ -80,7 +80,7 @@ function Album() {
                         <h2>Brani dell'album</h2>
                         {albumLoaded &&
                             <PagedList itemsPerPage={5} apiCall={`/brani/esistenti?album=${album.id}`} component={(element: BranoDb) => (
-                                <CardBrano size={"small"} key={element.id} brano={element} />
+                                <CardBrano scale={1} key={element.id} brano={element} />
                             )} scrollMode="horizontal"
                                 emptyMessage="😮 Non ci sono brani in questo album" />
                         }
@@ -102,7 +102,7 @@ function Album() {
                                     brano1={element.brano_1_array[0]}
                                     brano2={element.brano_2_array[0]}
                                     utente={element.utente_array[0] ? element.utente_array[0] : null}
-                                    size={"small"}
+                                    
                                 />
                             )}
                             emptyMessage="😮 Nessun passaggio trovato"
@@ -122,7 +122,7 @@ function Album() {
                                     brano1={element.brano_1_array[0]}
                                     brano2={element.brano_2_array[0]}
                                     utente={element.utente_array[0] ? element.utente_array[0] : null}
-                                    size={"small"}
+                                    
                                 />
                             )}
                             emptyMessage="😮 Nessun passaggio trovato"

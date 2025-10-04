@@ -69,7 +69,7 @@ function Genere() {
                     <div>
                         <h2>Brani del genere più popolari su Deezer</h2>
                         <PagedList itemsPerPage={5} apiCall={`/brani/genere?genreId=${genere.id}`} schema={BranoDbSchema} scrollMode="horizontal" component={(element: BranoDb) => (
-                            <CardBrano key={element.id} brano={element} size={"small"} />
+                            <CardBrano key={element.id} brano={element} scale={1} />
                         )}
                             emptyMessage="😮 Nessun brano trovato"
                         />
@@ -88,7 +88,7 @@ function Genere() {
                                     brano1={element.brano_1_array[0]}
                                     brano2={element.brano_2_array[0]}
                                     utente={element.utente_array[0] ? element.utente_array[0] : null}
-                                    size={"small"}
+                                    
                                 />
                             )}
                             emptyMessage="😮 Nessun passaggio trovato"
@@ -108,7 +108,7 @@ function Genere() {
                                     brano1={element.brano_1_array[0]}
                                     brano2={element.brano_2_array[0]}
                                     utente={element.utente_array[0] ? element.utente_array[0] : null}
-                                    size={"small"}
+                                    
                                 />
                             )}
                             emptyMessage="😮 Nessun passaggio trovato"

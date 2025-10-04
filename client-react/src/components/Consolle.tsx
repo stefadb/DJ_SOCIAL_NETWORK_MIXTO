@@ -9,6 +9,7 @@ import { openModal } from "../store/modalNuovoPassaggioSlice";
 import Modal from "react-modal";
 import { setGenericAlert } from "../store/errorSlice";
 import { modalsContentClassName, modalsOverlayClassName } from "../functions/functions";
+import ModalWrapper from "./modals/ModalWrapper";
 
 function Consolle(props: { isOpen: boolean, onRequestClose: () => void }) {
     Modal.setAppElement('#root');
@@ -38,14 +39,16 @@ function Consolle(props: { isOpen: boolean, onRequestClose: () => void }) {
         overlayClassName={modalsOverlayClassName()}
         className={modalsContentClassName()}
     >
-        <h3>Brano 1</h3>
-        {brano1 === null ? <p><i>(vuoto)</i></p> :
-            <CardBrano brano={brano1} noDeckButtons size={"small"} />}
-        <h3>Brano 2</h3>
-        {brano2 === null ? <p><i>(vuoto)</i></p> :
-            <CardBrano brano={brano2} noDeckButtons size={"small"} />}
-        <button onClick={scambia}>Scambia</button>
-        <button onClick={() => { if (loggedUtente) { dispatch(openModal()) } else { dispatch(setGenericAlert({ message: "Accedi per pubblicare un passaggio", type: "info" })); } }}>Pubblica un nuovo passaggio</button>
+        <ModalWrapper title="Consolle" onRequestClose={props.onRequestClose}>
+            <h3>Brano 1</h3>
+            {brano1 === null ? <p><i>(vuoto)</i></p> :
+                <CardBrano brano={brano1} noDeckButtons scale={1} />}
+            <h3>Brano 2</h3>
+            {brano2 === null ? <p><i>(vuoto)</i></p> :
+                <CardBrano brano={brano2} noDeckButtons scale={1} />}
+            <button onClick={scambia}>Scambia</button>
+            <button onClick={() => { if (loggedUtente) { dispatch(openModal()) } else { dispatch(setGenericAlert({ message: "Accedi per pubblicare un passaggio", type: "info" })); } }}>Pubblica un nuovo passaggio</button>
+        </ModalWrapper>
     </Modal>;
 }
 

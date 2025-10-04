@@ -142,7 +142,7 @@ export function modalsOverlayClassName(){
 }
 
 export function modalsContentClassName(){
-    return "relative max-w-[calc(100vw-80px)] max-h-[calc(100vh-80px)] overflow-y-auto bg-white p-6 rounded box-border";
+    return "relative max-w-[calc(100vw-80px)] max-h-[calc(100vh-80px)] bg-white p-6 rounded box-border overflow-y-auto";
 }
 
 

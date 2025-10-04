@@ -6,6 +6,7 @@ import { setUtente } from '../../store/userSlice';
 import api from '../../api';
 import { checkConnError, modalsContentClassName, modalsOverlayClassName, scaleTwProps } from '../../functions/functions';
 import { setGenericAlert } from '../../store/errorSlice';
+import ModalWrapper from './ModalWrapper';
 
 function ModalSignIn(props: { isOpen: boolean; onRequestClose: () => void; }) {
     Modal.setAppElement('#root');
@@ -34,12 +35,13 @@ function ModalSignIn(props: { isOpen: boolean; onRequestClose: () => void; }) {
             overlayClassName={modalsOverlayClassName()}
             className={modalsContentClassName()}
         >
-            <h2>Sign In</h2>
-            <form onSubmit={onSubmit}>
-                <input type="username" placeholder="Username" required />
-                <input type="password" placeholder="Password" required />
-                <button type="submit">Sign In</button>
-            </form>
+            <ModalWrapper title="Sign In" onRequestClose={props.onRequestClose}>
+                <form onSubmit={onSubmit}>
+                    <input type="username" placeholder="Username" required />
+                    <input type="password" placeholder="Password" required />
+                    <button type="submit">Sign In</button>
+                </form>
+            </ModalWrapper>
         </Modal>);
 }
 

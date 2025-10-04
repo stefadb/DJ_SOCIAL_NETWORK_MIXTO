@@ -192,14 +192,14 @@ function Ricerca() {
                     <IncludiRisultatiDeezer inclusi={braniDeezer} onClick={() => setBraniDeezer(true)} />
                     {braniDeezer &&
                         <PagedList key={"brani-search-" + q} itemsPerPage={10} apiCall={`/brani/search?query=${q}`} schema={BranoDbSchema} scrollMode="horizontal" component={(element: BranoDb) => (
-                            <CardBrano key={element.id} brano={element} size="small" />
+                            <CardBrano key={element.id} brano={element} scale={1} />
                         )}
                         emptyMessage={`😮 Non ho trovato nessun brano che si chiama '${q}', ${!braniDeezer?"prova a cercarlo anche da Deezer!": "neanche su Deezer!"}`}
                         />
                     }
                     {!braniDeezer &&
                         <PagedList key={"brani-esistenti-" + q} itemsPerPage={10} apiCall={`/brani/esistenti?query=${q}`} schema={BranoDbSchema} scrollMode="horizontal" component={(element: BranoDb) => (
-                            <CardBrano key={element.id} brano={element} size="small" />
+                            <CardBrano key={element.id} brano={element} scale={1} />
                         )}
                         emptyMessage={`😮 Non ho trovato nessun brano che si chiama '${q}', ${!braniDeezer?"prova a cercarlo anche da Deezer!": "neanche su Deezer!"}`}
                         />

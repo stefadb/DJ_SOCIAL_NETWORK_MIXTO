@@ -72,7 +72,7 @@ function Utente() {
               apiCall={`/brani/esistenti?utente=${utente.id}`}
               schema={BranoDbSchema}
               component={(element: BranoDb) => (
-                <CardBrano key={element.id} brano={element} size={"small"} />
+                <CardBrano key={element.id} brano={element} scale={1} />
               )}
               scrollMode="horizontal"
               showMoreButton={(onClick) => <button onClick={onClick}>Carica altri brani</button>}
@@ -91,7 +91,7 @@ function Utente() {
                   passaggio={element}
                   brano1={element.brano_1_array[0]}
                   brano2={element.brano_2_array[0]}
-                  size={"small"}
+                  
                   utente={utente}
                 />
               )}

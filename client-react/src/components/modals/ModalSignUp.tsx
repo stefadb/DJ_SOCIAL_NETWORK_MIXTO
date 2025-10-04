@@ -4,6 +4,7 @@ import api from '../../api';
 import { checkConnError, modalsContentClassName, modalsOverlayClassName, scaleTwProps } from '../../functions/functions';
 import { setGenericAlert } from '../../store/errorSlice';
 import { useDispatch } from 'react-redux';
+import ModalWrapper from './ModalWrapper';
 
 function ModalSignUp(props: { isOpen: boolean; onRequestClose: () => void; }) {
     Modal.setAppElement('#root');
@@ -40,15 +41,16 @@ function ModalSignUp(props: { isOpen: boolean; onRequestClose: () => void; }) {
             overlayClassName={modalsOverlayClassName()}
             className={modalsContentClassName()}
         >
-            <h2>Sign Up</h2>
-            <form onSubmit={onSubmit}>
-                <input type="text" placeholder="Username" required />
-                <input type="text" placeholder="Nome" required />
-                <input type="text" placeholder="Cognome" required />
-                <input type="password" placeholder="Password" required />
-                <input type="password" placeholder="Conferma Password" required />
-                <button type="submit">Sign Up</button>
-            </form>
+            <ModalWrapper title="Sign Up" onRequestClose={props.onRequestClose}>
+                <form onSubmit={onSubmit}>
+                    <input type="text" placeholder="Username" required />
+                    <input type="text" placeholder="Nome" required />
+                    <input type="text" placeholder="Cognome" required />
+                    <input type="password" placeholder="Password" required />
+                    <input type="password" placeholder="Conferma Password" required />
+                    <button type="submit">Sign Up</button>
+                </form>
+            </ModalWrapper>
         </Modal>
     );
 }

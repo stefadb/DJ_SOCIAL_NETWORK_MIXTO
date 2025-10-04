@@ -13,7 +13,7 @@ import AscoltaSuDeezer from "../buttons/AscoltaSuDeezer";
 import Badge from "../Badge";
 import VediAlbum from "../buttons/VediAlbum";
 
-function CardBrano(props: { brano: BranoDb, noDeckButtons?: boolean, noButtons?: boolean, size: "tiny" | "small" | "large" }) {
+function CardBrano(props: { brano: BranoDb, noDeckButtons?: boolean, noButtons?: boolean, scale: number }) {
     const [artisti, setArtisti] = useState<ArtistaDb[] | null>(null);
     const [album, setAlbum] = useState<AlbumDb | null>(null);
     const [erroreArtisti, setErroreArtisti] = useState<boolean>(false);
@@ -25,13 +25,7 @@ function CardBrano(props: { brano: BranoDb, noDeckButtons?: boolean, noButtons?:
         loadAlbum();
     }, []);
 
-    const scales = {
-        tiny: 0.75,
-        small: 1,
-        large: 1.5
-    };
-
-    const scale = scales[props.size] || 1;
+    const scale = props.scale;
 
     const stableMezzoDisco = useMemo(() => <MezzoDisco radius={50 * scale} />, []);
 
@@ -63,6 +57,7 @@ function CardBrano(props: { brano: BranoDb, noDeckButtons?: boolean, noButtons?:
     }
     return (
         <div style={scaleTwProps("p-3",scale)}>
+            {/* In scale = 1, questa card è larga esattamente 198px*/}
             <div style={scaleTwProps("p-3 w-[150px] rounded-lg shadow-md",scale)}>
                 <div>
                     <div onClick={() => navigate(`/brano?id=${props.brano.id}`)} className="flex flex-row cursor-pointer">

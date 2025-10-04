@@ -12,14 +12,13 @@ import z from "zod";
 import ModalPassaggio from "../modals/ModalPassaggio";
 import { ArrowRight, Clock, Copy, ExternalLink, MessageSquare } from "react-feather";
 import { useNavigate } from "react-router-dom";
-import {  scaleTwProps} from "../../functions/functions";
+import { scaleTwProps } from "../../functions/functions";
 
 type CardPassaggioProps = {
   passaggio: PassaggioDb;
   brano1: BranoDb;
   brano2: BranoDb;
   utente: UtenteDb | null;
-  size: "small" | "large";
   insideModal?: boolean;
 };
 
@@ -31,13 +30,7 @@ function CardPassaggio(props: CardPassaggioProps) {
   const navigate = useNavigate();
   const [valutazioneMedia, setValutazioneMedia] = useState<ValutazioniMedie | null | "error">(null);
   const [showModal, setShowModal] = useState<boolean>(false);
-
-  const scales = {
-    small: 1,
-    large: 1.5
-  };
-
-  const scale = scales[props.size] || 1;
+  const [braniScale, setBraniScale] = useState<number>(1);
 
   async function loadValutazioneMedia() {
     try {
@@ -60,26 +53,26 @@ function CardPassaggio(props: CardPassaggioProps) {
   }, [props.passaggio.id]);
 
   return (
-  <div style={scaleTwProps("p-3",scale)}>
-  <div style={scaleTwProps("p-3 rounded-lg shadow-md",scale)}>
-  <div className="flex justify-center items-center">
+    <div style={scaleTwProps("p-3", 1)}>
+      <div style={scaleTwProps("p-3 rounded-lg shadow-md", 1)}>
+        <div id="card-passaggio" className="flex justify-center items-center">
           {props.brano1 &&
-            <CardBrano brano={props.brano1} size={props.insideModal ? "small" : "tiny"} noButtons={!props.insideModal}/>
+            <CardBrano brano={props.brano1} scale={props.insideModal ? braniScale : 0.75} noButtons={!props.insideModal} />
           }
-          <ArrowRight />
+          <ArrowRight size={16 * braniScale} />
           {props.brano2 &&
-            <CardBrano brano={props.brano2} size={props.insideModal ? "small" : "tiny"} noButtons={!props.insideModal}/>
+            <CardBrano brano={props.brano2} scale={props.insideModal ? braniScale : 0.75} noButtons={!props.insideModal} />
           }
         </div>
         {props.insideModal !== true &&
           <div className="flex flex-row justify-between flex-wrap">
-            <button className={"card-brano-button"} style={scaleTwProps("p-1 rounded",scale)} onClick={() => { setShowModal(true); }}>Commenti e voti <ExternalLink size={14 * scale} /></button>
-            <button className={"card-brano-button"} style={scaleTwProps("p-1 rounded",scale)} onClick={() => {
+            <button className={"card-brano-button"} style={scaleTwProps("p-1 rounded", 1)} onClick={() => { setShowModal(true); }}>Commenti e voti <ExternalLink size={14} /></button>
+            <button className={"card-brano-button"} style={scaleTwProps("p-1 rounded", 1)} onClick={() => {
               dispatch(setBrano1ToNuovoPassaggio(props.brano1));
               dispatch(setBrano2ToNuovoPassaggio(props.brano2));
               dispatch(closeModal())
               dispatch(openNuovoPassaggioModal());
-            }}><Copy size={14 * scale} /> Crea passaggio come questo</button>
+            }}><Copy size={14} /> Crea passaggio come questo</button>
           </div>
         }
         {/* Stelle e azioni */}
@@ -89,7 +82,7 @@ function CardPassaggio(props: CardPassaggioProps) {
               rating={valutazioneMedia.voto_medio}
               bgColor="white"
             />
-            <span className="ml-2 text-gray-500"><b>{String(valutazioneMedia.voto_medio).substring(0,3)}/{5}</b> ({valutazioneMedia.numero_voti} {valutazioneMedia.numero_voti === 1 ? "voto" : "voti"})</span>
+            <span className="ml-2 text-gray-500"><b>{String(valutazioneMedia.voto_medio).substring(0, 3)}/{5}</b> ({valutazioneMedia.numero_voti} {valutazioneMedia.numero_voti === 1 ? "voto" : "voti"})</span>
             <div className="ml-auto">
             </div>
           </div>
@@ -105,18 +98,18 @@ function CardPassaggio(props: CardPassaggioProps) {
           </div>
         }
         {/* Autore e dettagli passaggio */}
-  <div className="mt-3 mx-4 mb-0">
+        <div className="mt-3 mx-4 mb-0">
           <div className={"flex items-center" + (props.utente ? " cursor-pointer" : " cursor-default")} onClick={props.utente ? () => { navigate("/utente?id=" + props.utente?.id) } : undefined}>
             {props.utente &&
               <>
-                <img className="rounded-full" style={scaleTwProps("w-8 h-8 shadow-md",scale)} src={"src/assets/artista_empty.jpg"} alt={"Immagine di profilo di " + props.utente.nome + " " + props.utente.cognome} />
+                <img className="rounded-full" style={scaleTwProps("w-8 h-8 shadow-md", 1)} src={"src/assets/artista_empty.jpg"} alt={"Immagine di profilo di " + props.utente.nome + " " + props.utente.cognome} />
                 <b>&nbsp;&nbsp;{props.utente.nome} {props.utente.cognome}</b>
-                  (@{props.utente.username})
+                (@{props.utente.username})
               </>
             }
             {!props.utente &&
               <>
-                <img className="rounded-full" style={scaleTwProps("w-8 h-8 shadow-md",scale)} src={"src/assets/artista_empty.jpg"} alt={"Immagine di profilo vuota"} />
+                <img className="rounded-full" style={scaleTwProps("w-8 h-8 shadow-md", 1)} src={"src/assets/artista_empty.jpg"} alt={"Immagine di profilo vuota"} />
                 <b>&nbsp;&nbsp;Utente eliminato</b>
                 <span className="ml-2 text-gray-500 text-[13px]"></span>
               </>
@@ -124,15 +117,15 @@ function CardPassaggio(props: CardPassaggioProps) {
           </div>
           <div className="text-gray-800 mt-2">
             <div className="flex items-center gap-2 italic text-gray-500">
-              <MessageSquare size={14 * scale} />
+              <MessageSquare size={14} />
               {props.passaggio.testo}
             </div>
             <div className="flex items-center gap-2">
-              <Clock size={14 * scale} />
+              <Clock size={14} />
               Posizione CUE secondo brano: <span className="text-blue-600">{props.passaggio.cue_secondo_brano}</span>
             </div>
             <div className="flex items-center gap-2">
-              <Clock size={14 * scale} />
+              <Clock size={14} />
               Partenza secondo brano: <span className="text-blue-600">{props.passaggio.inizio_secondo_brano}</span>
             </div>
           </div>

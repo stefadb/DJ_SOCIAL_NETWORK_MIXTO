@@ -7,6 +7,7 @@ import type { RootState } from '../../store/store';
 import api from '../../api';
 import { checkConnError, modalsContentClassName, modalsOverlayClassName, scaleTwProps } from '../../functions/functions';
 import { setGenericAlert } from '../../store/errorSlice';
+import ModalWrapper from './ModalWrapper';
 
 function ModalAggiornaUtente(props: { isOpen: boolean; onRequestClose: () => void; }) {
     Modal.setAppElement('#root');
@@ -76,17 +77,19 @@ function ModalAggiornaUtente(props: { isOpen: boolean; onRequestClose: () => voi
             overlayClassName={modalsOverlayClassName()}
             className={modalsContentClassName()}
         >
-            <button onClick={() => { logout(); }}>Logout</button>
-            <h2>Le mie informazioni</h2>
-            <form onSubmit={onSubmit}>
-                <input type="text" defaultValue={loggedUtente ? loggedUtente.username : ''} placeholder="Username" required />
-                <input type="text" defaultValue={loggedUtente ? loggedUtente.nome : ''} placeholder="Nome" required />
-                <input type="text" defaultValue={loggedUtente ? loggedUtente.cognome : ''} placeholder="Cognome" required />
-                <input type="password" placeholder="Nuova Password" />
-                <input type="password" placeholder="Conferma Nuova Password" />
-                <input type="password" placeholder="Password Attuale" />
-                <button type="submit">Aggiorna</button>
-            </form>
+            <ModalWrapper title="Aggiorna Utente" onRequestClose={props.onRequestClose}>
+                <button onClick={() => { logout(); }}>Logout</button>
+                <h2>Le mie informazioni</h2>
+                <form onSubmit={onSubmit}>
+                    <input type="text" defaultValue={loggedUtente ? loggedUtente.username : ''} placeholder="Username" required />
+                    <input type="text" defaultValue={loggedUtente ? loggedUtente.nome : ''} placeholder="Nome" required />
+                    <input type="text" defaultValue={loggedUtente ? loggedUtente.cognome : ''} placeholder="Cognome" required />
+                    <input type="password" placeholder="Nuova Password" />
+                    <input type="password" placeholder="Conferma Nuova Password" />
+                    <input type="password" placeholder="Password Attuale" />
+                    <button type="submit">Aggiorna</button>
+                </form>
+            </ModalWrapper>
         </Modal>
     );
 }

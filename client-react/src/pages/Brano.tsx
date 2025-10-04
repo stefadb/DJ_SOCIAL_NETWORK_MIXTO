@@ -71,7 +71,7 @@ function Brano() {
     <div>
       {brano ? (
         <div className="flex flex-row justify-center">
-          <CardBrano brano={brano} size={"large"} />
+          <CardBrano brano={brano} scale={1.5} />
         </div>
       ) : (
         <div className="flex flex-row justify-center">
@@ -140,7 +140,7 @@ function Brano() {
                 brano1={brano}
                 brano2={(element.brano_2_array as BranoDb[])[0] as BranoDb}
                 utente={element.utente_array[0] ? element.utente_array[0] : null}
-                size={"small"}
+                
               />
             )}
               emptyMessage="😮 Nessun passaggio trovato"
@@ -154,7 +154,7 @@ function Brano() {
                 passaggio={element}
                 brano1={(element.brano_1_array as BranoDb[])[0] as BranoDb}
                 brano2={brano}
-                size={"small"}
+                
                 utente={element.utente_array[0] ? element.utente_array[0] : null}
               />
             )}
