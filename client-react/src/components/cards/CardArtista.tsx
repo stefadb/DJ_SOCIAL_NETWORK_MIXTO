@@ -3,7 +3,7 @@ import type { ArtistaDb } from "../../types/db_types";
 import { useEffect, useRef } from "react";
 import Badge from "../Badge";
 import { Music, User } from "react-feather";
-import {scaleTwProps} from "../../functions/functions";
+import {deezerColor, scaleTwProps} from "../../functions/functions";
 
 function CardArtista(props: { artista: ArtistaDb, size: "small" | "large" }) {
     const navigate = useNavigate();
@@ -31,7 +31,7 @@ function CardArtista(props: { artista: ArtistaDb, size: "small" | "large" }) {
         <div ref={containerRef} onClick={() => { navigate("/artista?id=" + props.artista.id); }} style={scaleTwProps("p-3 cursor-pointer opacity-0 transition-opacity duration-500 w-[100px]",scale)}>
             <div className="relative">
                 <Badge scale={scale}>
-                    <User size={14 * scale} color={"#A238FF"} />
+                    <User size={14 * scale} color={deezerColor()} />
                 </Badge>
                 <img style={scaleTwProps("w-[100px] h-[100px] rounded-full shadow-md",scale)} src={props.artista.url_immagine ? props.artista.url_immagine : "src/assets/artista_empty.jpg"} alt={"Immagine di profilo di " + props.artista.nome} />
             </div>

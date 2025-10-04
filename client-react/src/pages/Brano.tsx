@@ -16,6 +16,7 @@ import BranoTableRow from "../components/BranoTableRow";
 import z from "zod";
 import CardBrano from "../components/cards/CardBrano";
 import Caricamento from "../components/icons/Caricamento";
+import { check404 } from "../functions/functions";
 
 // Schema e type per /passaggi/conta?primoBrano= e /passaggi/conta?secondoBrano=
 const ContaPassaggiBrano2Schema = z.object({
@@ -43,6 +44,7 @@ function Brano() {
   });
   type ApiType = z.infer<typeof ApiSchema>;
   const [brano, setBrano] = useState<ApiType | null>(null);
+  const [errore, setErrore] = useState<"error" | "not-found" | null>(null);
 
   //useEffect necessario per recuperare i dati
   useEffect(() => {
@@ -57,20 +59,23 @@ function Brano() {
       setBrano(responseData);
       //Il brano è stato caricato con successo, ora si possono caricare i passaggi
     } catch (error) {
-      //TODO: Gestire errore
-      console.error("Errore nel recupero del brano:", error);
+      if (check404(error)) {
+        setErrore("not-found");
+      } else {
+        setErrore("error");
+      }
     }
   }
 
   return (
     <div>
       {brano ? (
-  <div className="flex flex-row justify-center">
+        <div className="flex flex-row justify-center">
           <CardBrano brano={brano} size={"large"} />
         </div>
       ) : (
-  <div className="flex flex-row justify-center">
-          <Caricamento size="giant" status={"loading"}/>
+        <div className="flex flex-row justify-center">
+          <Caricamento size="giant" status={errore === null ? "loading" : errore} />
         </div>
       )}
       {brano !== null &&

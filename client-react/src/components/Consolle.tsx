@@ -7,8 +7,11 @@ import CardBrano from "./cards/CardBrano";
 import type { RootState } from "../store/store";
 import { openModal } from "../store/modalNuovoPassaggioSlice";
 import Modal from "react-modal";
+import { setGenericAlert } from "../store/errorSlice";
+import { modalsContentClassName, modalsOverlayClassName } from "../functions/functions";
 
-function Consolle(props: {isOpen: boolean, onRequestClose: () => void}) {
+function Consolle(props: { isOpen: boolean, onRequestClose: () => void }) {
+    Modal.setAppElement('#root');
     const dispatch = useDispatch();
     const loggedUtente: UtenteDb | null = useSelector((state: RootState) => (state.user as any).utente);
     const brano1: BranoDb | null = useSelector((state: RootState) => (state.giradischi as any).brano1);
@@ -26,20 +29,23 @@ function Consolle(props: {isOpen: boolean, onRequestClose: () => void}) {
         }
     }, []);
 
-    function scambia(){
+    function scambia() {
         const temp = brano1;
         dispatch(setBrano1(brano2));
         dispatch(setBrano2(temp));
     }
-    return <Modal isOpen={props.isOpen} onRequestClose={props.onRequestClose}>
+    return <Modal isOpen={props.isOpen} onRequestClose={props.onRequestClose}
+        overlayClassName={modalsOverlayClassName()}
+        className={modalsContentClassName()}
+    >
         <h3>Brano 1</h3>
         {brano1 === null ? <p><i>(vuoto)</i></p> :
-        <CardBrano brano={brano1} noDeckButtons size={"small"}/>}
+            <CardBrano brano={brano1} noDeckButtons size={"small"} />}
         <h3>Brano 2</h3>
         {brano2 === null ? <p><i>(vuoto)</i></p> :
-        <CardBrano brano={brano2} noDeckButtons size={"small"}/>}
+            <CardBrano brano={brano2} noDeckButtons size={"small"} />}
         <button onClick={scambia}>Scambia</button>
-        <button onClick={() => {if(loggedUtente){dispatch(openModal())}else{alert("Accedi per pubblicare un passaggio");}}}>Pubblica un nuovo passaggio</button>
+        <button onClick={() => { if (loggedUtente) { dispatch(openModal()) } else { dispatch(setGenericAlert({ message: "Accedi per pubblicare un passaggio", type: "info" })); } }}>Pubblica un nuovo passaggio</button>
     </Modal>;
 }
 

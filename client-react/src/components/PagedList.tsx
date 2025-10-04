@@ -35,10 +35,8 @@ function PagedList<T>(props: { itemsPerPage: number; apiCall: string; schema?: Z
             const itemsPerPage = props.noPaging ? response.data.length : props.itemsPerPage;
             for (let i = 0; i < itemsPerPage; i++) {
                 if (response.data[i]) {
-                    if (!disableValidation && props.schema !== undefined && !props.schema.safeParse(response.data[i]).success) {
-                        //TODO: Gestire errore
-                        console.error("Errore di validazione dei dati dell'elemento:", props.schema.safeParse(response.data[i]).error);
-                        return;
+                    if (!disableValidation && props.schema !== undefined) {
+                        props.schema.parse(response.data[i])
                     }
                     if (maxIndex < (currentPage - 1) * itemsPerPage + i) {
                         maxIndex = (currentPage - 1) * itemsPerPage + i;
@@ -52,6 +50,7 @@ function PagedList<T>(props: { itemsPerPage: number; apiCall: string; schema?: Z
             setLoading(false);
             handleScroll();
         } catch {
+            //Errore già gestito
             setLoading(false);
             handleScroll();
             setError(true);

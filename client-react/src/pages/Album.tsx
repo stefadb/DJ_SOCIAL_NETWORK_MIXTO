@@ -10,7 +10,7 @@ import {
 import CardPassaggio from "../components/cards/CardPassaggio";
 import PagedList from "../components/PagedList";
 import CardBrano from "../components/cards/CardBrano";
-import { getNomiArtistiAlbum } from "../functions/functions";
+import { check404, getNomiArtistiAlbum } from "../functions/functions";
 import api from "../api";
 import CardAlbum from "../components/cards/CardAlbum";
 import CardArtista from "../components/cards/CardArtista";
@@ -25,6 +25,7 @@ function Album() {
     const [album, setAlbum] = useState<AlbumDb | null>(null);
     const [artistiAlbum, setArtistiAlbum] = useState<ArtistaDb[] | null>(null);
     const [albumLoaded, setAlbumLoaded] = useState(false);
+    const [errore, setErrore] = useState<"error" | "not-found" | null>(null);
     //useEffect necessario per recuperare i dati
     useEffect(() => {
         loadAlbum();
@@ -32,6 +33,7 @@ function Album() {
 
     async function loadAlbum() {
         try {
+            setErrore(null);
             await api.get(`/album/singolo?albumId=${id}&limit=1&index=0`);
             setAlbumLoaded(true);
             const responseAlbum = await api.get(`/album/esistenti/${id}`, { headers: { "Cache-Control": "no-cache, no-store, must-revalidate", Pragma: "no-cache", Expires: "0" } });
@@ -40,8 +42,11 @@ function Album() {
             setArtistiAlbum(await getNomiArtistiAlbum(undefined, responseAlbumData.id));
             //L'album è stato caricato con successo, ora si possono caricare i passaggi
         } catch (error) {
-            //TODO: Gestire errore
-            console.error("Errore nel recupero dell'album:", error);
+            if(check404(error)){
+                setErrore("not-found");
+            }else{
+                setErrore("error");
+            }
         }
     }
 
@@ -53,7 +58,7 @@ function Album() {
                 </div>
             ) : (
                 <div className="flex flex-row justify-center">
-                    <Caricamento size="giant" status={"loading"}/>
+                    <Caricamento size="giant" status={errore === null ? "loading" : errore}/>
                 </div>
             )}
             {album !== null &&

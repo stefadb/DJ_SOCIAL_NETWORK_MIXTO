@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from "react";
-import { scaleTwProps } from "../../functions/functions";
+import { useEffect, useState } from "react";
+import { deezerColor, scaleTwProps } from "../../functions/functions";
 import type { Scratch } from "../../types/types";
 
 function Caricamento(props: { size: "tiny" | "small" | "large" | "giant", status: "loading" | "error" | "not-found" }) {
@@ -14,8 +14,6 @@ function Caricamento(props: { size: "tiny" | "small" | "large" | "giant", status
 
     const radius = Math.floor(40 * scale);
 
-    const h4Ref = useRef<HTMLHeadingElement>(null);
-
     const innerCircleRadiusRatio = 0.35;
 
     const innerCircleRadius = radius * innerCircleRadiusRatio;
@@ -27,20 +25,6 @@ function Caricamento(props: { size: "tiny" | "small" | "large" | "giant", status
         const pathData = `M ${startX} ${startY} A ${radius} ${radius} 0 0 1 ${endX} ${endY}`;
         return pathData;
     };
-
-    function cambiaPuntiHeading() {
-        if (h4Ref.current) {
-            if (h4Ref.current.innerText == "Caricamento...") {
-                h4Ref.current.innerText = "Caricamento.";
-            } else {
-                h4Ref.current.innerText += ".";
-            }
-        }
-    }
-
-    //Eesegui cambiaPuntiHeading 3 volte al secondo
-
-    setInterval(cambiaPuntiHeading, 1000 / 3);
 
     //DISEGNO DELLA TESTINA DEL GIRADISCHI
     const curvePoint = 60;
@@ -147,6 +131,9 @@ function Caricamento(props: { size: "tiny" | "small" | "large" | "giant", status
                                 strokeWidth="2"
                             />
                         ))}
+                        {props.status == "not-found" &&
+                            <text x={radius} y={radius + radius * 0.1} textAnchor="middle" dominantBaseline="middle" fontSize={radius} fill="#999">404</text>
+                        }
                         {props.status != "not-found" &&
                             <>
                                 <g className={props.status == "loading" ? "swing1" : undefined} style={{ transformOrigin: `${0}px ${0}px` }}>
@@ -178,7 +165,7 @@ function Caricamento(props: { size: "tiny" | "small" | "large" | "giant", status
                         }
 
                         <g className={props.status == "loading" ? "swing3" : undefined} style={{ transformOrigin: `${(88 - 72 + 4.6) * scale}px ${4.5 * scale}px` }}>
-                            <polygon points={testinaPoints.map(point => point * scale).join(" ")} fill="#A238FF" />
+                            <polygon points={testinaPoints.map(point => point * scale).join(" ")} fill={deezerColor()} />
                         </g>
                         {props.status == "error" &&
                             <>
@@ -201,10 +188,10 @@ function Caricamento(props: { size: "tiny" | "small" | "large" | "giant", status
             </div>
         </div>
         {props.status == "loading" &&
-            <h4 ref={h4Ref} style={scaleTwProps("w-[125px] my-1 text-[21.3333px] text-center", scale)}>Caricamento.</h4>
+            <h4 style={scaleTwProps("w-[125px] my-1 text-[21.3333px] text-center", scale)}>Caricamento...</h4>
         }
         {props.status == "error" &&
-            <h5 style={scaleTwProps("w-[125px] my-1 text-base text-red-500 text-center", scale)}>😢 Si è verificato un errore nel caricamento</h5>
+            <h6 style={scaleTwProps("w-[125px] my-1 text-base text-red-500 text-center", scale)}>😢 Si è verificato un errore nel caricamento. Controlla la tua connessione a internet</h6>
         }
         {props.status == "not-found" &&
             <h5 style={scaleTwProps("w-[125px] my-1 text-base text-red-500 text-center", scale)}>😲 Quello che stavi cercando non c'è. Ci dispiace!</h5>

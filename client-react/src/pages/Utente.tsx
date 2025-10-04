@@ -15,6 +15,7 @@ import z from "zod";
 import CardBrano from "../components/cards/CardBrano";
 import CardUtente from "../components/cards/CardUtente";
 import Caricamento from "../components/icons/Caricamento";
+import { check404 } from "../functions/functions";
 
 // Schema e type per /passaggi?utente=...
 const PassaggioConBraniSchema = PassaggioDbSchema.extend({
@@ -29,6 +30,7 @@ function Utente() {
   const query = new URLSearchParams(search);
   const id = query.get("id");
   const [utente, setUtente] = useState<UtenteDb | null>(null);
+  const [errore, setErrore] = useState<"error" | "not-found" | null>(null);
 
   //useEffect necessario per recuperare i dati
   useEffect(() => {
@@ -42,20 +44,23 @@ function Utente() {
       setUtente(response.data as UtenteDb);
       //Il brano è stato caricato con successo, ora si possono caricare i passaggi
     } catch (error) {
-      //TODO: Gestire errore
-      console.error("Errore nel recupero del brano:", error);
+      if (check404(error)) {
+        setErrore("not-found");
+      } else {
+        setErrore("error");
+      }
     }
   }
 
   return (
     <div>
       {utente ? (
-  <div className="flex flex-row justify-center">
+        <div className="flex flex-row justify-center">
           <CardUtente utente={utente} size="large" />
         </div>
       ) : (
-  <div className="flex flex-row justify-center">
-          <Caricamento size="giant" status={"loading"}/>
+        <div className="flex flex-row justify-center">
+          <Caricamento size="giant" status={errore === null ? "loading" : errore} />
         </div>
       )}
       {utente !== null &&

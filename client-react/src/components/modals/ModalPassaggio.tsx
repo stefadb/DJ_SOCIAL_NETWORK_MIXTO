@@ -9,10 +9,11 @@ import { CommentoEUtenteSchema, ValutazioneEUtenteSchema, type CommentoEUtente, 
 import PagedList from "../PagedList";
 import CardValutazione from "../cards/CardValutazione";
 import CardPassaggio from "../cards/CardPassaggio";
-import { checkConnError, scaleTwProps } from "../../functions/functions";
-import { setGenericError } from "../../store/errorSlice";
+import { checkConnError, modalsContentClassName, modalsOverlayClassName, scaleTwProps } from "../../functions/functions";
+import { setGenericAlert } from "../../store/errorSlice";
 
 function ModalPassaggio(props: { passaggio: PassaggioDb, brano1: BranoDb | null, brano2: BranoDb | null, utente: UtenteDb | null, onClose: () => void }) {
+    Modal.setAppElement('#root');
     const loggedUtente: UtenteDb | null = useSelector((state: RootState) => (state.user as any).utente as UtenteDb | null);
     const [commentoInput, setCommentoInput] = useState<string>("");
     const [votoInput, setVotoInput] = useState<string>("");
@@ -36,12 +37,16 @@ function ModalPassaggio(props: { passaggio: PassaggioDb, brano1: BranoDb | null,
                 setCommentoInput("");
                 setSavingCommento(false);
             } catch (error) {
-                console.error("Errore durante l'invio della risposta:", error);
+                if (checkConnError(error)) {
+                    dispatch(setGenericAlert({ message: "Impossibile connettersi al server. Controlla la tua connessione ad internet.", type: "error" }));
+                } else {
+                    dispatch(setGenericAlert({ message: "Impossibile salvare il commento. Si è verificato un errore.", type: "error" }));
+                }
                 setSavingCommento(false);
             }
         }
         if (!loggedUtente) {
-            alert("Accedi per commentare il passaggio.");
+            dispatch(setGenericAlert({ message: "Accedi per commentare il passaggio.", type: "info" }));
         }
     }
 
@@ -59,12 +64,16 @@ function ModalPassaggio(props: { passaggio: PassaggioDb, brano1: BranoDb | null,
                 setVotoInput("");
                 setSavingValutazione(false);
             } catch (error) {
-                console.error("Errore durante l'invio della valutazione:", error);
+                if (checkConnError(error)) {
+                    dispatch(setGenericAlert({ message: "Impossibile connettersi al server. Controlla la tua connessione ad internet.", type: "error" }));
+                } else {
+                    dispatch(setGenericAlert({ message: "Impossibile salvare la valutazione. Si è verificato un errore.", type: "error" }));
+                }
                 setSavingValutazione(false);
             }
         }
         if (!loggedUtente) {
-            alert("Accedi per valutare il passaggio.");
+            dispatch(setGenericAlert({ message: "Accedi per valutare il passaggio.", type: "info" }));
         }
     }
 
@@ -76,8 +85,12 @@ function ModalPassaggio(props: { passaggio: PassaggioDb, brano1: BranoDb | null,
                 await api.delete(`/passaggi/${props.passaggio.id}`);
                 props.onClose();
             } catch (error) {
-                
-                
+                if (checkConnError(error)) {
+                    dispatch(setGenericAlert({ message: "Impossibile connettersi al server. Controlla la tua connessione ad internet.", type: "error" }));
+                } else {
+                    dispatch(setGenericAlert({ message: "Impossibile eliminare il passaggio dalla community. Si è verificato un errore.", type: "error" }));
+                }
+
             }
         }
     }
@@ -86,9 +99,8 @@ function ModalPassaggio(props: { passaggio: PassaggioDb, brano1: BranoDb | null,
         <Modal
             isOpen={true}
             onRequestClose={props.onClose}
-            style={{
-                content: scaleTwProps("max-w-[400px] w-full mx-auto", 1)
-            }}
+            overlayClassName={modalsOverlayClassName()}
+            className={modalsContentClassName()}
         >
             <button onClick={props.onClose} className="absolute top-2 right-2 bg-none border-none text-[22px] cursor-pointer">×</button>
 

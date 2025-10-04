@@ -4,18 +4,17 @@ import api from "../api";
 import type { CSSProperties } from "react";
 import { twj } from "tw-to-css";
 import axios from "axios";
-import { useDispatch } from "react-redux";
-import { setGenericError } from "../store/errorSlice";
 
 
 export async function getNomiArtistiBrano(id: number): Promise<ArtistaDb[]> {
-    await api.get(`/brani/singolo?trackId=${id}&limit=1&index=0`);
-    const response = await api.get(`/brani/esistenti/${id}?include_artista`);
-    if (response.status === 200) {
+    try {
+        await api.get(`/brani/singolo?trackId=${id}&limit=1&index=0`);
+        const response = await api.get(`/brani/esistenti/${id}?include_artista`);
         z.array(ArtistaDbSchema).parse(response.data.artista);
         return response.data.artista as ArtistaDb[];
-    } else {
-        throw new Error("Errore nel recupero degli artisti");
+    } catch (error) {
+        //Qui non devi gestire nessun errore
+        throw new Error(error);
     }
 }
 
@@ -37,6 +36,7 @@ export async function getNomiArtistiAlbum(idBrani: number[] | undefined, idAlbum
         z.array(ArtistaDbSchema).parse(response.data);
         return response.data as ArtistaDb[];
     } catch (error) {
+        //Qui non devi gestire nessun errore
         throw new Error(error);
     }
 }
@@ -56,7 +56,8 @@ export async function salvaBranoPreferito(utente: UtenteDb, idBrano: number): Pr
         }
         await api.put(`/utenti/${utente.id}`, { newRowValues: noId(utente), assocTablesAndIds: { brano: idBrani }, deleteOldAssociationsFirst: true });
     } catch (error) {
-        throw new Error("Errore nel rimuovere il brano dai preferiti:", error);
+        //Qui non devi gestire nessun errore
+        throw new Error(error);
     }
 }
 
@@ -67,7 +68,8 @@ export async function rimuoviBranoPreferito(utente: UtenteDb, idBrano: number): 
         const idBrani: number[] = z.array(BranoDbSchema).parse(responseIdBrani.data).filter(brano => brano.id !== idBrano).map(brano => brano.id);
         await api.put(`/utenti/${utente.id}`, { newRowValues: noId(utente), assocTablesAndIds: { brano: idBrani }, deleteOldAssociationsFirst: true });
     } catch (error) {
-        throw new Error("Errore nel rimuovere il brano dai preferiti:", error);
+        //Qui non devi gestire nessun errore
+        throw new Error(error);
     }
 }
 
@@ -129,6 +131,18 @@ export function checkConnError(error: unknown): boolean {
             error.code === "ECONNREFUSED" ||
             error.code === "ETIMEDOUT")
     );
+}
+
+export function deezerColor(){
+    return "#A238FF";
+}
+
+export function modalsOverlayClassName(){
+    return "fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center";
+}
+
+export function modalsContentClassName(){
+    return "relative max-w-[calc(100vw-80px)] max-h-[calc(100vh-80px)] overflow-y-auto bg-white p-6 rounded box-border";
 }
 
 

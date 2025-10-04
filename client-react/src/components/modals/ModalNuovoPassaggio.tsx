@@ -5,9 +5,11 @@ import type { RootState } from '../../store/store';
 import api from '../../api';
 import { type UtenteDb } from '../../types/db_types';
 import { closeModal } from '../../store/modalNuovoPassaggioSlice';
-import { scaleTwProps } from '../../functions/functions';
+import { checkConnError, modalsContentClassName, modalsOverlayClassName, scaleTwProps } from '../../functions/functions';
+import { setGenericAlert } from '../../store/errorSlice';
 
 function ModalNuovoPassaggio() {
+    Modal.setAppElement('#root');
     const dispatch = useDispatch();
     const isOpen = useSelector((state: RootState) => state.modalNuovoPassaggio.isOpen);
     const brano1 = useSelector((state: RootState) => state.giradischi.brano1);
@@ -20,11 +22,11 @@ function ModalNuovoPassaggio() {
     async function onSubmit(event: React.FormEvent) {
         event.preventDefault();
         if (!brano1 || !brano2) {
-            alert('Devi selezionare entrambi i brani sulla consolle prima di pubblicare un passaggio');
+            dispatch(setGenericAlert({ message: "Devi selezionare entrambi i brani sulla consolle prima di pubblicare un passaggio", type: "info" }));
             return;
         }
         if (!loggedUtente) {
-            alert('Devi essere loggato per pubblicare un passaggio');
+            dispatch(setGenericAlert({ message: "Devi essere loggato per pubblicare un passaggio", type: "info" }));
             return;
         }
         try {
@@ -44,10 +46,13 @@ function ModalNuovoPassaggio() {
             setInizioSecondoBrano('00:00:00');
             setCueSecondoBrano('00:00:00');
             dispatch(closeModal());
-            alert('Passaggio pubblicato con successo. Lo trovi nella pagina dedicata al tuo utente!');
+            dispatch(setGenericAlert({ message: "Passaggio pubblicato con successo. Lo trovi nella pagina dedicata al tuo utente!", type: "info" }));
         } catch (error) {
-            console.error('Errore nella pubblicazione del passaggio:', error);
-            alert('Errore nella pubblicazione del passaggio');
+            if (checkConnError(error)) {
+                dispatch(setGenericAlert({ message: "Impossibile connettersi al server. Controlla la tua connessione ad internet.", type: "error" }));
+            } else {
+                dispatch(setGenericAlert({ message: "Impossibile salvare le informazioni del tuo utente. Si è verificato un errore.", type: "error" }));
+            }
         }
     }
 
@@ -55,9 +60,8 @@ function ModalNuovoPassaggio() {
         <Modal
             isOpen={isOpen}
             onRequestClose={() => dispatch(closeModal())}
-            style={{
-                content: scaleTwProps("max-w-[500px] w-full mx-auto max-h-[80vh] overflow-auto", 1)
-            }}
+            overlayClassName={modalsOverlayClassName()}
+            className={modalsContentClassName()}
         >
             <h2>Pubblica Nuovo Passaggio</h2>
 

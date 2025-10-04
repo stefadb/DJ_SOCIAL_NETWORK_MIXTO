@@ -12,6 +12,7 @@ import CardGenere from "../components/cards/CardGenere";
 import { Clock } from "react-feather";
 import CardUtente from "../components/cards/CardUtente";
 import Caricamento from "../components/icons/Caricamento";
+import { set } from "zod";
 
 function Ricerca() {
     const { search } = useLocation();
@@ -25,6 +26,7 @@ function Ricerca() {
     const [albumDeezer, setAlbumDeezer] = useState<boolean>(false);
     const [braniDeezer, setBraniDeezer] = useState<boolean>(false);
     const [generiLoaded, setGeneriLoaded] = useState<boolean>(false);
+    const [erroreGeneri, setErroreGeneri] = useState<boolean>(false);
     const ultimeRicercheLength = 10;
 
     //console.log(JSON.parse(localStorage.getItem('ultimeRicerche') || '[]'));
@@ -101,8 +103,8 @@ function Ricerca() {
         try {
             await api.get(`/generi/tutti?uselessParam=uselessValue&limit=100&index=0`);
             setGeneriLoaded(true);
-        } catch (error) {
-            console.error("Errore nel recupero dei generi:", error);
+        } catch {
+            setErroreGeneri(true);
         }
     }
 
@@ -151,6 +153,9 @@ function Ricerca() {
                             />
                         </>
                     )}
+                    {!generiLoaded &&
+                        <Caricamento size="tiny" status={erroreGeneri ? "error" : "loading"} />
+                    }
                     <h3>Artisti:</h3>
                     <IncludiRisultatiDeezer inclusi={artistiDeezer} onClick={() => setArtistiDeezer(true)} />
                     {artistiDeezer &&

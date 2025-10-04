@@ -29,7 +29,7 @@ type ValutazioniMedie = z.infer<typeof ValutazioniMedieSchema>;
 function CardPassaggio(props: CardPassaggioProps) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [valutazioneMedia, setValutazioneMedia] = useState<ValutazioniMedie | null>(null);
+  const [valutazioneMedia, setValutazioneMedia] = useState<ValutazioniMedie | null | "error">(null);
   const [showModal, setShowModal] = useState<boolean>(false);
 
   const scales = {
@@ -41,6 +41,7 @@ function CardPassaggio(props: CardPassaggioProps) {
 
   async function loadValutazioneMedia() {
     try {
+      setValutazioneMedia(null);
       const response = await api.get(`/valutazioni/media?passaggio=${props.passaggio.id}`, { headers: { "Cache-Control": "no-cache, no-store, must-revalidate", Pragma: "no-cache", Expires: "0" } });
       const responseData: ValutazioniMedie[] = z.array(ValutazioniMedieSchema).parse(response.data);
       if (responseData.length === 1 && responseData[0] !== undefined) {
@@ -48,8 +49,8 @@ function CardPassaggio(props: CardPassaggioProps) {
       } else {
         setValutazioneMedia(null);
       }
-    } catch (error) {
-      console.error("Error loading valutazioni:", error);
+    } catch {
+      setValutazioneMedia("error");
     }
   }
 
@@ -82,20 +83,25 @@ function CardPassaggio(props: CardPassaggioProps) {
           </div>
         }
         {/* Stelle e azioni */}
-        {valutazioneMedia !== null &&
+        {valutazioneMedia !== null && valutazioneMedia !== "error" &&
           <div className="flex items-center mt-3 mx-4 mb-0">
             <Stelle
               rating={valutazioneMedia.voto_medio}
               bgColor="white"
             />
-            <span className="ml-2 text-gray-500"><b>{valutazioneMedia.voto_medio}/{5}</b> ({valutazioneMedia.numero_voti} {valutazioneMedia.numero_voti === 1 ? "voto" : "voti"})</span>
+            <span className="ml-2 text-gray-500"><b>{String(valutazioneMedia.voto_medio).substring(0,3)}/{5}</b> ({valutazioneMedia.numero_voti} {valutazioneMedia.numero_voti === 1 ? "voto" : "voti"})</span>
             <div className="ml-auto">
             </div>
           </div>
         }
-        {valutazioneMedia === null &&
+        {valutazioneMedia === null && valutazioneMedia !== "error" &&
           <div className="flex items-center mt-3 mx-4 mb-0">
             <span className="text-gray-500">Nessuna valutazione</span>
+          </div>
+        }
+        {valutazioneMedia === "error" &&
+          <div className="flex items-center mt-3 mx-4 mb-0">
+            <span className="text-red-500">Impossibile caricare le valutazioni</span>
           </div>
         }
         {/* Autore e dettagli passaggio */}
@@ -105,7 +111,7 @@ function CardPassaggio(props: CardPassaggioProps) {
               <>
                 <img className="rounded-full" style={scaleTwProps("w-8 h-8 shadow-md",scale)} src={"src/assets/artista_empty.jpg"} alt={"Immagine di profilo di " + props.utente.nome + " " + props.utente.cognome} />
                 <b>&nbsp;&nbsp;{props.utente.nome} {props.utente.cognome}</b>
-                <i>  (@{props.utente.username})</i>
+                  (@{props.utente.username})
               </>
             }
             {!props.utente &&

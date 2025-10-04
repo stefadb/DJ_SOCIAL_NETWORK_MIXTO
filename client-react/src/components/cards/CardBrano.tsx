@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { AlbumDbSchema, type AlbumDb, type ArtistaDb, type BranoDb } from "../../types/db_types";
-import { getNomiArtistiBrano, scaleTwProps} from "../../functions/functions";
+import { deezerColor, getNomiArtistiBrano, scaleTwProps} from "../../functions/functions";
 import { useNavigate } from "react-router-dom";
 import SalvaBranoPreferito from "../buttons/SalvaBranoPreferito";
 import PosizionaBrano from "../buttons/PosizionaBrano";
@@ -16,6 +16,7 @@ import VediAlbum from "../buttons/VediAlbum";
 function CardBrano(props: { brano: BranoDb, noDeckButtons?: boolean, noButtons?: boolean, size: "tiny" | "small" | "large" }) {
     const [artisti, setArtisti] = useState<ArtistaDb[] | null>(null);
     const [album, setAlbum] = useState<AlbumDb | null>(null);
+    const [erroreArtisti, setErroreArtisti] = useState<boolean>(false);
 
     const navigate = useNavigate();
 
@@ -41,7 +42,13 @@ function CardBrano(props: { brano: BranoDb, noDeckButtons?: boolean, noButtons?:
 
 
     async function loadArtisti() {
-        setArtisti(await getNomiArtistiBrano(props.brano.id));
+        try{
+            setErroreArtisti(false);
+            const nomi = await getNomiArtistiBrano(props.brano.id);
+            setArtisti(nomi);
+        } catch {
+            setErroreArtisti(true);
+        }
     }
 
     async function loadAlbum() {
@@ -50,6 +57,7 @@ function CardBrano(props: { brano: BranoDb, noDeckButtons?: boolean, noButtons?:
             AlbumDbSchema.parse(response.data);
             setAlbum(response.data as AlbumDb);
         } catch (error) {
+            //Qui non c'è nessun errore da gestire
             console.error("Errore nel recupero dell'album:", error);
         }
     }
@@ -60,7 +68,7 @@ function CardBrano(props: { brano: BranoDb, noDeckButtons?: boolean, noButtons?:
                     <div onClick={() => navigate(`/brano?id=${props.brano.id}`)} className="flex flex-row cursor-pointer">
                         <div className="relative">
                             <Badge scale={scale}>
-                                <Disc size={14 * scale} color={"#A238FF"} />
+                                <Disc size={14 * scale} color={deezerColor()} />
                             </Badge>
                             <img style={scaleTwProps("w-[100px] h-[100px] shadow-md",scale)} src={album && album.url_immagine ? album.url_immagine : "src/assets/album_empty.jpg"} alt={"Cover del brano " + props.brano.titolo} />
                         </div>
@@ -83,14 +91,14 @@ function CardBrano(props: { brano: BranoDb, noDeckButtons?: boolean, noButtons?:
                     </div>
                     <div style={scaleTwProps("flex flex-row items-center pt-px pb-2", scale)}>
                         <div style={scaleTwProps("pr-2",scale)}>
-                            <Users size={14 * scale} color={"#A238FF"}/>
+                            <Users size={14 * scale} color={deezerColor()} />
                         </div>
                         <div>
                             {artisti &&
                                 <ListaArtistiOGeneri key={artisti.map(artista => artista.id).join(",")} lines={3} list={artisti} entity={"artista"} scale={scale}/>
                             }
                             {!artisti &&
-                                <ListaArtistiOGeneri lines={3} list={[{ id: 0, nome: "Caricamento...", url_immagine: "" }]} noClick={true} entity={"artista"} scale={scale}/>
+                                <ListaArtistiOGeneri lines={3} list={[{ id: 0, nome: (erroreArtisti ? "Impossibile caricare gli artisti" : "Caricamento..."), url_immagine: "" }]} noClick={true} entity={"artista"} scale={scale}/>
                             }
                         </div>
                     </div>

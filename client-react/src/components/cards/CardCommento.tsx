@@ -3,11 +3,13 @@ import { CommentoEUtenteSchema, type CommentoEUtente } from "../../types/types";
 import PagedList from "../PagedList";
 import api from "../../api";
 import type { UtenteDb } from "../../types/db_types";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import type { RootState } from "../../store/store";
 import ReactTimeAgo from "react-time-ago";
 import TimeAgo from 'javascript-time-ago';
 import it from 'javascript-time-ago/locale/it';
+import { checkConnError } from "../../functions/functions";
+import { setGenericAlert } from "../../store/errorSlice";
 
 TimeAgo.addLocale(it);
 
@@ -20,8 +22,8 @@ function CardCommento(props: { commento: CommentoEUtente, livello: number }) {
     const [answer, setAnswer] = useState(""); // Stato per il contenuto della risposta
     const [nuovoTesto, setNuovoTesto] = useState(commento.testo); // Stato per il testo modificato del commento
     const [sendingAnswer, setSendingAnswer] = useState(false); // Stato per indicare se la risposta è in fase di invio
-
-    async function sendAnswer(){
+    const dispatch = useDispatch();
+    async function sendAnswer() {
         if (loggedUtente) {
             try {
                 setSendingAnswer(true);
@@ -38,13 +40,17 @@ function CardCommento(props: { commento: CommentoEUtente, livello: number }) {
                 setAnswer("");
                 setSendingAnswer(false);
             } catch (error) {
-                console.error("Errore durante l'invio della risposta:", error);
+                if (checkConnError(error)) {
+                    dispatch(setGenericAlert({message:"Impossibile connettersi al server. Controlla la tua connessione ad internet.", type: "error"}));
+                } else {
+                    dispatch(setGenericAlert({message:"Impossibile salvare il commento. Si è verificato un errore.", type: "error"}));
+                }
                 setSendingAnswer(false);
             }
         }
     }
 
-    async function salvaCommento(){
+    async function salvaCommento() {
         // Logica per salvare il commento modificato
         if (loggedUtente) {
             try {
@@ -61,7 +67,11 @@ function CardCommento(props: { commento: CommentoEUtente, livello: number }) {
                 setCommento({ ...commento, testo: nuovoTesto, data_pubblicazione: newData });
                 setEditing(false);
             } catch (error) {
-                console.error("Errore durante il salvataggio del commento:", error);
+                if (checkConnError(error)) {
+                    dispatch(setGenericAlert({message:"Impossibile connettersi al server. Controlla la tua connessione ad internet.", type: "error"}));
+                } else {
+                    dispatch(setGenericAlert({message:"Impossibile salvare il commento. Si è verificato un errore.", type: "error"}));
+                }
             }
         }
     }
@@ -70,7 +80,7 @@ function CardCommento(props: { commento: CommentoEUtente, livello: number }) {
         if (loggedUtente) {
             setShowAnswerBox(true);
         } else {
-            alert("Accedi per rispondere a questo commento");
+            dispatch(setGenericAlert({message:"Accedi per rispondere a questo commento", type: "info"}));
         }
     }
 
@@ -100,8 +110,8 @@ function CardCommento(props: { commento: CommentoEUtente, livello: number }) {
                             <>
                                 <textarea className="w-full h-[100px]" value={nuovoTesto} onChange={(e) => { setNuovoTesto(e.target.value); }} />
                                 <br />
-                                <button onClick={() => { salvaCommento();}}>Salva</button>
-                                <button onClick={() => { setEditing(false); setNuovoTesto(commento.testo);}}>Annulla</button>
+                                <button onClick={() => { salvaCommento(); }}>Salva</button>
+                                <button onClick={() => { setEditing(false); setNuovoTesto(commento.testo); }}>Annulla</button>
                             </>
                         }
                         <br />
@@ -126,7 +136,7 @@ function CardCommento(props: { commento: CommentoEUtente, livello: number }) {
                     <PagedList itemsPerPage={5} apiCall={`/commenti?commentoPadre=${commento.id}`} schema={CommentoEUtenteSchema} scrollMode="vertical" component={(element: CommentoEUtente) => {
                         return <CardCommento commento={element} livello={props.livello + 1} />;
                     }} showMoreButton={(onClick) => <div className="flex justify-end"><button style={{ width: minWidth + ((1.0 / (props.livello + 1)) * (100 - minWidth)) + "%" }} onClick={onClick}>Carica altre risposte</button></div>
-                    } emptyMessage={<></>}/>
+                    } emptyMessage={<></>} />
                 }
             </div>
         </>

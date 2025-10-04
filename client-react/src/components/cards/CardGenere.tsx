@@ -3,7 +3,8 @@ import type { GenereDb } from "../../types/db_types";
 import { useEffect, useRef } from "react";
 import Badge from "../Badge";
 import { Music } from "react-feather";
-import { scaleTwProps} from "../../functions/functions";
+import { deezerColor, scaleTwProps} from "../../functions/functions";
+import { de } from "zod/v4/locales";
 
 function CardGenere(props: { genere: GenereDb, size: "small" | "large" }) {
     const navigate = useNavigate();
@@ -32,7 +33,7 @@ function CardGenere(props: { genere: GenereDb, size: "small" | "large" }) {
             <div onClick={() => { navigate("/genere?id=" + props.genere.id); }} ref={containerRef} style={scaleTwProps("p-3 cursor-pointer opacity-0 transition-opacity duration-500 w-[100px]",scale)}>
                 <div className="relative">
                     <Badge scale={scale}>
-                        <Music size={14 * scale} color={"#A238FF"} />
+                        <Music size={14 * scale} color={deezerColor()} />
                     </Badge>
                     <img style={scaleTwProps("w-[100px] h-[100px] shadow-md",scale)} src={props.genere.url_immagine ? props.genere.url_immagine : "src/assets/genere_empty.jpg"} alt={"Immagine del genere musicale " + props.genere.nome} />
                 </div>

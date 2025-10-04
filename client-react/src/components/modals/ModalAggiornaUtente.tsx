@@ -5,10 +5,11 @@ import { setUtente } from '../../store/userSlice';
 import { useSelector } from 'react-redux';
 import type { RootState } from '../../store/store';
 import api from '../../api';
-import { checkConnError, scaleTwProps } from '../../functions/functions';
-import { setGenericError } from '../../store/errorSlice';
+import { checkConnError, modalsContentClassName, modalsOverlayClassName, scaleTwProps } from '../../functions/functions';
+import { setGenericAlert } from '../../store/errorSlice';
 
 function ModalAggiornaUtente(props: { isOpen: boolean; onRequestClose: () => void; }) {
+    Modal.setAppElement('#root');
     const dispatch = useDispatch();
     const loggedUtente: UtenteDb | null = useSelector((state: RootState) => (state.user as any).utente as UtenteDb | null);
     async function onSubmit(event: React.FormEvent) {
@@ -21,11 +22,11 @@ function ModalAggiornaUtente(props: { isOpen: boolean; onRequestClose: () => voi
             const confermaPassword = (event.target as any)[4].value;
             const vecchiaPassword = (event.target as any)[5].value;
             if (password && password !== confermaPassword) {
-                alert("Le password non coincidono");
+                dispatch(setGenericAlert({ message: "Le password non coincidono", type: "error" }));
                 return;
             }
             if (vecchiaPassword == "" && (password !== "" || confermaPassword !== "")) {
-                alert("Per modificare la password, inserire anche la password attuale");
+                dispatch(setGenericAlert({ message: "Per modificare la password, inserire anche la password attuale", type: "info" }));
             }
             try {
                 const newRowValues = { username, nome, cognome, password };
@@ -47,10 +48,14 @@ function ModalAggiornaUtente(props: { isOpen: boolean; onRequestClose: () => voi
                 }));
                 props.onRequestClose();
             } catch (error) {
-                console.error("Errore nell'aggiornamento utente:", error);
+                if (checkConnError(error)) {
+                    dispatch(setGenericAlert({ message: "Impossibile connettersi al server. Controlla la tua connessione ad internet.", type: "error" }));
+                } else {
+                    dispatch(setGenericAlert({ message: "Impossibile salvare le informazioni del tuo utente. Si è verificato un errore.", type: "error" }));
+                }
             }
         } else {
-            alert("Errore: utente non loggato");
+            dispatch(setGenericAlert({ message: "Errore: utente non loggato", type: "error" }));
         }
     }
 
@@ -60,7 +65,7 @@ function ModalAggiornaUtente(props: { isOpen: boolean; onRequestClose: () => voi
             dispatch(setUtente(null));
             props.onRequestClose();
         } catch (error) {
-
+            //Qui devi mostrare un toast di errore
         }
     }
 
@@ -68,9 +73,8 @@ function ModalAggiornaUtente(props: { isOpen: boolean; onRequestClose: () => voi
         <Modal
             isOpen={props.isOpen}
             onRequestClose={props.onRequestClose}
-            style={{
-                content: scaleTwProps("max-w-[400px] w-full mx-auto", 1)
-            }}
+            overlayClassName={modalsOverlayClassName()}
+            className={modalsContentClassName()}
         >
             <button onClick={() => { logout(); }}>Logout</button>
             <h2>Le mie informazioni</h2>

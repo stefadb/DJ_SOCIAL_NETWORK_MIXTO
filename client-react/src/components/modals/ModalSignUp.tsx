@@ -1,9 +1,13 @@
 import axios from 'axios';
 import Modal from 'react-modal';
 import api from '../../api';
-import { scaleTwProps } from '../../functions/functions';
+import { checkConnError, modalsContentClassName, modalsOverlayClassName, scaleTwProps } from '../../functions/functions';
+import { setGenericAlert } from '../../store/errorSlice';
+import { useDispatch } from 'react-redux';
 
 function ModalSignUp(props: { isOpen: boolean; onRequestClose: () => void; }) {
+    Modal.setAppElement('#root');
+    const dispatch = useDispatch();
     async function onSubmit(event: React.FormEvent) {
         event.preventDefault();
         const username = (event.target as any)[0].value;
@@ -12,7 +16,7 @@ function ModalSignUp(props: { isOpen: boolean; onRequestClose: () => void; }) {
         const password = (event.target as any)[3].value;
         const confermaPassword = (event.target as any)[4].value;
         if (password !== confermaPassword) {
-            alert("Le password non coincidono");
+            dispatch(setGenericAlert({ message: "Le password non coincidono", type: "error" }));
             return;
         }
         try {
@@ -21,7 +25,11 @@ function ModalSignUp(props: { isOpen: boolean; onRequestClose: () => void; }) {
             });
             props.onRequestClose();
         } catch (error) {
-            console.error("Errore nella registrazione:", error);
+            if (checkConnError(error)) {
+                dispatch(setGenericAlert({ message: "Impossibile connettersi al server. Controlla la tua connessione ad internet.", type: "error" }));
+            } else {
+                dispatch(setGenericAlert({ message: "Impossibile effettuare la registrazione. Controlla i tuoi dati.", type: "error" }));
+            }
         }
     }
 
@@ -29,9 +37,8 @@ function ModalSignUp(props: { isOpen: boolean; onRequestClose: () => void; }) {
         <Modal
             isOpen={props.isOpen}
             onRequestClose={props.onRequestClose}
-            style={{
-                content: scaleTwProps("max-w-[400px] w-full mx-auto",1)
-            }}
+            overlayClassName={modalsOverlayClassName()}
+            className={modalsContentClassName()}
         >
             <h2>Sign Up</h2>
             <form onSubmit={onSubmit}>

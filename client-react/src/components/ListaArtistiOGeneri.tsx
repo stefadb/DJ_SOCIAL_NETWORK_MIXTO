@@ -5,9 +5,10 @@ import { useLayoutEffect, useRef, useState } from "react";
 import Modal from "react-modal";
 import Badge from "./Badge";
 import { Music, User } from "react-feather";
-import { scaleTwProps } from "../functions/functions";
+import { deezerColor, modalsContentClassName, modalsOverlayClassName, scaleTwProps } from "../functions/functions";
 
 function ListaArtistiOGeneri(props: { list: ArtistaDb[], noClick?: boolean, entity: "artista", lines: number, scale: number } | { list: GenereDb[], noClick?: boolean, entity: "genere", lines: number, scale: number }) {
+    Modal.setAppElement('#root');
     const lines = props.lines;
     //ARRAY DI NUMERI DA 1 a lines
     const lineNumbers = Array.from({ length: lines }, (_, i) => i + 1);
@@ -92,12 +93,21 @@ function ListaArtistiOGeneri(props: { list: ArtistaDb[], noClick?: boolean, enti
         <div ref={maxHeightDivRef} className="overflow-y-hidden">
             <div ref={actualDivRef} className="flex flex-col justify-center hidden">
                 <div>
-                    {shownList.map((element, index) => {
-                        return <Fragment key={element.id}><Link style={scaleTwProps("text-base font-['Roboto_Condensed']", props.scale)} to={props.noClick ? "" : "/" + props.entity + "?id=" + element.id}>{element.nome}</Link>
-                            {index < shownList.length - 1 && ", "}</Fragment>
-                    })}
-                    {shownList.length < props.list.length &&
-                        <span onClick={() => setShowingMore(true)} style={scaleTwProps("cursor-pointer text-base font-['Roboto_Condensed']", props.scale)}> e altri {props.list.length - shownList.length}</span>
+                    {props.list.length > 0 &&
+                        <>
+                            {
+                                shownList.map((element, index) => {
+                                    return <Fragment key={element.id}><Link style={scaleTwProps("text-base font-['Roboto_Condensed']", props.scale)} to={props.noClick ? "" : "/" + props.entity + "?id=" + element.id}>{element.nome}</Link>
+                                        {index < shownList.length - 1 && ", "}</Fragment>
+                                })
+                            }
+                            {shownList.length < props.list.length &&
+                                <span onClick={() => setShowingMore(true)} style={scaleTwProps("cursor-pointer text-base font-['Roboto_Condensed']", props.scale)}> e altri {props.list.length - shownList.length}</span>
+                            }
+                        </>
+                    }
+                    {props.list.length === 0 &&
+                        <span style={scaleTwProps("text-base font-['Roboto_Condensed']", props.scale)}>Nessun {props.entity}</span>
                     }
                 </div>
             </div>
@@ -108,9 +118,8 @@ function ListaArtistiOGeneri(props: { list: ArtistaDb[], noClick?: boolean, enti
             </div>
             {showingMore &&
                 <Modal
-                    style={{
-                        content: scaleTwProps("max-w-[400px] w-full mx-auto", 1)
-                    }}
+                    overlayClassName={modalsOverlayClassName()}
+                    className={modalsContentClassName()}
                     isOpen={true} onRequestClose={() => setShowingMore(false)}>
                     <div className="flex justify-end">
                         <button onClick={() => setShowingMore(false)} className="absolute bg-none border-none cursor-pointer text-[22px] p-2">×</button>
@@ -122,10 +131,10 @@ function ListaArtistiOGeneri(props: { list: ArtistaDb[], noClick?: boolean, enti
                                 <div className="relative p-1 w-6 h-6">
                                     <Badge scale={1}>
                                         {props.entity == "artista" &&
-                                            <User size={14} color={"#A238FF"} />
+                                            <User size={14} color={deezerColor()} />
                                         }
                                         {props.entity == "genere" &&
-                                            <Music size={14} color={"#A238FF"} />
+                                            <Music size={14} color={deezerColor()} />
                                         }
                                     </Badge>
                                 </div>

@@ -5,7 +5,6 @@ import {
     ArtistaDbSchema,
     BranoDbSchema,
     GenereDbSchema,
-    PassaggioDbSchema,
     type ArtistaDb,
     type BranoDb,
     type GenereDb,
@@ -15,10 +14,10 @@ import CardPassaggio from "../components/cards/CardPassaggio";
 import PagedList from "../components/PagedList";
 import CardBrano from "../components/cards/CardBrano";
 import CardArtista from "../components/cards/CardArtista";
-import z from "zod";
 import CardGenere from "../components/cards/CardGenere";
 import { PassaggioConBraniEUtenteSchema, type PassaggioConBraniEUtente } from "../types/types";
 import Caricamento from "../components/icons/Caricamento";
+import { check404 } from "../functions/functions";
 
 function Genere() {
     //Il componente deve prendere in input l'id del brano (da passare come parametro di query nell'URL) e fare una chiamata al backend per ottenere i dati del brano
@@ -26,6 +25,7 @@ function Genere() {
     const query = new URLSearchParams(search);
     const id = query.get("id");
     const [genere, setGenere] = useState<GenereDb | null>(null);
+    const [errore, setErrore] = useState<"error" | "not-found" | null>(null);
 
     //useEffect necessario per recuperare i dati
     useEffect(() => {
@@ -39,7 +39,11 @@ function Genere() {
             GenereDbSchema.parse(response.data);
             setGenere(response.data as GenereDb);
         } catch (error) {
-            console.error("Errore nel recupero del genere:", error);
+            if (check404(error)) {
+                setErrore("not-found");
+            } else {
+                setErrore("error");
+            }
         }
     }
 
@@ -49,7 +53,7 @@ function Genere() {
                 {genere ? (
                     <CardGenere genere={genere} size="large" />
                 ) : (
-                    <Caricamento size="giant" status={"loading"}/>
+                    <Caricamento size="giant" status={errore === null ? "loading" : errore} />
                 )}
             </div>
             {genere !== null &&
@@ -65,9 +69,9 @@ function Genere() {
                     <div>
                         <h2>Brani del genere più popolari su Deezer</h2>
                         <PagedList itemsPerPage={5} apiCall={`/brani/genere?genreId=${genere.id}`} schema={BranoDbSchema} scrollMode="horizontal" component={(element: BranoDb) => (
-                            <CardBrano key={element.id} brano={element} size={"small"}/>
+                            <CardBrano key={element.id} brano={element} size={"small"} />
                         )}
-                        emptyMessage="😮 Nessun brano trovato"
+                            emptyMessage="😮 Nessun brano trovato"
                         />
                     </div>
                     <div>

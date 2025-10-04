@@ -4,9 +4,11 @@ import { UtenteDbSchema } from '../../types/db_types';
 import { useDispatch } from 'react-redux';
 import { setUtente } from '../../store/userSlice';
 import api from '../../api';
-import { scaleTwProps } from '../../functions/functions';
+import { checkConnError, modalsContentClassName, modalsOverlayClassName, scaleTwProps } from '../../functions/functions';
+import { setGenericAlert } from '../../store/errorSlice';
 
 function ModalSignIn(props: { isOpen: boolean; onRequestClose: () => void; }) {
+    Modal.setAppElement('#root');
     const dispatch = useDispatch();
     async function onSubmit(event: React.FormEvent) {
         event.preventDefault();
@@ -17,7 +19,11 @@ function ModalSignIn(props: { isOpen: boolean; onRequestClose: () => void; }) {
             dispatch(setUtente(utente));
             props.onRequestClose();
         } catch (error) {
-            console.error("Errore nel login:", error);
+            if (checkConnError(error)) {
+                dispatch(setGenericAlert({ message: "Impossibile connettersi al server. Controlla la tua connessione ad internet.", type: "error" }));
+            } else {
+                dispatch(setGenericAlert({ message: "Impossibile effettuare il login. Controlla le tue credenziali.", type: "error" }));
+            }
         }
     }
 
@@ -25,9 +31,8 @@ function ModalSignIn(props: { isOpen: boolean; onRequestClose: () => void; }) {
         <Modal
             isOpen={props.isOpen}
             onRequestClose={props.onRequestClose}
-            style={{
-                content: scaleTwProps("max-w-[400px] w-full mx-auto", 1)
-            }}
+            overlayClassName={modalsOverlayClassName()}
+            className={modalsContentClassName()}
         >
             <h2>Sign In</h2>
             <form onSubmit={onSubmit}>

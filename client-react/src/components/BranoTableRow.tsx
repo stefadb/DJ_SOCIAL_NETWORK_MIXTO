@@ -6,11 +6,17 @@ import { useNavigate } from "react-router-dom";
 
 function BranoTableRow(props: { element: { numero_passaggi: number; id_brano_1: number; brano_1_array: BranoDb[] } | { numero_passaggi: number; id_brano_2: number; brano_2_array: BranoDb[] } }) {
     const [artistiBrano, setArtistiBrano] = useState<ArtistaDb[] | null>(null);
+    const [erroreArtisti, setErroreArtisti] = useState<boolean>(false);
     const navigate = useNavigate();
 
     async function loadArtistiPassaggi() {
-        const nomi = await getNomiArtistiBrano("id_brano_2" in props.element ? props.element.id_brano_2 : props.element.id_brano_1);
-        setArtistiBrano(nomi);
+        try{
+            setErroreArtisti(false);
+            const nomi = await getNomiArtistiBrano("id_brano_2" in props.element ? props.element.id_brano_2 : props.element.id_brano_1);
+            setArtistiBrano(nomi);
+        } catch {
+            setErroreArtisti(true);
+        }
     }
 
     useEffect(() => {
@@ -30,7 +36,7 @@ function BranoTableRow(props: { element: { numero_passaggi: number; id_brano_1: 
                 <ListaArtistiOGeneri key={artistiBrano.map(artista => artista.id).join(",")} lines={2} list={artistiBrano} entity={"artista"} scale={1}/>
             }
             {!artistiBrano &&
-                <ListaArtistiOGeneri lines={2} list={[{ id: 0, nome: "Caricamento...", url_immagine: "" }]} noClick={true} entity={"artista"} scale={1}/>
+                <ListaArtistiOGeneri lines={2} list={[{ id: 0, nome: (erroreArtisti ? "Impossibile caricare gli artisti" : "Caricamento..."), url_immagine: "" }]} noClick={true} entity={"artista"} scale={1}/>
             }
         </div>
     </div>

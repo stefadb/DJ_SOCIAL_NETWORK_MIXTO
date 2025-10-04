@@ -28,7 +28,7 @@ function CardUtente(props: { utente: UtenteDb, size: "small" | "large" }) {
     }
     return (
         <div ref={containerRef} onClick={() => { navigate("/utente?id=" + props.utente.id); }} style={scaleTwProps("p-3 cursor-pointer opacity-0 transition-opacity duration-500 w-[100px]",scale)}>
-            <div className="cursor-pointer">
+            <div className="relative">
                 <Badge scale={scale}>
                     <User size={14 * scale} />
                 </Badge>

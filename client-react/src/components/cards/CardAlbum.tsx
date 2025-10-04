@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import DynamicText from "../DynamicText";
 import MezzoDisco from "../MezzoDisco";
 import { Calendar, Music } from "react-feather";
-import { dataItaliana, scaleTwProps} from "../../functions/functions";
+import { dataItaliana, deezerColor, scaleTwProps} from "../../functions/functions";
 import { useEffect, useMemo, useState } from "react";
 import api from "../../api";
 import z from "zod";
@@ -15,6 +15,7 @@ import Badge from "../Badge";
 function CardAlbum(props: { album: AlbumDb, size: "small" | "large" }) {
     const [generi, setGeneri] = useState<GenereDb[] | null>(null);
     const [dataUscita, setDataUscita] = useState<string | null>(null);
+    const [erroreGeneri, setErroreGeneri] = useState<boolean>(false);
 
     useEffect(() => {
         loadAlbum();
@@ -35,6 +36,7 @@ function CardAlbum(props: { album: AlbumDb, size: "small" | "large" }) {
 
     async function loadAlbum() {
         try {
+            setErroreGeneri(false);
             await api.get(`/album/singolo?albumId=${props.album.id}&limit=1&index=0`);
             const generiResponse = await api.get(`/generi/esistenti?album=${props.album.id}`);
             const generi: GenereDb[] = z.array(GenereDbSchema).parse(generiResponse.data) as GenereDb[];
@@ -42,8 +44,8 @@ function CardAlbum(props: { album: AlbumDb, size: "small" | "large" }) {
             const album: AlbumDb = AlbumDbSchema.parse(albumResponse.data);
             setGeneri(generi);
             setDataUscita(album.data_uscita);
-        } catch (error) {
-            console.error("Errore nel recupero dell'album:", error);
+        } catch {
+            setErroreGeneri(true);
         }
     }
 
@@ -53,9 +55,9 @@ function CardAlbum(props: { album: AlbumDb, size: "small" | "large" }) {
             <div style={scaleTwProps("p-3 w-[150px] rounded-lg shadow-md",scale)}>
                 <div>
                     <div className="flex flex-row cursor-pointer" onClick={() => navigate(`/album?id=${props.album.id}`)}>
-                        <div className="text-gray-500">
+                        <div className="relative">
                             <Badge scale={scale}>
-                                <AlbumIcon size={14 * scale} color={"#A238FF"} />
+                                <AlbumIcon size={14 * scale} color={deezerColor()} />
                             </Badge>
                             <img style={scaleTwProps("w-[100px] h-[100px] shadow-md",scale)} src={props.album.url_immagine ? props.album.url_immagine : "src/assets/album_empty.jpg"} alt={"Cover album " + props.album.titolo} />
                         </div>
@@ -78,14 +80,14 @@ function CardAlbum(props: { album: AlbumDb, size: "small" | "large" }) {
                     </div>
                     <div style={scaleTwProps("flex flex-row items-center pt-1 pb-2",scale)}>
                         <div style={scaleTwProps("pr-2", scale)}>
-                            <Music size={14 * scale} color={"#A238FF"}/>
+                            <Music size={14 * scale} color={deezerColor()} />
                         </div>
                         <div>
                             {generi &&
                                 <ListaArtistiOGeneri key={generi.map(genere => genere.id).join(",")} lines={3} list={generi} entity={"genere"} scale={scale}/>
                             }
                             {!generi &&
-                                <ListaArtistiOGeneri lines={3} list={[{ id: 0, nome: "Caricamento...", url_immagine: "" }]} noClick={true} entity={"genere"} scale={scale}/>
+                                <ListaArtistiOGeneri lines={3} list={[{ id: 0, nome: (erroreGeneri ? "Impossibile caricare i generi" : "Caricamento..."), url_immagine: "" }]} noClick={true} entity={"genere"} scale={scale}/>
                             }
                         </div>
                     </div>

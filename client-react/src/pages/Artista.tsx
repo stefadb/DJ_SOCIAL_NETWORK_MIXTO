@@ -19,6 +19,7 @@ import CardArtista from "../components/cards/CardArtista";
 import z from "zod";
 import { PassaggioConBraniEUtenteSchema, type PassaggioConBraniEUtente } from "../types/types";
 import Caricamento from "../components/icons/Caricamento";
+import { check404 } from "../functions/functions";
 
 function Artista() {
     //Il componente deve prendere in input l'id del brano (da passare come parametro di query nell'URL) e fare una chiamata al backend per ottenere i dati del brano
@@ -26,6 +27,7 @@ function Artista() {
     const query = new URLSearchParams(search);
     const id = query.get("id");
     const [artista, setArtista] = useState<ArtistaDb | null>(null);
+    const [errore, setErrore] = useState<"error" | "not-found" | null>(null);
 
     //useEffect necessario per recuperare i dati
     useEffect(() => {
@@ -40,8 +42,11 @@ function Artista() {
             ArtistaDbSchema.parse(responseArtista.data);
             setArtista(responseArtista.data as ArtistaDb);
         } catch (error) {
-            //TODO: Gestire errore
-            console.error("Errore nel recupero dell'artista:", error);
+            if (check404(error)) {
+                setErrore("not-found");
+            } else {
+                setErrore("error");
+            }
         }
     }
 
@@ -51,7 +56,7 @@ function Artista() {
                 {artista ? (
                     <CardArtista artista={artista} size="large" />
                 ) : (
-                    <Caricamento size="giant" status={"loading"}/>
+                    <Caricamento size="giant" status={errore === null ? "loading" : errore} />
                 )}
             </div>
             {artista !== null &&
@@ -59,16 +64,16 @@ function Artista() {
                     <div>
                         <h2>Album dell'artista</h2>
                         <PagedList itemsPerPage={5} apiCall={`/album/artista?artistId=${artista.id}`} schema={AlbumDbSchema} scrollMode="horizontal" component={(element: AlbumDb) => (
-                            <CardAlbum key={element.id} album={element} size={"small"}/>
-                        )} 
-                        emptyMessage="😮 Questo artista non ha pubblicato nessun album"/>
+                            <CardAlbum key={element.id} album={element} size={"small"} />
+                        )}
+                            emptyMessage="😮 Questo artista non ha pubblicato nessun album" />
                     </div>
                     <div>
                         <h2>Brani dell'artista più popolari su Deezer</h2>
                         <PagedList itemsPerPage={5} apiCall={`/brani/artista?artistId=${artista.id}`} schema={BranoDbSchema} scrollMode="horizontal" component={(element: BranoDb) => (
-                            <CardBrano key={element.id} brano={element} size={"small"}/>
+                            <CardBrano key={element.id} brano={element} size={"small"} />
                         )}
-                        emptyMessage="😮 Non ci sono brani particolarmente popolari di questo artista"
+                            emptyMessage="😮 Non ci sono brani particolarmente popolari di questo artista"
                         />
                     </div>
                     <div>
@@ -76,7 +81,7 @@ function Artista() {
                         <PagedList itemsPerPage={5} apiCall={`/artisti/simili?artistId=${artista.id}`} schema={ArtistaDbSchema} scrollMode="horizontal" component={(element: ArtistaDb) => (
                             <CardArtista key={element.id} artista={element} size="small" />
                         )}
-                        emptyMessage={`😮 Non ci sono artisti simili a ${artista.nome}. Hai trovato un artista davvero unico!`}
+                            emptyMessage={`😮 Non ci sono artisti simili a ${artista.nome}. Hai trovato un artista davvero unico!`}
                         />
                     </div>
                     <div>

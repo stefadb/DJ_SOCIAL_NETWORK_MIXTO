@@ -7,7 +7,7 @@ import api from "../../api";
 import { Star } from "react-feather";
 import { Tooltip } from "react-tooltip";
 import { v4 as uuidv4 } from 'uuid';
-import { setGenericError } from "../../store/errorSlice";
+import { setGenericAlert } from "../../store/errorSlice";
 
 function SalvaBranoPreferito(props: { idBrano: number, scale: number }) {
   // ID stabile che non cambia ad ogni render
@@ -32,7 +32,7 @@ function SalvaBranoPreferito(props: { idBrano: number, scale: number }) {
 
       onClick={async () => {
         if (loggedUtente === null) {
-          alert("Accedi per salvare questo brano tra i preferiti");
+          dispatch(setGenericAlert({message:"Accedi per salvare questo brano tra i preferiti", type: "info"}));
           return;
         }
 
@@ -45,7 +45,11 @@ function SalvaBranoPreferito(props: { idBrano: number, scale: number }) {
             setPreferito(true);
           }
         } catch(error){
-          
+          if(checkConnError(error)){
+            dispatch(setGenericAlert({message:"Impossibile connettersi al server. Controlla la tua connessione ad internet.", type: "error"}));
+          }else{
+            dispatch(setGenericAlert({message:!preferito ? "Impossibile salvare il brano tra i preferiti. Si è verificato un errore." : "Impossibile rimuovere il brano dai preferiti. Si è verificato un errore.", type: "error"}));
+          }
         }
       }}
     >

@@ -3,7 +3,7 @@ import { scaleTwProps } from "../functions/functions";
 function Badge(props: { children: React.ReactNode, scale: number }) {
     return (
         <div
-            className="absolute z-10"
+            className="absolute"
             style={scaleTwProps("bottom-1 right-1", props.scale)}
         >
             <div

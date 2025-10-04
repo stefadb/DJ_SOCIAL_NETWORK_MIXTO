@@ -7,6 +7,8 @@ import ModalAggiornaUtente from '../modals/ModalAggiornaUtente';
 import ModalSignUp from '../modals/ModalSignUp';
 import { setUtente } from '../../store/userSlice';
 import api from '../../api';
+import { checkConnError } from '../../functions/functions';
+import { setGenericAlert } from '../../store/errorSlice';
 
 function CardUtenteLoggato() {
     const dispatch = useDispatch();
@@ -18,15 +20,14 @@ function CardUtenteLoggato() {
     async function loadUtente() {
         try {
             const response = await api.get("/utenti/loggato", { headers: { "Cache-Control": "no-cache, no-store, must-revalidate", Pragma: "no-cache", Expires: "0" } });
-            //TODO: aggiorna lo stato globale con i dati dell'utente loggato
             if (response.data == "") {
                 dispatch(setUtente(null));
             } else {
                 const utente = UtenteDbSchema.parse(response.data);
                 dispatch(setUtente(utente));
             }
-        } catch (error) {
-            console.error("Errore nel recupero dell'utente loggato:", error);
+        } catch {
+            dispatch(setGenericAlert({message:"Impossibile connettersi al server. Controlla la tua connessione ad internet.", type: "error"}));
         }
     }
     useEffect(() => {

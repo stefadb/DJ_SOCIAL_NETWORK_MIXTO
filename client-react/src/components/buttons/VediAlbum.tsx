@@ -2,7 +2,7 @@ import { Tooltip } from "react-tooltip";
 import { v4 as uuidv4 } from 'uuid';
 import AlbumIcon from "../icons/AlbumIcon";
 import { useNavigate } from "react-router-dom";
-import { scaleTwProps} from "../../functions/functions";
+import { deezerColor, scaleTwProps} from "../../functions/functions";
 
 function VediAlbum(props: { idAlbum: number, scale: number}) {
   // ID stabile che non cambia ad ogni render
@@ -18,7 +18,7 @@ function VediAlbum(props: { idAlbum: number, scale: number}) {
     >
       <AlbumIcon 
         size={14*props.scale} 
-        color={"#A238FF"} 
+        color={deezerColor()} 
       />
     </button>
     <Tooltip
