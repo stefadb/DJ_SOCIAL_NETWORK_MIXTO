@@ -31,14 +31,14 @@ function ModalPassaggio(props: { idPassaggio: number, onClose: () => void }) {
         setUtente(null);
         //E ora puoi caricare tutto quanto
         try {
-            const responsePassaggio = await api.get("/passaggi/"+props.idPassaggio+"?include_utente");
+            const responsePassaggio = await api.get("/passaggi/" + props.idPassaggio + "?include_utente");
             PassaggioConUtenteSchema.parse(responsePassaggio.data) as PassaggioConUtente;
             setPassaggio(responsePassaggio.data as PassaggioDb);
             setUtente(responsePassaggio.data.utente);
-            const responseBrano1 = await api.get("/brani/esistenti/"+responsePassaggio.data.id_brano_1, { headers: { "Cache-Control": "no-cache, no-store, must-revalidate", Pragma: "no-cache", Expires: "0" } });
+            const responseBrano1 = await api.get("/brani/esistenti/" + responsePassaggio.data.id_brano_1, { headers: { "Cache-Control": "no-cache, no-store, must-revalidate", Pragma: "no-cache", Expires: "0" } });
             BranoDbSchema.parse(responseBrano1.data);
             setBrano1(responseBrano1.data as BranoDb);
-            const responseBrano2 = await api.get("/brani/esistenti/"+responsePassaggio.data.id_brano_2, { headers: { "Cache-Control": "no-cache, no-store, must-revalidate", Pragma: "no-cache", Expires: "0" } });
+            const responseBrano2 = await api.get("/brani/esistenti/" + responsePassaggio.data.id_brano_2, { headers: { "Cache-Control": "no-cache, no-store, must-revalidate", Pragma: "no-cache", Expires: "0" } });
             BranoDbSchema.parse(responseBrano2.data);
             setBrano2(responseBrano2.data as BranoDb);
             setStatus(null);
@@ -228,9 +228,13 @@ function ModalPassaggio(props: { idPassaggio: number, onClose: () => void }) {
                                         }} showMoreButton={(onClick) => <button className="w-full card-button rounded p-1" onClick={onClick}>Carica altre valutazioni</button>}
                                             emptyMessage="😮 Nessuno ha ancora valutato questo passaggio" />
                                     }
-                                    <div className="flex items-center mt-3">
-                                        <input type="number" min={1} max={5} value={votoInput} onChange={e => setVotoInput(e.target.value)} />
-                                        <button className="ml-2 px-[16px] py-2 bg-[#1976d2] text-white border-none rounded text-base cursor-pointer" disabled={votoInput.length === 0 || salvaValutazioneDisabled} onClick={inviaValutazione}>Vota</button>
+                                    <div className="flex flex-row items-center mt-3">
+                                        <div>
+                                            <input type="number" min={1} max={5} value={votoInput} onChange={e => setVotoInput(e.target.value)} />
+                                        </div>
+                                        <div>
+                                            <button className="card-button rounded p-2" disabled={votoInput.length === 0 || salvaValutazioneDisabled} onClick={inviaValutazione}><Check size={16}/>Vota</button>
+                                        </div>
                                     </div>
                                 </div>
                             }

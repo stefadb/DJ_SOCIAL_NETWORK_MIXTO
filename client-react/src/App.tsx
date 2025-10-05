@@ -114,7 +114,7 @@ function App() {
             <Route path="/genere" element={<Genere key={new URLSearchParams(useLocation().search).get("id")} />} />
             <Route path="/utente" element={<Utente key={new URLSearchParams(useLocation().search).get("id")} />} />
             <Route path="/ricerca" element={<Ricerca key={new URLSearchParams(useLocation().search).get("id")} />} />
-            <Route path="*" element={<Navigate to="/ricerca" replace />} />
+            <Route path="*" element={<Ricerca key={new URLSearchParams(useLocation().search).get("id")} />} />
           </Routes>
         </MainContainer>
         <SideContainer />

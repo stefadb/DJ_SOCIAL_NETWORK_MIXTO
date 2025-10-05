@@ -138,7 +138,7 @@ function ModalAggiornaUtente(props: { isOpen: boolean; onRequestClose: () => voi
             <ModalWrapper title="" onRequestClose={props.onRequestClose}>
                 <div className="py-2 flex flex-row flex-wrap">
                     <div className="p-2">
-                        <button className="card-button rounded p-2" onClick={() => { navigate("/utente?id="+loggedUtente?.id);props.onRequestClose();}} disabled={logoutDisabled}><User size={16}/> Il mio profilo</button>
+                        <button className="card-button rounded p-2" onClick={() => { navigate("/utente?id="+loggedUtente?.id);}} disabled={logoutDisabled}><User size={16}/> Il mio profilo</button>
                     </div>
                     <div className="p-2">
                         <button className="card-button rounded p-2" onClick={() => { logout(); }} disabled={logoutDisabled}><LogOut size={16}/> Logout</button>
@@ -147,7 +147,7 @@ function ModalAggiornaUtente(props: { isOpen: boolean; onRequestClose: () => voi
                 <h2>Le mie informazioni</h2>
                 <form onSubmit={onSubmit}>
                     <div className="py-2">
-                        <input type="text" className={inputTextClassName()} defaultValue={loggedUtente ? loggedUtente.username : ''} placeholder="Username" onInput={handleUsernameInput} required />
+                        <input maxLength={50} type="text" className={inputTextClassName()} defaultValue={loggedUtente ? loggedUtente.username : ''} placeholder="Username" onInput={handleUsernameInput} required />
                     </div>
                     <div className="py-2 max-w-[210px]">
                         {usernameAvailable === "unavailable" && <span className="text-red-500"><UserX size={16} /> Username già occupato</span>}
@@ -157,19 +157,19 @@ function ModalAggiornaUtente(props: { isOpen: boolean; onRequestClose: () => voi
                         {usernameAvailable === "error" && <span className="text-red-500"><AlertCircle size={16} /> Errore durante il controllo disponibilità!</span>}
                     </div>
                     <div className="py-2">
-                        <input type="text" className={inputTextClassName()} defaultValue={loggedUtente ? loggedUtente.nome : ''} placeholder="Nome" required />
+                        <input maxLength={100} type="text" className={inputTextClassName()} defaultValue={loggedUtente ? loggedUtente.nome : ''} placeholder="Nome" required />
                     </div>
                     <div className="py-2">
-                        <input type="text" className={inputTextClassName()} defaultValue={loggedUtente ? loggedUtente.cognome : ''} placeholder="Cognome" required />
+                        <input maxLength={100} type="text" className={inputTextClassName()} defaultValue={loggedUtente ? loggedUtente.cognome : ''} placeholder="Cognome" required />
                     </div>
                     <div className="py-2">
-                        <input type="password" className={inputTextClassName()} placeholder="Nuova Password" />
+                        <input maxLength={255} type="password" className={inputTextClassName()} placeholder="Nuova Password" />
                     </div>
                     <div className="py-2">
-                        <input type="password" className={inputTextClassName()} placeholder="Conferma Nuova Password" />
+                        <input maxLength={255} type="password" className={inputTextClassName()} placeholder="Conferma Nuova Password" />
                     </div>
                     <div className="py-2">
-                        <input type="password" className={inputTextClassName()} placeholder="Password Attuale" />
+                        <input maxLength={255} type="password" className={inputTextClassName()} placeholder="Password Attuale" />
                     </div>
                     <div className="py-2">
                         <button className="card-button rounded p-2 w-full" disabled={aggiornaDisabled || usernameAvailable !== "available"} type="submit">Aggiorna</button>

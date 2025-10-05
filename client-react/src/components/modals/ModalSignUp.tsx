@@ -84,7 +84,7 @@ function ModalSignUp(props: { isOpen: boolean; onRequestClose: () => void; }) {
             <ModalWrapper title="Registrati" onRequestClose={props.onRequestClose}>
                 <form onSubmit={onSubmit}>
                     <div className="py-2">
-                        <input type="text" className={inputTextClassName()} placeholder="Username" onInput={handleUsernameInput} required />
+                        <input maxLength={50} type="text" className={inputTextClassName()} placeholder="Username" onInput={handleUsernameInput} required />
                     </div>
                     <div className="py-2 max-w-[210px]">
                         {usernameAvailable === "unavailable" && <span className="text-red-500"><UserX size={16}/> Username già occupato</span>}
@@ -94,16 +94,16 @@ function ModalSignUp(props: { isOpen: boolean; onRequestClose: () => void; }) {
                         {usernameAvailable === "error" && <span className="text-red-500"><AlertCircle size={16}/> Errore durante il controllo disponibilità!</span>}
                     </div>
                     <div className="py-2">
-                        <input type="text" className={inputTextClassName()} placeholder="Nome" required />
+                        <input maxLength={100} type="text" className={inputTextClassName()} placeholder="Nome" required />
                     </div>
                     <div className="py-2">
-                        <input type="text" className={inputTextClassName()} placeholder="Cognome" required />
+                        <input maxLength={100} type="text" className={inputTextClassName()} placeholder="Cognome" required />
                     </div>
                     <div className="py-2">
-                        <input type="password" className={inputTextClassName()} placeholder="Password" required />
+                        <input maxLength={255} type="password" className={inputTextClassName()} placeholder="Password" required />
                     </div>
                     <div className="py-2">
-                        <input type="password" className={inputTextClassName()} placeholder="Conferma Password" required />
+                        <input maxLength={255} type="password" className={inputTextClassName()} placeholder="Conferma Password" required />
                     </div>
                     <div className="py-2">
                         <button className="card-button rounded p-2 w-full" disabled={registrazioneDisabled || usernameAvailable !== "available"} type="submit">Registrati</button>

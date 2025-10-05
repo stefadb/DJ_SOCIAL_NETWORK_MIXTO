@@ -44,10 +44,10 @@ function ModalSignIn(props: { isOpen: boolean; onRequestClose: () => void; openS
             <ModalWrapper title="Accedi" onRequestClose={props.onRequestClose}>
                 <form onSubmit={onSubmit}>
                     <div className="py-2">
-                        <input type="username" className={inputTextClassName()} placeholder="Username" required />
+                        <input maxLength={50} type="username" className={inputTextClassName()} placeholder="Username" required />
                     </div>
                     <div className="py-2">
-                        <input type="password" className={inputTextClassName()} placeholder="Password" required />
+                        <input maxLength={255} type="password" className={inputTextClassName()} placeholder="Password" required />
                     </div>
                     <div className="py-2">
                         <button className="card-button rounded p-2 w-full" disabled={loginDisabled} type="submit">Accedi</button>

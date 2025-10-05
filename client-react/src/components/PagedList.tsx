@@ -96,9 +96,9 @@ function PagedList<T>(props: { itemsPerPage: number; apiCall: string; schema?: Z
         } else {
             // Controlla se siamo alla fine
             //Se la larghezza del contenuto è minore della larghezza del contenitore, allora devi caricare un'altra pagina per riempire lo spazio
-            if(div.clientWidth > div.scrollWidth){
+            if (div.clientWidth > div.scrollWidth) {
                 nextPage();
-            }else if (div.scrollLeft !== 0 && div.scrollLeft + div.clientWidth >= div.scrollWidth-10) { /*Il -10 è per essere sicuri che nextPage venga chiamata */
+            } else if (div.scrollLeft !== 0 && div.scrollLeft + div.clientWidth >= div.scrollWidth - 10) { /*Il -10 è per essere sicuri che nextPage venga chiamata */
                 //Problema: questa funzione viene chiamata troppo!!!
                 //console.log("Next page perchè");
                 //console.log(div.scrollLeft + " + " + div.clientWidth + " >= " + div.scrollWidth);
@@ -115,10 +115,10 @@ function PagedList<T>(props: { itemsPerPage: number; apiCall: string; schema?: Z
             {props.showMoreButton &&
                 props.showMoreButton(() => nextPage())
             }
-            <div className={"justify-center items-center " + (props.scrollMode === "vertical" ? "w-full" : "h-full") + (!loading ? " hidden" : "")}>
+            <div className={"m-auto flex justify-center " + (props.scrollMode === "vertical" ? "w-full flex-row" : "h-full flex-col") + (!loading ? " hidden" : "")}>
                 <Caricamento size={"small"} status={"loading"} />
             </div>
-            <div className={"justify-center items-center " + (props.scrollMode === "vertical" ? "w-full" : "h-full") + (!error ? " hidden" : "")}>
+            <div className={"m-auto flex justify-center" + (props.scrollMode === "vertical" ? "w-full flex-row" : "h-full flex-col") + (!error ? " hidden" : "")}>
                 <Caricamento size={"small"} status={"error"} />
             </div>
         </Fragment>

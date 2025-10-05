@@ -66,6 +66,14 @@ function CardPassaggio(props: CardPassaggioProps) {
     };
   }, []);
 
+  function openModalNuovoPassaggio(){
+    setSearchParams((prev) => {
+      prev.set("modal", "nuovoPassaggio");
+      prev.delete("idInModal");
+      return prev;
+    });
+  }
+
   async function loadValutazioneMedia() {
     try {
       setValutazioneMedia(null);
@@ -116,8 +124,7 @@ function CardPassaggio(props: CardPassaggioProps) {
             <button className={"card-button"} style={scaleTwProps("p-1 rounded", 1)} onClick={() => {
               dispatch(setBrano1ToNuovoPassaggio(props.brano1));
               dispatch(setBrano2ToNuovoPassaggio(props.brano2));
-              dispatch(closeModal())
-              dispatch(openNuovoPassaggioModal());
+              openModalNuovoPassaggio();
             }}><Copy size={14} /> Crea passaggio come questo</button>
           </div>
         }
