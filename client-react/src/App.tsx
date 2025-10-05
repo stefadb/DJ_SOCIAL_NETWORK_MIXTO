@@ -2,13 +2,13 @@ import "./App.css";
 import MainContainer from "./components/MainContainer";
 import Navbar from "./components/Navbar";
 import SideContainer from "./components/SideContainer";
-import { Routes, Route, useLocation, Navigate } from "react-router-dom";
+import { Routes, Route, useLocation, Navigate, useSearchParams } from "react-router-dom";
 import Brano from "./pages/Brano";
 import Album from "./pages/Album";
 import Artista from "./pages/Artista";
 import Genere from "./pages/Genere";
 import Utente from "./pages/Utente";
-import ModalNuovoPassaggio from "./components/modals/ModalNuovoPassaggioNew";
+import ModalNuovoPassaggio from "./components/modals/ModalNuovoPassaggio";
 import ScrollToTop from "./components/ScrollToTop";
 import Ricerca from "./pages/Ricerca";
 import { toast, ToastContainer, type Id, type ToastIcon } from 'react-toastify';
@@ -17,13 +17,22 @@ import { useSelector, useDispatch } from "react-redux";
 import type { RootState } from "./store/store";
 import { cleargenericMessage } from "./store/errorSlice";
 import { AlertCircle, AlertTriangle, Clock, Info } from "react-feather";
+import ModalPassaggio from "./components/modals/ModalPassaggio";
+import ModalArtistiOGeneri from "./components/modals/ModalArtistiOGeneri";
+import Consolle from "./components/modals/Consolle";
+import ModalAggiornaUtente from "./components/modals/ModalAggiornaUtente";
+import ModalSignUp from "./components/modals/ModalSignUp";
+import ModalSignIn from "./components/modals/ModalSignIn";
+import type { UtenteDb } from "./types/db_types";
 
 function App() {
   const genericMessage: { message: string, type: 'error' | 'warning' | 'info' | 'no-autoclose' } | null = useSelector((state: RootState) => state.error.genericMessage as any);
   const genericMessageToast = useRef<Id>(null);
   const dispatch = useDispatch();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const idInModal = searchParams.get("idInModal");
   const toastClassName = "shadow-md font-['Roboto_Condensed']";
-  const modalNuovoPassaggioOpen = useSelector((state: RootState) => state.modalNuovoPassaggio.isOpen);
+  const loggedUtente: UtenteDb | null = useSelector((state: RootState) => (state.user as any).utente as UtenteDb | null);
 
   function getToastIcon(messageType: 'error' | 'warning' | 'info' | 'no-autoclose'): ToastIcon {
     switch (messageType) {
@@ -38,6 +47,22 @@ function App() {
       default:
         return <></>;
     }
+  }
+
+  function closeAnyModal() {
+    setSearchParams((prev) => {
+      prev.delete("modal");
+      prev.delete("idInModal");
+      return prev;
+    });
+  }
+
+  function openSignUp() {
+    setSearchParams((prev) => {
+      prev.set("modal", "signUp");
+      prev.delete("idInModal");
+      return prev;
+    });
   }
 
   useEffect(() => {
@@ -94,8 +119,29 @@ function App() {
         </MainContainer>
         <SideContainer />
       </div>
-      {modalNuovoPassaggioOpen &&
-        <ModalNuovoPassaggio />
+      {searchParams.get("modal") == "nuovoPassaggio" &&
+        <ModalNuovoPassaggio onRequestClose={closeAnyModal} />
+      }
+      {searchParams.get("modal") == "passaggio" && typeof idInModal === "string" &&
+        <ModalPassaggio idPassaggio={!Number.isNaN(Number(idInModal)) ? parseInt(idInModal) : 0} onClose={closeAnyModal} />
+      }
+      {searchParams.get("modal") == "artistiBrano" && typeof idInModal === "string" &&
+        <ModalArtistiOGeneri entity="artista" id={!Number.isNaN(Number(idInModal)) ? parseInt(idInModal) : 0} />
+      }
+      {searchParams.get("modal") == "generiAlbum" && typeof idInModal === "string" &&
+        <ModalArtistiOGeneri entity="genere" id={!Number.isNaN(Number(idInModal)) ? parseInt(idInModal) : 0} />
+      }
+      {searchParams.get("modal") == "consolle" &&
+        <Consolle onRequestClose={closeAnyModal} />
+      }
+      {searchParams.get("modal") == "signIn" && loggedUtente == null &&
+        <ModalSignIn isOpen={true} onRequestClose={closeAnyModal} openSignUp={openSignUp} />
+      }
+      {searchParams.get("modal") == "utente" && loggedUtente !== null &&
+        <ModalAggiornaUtente isOpen={true} onRequestClose={closeAnyModal} />
+      }
+      {searchParams.get("modal") == "signUp" && loggedUtente == null &&
+        <ModalSignUp isOpen={true} onRequestClose={closeAnyModal} />
       }
       <ToastContainer limit={1} />
     </div>

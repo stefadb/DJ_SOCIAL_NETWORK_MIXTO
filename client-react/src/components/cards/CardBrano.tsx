@@ -89,10 +89,10 @@ function CardBrano(props: { brano: BranoDb, noDeckButtons?: boolean, noButtons?:
                         </div>
                         <div>
                             {artisti &&
-                                <ListaArtistiOGeneri key={artisti.map(artista => artista.id).join(",")} lines={3} list={artisti} entity={"artista"} scale={scale}/>
+                                <ListaArtistiOGeneri key={artisti.map(artista => artista.id).join(",")} lines={3} list={artisti} entity={"artista"} scale={scale} idBrano={props.brano.id}/>
                             }
                             {!artisti &&
-                                <ListaArtistiOGeneri lines={3} list={[{ id: 0, nome: (erroreArtisti ? "Impossibile caricare gli artisti" : "Caricamento..."), url_immagine: "" }]} noClick={true} entity={"artista"} scale={scale}/>
+                                <ListaArtistiOGeneri lines={3} list={[{ id: 0, nome: (erroreArtisti ? "Impossibile caricare gli artisti" : "Caricamento..."), url_immagine: "" }]} noClick={true} entity={"artista"} scale={scale} idBrano={NaN}/>
                             }
                         </div>
                     </div>

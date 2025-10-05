@@ -1,20 +1,17 @@
 import { Fragment } from "react/jsx-runtime";
 import type { ArtistaDb, GenereDb } from "../types/db_types";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { useLayoutEffect, useRef, useState } from "react";
 import Modal from "react-modal";
-import Badge from "./Badge";
-import { Music, User } from "react-feather";
-import { deezerColor, modalsContentClassName, modalsOverlayClassName, scaleTwProps } from "../functions/functions";
-import ModalWrapper from "./modals/ModalWrapper";
+import { scaleTwProps } from "../functions/functions";
 
-function ListaArtistiOGeneri(props: { list: ArtistaDb[], noClick?: boolean, entity: "artista", lines: number, scale: number } | { list: GenereDb[], noClick?: boolean, entity: "genere", lines: number, scale: number }) {
+function ListaArtistiOGeneri(props: { list: ArtistaDb[], noClick?: boolean, entity: "artista", lines: number, scale: number, idBrano: number } | { list: GenereDb[], noClick?: boolean, entity: "genere", lines: number, scale: number, idAlbum: number }) {
     Modal.setAppElement('#root');
     const lines = props.lines;
     //ARRAY DI NUMERI DA 1 a lines
     const lineNumbers = Array.from({ length: lines }, (_, i) => i + 1);
     const [shownList, setShownList] = useState<ArtistaDb[] | GenereDb[]>(props.list);
-    const [showingMore, setShowingMore] = useState<boolean>(false);
+    const [searchParams, setSearchParams] = useSearchParams();
 
     const testDivRef = useRef<HTMLDivElement>(null);
     const actualDivRef = useRef<HTMLDivElement>(null);
@@ -62,6 +59,14 @@ function ListaArtistiOGeneri(props: { list: ArtistaDb[], noClick?: boolean, enti
         });
     }
 
+    function showMore() {
+        setSearchParams((prev) => {
+            prev.set("modal", "idAlbum" in props ? "generiAlbum" : "artistiBrano");
+            prev.set("idInModal", String("idAlbum" in props ? props.idAlbum : props.idBrano));
+            return prev;
+        });
+    }
+
     useLayoutEffect(() => {
         const measureHeight = () => {
             if (testDivRef.current) {
@@ -103,7 +108,7 @@ function ListaArtistiOGeneri(props: { list: ArtistaDb[], noClick?: boolean, enti
                                 })
                             }
                             {shownList.length < props.list.length &&
-                                <span onClick={() => setShowingMore(true)} style={scaleTwProps("cursor-pointer text-base font-['Roboto_Condensed']", props.scale)}> e altri {props.list.length - shownList.length}</span>
+                                <span onClick={showMore} style={scaleTwProps("cursor-pointer text-base font-['Roboto_Condensed']", props.scale)}> e altri {props.list.length - shownList.length}</span>
                             }
                         </>
                     }
@@ -117,32 +122,6 @@ function ListaArtistiOGeneri(props: { list: ArtistaDb[], noClick?: boolean, enti
                     return <div className="block" key={lineNumber}><Link style={scaleTwProps("text-base font-['Roboto_Condensed']", props.scale)} to={"blablabla"}>Test</Link></div>
                 })}
             </div>
-            {showingMore &&
-                <Modal
-                    overlayClassName={modalsOverlayClassName()}
-                    className={modalsContentClassName()}
-                    isOpen={true} onRequestClose={() => setShowingMore(false)}>
-                    <ModalWrapper title={`Tutti ${props.entity == "artista" ? "gli artisti" : "i generi"} di questo ${props.entity == "artista" ? "brano" : "album"}`} onRequestClose={() => setShowingMore(false)}>
-                        {props.list.map((element) => {
-                            return <div key={element.id} className="flex flex-row">
-                                <div className="relative p-1 w-6 h-6">
-                                    <Badge scale={1}>
-                                        {props.entity == "artista" &&
-                                            <User size={14} color={deezerColor()} />
-                                        }
-                                        {props.entity == "genere" &&
-                                            <Music size={14} color={deezerColor()} />
-                                        }
-                                    </Badge>
-                                </div>
-                                <div className="p-1">
-                                    <Link className="text-base font-['Roboto_Condensed']" to={"/" + props.entity + "?id=" + element.id}>{element.nome}</Link>
-                                </div>
-                            </div>
-                        })}
-                    </ModalWrapper>
-                </Modal>
-            }
         </div>
     </>;
 }

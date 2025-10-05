@@ -33,10 +33,10 @@ function BranoTableRow(props: { element: { numero_passaggi: number; id_brano_1: 
     <div className="classifica-cell cursor-pointer" onClick={navigateToBrano}><div className="classifica-cell-inside">{"brano_1_array" in props.element ? props.element.brano_1_array[0].durata.substring(0,8) : props.element.brano_2_array[0].durata.substring(0,8)}</div></div>
         <div className="classifica-cell">
             {artistiBrano &&
-                <ListaArtistiOGeneri key={artistiBrano.map(artista => artista.id).join(",")} lines={2} list={artistiBrano} entity={"artista"} scale={1}/>
+                <ListaArtistiOGeneri key={artistiBrano.map(artista => artista.id).join(",")} lines={2} list={artistiBrano} entity={"artista"} scale={1} idBrano={"id_brano_1" in props.element ? props.element.id_brano_1 : props.element.id_brano_2}/>
             }
             {!artistiBrano &&
-                <ListaArtistiOGeneri lines={2} list={[{ id: 0, nome: (erroreArtisti ? "Impossibile caricare gli artisti" : "Caricamento..."), url_immagine: "" }]} noClick={true} entity={"artista"} scale={1}/>
+                <ListaArtistiOGeneri lines={2} list={[{ id: 0, nome: (erroreArtisti ? "Impossibile caricare gli artisti" : "Caricamento..."), url_immagine: "" }]} noClick={true} entity={"artista"} scale={1} idBrano={NaN}/>
             }
         </div>
     </div>

@@ -22,6 +22,12 @@ export const PassaggioConBraniEUtenteSchema = PassaggioDbSchema.extend({
 });
 export type PassaggioConBraniEUtente = z.infer<typeof PassaggioConBraniEUtenteSchema>;
 
+// Schema e type per /passaggi?albumPrimoBrano= e /passaggi?albumSecondoBrano=
+export const PassaggioConUtenteSchema = PassaggioDbSchema.extend({
+    utente: UtenteDbSchema
+});
+export type PassaggioConUtente = z.infer<typeof PassaggioConUtenteSchema>;
+
 export const ScratchSchema = z.object({
     x1: z.number(),
     y1: z.number(),

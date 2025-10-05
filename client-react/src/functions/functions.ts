@@ -14,7 +14,7 @@ export async function getNomiArtistiBrano(id: number): Promise<ArtistaDb[]> {
         return response.data.artista as ArtistaDb[];
     } catch (error) {
         //Qui non devi gestire nessun errore
-        throw new Error(error);
+        throw error as any;
     }
 }
 
@@ -37,7 +37,7 @@ export async function getNomiArtistiAlbum(idBrani: number[] | undefined, idAlbum
         return response.data as ArtistaDb[];
     } catch (error) {
         //Qui non devi gestire nessun errore
-        throw new Error(error);
+        throw error as any;
     }
 }
 
@@ -57,7 +57,7 @@ export async function salvaBranoPreferito(utente: UtenteDb, idBrano: number): Pr
         await api.put(`/utenti/${utente.id}`, { newRowValues: noId(utente), assocTablesAndIds: { brano: idBrani }, deleteOldAssociationsFirst: true });
     } catch (error) {
         //Qui non devi gestire nessun errore
-        throw new Error(error);
+        throw error as any;
     }
 }
 
@@ -69,7 +69,7 @@ export async function rimuoviBranoPreferito(utente: UtenteDb, idBrano: number): 
         await api.put(`/utenti/${utente.id}`, { newRowValues: noId(utente), assocTablesAndIds: { brano: idBrani }, deleteOldAssociationsFirst: true });
     } catch (error) {
         //Qui non devi gestire nessun errore
-        throw new Error(error);
+        throw error as any;
     }
 }
 

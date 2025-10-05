@@ -272,6 +272,10 @@ export async function getEntityWithAssociations(
       `SELECT ${mainTableCols} FROM ${config.mainTableName} WHERE ${config.mainTableName}.id = ?`,
       [id]
     );
+    if ((mainRows as any[]).length === 0) {
+      res.status(404).json({ error: `Entità ${config.mainTableName} con id ${id} non trovata` });
+      return;
+    }
     const mainEntity = (mainRows as any[])[0];
     if (!dbResultIsValid(res, false, mainEntity, config.mainTableSchema, config.mainTableName)) {
       return;

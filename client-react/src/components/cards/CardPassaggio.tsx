@@ -14,6 +14,7 @@ import { ArrowRight, Clock, Copy, ExternalLink, MessageSquare } from "react-feat
 import { useNavigate } from "react-router-dom";
 import { dataItaliana, scaleTwProps } from "../../functions/functions";
 import ReactTimeAgo from "react-time-ago";
+import { useSearchParams } from "react-router-dom";
 
 type CardPassaggioProps = {
   passaggio: PassaggioDb;
@@ -30,8 +31,8 @@ function CardPassaggio(props: CardPassaggioProps) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [valutazioneMedia, setValutazioneMedia] = useState<ValutazioniMedie | null | "error">(null);
-  const [showModal, setShowModal] = useState<boolean>(false);
   const [braniScale, setBraniScale] = useState<number>(1);
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const cardBranoScale = props.insideModal ? braniScale : 0.75;
 
@@ -85,6 +86,14 @@ function CardPassaggio(props: CardPassaggioProps) {
     loadValutazioneMedia();
   }, [props.passaggio.id]);
 
+  function openPassaggioModal(){
+    setSearchParams((prev) => {
+      prev.set("modal", "passaggio");
+      prev.set("idInModal", String(props.passaggio.id));
+      return prev;
+    });
+  }
+
   return (
     <div style={scaleTwProps("p-3", 1)}>
       <div style={scaleTwProps("p-3 rounded-lg shadow-md", 1)}>
@@ -103,7 +112,7 @@ function CardPassaggio(props: CardPassaggioProps) {
         </div>
         {props.insideModal !== true &&
           <div style={{ maxWidth: maxWidth }} className="flex flex-row justify-between flex-wrap">
-            <button className={"card-button"} style={scaleTwProps("p-1 rounded", 1)} onClick={() => { setShowModal(true); }}>Più dettagli <ExternalLink size={14} /></button>
+            <button className={"card-button"} style={scaleTwProps("p-1 rounded", 1)} onClick={() => { openPassaggioModal(); }}>Più dettagli <ExternalLink size={14} /></button>
             <button className={"card-button"} style={scaleTwProps("p-1 rounded", 1)} onClick={() => {
               dispatch(setBrano1ToNuovoPassaggio(props.brano1));
               dispatch(setBrano2ToNuovoPassaggio(props.brano2));
@@ -162,9 +171,6 @@ function CardPassaggio(props: CardPassaggioProps) {
             </div>
           }
         </div>
-        {showModal &&
-          <ModalPassaggio passaggio={props.passaggio} brano1={props.brano1} brano2={props.brano2} utente={props.utente} onClose={() => setShowModal(false)} />
-        }
       </div>
     </div>
   );

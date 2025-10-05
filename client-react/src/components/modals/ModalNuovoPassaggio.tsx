@@ -9,11 +9,10 @@ import Modal from "react-modal";
 import { checkConnError, checkUserNotLoggedError, getNoConnMessage, getUserNotLoggedMessage, inputTextClassName, modalsContentClassName, modalsOverlayClassName } from "../../functions/functions";
 import ModalWrapper from "./ModalWrapper";
 import { ArrowRight, Info, UploadCloud, X } from "react-feather";
-import { closeModal } from "../../store/modalNuovoPassaggioSlice";
 import { setGenericAlert } from "../../store/errorSlice";
 import api from "../../api";
 
-function ModalNuovoPassaggio() {
+function ModalNuovoPassaggio(props: { onRequestClose: () => void }) {
     Modal.setAppElement('#root');
     const dispatch = useDispatch();
     const arrowSize = 16;
@@ -101,7 +100,7 @@ function ModalNuovoPassaggio() {
             setTesto('');
             setInizioSecondoBrano('');
             setCueSecondoBrano('');
-            dispatch(closeModal());
+            props.onRequestClose();
         } catch (error) {
             setPubblicaDisabled(false);
             if (checkConnError(error)) {
@@ -114,11 +113,11 @@ function ModalNuovoPassaggio() {
         }
     }
 
-    return <Modal isOpen={true} onRequestClose={() => dispatch(closeModal())}
+    return <Modal isOpen={true} onRequestClose={props.onRequestClose}
         overlayClassName={modalsOverlayClassName()}
         className={modalsContentClassName()}
     >
-        <ModalWrapper title="Pubblica un nuovo passaggio" onRequestClose={() => dispatch(closeModal())}>
+        <ModalWrapper title="Pubblica un nuovo passaggio" onRequestClose={props.onRequestClose}>
             <div
                 id="riferimento"
                 ref={riferimentoRef}
@@ -196,7 +195,7 @@ function ModalNuovoPassaggio() {
                             </div>
 
                             <div className="flex flex-row flex-wrap gap-2">
-                                <button type="button" onClick={() => dispatch(closeModal())} className="card-button p-2 rounded">
+                                <button type="button" onClick={props.onRequestClose} className="card-button p-2 rounded">
                                     <X size={16} />Annulla
                                 </button>
                                 <button type="submit" disabled={!brano1 || !brano2 || !loggedUtente || pubblicaDisabled} className="card-button p-2 rounded">

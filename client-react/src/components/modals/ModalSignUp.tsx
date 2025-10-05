@@ -1,12 +1,12 @@
 import Modal from 'react-modal';
 import api from '../../api';
-import { checkConnError, getNoConnMessage, inputTextClassName, modalsContentClassName, modalsOverlayClassName, scaleTwProps } from '../../functions/functions';
+import { checkConnError, getNoConnMessage, inputTextClassName, modalsContentClassName, modalsOverlayClassName} from '../../functions/functions';
 import { setGenericAlert } from '../../store/errorSlice';
 import { useDispatch } from 'react-redux';
 import ModalWrapper from './ModalWrapper';
 import { useRef, useState } from 'react';
 import { AlertCircle, Search, User, UserCheck, UserX } from 'react-feather';
-import z, { set } from 'zod';
+import z from 'zod';
 import { UtenteDbSchema } from '../../types/db_types';
 
 function ModalSignUp(props: { isOpen: boolean; onRequestClose: () => void; }) {

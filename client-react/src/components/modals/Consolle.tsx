@@ -5,12 +5,12 @@ import { setBrano1 } from "../../store/giradischiSlice";
 import { setBrano2 } from "../../store/giradischiSlice";
 import CardBrano from "../cards/CardBrano";
 import type { RootState } from "../../store/store";
-import { openModal } from "../../store/modalNuovoPassaggioSlice";
 import Modal from "react-modal";
 import { setGenericAlert } from "../../store/errorSlice";
 import { modalsContentClassName, modalsOverlayClassName } from "../../functions/functions";
 import ModalWrapper from "./ModalWrapper";
 import { Info, Repeat, Trash, UploadCloud } from "react-feather";
+import { useSearchParams } from "react-router-dom";
 
 function Consolle(props: { onRequestClose: () => void }) {
     Modal.setAppElement('#root');
@@ -18,7 +18,7 @@ function Consolle(props: { onRequestClose: () => void }) {
     const loggedUtente: UtenteDb | null = useSelector((state: RootState) => (state.user as any).utente);
     const brano1: BranoDb | null = useSelector((state: RootState) => (state.giradischi as any).brano1);
     const brano2: BranoDb | null = useSelector((state: RootState) => (state.giradischi as any).brano2);
-
+    const setSearchParams = useSearchParams()[1];
     const combinedCardBranoWidth = 396;
     const [scale, setScale] = useState<number>(1);
     const riferimentoRef = useRef<HTMLDivElement>(null);
@@ -68,6 +68,15 @@ function Consolle(props: { onRequestClose: () => void }) {
         dispatch(setBrano1(brano2));
         dispatch(setBrano2(temp));
     }
+
+    function openModalNuovoPassaggio() {
+        setSearchParams((prev) => {
+            prev.set("modal", "nuovoPassaggio");
+            prev.delete("idInModal");
+            return prev;
+        });
+    }
+
     return <Modal isOpen={true} onRequestClose={props.onRequestClose}
         overlayClassName={modalsOverlayClassName()}
         className={modalsContentClassName()}
@@ -76,7 +85,7 @@ function Consolle(props: { onRequestClose: () => void }) {
             <div
                 id="riferimento"
                 ref={riferimentoRef}
-                style={{maxWidth: combinedCardBranoWidth + "px"}}
+                style={{ maxWidth: combinedCardBranoWidth + "px" }}
                 className={`flex flex-col overflow-hidden`}
             >
                 <div>
@@ -126,13 +135,13 @@ function Consolle(props: { onRequestClose: () => void }) {
                             <button className="card-button rounded p-2 text-base" onClick={scambia}><Repeat size={16} />&nbsp;Scambia</button>
                         </div>
                         <div className="p-1">
-                            <button className="card-button rounded p-2 text-base" onClick={() => { if (loggedUtente) { dispatch(openModal()); props.onRequestClose(); } else { dispatch(setGenericAlert({ message: "Accedi per pubblicare un passaggio", type: "info" })); } }}><UploadCloud size={16} />&nbsp;Pubblica un nuovo passaggio</button>
+                            <button className="card-button rounded p-2 text-base" onClick={() => { if (loggedUtente) { openModalNuovoPassaggio(); } else { dispatch(setGenericAlert({ message: "Accedi per pubblicare un passaggio", type: "info" })); } }}><UploadCloud size={16} />&nbsp;Pubblica un nuovo passaggio</button>
                         </div>
                         <div className="p-1">
                             <button className="card-button rounded p-2 text-base" onClick={() => { dispatch(setBrano1(null)); dispatch(setBrano2(null)); localStorage.removeItem('brano1'); localStorage.removeItem('brano2'); }}><Trash size={16} />&nbsp;Libera entrambi i deck</button>
                         </div>
                     </div>
-                    <div style={{width: combinedCardBranoWidth + "px"}}></div>
+                    <div style={{ width: combinedCardBranoWidth + "px" }}></div>
                 </div>
             </div>
         </ModalWrapper>

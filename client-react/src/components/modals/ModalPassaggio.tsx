@@ -1,21 +1,67 @@
-import { useState } from "react";
-import { type PassaggioDb, type BranoDb, type UtenteDb } from "../../types/db_types";
+import { useEffect, useState } from "react";
+import { type PassaggioDb, type BranoDb, type UtenteDb, BranoDbSchema } from "../../types/db_types";
 import CardCommento from "../cards/CardCommento";
 import api from "../../api";
 import Modal from 'react-modal';
 import { useDispatch, useSelector } from 'react-redux';
 import type { RootState } from '../../store/store';
-import { CommentoEUtenteSchema, ValutazioneEUtenteSchema, type CommentoEUtente, type ValutazioneEUtente } from "../../types/types";
+import { CommentoEUtenteSchema, PassaggioConUtenteSchema, ValutazioneEUtenteSchema, type CommentoEUtente, type PassaggioConBraniEUtente, type PassaggioConUtente, type ValutazioneEUtente } from "../../types/types";
 import PagedList from "../PagedList";
 import CardValutazione from "../cards/CardValutazione";
 import CardPassaggio from "../cards/CardPassaggio";
-import { checkConnError, checkUserNotLoggedError, getNoConnMessage, getUserNotLoggedMessage, inputTextClassName, modalsContentClassName, modalsOverlayClassName, scaleTwProps } from "../../functions/functions";
+import { check404, checkConnError, checkUserNotLoggedError, getNoConnMessage, getUserNotLoggedMessage, inputTextClassName, modalsContentClassName, modalsOverlayClassName } from "../../functions/functions";
 import { cleargenericMessage, setGenericAlert } from "../../store/errorSlice";
 import ModalWrapper from "./ModalWrapper";
 import { Check, MessageCircle, Star } from "react-feather";
+import Caricamento from "../icons/Caricamento";
 
-function ModalPassaggio(props: { passaggio: PassaggioDb, brano1: BranoDb | null, brano2: BranoDb | null, utente: UtenteDb | null, onClose: () => void }) {
+function ModalPassaggio(props: { idPassaggio: number, onClose: () => void }) {
     Modal.setAppElement('#root');
+    const [status, setStatus] = useState<"error" | "not-found" | "loading" | null>(null);
+    const [passaggio, setPassaggio] = useState<PassaggioDb | null>(null);
+    const [brano1, setBrano1] = useState<BranoDb | null>(null);
+    const [brano2, setBrano2] = useState<BranoDb | null>(null);
+    const [utente, setUtente] = useState<UtenteDb | null>(null);
+
+    async function loadAll() {
+        setStatus("loading");
+        setPassaggio(null);
+        setBrano1(null);
+        setBrano2(null);
+        setUtente(null);
+        //E ora puoi caricare tutto quanto
+        try {
+            const responsePassaggio = await api.get("/passaggi/"+props.idPassaggio+"?include_utente");
+            PassaggioConUtenteSchema.parse(responsePassaggio.data) as PassaggioConUtente;
+            setPassaggio(responsePassaggio.data as PassaggioDb);
+            setUtente(responsePassaggio.data.utente);
+            const responseBrano1 = await api.get("/brani/esistenti/"+responsePassaggio.data.id_brano_1, { headers: { "Cache-Control": "no-cache, no-store, must-revalidate", Pragma: "no-cache", Expires: "0" } });
+            BranoDbSchema.parse(responseBrano1.data);
+            setBrano1(responseBrano1.data as BranoDb);
+            const responseBrano2 = await api.get("/brani/esistenti/"+responsePassaggio.data.id_brano_2, { headers: { "Cache-Control": "no-cache, no-store, must-revalidate", Pragma: "no-cache", Expires: "0" } });
+            BranoDbSchema.parse(responseBrano2.data);
+            setBrano2(responseBrano2.data as BranoDb);
+            setStatus(null);
+        } catch (error) {
+            if (checkConnError(error)) {
+                dispatch(setGenericAlert({ message: getNoConnMessage(), type: "error" }));
+                setStatus("error");
+            } else if (check404(error)) {
+                setStatus("not-found");
+            } else {
+                setStatus("error");
+            }
+        }
+    }
+
+    useEffect(() => {
+        loadAll();
+    }, []);
+
+    useEffect(() => {
+        loadAll();
+    }, []);
+
     const loggedUtente: UtenteDb | null = useSelector((state: RootState) => (state.user as any).utente as UtenteDb | null);
     const [commentoInput, setCommentoInput] = useState<string>("");
     const [votoInput, setVotoInput] = useState<string>("");
@@ -27,7 +73,7 @@ function ModalPassaggio(props: { passaggio: PassaggioDb, brano1: BranoDb | null,
     const [eliminaDisabled, setEliminaDisabled] = useState<boolean>(false);
     const dispatch = useDispatch();
     async function inviaCommento() {
-        if (commentoInput.length > 0 && loggedUtente) {
+        if (commentoInput.length > 0 && loggedUtente && passaggio) {
             try {
                 setSavingCommento(true);
                 setSalvaCommentoDisabled(true);
@@ -37,7 +83,7 @@ function ModalPassaggio(props: { passaggio: PassaggioDb, brano1: BranoDb | null,
                         testo: commentoInput,
                         data_pubblicazione: new Date().toISOString().slice(0, 19).replace('T', ' '),
                         id_utente: loggedUtente.id,
-                        id_passaggio: props.passaggio.id,
+                        id_passaggio: passaggio.id,
                         id_commento_padre: null
                     }
                 });
@@ -63,7 +109,7 @@ function ModalPassaggio(props: { passaggio: PassaggioDb, brano1: BranoDb | null,
     }
 
     async function inviaValutazione() {
-        if (votoInput.length > 0 && loggedUtente && !isNaN(parseInt(votoInput)) && parseInt(votoInput) >= 1 && parseInt(votoInput) <= 5) {
+        if (passaggio && votoInput.length > 0 && loggedUtente && !isNaN(parseInt(votoInput)) && parseInt(votoInput) >= 1 && parseInt(votoInput) <= 5) {
             try {
                 setSavingValutazione(true);
                 setSalvaValutazioneDisabled(true);
@@ -72,7 +118,7 @@ function ModalPassaggio(props: { passaggio: PassaggioDb, brano1: BranoDb | null,
                     newRowValues: {
                         voto: parseInt(votoInput),
                         id_utente: loggedUtente.id,
-                        id_passaggio: props.passaggio.id
+                        id_passaggio: passaggio.id
                     }
                 });
                 dispatch(cleargenericMessage());
@@ -96,13 +142,13 @@ function ModalPassaggio(props: { passaggio: PassaggioDb, brano1: BranoDb | null,
     }
 
     async function eliminaPassaggio() {
-        if (loggedUtente) {
+        if (loggedUtente && passaggio) {
             //Chiedi conferma prima di eliminare
             if (!confirm("Sei sicuro di voler eliminare questo passaggio dalla community?")) return;
             try {
                 setEliminaDisabled(true);
                 dispatch(setGenericAlert({ message: "Eliminazione del passaggio in corso...", type: "no-autoclose" }));
-                await api.delete(`/passaggi/${props.passaggio.id}`);
+                await api.delete(`/passaggi/${passaggio.id}`);
                 dispatch(cleargenericMessage());
                 setEliminaDisabled(false);
                 props.onClose();
@@ -128,64 +174,73 @@ function ModalPassaggio(props: { passaggio: PassaggioDb, brano1: BranoDb | null,
             className={modalsContentClassName()}
         >
             <ModalWrapper title="Passaggio" onRequestClose={props.onClose}>
-                {props.brano1 && props.brano2 &&
-                    <CardPassaggio insideModal passaggio={props.passaggio} brano1={props.brano1} brano2={props.brano2} utente={props.utente} />
-                }
-
-                {/* Commenti o valutazioni */}
-                <div className="border rounded-lg shadow-md">
-                    <div className="flex items-center justify-between px-3 pt-2 border-b border-[#eee]">
-                        <b className="text-base">{showValutazioni ? "Voti" : "Commenti"}</b>
-                        <button className="card-button rounded p-1" onClick={() => setShowValutazioni(v => !v)}>
-                            {showValutazioni ? <MessageCircle size={16}/> : <Star size={16}/>}
-                            {showValutazioni ? "  Mostra i commenti" : "  Mostra i voti"}
-                        </button>
+                {!(passaggio && brano1 && brano2 && utente) &&
+                    <div className="flex flex-row justify-center">
+                        <Caricamento size="giant" status={status !== null ? status : "loading"} />
                     </div>
-                    {!showValutazioni &&
-                        <div className="p-3">
-                            {savingCommento && <div>Salvataggio in corso...</div>}
-                            {!savingCommento &&
-                                <PagedList itemsPerPage={5} apiCall={`/commenti?passaggio=${props.passaggio.id}`} schema={CommentoEUtenteSchema} scrollMode="vertical" component={(element: CommentoEUtente) => {
-                                    return <CardCommento commento={element} livello={0} />;
-                                }} showMoreButton={(onClick) => <div className="p-2"><button className="w-full card-button rounded p-1" onClick={onClick}>Carica altri commenti</button></div>}
-                                    emptyMessage="😮 Non c'è ancora nessun commento qui" />
-                            }
-                            <div className={"flex flex-row items-center pt-3"}>
-                                <div className="flex-grow">
-                                <textarea
-                                    value={commentoInput}
-                                    onChange={e => setCommentoInput(e.target.value)}
-                                    placeholder="Aggiungi un commento"
-                                    className={inputTextClassName()}
-                                    rows={1}
-                                />
-                                </div>
-                                <div className="p-1">
-                                <button disabled={commentoInput.length === 0 || salvaCommentoDisabled} onClick={inviaCommento} className="card-button rounded p-2"><Check size={16} />  Invia</button>
-                                </div>
-                            </div>
-                        </div>
-                    }
-                    {showValutazioni &&
-                        <div className="p-3">
-                            {savingValutazione && <div>Salvataggio in corso...</div>}
-                            {!savingValutazione &&
-                                <PagedList itemsPerPage={10} apiCall={`/valutazioni?passaggio=${props.passaggio.id}`} schema={ValutazioneEUtenteSchema} scrollMode="vertical" component={(element: ValutazioneEUtente) => {
-                                    return <CardValutazione valutazione={element} />;
-                                }} showMoreButton={(onClick) => <button className="w-full card-button rounded p-1" onClick={onClick}>Carica altre valutazioni</button>}
-                                    emptyMessage="😮 Nessuno ha ancora valutato questo passaggio" />
-                            }
-                            <div className="flex items-center mt-3">
-                                <input type="number" min={1} max={5} value={votoInput} onChange={e => setVotoInput(e.target.value)} />
-                                <button className="ml-2 px-[16px] py-2 bg-[#1976d2] text-white border-none rounded text-base cursor-pointer" disabled={votoInput.length === 0 || salvaValutazioneDisabled} onClick={inviaValutazione}>Vota</button>
-                            </div>
-                        </div>
-                    }
-                </div>
-                {loggedUtente && props.passaggio.id_utente === loggedUtente.id &&
-                    <button disabled={eliminaDisabled} onClick={eliminaPassaggio} className="m-4 px-3 py-2 bg-red-500 text-white border-none rounded cursor-pointer">Elimina il passaggio dalla community</button>
                 }
-                <div className="h-4" />
+                {passaggio && brano1 && brano2 && utente &&
+                    <>
+                        {brano1 && brano2 &&
+                            <CardPassaggio insideModal passaggio={passaggio} brano1={brano1} brano2={brano2} utente={utente} />
+                        }
+
+                        {/* Commenti o valutazioni */}
+                        <div className="border rounded-lg shadow-md">
+                            <div className="flex items-center justify-between px-3 pt-2 border-b border-[#eee]">
+                                <b className="text-base">{showValutazioni ? "Voti" : "Commenti"}</b>
+                                <button className="card-button rounded p-1" onClick={() => setShowValutazioni(v => !v)}>
+                                    {showValutazioni ? <MessageCircle size={16} /> : <Star size={16} />}
+                                    {showValutazioni ? "  Mostra i commenti" : "  Mostra i voti"}
+                                </button>
+                            </div>
+                            {!showValutazioni &&
+                                <div className="p-3">
+                                    {savingCommento && <div>Salvataggio in corso...</div>}
+                                    {!savingCommento &&
+                                        <PagedList itemsPerPage={5} apiCall={`/commenti?passaggio=${passaggio.id}`} schema={CommentoEUtenteSchema} scrollMode="vertical" component={(element: CommentoEUtente) => {
+                                            return <CardCommento commento={element} livello={0} />;
+                                        }} showMoreButton={(onClick) => <div className="p-2"><button className="w-full card-button rounded p-1" onClick={onClick}>Carica altri commenti</button></div>}
+                                            emptyMessage="😮 Non c'è ancora nessun commento qui" />
+                                    }
+                                    <div className={"flex flex-row items-center pt-3"}>
+                                        <div className="flex-grow">
+                                            <textarea
+                                                value={commentoInput}
+                                                onChange={e => setCommentoInput(e.target.value)}
+                                                placeholder="Aggiungi un commento"
+                                                className={inputTextClassName()}
+                                                rows={1}
+                                            />
+                                        </div>
+                                        <div className="p-1">
+                                            <button disabled={commentoInput.length === 0 || salvaCommentoDisabled} onClick={inviaCommento} className="card-button rounded p-2"><Check size={16} />  Invia</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                            {showValutazioni &&
+                                <div className="p-3">
+                                    {savingValutazione && <div>Salvataggio in corso...</div>}
+                                    {!savingValutazione &&
+                                        <PagedList itemsPerPage={10} apiCall={`/valutazioni?passaggio=${passaggio.id}`} schema={ValutazioneEUtenteSchema} scrollMode="vertical" component={(element: ValutazioneEUtente) => {
+                                            return <CardValutazione valutazione={element} />;
+                                        }} showMoreButton={(onClick) => <button className="w-full card-button rounded p-1" onClick={onClick}>Carica altre valutazioni</button>}
+                                            emptyMessage="😮 Nessuno ha ancora valutato questo passaggio" />
+                                    }
+                                    <div className="flex items-center mt-3">
+                                        <input type="number" min={1} max={5} value={votoInput} onChange={e => setVotoInput(e.target.value)} />
+                                        <button className="ml-2 px-[16px] py-2 bg-[#1976d2] text-white border-none rounded text-base cursor-pointer" disabled={votoInput.length === 0 || salvaValutazioneDisabled} onClick={inviaValutazione}>Vota</button>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                        {loggedUtente && passaggio.id_utente === loggedUtente.id &&
+                            <button disabled={eliminaDisabled} onClick={eliminaPassaggio} className="m-4 px-3 py-2 bg-red-500 text-white border-none rounded cursor-pointer">Elimina il passaggio dalla community</button>
+                        }
+                        <div className="h-4" />
+                    </>
+                }
             </ModalWrapper>
         </Modal>
     );

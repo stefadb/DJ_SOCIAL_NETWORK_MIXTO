@@ -221,6 +221,10 @@ async function getEntityWithAssociations(req, res, config) {
         //ESEGUI LA QUERY DI SELECT SULLA TABELLA PRINCIPALE
         const mainTableCols = config.mainTableColumns.map(col => `${config.mainTableName}.${col}`).join(", ");
         const [mainRows] = await con.execute(`SELECT ${mainTableCols} FROM ${config.mainTableName} WHERE ${config.mainTableName}.id = ?`, [id]);
+        if (mainRows.length === 0) {
+            res.status(404).json({ error: `Entità ${config.mainTableName} con id ${id} non trovata` });
+            return;
+        }
         const mainEntity = mainRows[0];
         if (!dbResultIsValid(res, false, mainEntity, config.mainTableSchema, config.mainTableName)) {
             return;

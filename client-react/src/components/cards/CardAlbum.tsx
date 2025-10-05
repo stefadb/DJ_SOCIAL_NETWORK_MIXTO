@@ -84,10 +84,10 @@ function CardAlbum(props: { album: AlbumDb, size: "small" | "large" }) {
                         </div>
                         <div>
                             {generi &&
-                                <ListaArtistiOGeneri key={generi.map(genere => genere.id).join(",")} lines={3} list={generi} entity={"genere"} scale={scale}/>
+                                <ListaArtistiOGeneri key={generi.map(genere => genere.id).join(",")} lines={3} list={generi} entity={"genere"} scale={scale} idAlbum={props.album.id}/>
                             }
                             {!generi &&
-                                <ListaArtistiOGeneri lines={3} list={[{ id: 0, nome: (erroreGeneri ? "Impossibile caricare i generi" : "Caricamento..."), url_immagine: "" }]} noClick={true} entity={"genere"} scale={scale}/>
+                                <ListaArtistiOGeneri lines={3} list={[{ id: 0, nome: (erroreGeneri ? "Impossibile caricare i generi" : "Caricamento..."), url_immagine: "" }]} noClick={true} entity={"genere"} scale={scale} idAlbum={NaN}/>
                             }
                         </div>
                     </div>

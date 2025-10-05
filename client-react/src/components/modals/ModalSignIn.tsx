@@ -3,7 +3,7 @@ import { UtenteDbSchema } from '../../types/db_types';
 import { useDispatch } from 'react-redux';
 import { setUtente } from '../../store/userSlice';
 import api from '../../api';
-import { checkConnError, getNoConnMessage, inputTextClassName, modalsContentClassName, modalsOverlayClassName, scaleTwProps } from '../../functions/functions';
+import { checkConnError, getNoConnMessage, inputTextClassName, modalsContentClassName, modalsOverlayClassName} from '../../functions/functions';
 import { cleargenericMessage, setGenericAlert } from '../../store/errorSlice';
 import ModalWrapper from './ModalWrapper';
 import { useState } from 'react';
