@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { checkConnError, rimuoviBranoPreferito, salvaBranoPreferito, scaleTwProps } from "../../functions/functions";
+import { checkConnError, checkUserNotLoggedError, getNoConnMessage, getUserNotLoggedMessage, rimuoviBranoPreferito, salvaBranoPreferito, scaleTwProps } from "../../functions/functions";
 import { useDispatch, useSelector } from "react-redux";
 import type { UtenteDb } from "../../types/db_types";
 import type { RootState } from "../../store/store";
@@ -51,7 +51,9 @@ function SalvaBranoPreferito(props: { idBrano: number, scale: number }) {
         } catch(error){
           setButtonDisabled(false);
           if(checkConnError(error)){
-            dispatch(setGenericAlert({message:"Impossibile connettersi al server. Controlla la tua connessione ad internet.", type: "error"}));
+            dispatch(setGenericAlert({message:getNoConnMessage(), type: "error"}));
+          }else if(checkUserNotLoggedError(error)){
+            dispatch(setGenericAlert({message: getUserNotLoggedMessage(), type: "error"}))
           }else{
             dispatch(setGenericAlert({message:!preferito ? "Impossibile salvare il brano tra i preferiti. Si è verificato un errore." : "Impossibile rimuovere il brano dai preferiti. Si è verificato un errore.", type: "error"}));
           }

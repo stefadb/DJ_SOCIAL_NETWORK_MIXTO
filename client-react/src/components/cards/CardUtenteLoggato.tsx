@@ -7,7 +7,7 @@ import ModalAggiornaUtente from '../modals/ModalAggiornaUtente';
 import ModalSignUp from '../modals/ModalSignUp';
 import { setUtente } from '../../store/userSlice';
 import api from '../../api';
-import { scaleTwProps } from '../../functions/functions';
+import { getNoConnMessage, scaleTwProps } from '../../functions/functions';
 import { setGenericAlert } from '../../store/errorSlice';
 
 function CardUtenteLoggato() {
@@ -27,7 +27,7 @@ function CardUtenteLoggato() {
                 dispatch(setUtente(utente));
             }
         } catch {
-            dispatch(setGenericAlert({ message: "Impossibile connettersi al server. Controlla la tua connessione ad internet.", type: "error" }));
+            dispatch(setGenericAlert({ message: getNoConnMessage(), type: "error" }));
         }
     }
     useEffect(() => {

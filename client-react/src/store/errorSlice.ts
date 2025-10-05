@@ -2,7 +2,7 @@ import { createSlice} from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 
 interface ErrorState {
-    genericMessage: { message: string, type: 'error' | 'warning' | 'info' } | null;
+    genericMessage: { message: string, type: 'error' | 'warning' | 'info' | 'no-autoclose' } | null;
 }
 
 const initialState: ErrorState = {
@@ -13,7 +13,7 @@ const errorSlice = createSlice({
     name: 'error',
     initialState,
     reducers: {
-        setGenericAlert(state, action: PayloadAction<{ message: string, type: 'error' | 'warning' | 'info' }>) {
+        setGenericAlert(state, action: PayloadAction<{ message: string, type: 'error' | 'warning' | 'info' | 'no-autoclose' }>) {
             state.genericMessage = { message: action.payload.message, type: action.payload.type };
         },
         cleargenericMessage(state) {

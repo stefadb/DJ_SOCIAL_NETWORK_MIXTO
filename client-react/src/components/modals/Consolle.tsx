@@ -76,7 +76,8 @@ function Consolle(props: { onRequestClose: () => void }) {
             <div
                 id="riferimento"
                 ref={riferimentoRef}
-                className="flex flex-col overflow-hidden max-w-[396px]"
+                style={{maxWidth: combinedCardBranoWidth + "px"}}
+                className={`flex flex-col overflow-hidden`}
             >
                 <div>
                     <div className={`flex flex-row`}>

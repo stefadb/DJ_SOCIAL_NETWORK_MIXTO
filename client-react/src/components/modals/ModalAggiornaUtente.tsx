@@ -5,20 +5,22 @@ import { setUtente } from '../../store/userSlice';
 import { useSelector } from 'react-redux';
 import type { RootState } from '../../store/store';
 import api from '../../api';
-import { checkConnError, inputTextClassName, modalsContentClassName, modalsOverlayClassName, scaleTwProps } from '../../functions/functions';
+import { checkConnError, checkUserNotLoggedError, getNoConnMessage, getUserNotLoggedMessage, inputTextClassName, modalsContentClassName, modalsOverlayClassName, scaleTwProps } from '../../functions/functions';
 import { cleargenericMessage, setGenericAlert } from '../../store/errorSlice';
 import ModalWrapper from './ModalWrapper';
 import { useRef, useState } from 'react';
-import { AlertCircle, Search, User, UserCheck, UserX } from 'react-feather';
+import { AlertCircle, LogOut, Search, User, UserCheck, UserX } from 'react-feather';
 import z from 'zod';
+import { useNavigate } from 'react-router-dom';
 
 function ModalAggiornaUtente(props: { isOpen: boolean; onRequestClose: () => void; }) {
     Modal.setAppElement('#root');
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     const [logoutDisabled, setLogoutDisabled] = useState<boolean>(false);
     const [aggiornaDisabled, setAggiornaDisabled] = useState<boolean>(false);
-    const [usernameAvailable, setUsernameAvailable] = useState<"not-checking" | "checking" | "available" | "unavailable" | "error">("not-checking");
     const loggedUtente: UtenteDb | null = useSelector((state: RootState) => (state.user as any).utente as UtenteDb | null);
+    const [usernameAvailable, setUsernameAvailable] = useState<"not-checking" | "checking" | "available" | "unavailable" | "error">(loggedUtente ? "available" : "not-checking");
     async function onSubmit(event: React.FormEvent) {
         event.preventDefault();
         if (loggedUtente) {
@@ -38,7 +40,7 @@ function ModalAggiornaUtente(props: { isOpen: boolean; onRequestClose: () => voi
             try {
                 const newRowValues = { username, nome, cognome, password };
                 setAggiornaDisabled(true);
-                dispatch(setGenericAlert({ message: "Aggiornamento in corso...", type: "info" }));
+                dispatch(setGenericAlert({ message: "Aggiornamento in corso...", type: "no-autoclose" }));
                 const response = await api.put(`/utenti/${loggedUtente.id}`, {
                     newRowValues,
                     assocTablesAndIds: {
@@ -61,7 +63,9 @@ function ModalAggiornaUtente(props: { isOpen: boolean; onRequestClose: () => voi
             } catch (error) {
                 setAggiornaDisabled(false);
                 if (checkConnError(error)) {
-                    dispatch(setGenericAlert({ message: "Impossibile connettersi al server. Controlla la tua connessione ad internet.", type: "error" }));
+                    dispatch(setGenericAlert({ message: getNoConnMessage(), type: "error" }));
+                } else if (checkUserNotLoggedError(error)) {
+                    dispatch(setGenericAlert({ message: getUserNotLoggedMessage(), type: "error" }))
                 } else {
                     dispatch(setGenericAlert({ message: "Impossibile salvare le informazioni del tuo utente. Si è verificato un errore.", type: "error" }));
                 }
@@ -74,7 +78,7 @@ function ModalAggiornaUtente(props: { isOpen: boolean; onRequestClose: () => voi
     async function logout() {
         try {
             setLogoutDisabled(true);
-            dispatch(setGenericAlert({ message: "Logout in corso...", type: "info" }));
+            dispatch(setGenericAlert({ message: "Logout in corso...", type: "no-autoclose" }));
             await api.delete("/logout", { withCredentials: true });
             dispatch(cleargenericMessage());
             setLogoutDisabled(false);
@@ -83,7 +87,9 @@ function ModalAggiornaUtente(props: { isOpen: boolean; onRequestClose: () => voi
         } catch (error) {
             setLogoutDisabled(false);
             if (checkConnError(error)) {
-                dispatch(setGenericAlert({ message: "Impossibile connettersi al server. Controlla la tua connessione ad internet.", type: "error" }));
+                dispatch(setGenericAlert({ message: getNoConnMessage(), type: "error" }));
+            } else if (checkUserNotLoggedError(error)) {
+                dispatch(setGenericAlert({ message: getUserNotLoggedMessage(), type: "error" }))
             } else {
                 dispatch(setGenericAlert({ message: "Impossibile effettuare il logout. Si è verificato un errore.", type: "error" }));
             }
@@ -114,7 +120,9 @@ function ModalAggiornaUtente(props: { isOpen: boolean; onRequestClose: () => voi
             }
         } catch (error) {
             if (checkConnError(error)) {
-                dispatch(setGenericAlert({ message: "Impossibile connettersi al server. Controlla la tua connessione ad internet.", type: "error" }));
+                dispatch(setGenericAlert({ message: getNoConnMessage(), type: "error" }));
+            } else if (checkUserNotLoggedError(error)) {
+                dispatch(setGenericAlert({ message: getUserNotLoggedMessage(), type: "error" }))
             }
             setUsernameAvailable("error");
         }
@@ -128,8 +136,13 @@ function ModalAggiornaUtente(props: { isOpen: boolean; onRequestClose: () => voi
             className={modalsContentClassName()}
         >
             <ModalWrapper title="" onRequestClose={props.onRequestClose}>
-                <div className="py-2">
-                    <button className="card-button rounded p-2 w-full" onClick={() => { logout(); }} disabled={logoutDisabled}>Logout</button>
+                <div className="py-2 flex flex-row flex-wrap">
+                    <div className="p-2">
+                        <button className="card-button rounded p-2" onClick={() => { navigate("/utente?id="+loggedUtente?.id);props.onRequestClose();}} disabled={logoutDisabled}><User size={16}/> Il mio profilo</button>
+                    </div>
+                    <div className="p-2">
+                        <button className="card-button rounded p-2" onClick={() => { logout(); }} disabled={logoutDisabled}><LogOut size={16}/> Logout</button>
+                    </div>
                 </div>
                 <h2>Le mie informazioni</h2>
                 <form onSubmit={onSubmit}>

@@ -168,4 +168,16 @@ export function mPoints(): number[]{
     ];
 }
 
+export function getNoConnMessage(): string {
+    return "Impossibile connettersi al server. Controlla la tua connessione ad internet.";
+}
+
+export function getUserNotLoggedMessage(): string {
+    return "La sessione è scaduta oppure hai eseguito il logout. Effettua nuovamente l'accesso e riprova.";
+}
+
+export function checkUserNotLoggedError(error: unknown): boolean{
+    return axios.isAxiosError(error) && error.response !== undefined && error.response.status === 401 && error.response.data === "Utente non loggato";
+}
+
 

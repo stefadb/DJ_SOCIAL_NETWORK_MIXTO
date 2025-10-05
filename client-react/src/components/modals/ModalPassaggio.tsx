@@ -9,7 +9,7 @@ import { CommentoEUtenteSchema, ValutazioneEUtenteSchema, type CommentoEUtente, 
 import PagedList from "../PagedList";
 import CardValutazione from "../cards/CardValutazione";
 import CardPassaggio from "../cards/CardPassaggio";
-import { checkConnError, modalsContentClassName, modalsOverlayClassName, scaleTwProps } from "../../functions/functions";
+import { checkConnError, checkUserNotLoggedError, getNoConnMessage, getUserNotLoggedMessage, modalsContentClassName, modalsOverlayClassName, scaleTwProps } from "../../functions/functions";
 import { cleargenericMessage, setGenericAlert } from "../../store/errorSlice";
 import ModalWrapper from "./ModalWrapper";
 
@@ -30,7 +30,7 @@ function ModalPassaggio(props: { passaggio: PassaggioDb, brano1: BranoDb | null,
             try {
                 setSavingCommento(true);
                 setSalvaCommentoDisabled(true);
-                dispatch(setGenericAlert({ message: "Salvataggio del commento in corso...", type: "info" }));
+                dispatch(setGenericAlert({ message: "Salvataggio del commento in corso...", type: "no-autoclose" }));
                 await api.post("/commenti", {
                     newRowValues: {
                         testo: commentoInput,
@@ -48,7 +48,9 @@ function ModalPassaggio(props: { passaggio: PassaggioDb, brano1: BranoDb | null,
                 setSavingCommento(false);
                 setSalvaCommentoDisabled(false);
                 if (checkConnError(error)) {
-                    dispatch(setGenericAlert({ message: "Impossibile connettersi al server. Controlla la tua connessione ad internet.", type: "error" }));
+                    dispatch(setGenericAlert({ message: getNoConnMessage(), type: "error" }));
+                } else if (checkUserNotLoggedError(error)) {
+                    dispatch(setGenericAlert({ message: getUserNotLoggedMessage(), type: "error" }))
                 } else {
                     dispatch(setGenericAlert({ message: "Impossibile salvare il commento. Si è verificato un errore.", type: "error" }));
                 }
@@ -64,7 +66,7 @@ function ModalPassaggio(props: { passaggio: PassaggioDb, brano1: BranoDb | null,
             try {
                 setSavingValutazione(true);
                 setSalvaValutazioneDisabled(true);
-                dispatch(setGenericAlert({ message: "Salvataggio della valutazione in corso...", type: "info" }));
+                dispatch(setGenericAlert({ message: "Salvataggio della valutazione in corso...", type: "no-autoclose" }));
                 await api.post("/valutazioni", {
                     newRowValues: {
                         voto: parseInt(votoInput),
@@ -78,7 +80,9 @@ function ModalPassaggio(props: { passaggio: PassaggioDb, brano1: BranoDb | null,
                 setSavingValutazione(false);
             } catch (error) {
                 if (checkConnError(error)) {
-                    dispatch(setGenericAlert({ message: "Impossibile connettersi al server. Controlla la tua connessione ad internet.", type: "error" }));
+                    dispatch(setGenericAlert({ message: getNoConnMessage(), type: "error" }));
+                } else if (checkUserNotLoggedError(error)) {
+                    dispatch(setGenericAlert({ message: getUserNotLoggedMessage(), type: "error" }))
                 } else {
                     dispatch(setGenericAlert({ message: "Impossibile salvare la valutazione. Si è verificato un errore.", type: "error" }));
                 }
@@ -96,7 +100,7 @@ function ModalPassaggio(props: { passaggio: PassaggioDb, brano1: BranoDb | null,
             if (!confirm("Sei sicuro di voler eliminare questo passaggio dalla community?")) return;
             try {
                 setEliminaDisabled(true);
-                dispatch(setGenericAlert({ message: "Eliminazione del passaggio in corso...", type: "info" }));
+                dispatch(setGenericAlert({ message: "Eliminazione del passaggio in corso...", type: "no-autoclose" }));
                 await api.delete(`/passaggi/${props.passaggio.id}`);
                 dispatch(cleargenericMessage());
                 setEliminaDisabled(false);
@@ -104,7 +108,9 @@ function ModalPassaggio(props: { passaggio: PassaggioDb, brano1: BranoDb | null,
             } catch (error) {
                 setEliminaDisabled(false);
                 if (checkConnError(error)) {
-                    dispatch(setGenericAlert({ message: "Impossibile connettersi al server. Controlla la tua connessione ad internet.", type: "error" }));
+                    dispatch(setGenericAlert({ message: getNoConnMessage(), type: "error" }));
+                } else if (checkUserNotLoggedError(error)) {
+                    dispatch(setGenericAlert({ message: getUserNotLoggedMessage(), type: "error" }))
                 } else {
                     dispatch(setGenericAlert({ message: "Impossibile eliminare il passaggio dalla community. Si è verificato un errore.", type: "error" }));
                 }

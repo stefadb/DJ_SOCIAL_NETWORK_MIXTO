@@ -32,7 +32,13 @@ function CardPassaggio(props: CardPassaggioProps) {
   const [showModal, setShowModal] = useState<boolean>(false);
   const [braniScale, setBraniScale] = useState<number>(1);
 
+  const cardBranoScale = props.insideModal ? braniScale : 0.75;
+
   const cardPassaggioRef = useRef<HTMLDivElement>(null);
+
+  const truncateClassName = props.insideModal ? "" : "truncate";
+
+  const maxWidth = (150 * cardBranoScale + 12 * cardBranoScale * 4) + 16 * cardBranoScale + (150 * cardBranoScale + 12 * cardBranoScale * 4);
 
   // ResizeObserver per aggiornare braniScale
   useEffect(() => {
@@ -87,15 +93,15 @@ function CardPassaggio(props: CardPassaggioProps) {
           ref={cardPassaggioRef}
         >
           {props.brano1 &&
-            <CardBrano brano={props.brano1} scale={props.insideModal ? braniScale : 0.75} noButtons={props.insideModal} />
+            <CardBrano brano={props.brano1} scale={cardBranoScale} noButtons={props.insideModal} />
           }
-          <ArrowRight size={16 * braniScale} />
+          <ArrowRight size={16 * cardBranoScale} />
           {props.brano2 &&
-            <CardBrano brano={props.brano2} scale={props.insideModal ? braniScale : 0.75} noButtons={props.insideModal} />
+            <CardBrano brano={props.brano2} scale={cardBranoScale} noButtons={props.insideModal} />
           }
         </div>
         {props.insideModal !== true &&
-          <div className="flex flex-row justify-between flex-wrap">
+          <div style={{ maxWidth: maxWidth }} className="flex flex-row justify-between flex-wrap">
             <button className={"card-button"} style={scaleTwProps("p-1 rounded", 1)} onClick={() => { setShowModal(true); }}>Commenti e voti <ExternalLink size={14} /></button>
             <button className={"card-button"} style={scaleTwProps("p-1 rounded", 1)} onClick={() => {
               dispatch(setBrano1ToNuovoPassaggio(props.brano1));
@@ -107,7 +113,7 @@ function CardPassaggio(props: CardPassaggioProps) {
         }
         {/* Stelle e azioni */}
         {valutazioneMedia !== null && valutazioneMedia !== "error" &&
-          <div className="flex items-center mt-3 mx-4 mb-0">
+          <div style={{ maxWidth: maxWidth }} className="flex items-center mt-3 mx-4 mb-0">
             <Stelle
               rating={valutazioneMedia.voto_medio}
               bgColor="white"
@@ -118,45 +124,37 @@ function CardPassaggio(props: CardPassaggioProps) {
           </div>
         }
         {valutazioneMedia === null && valutazioneMedia !== "error" &&
-          <div className="flex items-center mt-3 mx-4 mb-0">
-            <span className="text-gray-500">Nessuna valutazione</span>
+          <div style={{ maxWidth: maxWidth }} className="flex items-center mt-3 mx-4 mb-0">
+            <span className={`text-gray-500 ${truncateClassName}`}>Nessuna valutazione</span>
           </div>
         }
         {valutazioneMedia === "error" &&
-          <div className="flex items-center mt-3 mx-4 mb-0">
-            <span className="text-red-500">Impossibile caricare le valutazioni</span>
+          <div style={{ maxWidth: maxWidth }} className="flex items-center mt-3 mx-4 mb-0">
+            <span className={`text-red-500 ${truncateClassName}`}>Impossibile caricare le valutazioni</span>
           </div>
         }
         {/* Autore e dettagli passaggio */}
-        <div className="mt-3 mx-4 mb-0">
-          <div className={"flex items-center" + (props.utente ? " cursor-pointer" : " cursor-default")} onClick={props.utente ? () => { navigate("/utente?id=" + props.utente?.id) } : undefined}>
-            {props.utente &&
-              <>
-                <img className="rounded-full" style={scaleTwProps("w-8 h-8 shadow-md", 1)} src={"src/assets/artista_empty.jpg"} alt={"Immagine di profilo di " + props.utente.nome + " " + props.utente.cognome} />
-                <b className="pl-2">{props.utente.nome} {props.utente.cognome}</b>
-                (@{props.utente.username})
-              </>
-            }
-            {!props.utente &&
-              <>
-                <img className="rounded-full" style={scaleTwProps("w-8 h-8 shadow-md", 1)} src={"src/assets/artista_empty.jpg"} alt={"Immagine di profilo vuota"} />
-                <b className="pl-2">Utente eliminato</b>
-                <span className="ml-2 text-gray-500 text-[13px]"></span>
-              </>
-            }
+        <div style={{ maxWidth: maxWidth }} className="mt-3 mx-4 mb-0">
+          <div style={{ maxWidth: maxWidth }} className={(props.utente ? " cursor-pointer" : " cursor-default")} onClick={props.utente ? () => { navigate("/utente?id=" + props.utente?.id) } : undefined}>
+              {props.utente &&
+                <b className={`${truncateClassName}`}><img className="rounded-full" style={scaleTwProps("w-8 h-8 shadow-md", 1)} src={"src/assets/artista_empty.jpg"} alt={"Immagine di profilo"} />  {props.utente.nome} {props.utente.cognome} <span className={"font-normal " + truncateClassName}>(@{props.utente.username})</span></b>
+              }
+              {!props.utente &&
+                <b className={`${truncateClassName}`}><img className="rounded-full" style={scaleTwProps("w-8 h-8 shadow-md", 1)} src={"src/assets/artista_empty.jpg"} alt={"Immagine di profilo"} />  Utente eliminato</b>
+              }
           </div>
           <div className="text-gray-800 mt-2">
-            <div className="flex items-center gap-2 italic text-gray-500">
+            <div style={{ maxWidth: maxWidth }} className="flex items-center gap-2 italic text-gray-500">
               <MessageSquare size={14} />
-              {props.passaggio.testo}
+              <span className={`${truncateClassName}`}>{props.passaggio.testo ? props.passaggio.testo : "Nessuna descrizione fornita"}</span>
             </div>
-            <div className="flex items-center gap-2">
+            <div style={{ maxWidth: maxWidth }} className="flex items-center gap-2">
               <Clock size={14} />
-              Posizione CUE secondo brano: <span className="text-blue-600">{props.passaggio.cue_secondo_brano}</span>
+              <span className={`${truncateClassName}`}>Posizione CUE secondo brano: <span className={"text-blue-600 " + truncateClassName}>{props.passaggio.cue_secondo_brano == null ? "Non specificato" : props.passaggio.cue_secondo_brano}</span></span>
             </div>
-            <div className="flex items-center gap-2">
+            <div style={{ maxWidth: maxWidth }} className="flex items-center gap-2">
               <Clock size={14} />
-              Partenza secondo brano: <span className="text-blue-600">{props.passaggio.inizio_secondo_brano}</span>
+              <span className={`${truncateClassName}`}>Partenza secondo brano: <span className={"text-blue-600 " + truncateClassName}>{props.passaggio.inizio_secondo_brano == null ? "Non specificato" : props.passaggio.inizio_secondo_brano}</span></span>
             </div>
           </div>
         </div>

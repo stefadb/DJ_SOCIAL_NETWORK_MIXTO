@@ -60,9 +60,9 @@ export type AssocAlbumGenereDb = z.infer<typeof AssocAlbumGenereDbSchema>;
 
 //Mostra come sono memorizzati i passaggi nel database
 export const PassaggioDbSchema = DbEntitySchema.extend({
-    testo: z.string(),
-    inizio_secondo_brano: DurataSchema,
-    cue_secondo_brano: DurataSchema,
+    testo: z.string().nullable(),
+    inizio_secondo_brano: DurataSchema.nullable(),
+    cue_secondo_brano: DurataSchema.nullable(),
     data_pubblicazione: z.string().regex(/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/, "Invalid date time format, expected YYYY-MM-DD HH:MM:SS"),
     id_utente: z.number(),
     id_brano_1: z.number(),

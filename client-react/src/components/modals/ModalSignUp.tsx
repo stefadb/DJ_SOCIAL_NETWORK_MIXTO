@@ -1,6 +1,6 @@
 import Modal from 'react-modal';
 import api from '../../api';
-import { checkConnError, inputTextClassName, modalsContentClassName, modalsOverlayClassName, scaleTwProps } from '../../functions/functions';
+import { checkConnError, getNoConnMessage, inputTextClassName, modalsContentClassName, modalsOverlayClassName, scaleTwProps } from '../../functions/functions';
 import { setGenericAlert } from '../../store/errorSlice';
 import { useDispatch } from 'react-redux';
 import ModalWrapper from './ModalWrapper';
@@ -27,7 +27,7 @@ function ModalSignUp(props: { isOpen: boolean; onRequestClose: () => void; }) {
         }
         try {
             setRegistrazioneDisabled(true);
-            dispatch(setGenericAlert({ message: "Registrazione in corso...", type: "info" }));
+            dispatch(setGenericAlert({ message: "Registrazione in corso...", type: "no-autoclose" }));
             await api.post("/utenti", {
                 newRowValues: { username, nome, cognome, password }
             });
@@ -37,7 +37,7 @@ function ModalSignUp(props: { isOpen: boolean; onRequestClose: () => void; }) {
         } catch (error) {
             setRegistrazioneDisabled(false);
             if (checkConnError(error)) {
-                dispatch(setGenericAlert({ message: "Impossibile connettersi al server. Controlla la tua connessione ad internet.", type: "error" }));
+                dispatch(setGenericAlert({ message: getNoConnMessage(), type: "error" }));
             } else {
                 dispatch(setGenericAlert({ message: "Impossibile effettuare la registrazione. Controlla i tuoi dati.", type: "error" }));
             }
@@ -68,7 +68,7 @@ function ModalSignUp(props: { isOpen: boolean; onRequestClose: () => void; }) {
             }
         } catch (error){
             if(checkConnError(error)){
-                dispatch(setGenericAlert({ message: "Impossibile connettersi al server. Controlla la tua connessione ad internet.", type: "error" }));
+                dispatch(setGenericAlert({ message: getNoConnMessage(), type: "error" }));
             }
             setUsernameAvailable("error");
         }

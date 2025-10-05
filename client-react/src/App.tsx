@@ -8,7 +8,7 @@ import Album from "./pages/Album";
 import Artista from "./pages/Artista";
 import Genere from "./pages/Genere";
 import Utente from "./pages/Utente";
-import ModalNuovoPassaggio from "./components/modals/ModalNuovoPassaggio";
+import ModalNuovoPassaggio from "./components/modals/ModalNuovoPassaggioNew";
 import ScrollToTop from "./components/ScrollToTop";
 import Ricerca from "./pages/Ricerca";
 import { toast, ToastContainer, type Id, type ToastIcon } from 'react-toastify';
@@ -16,15 +16,15 @@ import { useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import type { RootState } from "./store/store";
 import { cleargenericMessage } from "./store/errorSlice";
-import { AlertCircle, AlertTriangle, Info } from "react-feather";
+import { AlertCircle, AlertTriangle, Clock, Info } from "react-feather";
 
 function App() {
-  const genericMessage: { message: string, type: 'error' | 'warning' | 'info' } | null = useSelector((state: RootState) => state.error.genericMessage as any);
+  const genericMessage: { message: string, type: 'error' | 'warning' | 'info' | 'no-autoclose' } | null = useSelector((state: RootState) => state.error.genericMessage as any);
   const genericMessageToast = useRef<Id>(null);
   const dispatch = useDispatch();
   const toastClassName = "shadow-md font-['Roboto_Condensed']";
 
-  function getToastIcon(messageType: 'error' | 'warning' | 'info'): ToastIcon {
+  function getToastIcon(messageType: 'error' | 'warning' | 'info' | 'no-autoclose'): ToastIcon {
     switch (messageType) {
       case 'error':
         return <AlertCircle size={24} className="text-red-600" />;
@@ -32,6 +32,8 @@ function App() {
         return <AlertTriangle size={24} className="text-yellow-600" />;
       case 'info':
         return <Info size={24} className="text-blue-600" />;
+      case 'no-autoclose':
+        return <Clock size={24} className="text-gray-600" />;
       default:
         return <></>;
     }
@@ -41,8 +43,11 @@ function App() {
     if (genericMessage != null) {
       if (!genericMessageToast.current) {
         genericMessageToast.current = toast(genericMessage.message, {
-          type: genericMessage.type,
-          autoClose: 5000,
+          type: genericMessage.type == 'no-autoclose' ? 'info' : genericMessage.type,
+          autoClose: genericMessage.type == 'no-autoclose' ? false : 5000,
+          closeButton: genericMessage.type !== 'no-autoclose',
+          closeOnClick: genericMessage.type !== 'no-autoclose',
+          draggable: genericMessage.type !== 'no-autoclose',
           className: toastClassName,
           onClose: () => { dispatch(cleargenericMessage()); genericMessageToast.current = null; },
           icon: getToastIcon(genericMessage.type)
@@ -50,8 +55,11 @@ function App() {
       } else {
         toast.update(genericMessageToast.current, {
           render: genericMessage.message,
-          type: genericMessage.type,
-          autoClose: 5000,
+          type: genericMessage.type == 'no-autoclose' ? 'info' : genericMessage.type,
+          autoClose: genericMessage.type == 'no-autoclose' ? false : 5000,
+          closeButton: genericMessage.type !== 'no-autoclose',
+          closeOnClick: genericMessage.type !== 'no-autoclose',
+          draggable: genericMessage.type !== 'no-autoclose',
           className: toastClassName,
           onClose: () => { dispatch(cleargenericMessage()); genericMessageToast.current = null; },
           icon: getToastIcon(genericMessage.type)

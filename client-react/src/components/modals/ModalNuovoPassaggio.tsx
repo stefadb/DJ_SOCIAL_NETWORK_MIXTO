@@ -5,7 +5,7 @@ import type { RootState } from '../../store/store';
 import api from '../../api';
 import { type UtenteDb } from '../../types/db_types';
 import { closeModal } from '../../store/modalNuovoPassaggioSlice';
-import { checkConnError, modalsContentClassName, modalsOverlayClassName, scaleTwProps } from '../../functions/functions';
+import { checkConnError, checkUserNotLoggedError, getNoConnMessage, getUserNotLoggedMessage, modalsContentClassName, modalsOverlayClassName, scaleTwProps } from '../../functions/functions';
 import { setGenericAlert } from '../../store/errorSlice';
 import ModalWrapper from './ModalWrapper';
 import { setBrano1, setBrano2 } from '../../store/giradischiSlice';
@@ -35,7 +35,7 @@ function ModalNuovoPassaggio() {
         try {
             const timestamp = new Date().toISOString().slice(0, 19).replace('T', ' ');
             setPubblicaDisabled(true);
-            dispatch(setGenericAlert({ message: "Pubblicazione del passaggio in corso...", type: "info" }));
+            dispatch(setGenericAlert({ message: "Pubblicazione del passaggio in corso...", type: "no-autoclose" }));
             await api.post('/passaggi', {
                 newRowValues: {
                     testo,
@@ -59,7 +59,9 @@ function ModalNuovoPassaggio() {
         } catch (error) {
             setPubblicaDisabled(false);
             if (checkConnError(error)) {
-                dispatch(setGenericAlert({ message: "Impossibile connettersi al server. Controlla la tua connessione ad internet.", type: "error" }));
+                dispatch(setGenericAlert({ message: getNoConnMessage(), type: "error" }));
+            } else if (checkUserNotLoggedError(error)) {
+                dispatch(setGenericAlert({ message: getUserNotLoggedMessage(), type: "error" }))
             } else {
                 dispatch(setGenericAlert({ message: "Impossibile salvare le informazioni del tuo utente. Si è verificato un errore.", type: "error" }));
             }

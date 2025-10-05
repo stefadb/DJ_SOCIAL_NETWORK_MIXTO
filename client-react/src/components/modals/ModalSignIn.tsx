@@ -3,7 +3,7 @@ import { UtenteDbSchema } from '../../types/db_types';
 import { useDispatch } from 'react-redux';
 import { setUtente } from '../../store/userSlice';
 import api from '../../api';
-import { checkConnError, inputTextClassName, modalsContentClassName, modalsOverlayClassName, scaleTwProps } from '../../functions/functions';
+import { checkConnError, getNoConnMessage, inputTextClassName, modalsContentClassName, modalsOverlayClassName, scaleTwProps } from '../../functions/functions';
 import { cleargenericMessage, setGenericAlert } from '../../store/errorSlice';
 import ModalWrapper from './ModalWrapper';
 import { useState } from 'react';
@@ -17,7 +17,7 @@ function ModalSignIn(props: { isOpen: boolean; onRequestClose: () => void; openS
         // Gestisci il submit del form di login qui
         try {
             setLoginDisabled(true);
-            dispatch(setGenericAlert({ message: "Login in corso...", type: "info" }));
+            dispatch(setGenericAlert({ message: "Login in corso...", type: "no-autoclose" }));
             const response = await api.post("/login", { username: (event.target as any)[0].value, password: (event.target as any)[1].value }, { withCredentials: true });
             setLoginDisabled(false);
             dispatch(cleargenericMessage())
@@ -27,7 +27,7 @@ function ModalSignIn(props: { isOpen: boolean; onRequestClose: () => void; openS
         } catch (error) {
             setLoginDisabled(false);
             if (checkConnError(error)) {
-                dispatch(setGenericAlert({ message: "Impossibile connettersi al server. Controlla la tua connessione ad internet.", type: "error" }));
+                dispatch(setGenericAlert({ message: getNoConnMessage(), type: "error" }));
             } else {
                 dispatch(setGenericAlert({ message: "Impossibile effettuare il login. Controlla le tue credenziali.", type: "error" }));
             }

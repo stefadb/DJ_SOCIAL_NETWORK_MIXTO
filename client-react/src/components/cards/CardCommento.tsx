@@ -8,7 +8,7 @@ import type { RootState } from "../../store/store";
 import ReactTimeAgo from "react-time-ago";
 import TimeAgo from 'javascript-time-ago';
 import it from 'javascript-time-ago/locale/it';
-import { checkConnError } from "../../functions/functions";
+import { checkConnError, checkUserNotLoggedError, getNoConnMessage, getUserNotLoggedMessage } from "../../functions/functions";
 import { cleargenericMessage, setGenericAlert } from "../../store/errorSlice";
 import { set } from "zod";
 
@@ -31,7 +31,7 @@ function CardCommento(props: { commento: CommentoEUtente, livello: number }) {
             try {
                 setSendingAnswer(true);
                 setInviaRispostaDisabled(true);
-                dispatch(setGenericAlert({ message: "Invio della risposta in corso...", type: "info" }));
+                dispatch(setGenericAlert({ message: "Invio della risposta in corso...", type: "no-autoclose" }));
                 await api.post("/commenti", {
                     newRowValues: {
                         testo: answer,
@@ -50,9 +50,11 @@ function CardCommento(props: { commento: CommentoEUtente, livello: number }) {
                 setInviaRispostaDisabled(false);
                 setSendingAnswer(false);
                 if (checkConnError(error)) {
-                    dispatch(setGenericAlert({message:"Impossibile connettersi al server. Controlla la tua connessione ad internet.", type: "error"}));
+                    dispatch(setGenericAlert({ message: getNoConnMessage(), type: "error" }));
+                } else if (checkUserNotLoggedError(error)) {
+                    dispatch(setGenericAlert({ message: getUserNotLoggedMessage(), type: "error" }))
                 } else {
-                    dispatch(setGenericAlert({message:"Impossibile salvare il commento. Si è verificato un errore.", type: "error"}));
+                    dispatch(setGenericAlert({ message: "Impossibile salvare il commento. Si è verificato un errore.", type: "error" }));
                 }
             }
         }
@@ -64,7 +66,7 @@ function CardCommento(props: { commento: CommentoEUtente, livello: number }) {
             try {
                 const newData = new Date().toISOString().slice(0, 19).replace('T', ' ');
                 setSalvaCommentoDisabled(true);
-                dispatch(setGenericAlert({ message: "Salvataggio del commento in corso...", type: "info" }));
+                dispatch(setGenericAlert({ message: "Salvataggio del commento in corso...", type: "no-autoclose" }));
                 await api.put(`/commenti/${commento.id}`, {
                     newRowValues: {
                         testo: nuovoTesto,
@@ -81,9 +83,11 @@ function CardCommento(props: { commento: CommentoEUtente, livello: number }) {
             } catch (error) {
                 setSalvaCommentoDisabled(false);
                 if (checkConnError(error)) {
-                    dispatch(setGenericAlert({message:"Impossibile connettersi al server. Controlla la tua connessione ad internet.", type: "error"}));
+                    dispatch(setGenericAlert({ message: getNoConnMessage(), type: "error" }));
+                } else if (checkUserNotLoggedError(error)) {
+                    dispatch(setGenericAlert({ message: getUserNotLoggedMessage(), type: "error" }))
                 } else {
-                    dispatch(setGenericAlert({message:"Impossibile salvare il commento. Si è verificato un errore.", type: "error"}));
+                    dispatch(setGenericAlert({ message: "Impossibile salvare il commento. Si è verificato un errore.", type: "error" }));
                 }
             }
         }
@@ -93,7 +97,7 @@ function CardCommento(props: { commento: CommentoEUtente, livello: number }) {
         if (loggedUtente) {
             setShowAnswerBox(true);
         } else {
-            dispatch(setGenericAlert({message:"Accedi per rispondere a questo commento", type: "info"}));
+            dispatch(setGenericAlert({ message: "Accedi per rispondere a questo commento", type: "info" }));
         }
     }
 

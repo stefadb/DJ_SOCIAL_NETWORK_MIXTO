@@ -75,7 +75,6 @@ function Utente() {
                 <CardBrano key={element.id} brano={element} scale={1} />
               )}
               scrollMode="horizontal"
-              showMoreButton={(onClick) => <button onClick={onClick}>Carica altri brani</button>}
               emptyMessage="😮 L'utente non ha ancora salvato nessun brano nei preferiti"
             />
           </div>
