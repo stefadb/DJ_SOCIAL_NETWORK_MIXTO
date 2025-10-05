@@ -58,6 +58,7 @@ function PagedList<T>(props: { itemsPerPage: number; apiCall: string; schema?: Z
     }
 
     function nextPage() {
+        //alert("Next page chiamato!!");
         if (lastLoadedPage.current >= currentPage) {
             setCurrentPage(currentPage + 1);
         }
@@ -97,7 +98,7 @@ function PagedList<T>(props: { itemsPerPage: number; apiCall: string; schema?: Z
             //Se la larghezza del contenuto è minore della larghezza del contenitore, allora devi caricare un'altra pagina per riempire lo spazio
             if(div.clientWidth > div.scrollWidth){
                 nextPage();
-            }else if (div.scrollLeft !== 0 && div.scrollLeft + div.clientWidth == div.scrollWidth) {
+            }else if (div.scrollLeft !== 0 && div.scrollLeft + div.clientWidth >= div.scrollWidth-10) { /*Il -10 è per essere sicuri che nextPage venga chiamata */
                 //Problema: questa funzione viene chiamata troppo!!!
                 //console.log("Next page perchè");
                 //console.log(div.scrollLeft + " + " + div.clientWidth + " >= " + div.scrollWidth);

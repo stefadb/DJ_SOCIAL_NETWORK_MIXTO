@@ -20,7 +20,6 @@ function ModalNuovoPassaggio() {
     const combinedCardBranoWidth = 396 + arrowSize; //+16 perchè rispetto alla Consolle qui c'è anche l'icona della stella
     const [scale, setScale] = useState<number>(1);
     const riferimentoRef = useRef<HTMLDivElement>(null);
-    const isOpen = useSelector((state: RootState) => state.modalNuovoPassaggio.isOpen);
     const brano1: BranoDb | null = useSelector((state: RootState) => (state.giradischi as any).brano1);
     const brano2: BranoDb | null = useSelector((state: RootState) => (state.giradischi as any).brano2);
     const loggedUtente: UtenteDb | null = useSelector((state: RootState) => (state.user as any).utente as UtenteDb | null);
@@ -55,12 +54,6 @@ function ModalNuovoPassaggio() {
             };
         }
     }
-
-    useEffect(() => {
-        setTesto("");
-        setInizioSecondoBrano('');
-        setCueSecondoBrano('');
-    }, [isOpen]);
 
     useEffect(() => {
         const savedBrano1 = localStorage.getItem('brano1');
@@ -102,7 +95,7 @@ function ModalNuovoPassaggio() {
             });
             dispatch(setBrano2(null));
             dispatch(setBrano1(null));
-            dispatch(setGenericAlert({ message: "Passaggio pubblicato con successo. Lo trovi nella pagina dedicata al tuo utente!", type: "info" }));
+            dispatch(setGenericAlert({ message: "Passaggio pubblicato con successo. Lo trovi nella pagina del tuo profilo!", type: "info" }));
             setPubblicaDisabled(false);
             // Resetta i campi del form
             setTesto('');
@@ -121,7 +114,7 @@ function ModalNuovoPassaggio() {
         }
     }
 
-    return <Modal isOpen={isOpen} onRequestClose={() => dispatch(closeModal())}
+    return <Modal isOpen={true} onRequestClose={() => dispatch(closeModal())}
         overlayClassName={modalsOverlayClassName()}
         className={modalsContentClassName()}
     >
@@ -134,7 +127,7 @@ function ModalNuovoPassaggio() {
             >
                 <div className="flex flex-col">
                     <div className={`flex flex-row`}>
-                        <div className={`flex flex-col`}>
+                        <div>
                             {brano1 !== null &&
                                 <CardBrano brano={brano1} noDeckButtons scale={scale} />
                             }
@@ -149,7 +142,7 @@ function ModalNuovoPassaggio() {
                         <div className={`flex flex-col justify-center`}>
                             <ArrowRight size={arrowSize * scale} />
                         </div>
-                        <div className={`flex flex-col`}>
+                        <div >
                             {brano2 !== null &&
                                 <CardBrano brano={brano2} noDeckButtons scale={scale} />
                             }
@@ -169,7 +162,7 @@ function ModalNuovoPassaggio() {
                         <form onSubmit={onSubmit}>
                             <div className={`flex flex-col mb-4`}>
                                 <label htmlFor="inizioSecondoBrano">Descrivi come eseguire questo passaggio:</label>
-                                <textarea className={inputTextClassName() + " resize-none"}
+                                <textarea className={inputTextClassName()}
                                     id="testo"
                                     value={testo}
                                     onChange={(e) => setTesto(e.target.value)}

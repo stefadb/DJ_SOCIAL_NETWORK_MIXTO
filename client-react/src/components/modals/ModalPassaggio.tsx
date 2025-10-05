@@ -9,9 +9,10 @@ import { CommentoEUtenteSchema, ValutazioneEUtenteSchema, type CommentoEUtente, 
 import PagedList from "../PagedList";
 import CardValutazione from "../cards/CardValutazione";
 import CardPassaggio from "../cards/CardPassaggio";
-import { checkConnError, checkUserNotLoggedError, getNoConnMessage, getUserNotLoggedMessage, modalsContentClassName, modalsOverlayClassName, scaleTwProps } from "../../functions/functions";
+import { checkConnError, checkUserNotLoggedError, getNoConnMessage, getUserNotLoggedMessage, inputTextClassName, modalsContentClassName, modalsOverlayClassName, scaleTwProps } from "../../functions/functions";
 import { cleargenericMessage, setGenericAlert } from "../../store/errorSlice";
 import ModalWrapper from "./ModalWrapper";
+import { Check, MessageCircle, Star } from "react-feather";
 
 function ModalPassaggio(props: { passaggio: PassaggioDb, brano1: BranoDb | null, brano2: BranoDb | null, utente: UtenteDb | null, onClose: () => void }) {
     Modal.setAppElement('#root');
@@ -132,11 +133,12 @@ function ModalPassaggio(props: { passaggio: PassaggioDb, brano1: BranoDb | null,
                 }
 
                 {/* Commenti o valutazioni */}
-                <div className="mt-4 mx-4 mb-0 border border-[#eee] rounded-lg bg-[#fafafa]">
-                    <div className="flex items-center justify-between px-3 py-2 border-b border-[#eee]">
-                        <b className="text-base">{showValutazioni ? "Valutazioni" : "Commenti"}</b>
-                        <button className="text-xs bg-none border-none text-[#1976d2] cursor-pointer" onClick={() => setShowValutazioni(v => !v)}>
-                            {showValutazioni ? "Torna ai commenti" : "Dai un voto anche tu"}
+                <div className="border rounded-lg shadow-md">
+                    <div className="flex items-center justify-between px-3 pt-2 border-b border-[#eee]">
+                        <b className="text-base">{showValutazioni ? "Voti" : "Commenti"}</b>
+                        <button className="card-button rounded p-1" onClick={() => setShowValutazioni(v => !v)}>
+                            {showValutazioni ? <MessageCircle size={16}/> : <Star size={16}/>}
+                            {showValutazioni ? "  Mostra i commenti" : "  Mostra i voti"}
                         </button>
                     </div>
                     {!showValutazioni &&
@@ -144,19 +146,23 @@ function ModalPassaggio(props: { passaggio: PassaggioDb, brano1: BranoDb | null,
                             {savingCommento && <div>Salvataggio in corso...</div>}
                             {!savingCommento &&
                                 <PagedList itemsPerPage={5} apiCall={`/commenti?passaggio=${props.passaggio.id}`} schema={CommentoEUtenteSchema} scrollMode="vertical" component={(element: CommentoEUtente) => {
-                                    return <CardCommento commento={element} livello={1} />;
-                                }} showMoreButton={(onClick) => <button className="w-full" onClick={onClick}>Carica altri commenti</button>}
+                                    return <CardCommento commento={element} livello={0} />;
+                                }} showMoreButton={(onClick) => <div className="p-2"><button className="w-full card-button rounded p-1" onClick={onClick}>Carica altri commenti</button></div>}
                                     emptyMessage="😮 Non c'è ancora nessun commento qui" />
                             }
-                            <div className={"flex items-center mt-3"}>
-                                <input
-                                    type="text"
+                            <div className={"flex flex-row items-center pt-3"}>
+                                <div className="flex-grow">
+                                <textarea
                                     value={commentoInput}
                                     onChange={e => setCommentoInput(e.target.value)}
                                     placeholder="Aggiungi un commento"
-                                    className="flex-1 border border-[#ccc] rounded p-1 text-base"
+                                    className={inputTextClassName()}
+                                    rows={1}
                                 />
-                                <button disabled={commentoInput.length === 0 || salvaCommentoDisabled} onClick={inviaCommento} className="ml-2 px-4 py-2 bg-[#1976d2] text-white border-none rounded text-base cursor-pointer">Invia</button>
+                                </div>
+                                <div className="p-1">
+                                <button disabled={commentoInput.length === 0 || salvaCommentoDisabled} onClick={inviaCommento} className="card-button rounded p-2"><Check size={16} />  Invia</button>
+                                </div>
                             </div>
                         </div>
                     }
@@ -166,7 +172,7 @@ function ModalPassaggio(props: { passaggio: PassaggioDb, brano1: BranoDb | null,
                             {!savingValutazione &&
                                 <PagedList itemsPerPage={10} apiCall={`/valutazioni?passaggio=${props.passaggio.id}`} schema={ValutazioneEUtenteSchema} scrollMode="vertical" component={(element: ValutazioneEUtente) => {
                                     return <CardValutazione valutazione={element} />;
-                                }} showMoreButton={(onClick) => <button onClick={onClick}>Carica altre valutazioni</button>}
+                                }} showMoreButton={(onClick) => <button className="w-full card-button rounded p-1" onClick={onClick}>Carica altre valutazioni</button>}
                                     emptyMessage="😮 Nessuno ha ancora valutato questo passaggio" />
                             }
                             <div className="flex items-center mt-3">

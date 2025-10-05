@@ -23,6 +23,7 @@ function App() {
   const genericMessageToast = useRef<Id>(null);
   const dispatch = useDispatch();
   const toastClassName = "shadow-md font-['Roboto_Condensed']";
+  const modalNuovoPassaggioOpen = useSelector((state: RootState) => state.modalNuovoPassaggio.isOpen);
 
   function getToastIcon(messageType: 'error' | 'warning' | 'info' | 'no-autoclose'): ToastIcon {
     switch (messageType) {
@@ -93,7 +94,9 @@ function App() {
         </MainContainer>
         <SideContainer />
       </div>
-      <ModalNuovoPassaggio />
+      {modalNuovoPassaggioOpen &&
+        <ModalNuovoPassaggio />
+      }
       <ToastContainer limit={1} />
     </div>
 

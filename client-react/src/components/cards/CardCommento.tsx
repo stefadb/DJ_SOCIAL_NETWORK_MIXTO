@@ -8,9 +8,10 @@ import type { RootState } from "../../store/store";
 import ReactTimeAgo from "react-time-ago";
 import TimeAgo from 'javascript-time-ago';
 import it from 'javascript-time-ago/locale/it';
-import { checkConnError, checkUserNotLoggedError, getNoConnMessage, getUserNotLoggedMessage } from "../../functions/functions";
+import { checkConnError, checkUserNotLoggedError, getNoConnMessage, getUserNotLoggedMessage, inputTextClassName } from "../../functions/functions";
 import { cleargenericMessage, setGenericAlert } from "../../store/errorSlice";
 import { set } from "zod";
+import { Check, Edit3, MessageCircle, PenTool, X } from "react-feather";
 
 TimeAgo.addLocale(it);
 
@@ -109,50 +110,68 @@ function CardCommento(props: { commento: CommentoEUtente, livello: number }) {
         return commento.utente_array[0] !== undefined && commento.utente_array.length == 1 ? commento.utente_array[0].nome + " " + commento.utente_array[0].cognome + (mioCommento() ? " (tu)" : "") : "Utente sconosciuto";
     }
 
+    function getCommentoWidth(livello: number){
+        return minWidth + ((1.0 / (1+(livello*0.5)))) * (100 - minWidth) + "%";
+    }
+
     return (
         <>
             <div className="flex flex-col">
                 <div className="w-full flex justify-end box-border py-1 px-0">
-                    <div className="border border-black rounded-lg bg-[#f0f0f0] box-border p-2" style={{ width: minWidth + ((1.0 / props.livello) * (100 - minWidth)) + "%" }}>
+                    <div className="box-border p-2" style={{ width: getCommentoWidth(props.livello) }}>
+                        <div className="flex flex-row items-center">
+                            <div className="pr-2">
+                                <img className="rounded-full shadow-md w-8 h-8" src={"src/assets/artista_empty.jpg"} alt={"Immagine di profilo"} />
+                            </div>
+                            <div className="flex-grow">
+                                <b>{getNomeUtente()} <span className="font-normal truncate">(<ReactTimeAgo date={new Date(commento.data_pubblicazione)} locale="it" />)</span></b>
+                            </div>
+                        </div>
                         {!editing &&
                             <>
-                                <p>{commento.testo}</p>
-                                <ReactTimeAgo date={new Date(commento.data_pubblicazione)} locale="it" />
-                                {mioCommento() &&
-                                    <button onClick={() => { setEditing(true); }}>Modifica</button>
-                                }
+                                <p className="my-0 italic text-gray-500"><MessageCircle size={16} /> {commento.testo}  {mioCommento() &&
+                                    <button className="card-button rounded p-1" onClick={() => { setEditing(true); }}><Edit3 size={16} /></button>
+                                }</p>
                             </>
                         }
                         {editing &&
                             <>
-                                <textarea className="w-full h-[100px]" value={nuovoTesto} onChange={(e) => { setNuovoTesto(e.target.value); }} />
+                                <textarea rows={1} className={inputTextClassName()} value={nuovoTesto} onChange={(e) => { setNuovoTesto(e.target.value); }} />
                                 <br />
-                                <button disabled={salvaCommentoDisabled} onClick={() => { salvaCommento(); }}>Salva</button>
-                                <button onClick={() => { setEditing(false); setNuovoTesto(commento.testo); }}>Annulla</button>
+                                <div className="flex flex-row flex-wrap">
+                                    <div className="p-1">
+                                        <button className="card-button rounded p-1" disabled={salvaCommentoDisabled} onClick={() => { salvaCommento(); }}><Check size={16} />  Salva</button>
+                                    </div>
+                                    <div className="p-1">
+                                        <button className="card-button rounded p-1" onClick={() => { setEditing(false); setNuovoTesto(commento.testo); }}><X size={16} />  Annulla</button>
+                                    </div>
+                                </div>
                             </>
                         }
-                        <br />
-                        <b>{getNomeUtente()}</b>
-                        <br />
-                        {!showAnswerBox &&
+                        {!showAnswerBox && !editing &&
                             <a className="hover-underline cursor-pointer text-blue-500" onClick={openAnswerBox}>Rispondi</a>
                         }
                     </div>
                 </div>
                 {showAnswerBox &&
                     <div className="w-full flex justify-end box-border pt-1 pb-1 pl-0 pr-0">
-                        <div className="box-border p-2" style={{ width: minWidth + ((1.0 / (props.livello + 1)) * (100 - minWidth)) + "%" }}>
-                            <textarea className="w-full h-[100px]" placeholder="Scrivi una risposta..." value={answer} onChange={(e) => setAnswer(e.target.value)} />
-                            <br />
-                            <button disabled={inviaRispostaDisabled} onClick={() => { sendAnswer(); }} className="mt-4">Invia</button>
-                            <button onClick={() => { setShowAnswerBox(false); setAnswer(""); }} className="mt-4">Annulla</button>
+                        <div className="box-border p-2" style={{ width: getCommentoWidth(props.livello + 1) }}>
+                            <textarea rows={1} className={inputTextClassName()} placeholder="Scrivi una risposta..." value={answer} onChange={(e) => setAnswer(e.target.value)} />
+                            <div className="flex flex-row flex-wrap">
+                                <div className="p-1">
+                                    <button className="card-button rounded p-1" disabled={inviaRispostaDisabled} onClick={() => { sendAnswer(); }}><Check size={16} />  Invia</button>
+                                </div>
+                                <div className="p-1">
+                                    <button className="card-button rounded p-1" onClick={() => { setShowAnswerBox(false); setAnswer(""); }}><X size={16} />  Annulla</button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 }
                 {!sendingAnswer &&
                     <PagedList itemsPerPage={5} apiCall={`/commenti?commentoPadre=${commento.id}`} schema={CommentoEUtenteSchema} scrollMode="vertical" component={(element: CommentoEUtente) => {
                         return <CardCommento commento={element} livello={props.livello + 1} />;
-                    }} showMoreButton={(onClick) => <div className="flex justify-end"><button style={{ width: minWidth + ((1.0 / (props.livello + 1)) * (100 - minWidth)) + "%" }} onClick={onClick}>Carica altre risposte</button></div>
+                    }} showMoreButton={(onClick) => <div className="flex justify-end px-2"><button className="card-button rounded p-1" style={{ width: getCommentoWidth(props.livello + 1) }} onClick={onClick}>Carica altre risposte</button></div>
                     } emptyMessage={<></>} />
                 }
             </div>

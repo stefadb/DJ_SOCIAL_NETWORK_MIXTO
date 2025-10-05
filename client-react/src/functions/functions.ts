@@ -147,7 +147,7 @@ export function modalsContentClassName(){
 }
 
 export function inputTextClassName(){
-    return "w-full border-b border-black border-t-0 border-l-0 border-r-0 text-center outline-none box-border text-[16px] p-2";
+    return "w-full border-b border-black border-t-0 border-l-0 border-r-0 text-center outline-none box-border text-[16px] p-2 resize-none";
 }
 
 //Restituisce i punti che rappresentano il poligono della M dell logo di Mixto
