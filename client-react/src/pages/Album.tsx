@@ -42,9 +42,9 @@ function Album() {
             setArtistiAlbum(await getNomiArtistiAlbum(undefined, responseAlbumData.id));
             //L'album è stato caricato con successo, ora si possono caricare i passaggi
         } catch (error) {
-            if(check404(error)){
+            if (check404(error)) {
                 setErrore("not-found");
-            }else{
+            } else {
                 setErrore("error");
             }
         }
@@ -58,7 +58,7 @@ function Album() {
                 </div>
             ) : (
                 <div className="flex flex-row justify-center">
-                    <Caricamento size="giant" status={errore === null ? "loading" : errore}/>
+                    <Caricamento size="giant" status={errore === null ? "loading" : errore} />
                 </div>
             )}
             {album !== null &&
@@ -73,7 +73,7 @@ function Album() {
                             </div>
                         }
                         {!artistiAlbum &&
-                            <Caricamento size="tiny" status={"loading"}/>
+                            <Caricamento size="tiny" status={"loading"} />
                         }
                     </div>
                     <div>
@@ -85,7 +85,7 @@ function Album() {
                                 emptyMessage="😮 Non ci sono brani in questo album" />
                         }
                         {!albumLoaded &&
-                            <Caricamento size="small" status={"loading"}/>
+                            <Caricamento size="small" status={"loading"} />
                         }
                     </div>
                     <div>
@@ -96,14 +96,16 @@ function Album() {
                             schema={PassaggioConBraniEUtenteSchema}
                             scrollMode="horizontal"
                             component={(element: PassaggioConBraniEUtente) => (
-                                <CardPassaggio
-                                    key={element.id}
-                                    passaggio={element}
-                                    brano1={element.brano_1_array[0]}
-                                    brano2={element.brano_2_array[0]}
-                                    utente={element.utente_array[0] ? element.utente_array[0] : null}
-                                    
-                                />
+                                <div className="p-3">
+                                    <CardPassaggio
+                                        key={element.id}
+                                        passaggio={element}
+                                        brano1={element.brano_1_array[0]}
+                                        brano2={element.brano_2_array[0]}
+                                        utente={element.utente_array[0] ? element.utente_array[0] : null}
+
+                                    />
+                                </div>
                             )}
                             emptyMessage="😮 Nessun passaggio trovato"
                         />
@@ -116,14 +118,16 @@ function Album() {
                             schema={PassaggioConBraniEUtenteSchema}
                             scrollMode="horizontal"
                             component={(element: PassaggioConBraniEUtente) => (
+                                <div className="p-3">
                                 <CardPassaggio
                                     key={element.id}
                                     passaggio={element}
                                     brano1={element.brano_1_array[0]}
                                     brano2={element.brano_2_array[0]}
                                     utente={element.utente_array[0] ? element.utente_array[0] : null}
-                                    
+
                                 />
+                                </div>
                             )}
                             emptyMessage="😮 Nessun passaggio trovato"
                         />

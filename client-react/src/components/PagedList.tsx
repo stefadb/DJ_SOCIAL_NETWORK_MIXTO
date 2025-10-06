@@ -3,7 +3,7 @@ import type { ZodObject } from "zod";
 import api from "../api";
 import Caricamento from "./icons/Caricamento";
 
-function PagedList<T>(props: { itemsPerPage: number; apiCall: string; schema?: ZodObject<any>; component: (element: T, index: number) => ReactNode, showMoreButton?: (onClick: () => void) => ReactNode, scrollMode: "horizontal" | "vertical", noPaging?: boolean, emptyMessage: ReactNode }) {
+function PagedList<T>(props: { itemsPerPage: number; apiCall: string; schema?: ZodObject<any>; component: (element: T, index: number, total: number) => ReactNode, showMoreButton?: (onClick: () => void) => ReactNode, scrollMode: "horizontal" | "vertical", noPaging?: boolean, emptyMessage: ReactNode, caricamentoSize?: "veryTiny" | "tiny" | "small" | "large" | "giant", setElementsLength?: (length: number) => void, setShowMoreButtonVisible?: (visible: boolean) => void, customLoading?: ReactNode, customError?: ReactNode, passElementsToParent?: (elements: T[]) => void }) {
     const [elements, setElements] = useState<T[]>([]);
     const [empty, setEmpty] = useState<boolean>(false);
     const [currentPage, setCurrentPage] = useState<number>(1);
@@ -46,6 +46,10 @@ function PagedList<T>(props: { itemsPerPage: number; apiCall: string; schema?: Z
             }
             const newElementsTemp = newElements.slice(0, maxIndex + 1);
             setElements(newElementsTemp);
+            if(props.passElementsToParent){
+                props.passElementsToParent(newElementsTemp);
+            }
+            props.setElementsLength?.(newElementsTemp.length);
             lastLoadedPage.current = currentPage;
             setLoading(false);
             handleScroll();
@@ -81,6 +85,7 @@ function PagedList<T>(props: { itemsPerPage: number; apiCall: string; schema?: Z
 
 
 
+
     const containerRef = useRef<HTMLDivElement>(null);
 
     const handleScroll = () => {
@@ -108,18 +113,39 @@ function PagedList<T>(props: { itemsPerPage: number; apiCall: string; schema?: Z
 
     }
 
+    //Quando il pulsante "Carica altri" cambia il suo stato di visibilità, chiama la funzione props.setShowMoreButtonVisible
+    useEffect(() => {
+        if (props.setShowMoreButtonVisible) {
+            props.setShowMoreButtonVisible(props.showMoreButton !== undefined && !props.noPaging && endNotReached);
+        }
+    }, [props.noPaging, props.showMoreButton, endNotReached]);
+
     return <div ref={containerRef} onScroll={handleScroll} className={"flex justify-start overscroll-x-contain" + (props.scrollMode === "vertical" ? " flex-col overflow-y-auto" : " flex-row overflow-x-auto")}>
-        {elements.map((element, index) => <Fragment key={index}>{props.component(element, index)}</Fragment>)}
+        {elements.map((element, index) => <Fragment key={index}>{props.component(element, index, elements.length)}</Fragment>)}
         {empty && <>{props.emptyMessage}</>}
         {!props.noPaging && endNotReached && <Fragment>
             {props.showMoreButton &&
                 props.showMoreButton(() => nextPage())
             }
             <div className={"m-auto flex justify-center " + (props.scrollMode === "vertical" ? "w-full flex-row" : "h-full flex-col") + (!loading ? " hidden" : "")}>
-                <Caricamento size={"small"} status={"loading"} />
+                {!props.customLoading &&
+                    <Caricamento size={props.caricamentoSize || "small"} status={"loading"} />
+                }
+                {props.customLoading &&
+                    <>
+                        {props.customLoading}
+                    </>
+                }
             </div>
             <div className={"m-auto flex justify-center" + (props.scrollMode === "vertical" ? "w-full flex-row" : "h-full flex-col") + (!error ? " hidden" : "")}>
-                <Caricamento size={"small"} status={"error"} />
+                {!props.customError &&
+                    <Caricamento size={props.caricamentoSize || "small"} status={"error"} />
+                }
+                {props.customError &&
+                    <>
+                        {props.customError}
+                    </>
+                }
             </div>
         </Fragment>
         }

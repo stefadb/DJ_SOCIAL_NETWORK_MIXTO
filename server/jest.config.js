@@ -13,16 +13,10 @@ module.exports = {
     "**/__tests__/**/GET singola/*.test.ts",
     "**/__tests__/deezer_api_tests/**/*.test.ts"
   ],
-  /*
+  
   testPathIgnorePatterns: [
     "/node_modules/",
     "/dist/",
-    "__tests__/common.ts",
-    "__tests__/getGenere/.test.ts",
-    "__tests__/artistiSimili/.test.ts",
-    "__tests__/getGeneri/.test.ts",
-    "__tests__/albumSearch/.test.ts",
-    "__tests__/braniAlbum/.test.ts",
-    "__tests__/artistiSearch/.test.ts", //TODO: togliere, è provvisorio!
-  ]*/
+    "__tests__/entities_crud_tests/visualizzazione/GET multipla/.test.ts",
+  ]
 };

@@ -133,25 +133,25 @@ export function checkConnError(error: unknown): boolean {
     );
 }
 
-export function deezerColor(){
+export function deezerColor() {
     const color = import.meta.env.VITE_DEEZER_COLOR as string;
     return color;
 }
 
-export function modalsOverlayClassName(){
+export function modalsOverlayClassName() {
     return "fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center";
 }
 
-export function modalsContentClassName(){
+export function modalsContentClassName() {
     return "relative max-w-[calc(100vw-80px)] max-h-[calc(100vh-80px)] bg-white p-6 rounded box-border overflow-y-auto";
 }
 
-export function inputTextClassName(){
+export function inputTextClassName() {
     return "w-full border-b border-black border-t-0 border-l-0 border-r-0 text-center outline-none box-border text-[16px] p-2 resize-none";
 }
 
 //Restituisce i punti che rappresentano il poligono della M dell logo di Mixto
-export function mPoints(): number[]{
+export function mPoints(): number[] {
     return [
         0.2, 0.2,
         0.3, 0.2,
@@ -176,8 +176,16 @@ export function getUserNotLoggedMessage(): string {
     return "La sessione è scaduta oppure hai eseguito il logout. Effettua nuovamente l'accesso e riprova.";
 }
 
-export function checkUserNotLoggedError(error: unknown): boolean{
+export function checkUserNotLoggedError(error: unknown): boolean {
     return axios.isAxiosError(error) && error.response !== undefined && error.response.status === 401 && error.response.data === "Utente non loggato";
+}
+
+const minimumGreyScale = 32;
+const maximumGreyScale = 64;
+
+export function getRandomGreyScale() {
+    const greyValue = Math.floor(Math.random() * (maximumGreyScale - minimumGreyScale + 1)) + minimumGreyScale;
+    return `rgb(${greyValue}, ${greyValue}, ${greyValue})`;
 }
 
 

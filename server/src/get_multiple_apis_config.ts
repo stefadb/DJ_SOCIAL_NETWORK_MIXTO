@@ -296,7 +296,7 @@ export const getMultipleApisConfig = {
             mainTableName: "valutazione",
             mainTableColumns: req.query.columns === undefined ? valutazioneColumns : (req.query.columns as string).split(","),
             mainTableSchema: ValutazioneDbSchema,
-            orderBys: ["valutazione.id DESC"],
+            orderBys: req.session.user !== undefined ? ["(valutazione.id_utente = "+req.session.user.id+") DESC","valutazione.id DESC"] : ["valutazione.id DESC"],
             filtersAndJoins: [
                 ...(req.query.utente ? [{
                     joinedTableName: "utente",

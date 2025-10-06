@@ -96,7 +96,7 @@ function App() {
         if (genericMessageToast.current) {
           toast.dismiss(genericMessageToast.current);
         }
-      }, 200);
+      }, 500);
     }
   }, [genericMessage, dispatch]);
 

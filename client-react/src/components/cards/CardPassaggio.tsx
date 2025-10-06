@@ -32,7 +32,11 @@ function CardPassaggio(props: CardPassaggioProps) {
   const navigate = useNavigate();
   const [valutazioneMedia, setValutazioneMedia] = useState<ValutazioniMedie | null | "error">(null);
   const [braniScale, setBraniScale] = useState<number>(1);
-  const [searchParams, setSearchParams] = useSearchParams();
+  const setSearchParams = useSearchParams()[1];
+
+  function getMaxWidth(scale: number) {
+    return 12 * 2 * scale + (150 * scale + 12 * scale * 2) + 16 * scale + (150 * scale + 12 * scale * 2) + 12 * 2 * scale;
+  }
 
   const cardBranoScale = props.insideModal ? braniScale : 0.75;
 
@@ -40,7 +44,7 @@ function CardPassaggio(props: CardPassaggioProps) {
 
   const truncateClassName = props.insideModal ? "" : "truncate";
 
-  const maxWidth = (150 * cardBranoScale + 12 * cardBranoScale * 4) + 16 * cardBranoScale + (150 * cardBranoScale + 12 * cardBranoScale * 4);
+  const maxWidth = getMaxWidth(cardBranoScale);
 
   // ResizeObserver per aggiornare braniScale
   useEffect(() => {
@@ -49,8 +53,7 @@ function CardPassaggio(props: CardPassaggioProps) {
 
     const updateScale = () => {
       const width = node.offsetWidth;
-      /* 412 = 150 + 12*4 + 150 + 12*4 + 16 (150 = larghezza card brano, 12*4 = padding totali delle card brano, 16 = dimensione icona freccia in mezzo)*/
-      setBraniScale(Math.min(width / 412, 1));
+      setBraniScale(Math.min(width / getMaxWidth(1), 1));
     };
 
     updateScale(); // iniziale
@@ -66,7 +69,7 @@ function CardPassaggio(props: CardPassaggioProps) {
     };
   }, []);
 
-  function openModalNuovoPassaggio(){
+  function openModalNuovoPassaggio() {
     setSearchParams((prev) => {
       prev.set("modal", "nuovoPassaggio");
       prev.delete("idInModal");
@@ -94,7 +97,7 @@ function CardPassaggio(props: CardPassaggioProps) {
     loadValutazioneMedia();
   }, [props.passaggio.id]);
 
-  function openPassaggioModal(){
+  function openPassaggioModal() {
     setSearchParams((prev) => {
       prev.set("modal", "passaggio");
       prev.set("idInModal", String(props.passaggio.id));
@@ -103,81 +106,82 @@ function CardPassaggio(props: CardPassaggioProps) {
   }
 
   return (
-    <div style={scaleTwProps("p-3", 1)}>
-      <div style={scaleTwProps("p-3 rounded-lg shadow-md", 1)}>
-        <div
-          id="card-passaggio"
-          className="flex justify-center items-center"
-          ref={cardPassaggioRef}
-        >
-          {props.brano1 &&
-            <CardBrano brano={props.brano1} scale={cardBranoScale} noButtons={props.insideModal} />
+    <div style={scaleTwProps("p-3 rounded-lg shadow-md", 1)}>
+      <div
+        id="card-passaggio"
+        className="flex justify-center items-center"
+        ref={cardPassaggioRef}
+      >
+        {props.brano1 &&
+          <CardBrano brano={props.brano1} scale={cardBranoScale} noButtons={props.insideModal} />
+        }
+        <ArrowRight size={16 * cardBranoScale} />
+        {props.brano2 &&
+          <CardBrano brano={props.brano2} scale={cardBranoScale} noButtons={props.insideModal} />
+        }
+      </div>
+      {props.insideModal &&
+        <div style={{ width: getMaxWidth(1) }}></div>
+      }
+      {props.insideModal !== true &&
+        <div style={{ maxWidth: maxWidth }} className="flex flex-row justify-between flex-wrap">
+          <button className={"card-button"} style={scaleTwProps("p-1 rounded", 1)} onClick={() => { openPassaggioModal(); }}>Più dettagli <ExternalLink size={14} /></button>
+          <button className={"card-button"} style={scaleTwProps("p-1 rounded", 1)} onClick={() => {
+            dispatch(setBrano1ToNuovoPassaggio(props.brano1));
+            dispatch(setBrano2ToNuovoPassaggio(props.brano2));
+            openModalNuovoPassaggio();
+          }}><Copy size={14} /> Crea passaggio come questo</button>
+        </div>
+      }
+      {/* Stelle e azioni */}
+      {valutazioneMedia !== null && valutazioneMedia !== "error" &&
+        <div style={{ maxWidth: maxWidth }} className="flex items-center box-border pt-3 px-4 pb-0">
+          <Stelle
+            rating={valutazioneMedia.voto_medio}
+            bgColor="white"
+          />
+          <span className="ml-2 text-gray-500"><b>{String(valutazioneMedia.voto_medio).substring(0, 3)}/{5}</b> ({valutazioneMedia.numero_voti} {valutazioneMedia.numero_voti === 1 ? "voto" : "voti"})</span>
+          <div className="ml-auto">
+          </div>
+        </div>
+      }
+      {valutazioneMedia === null && valutazioneMedia !== "error" &&
+        <div style={{ maxWidth: maxWidth }} className="flex items-center box-border pt-3 px-4 pb-1">
+          <span className={`text-gray-500 ${truncateClassName}`}>Nessuna valutazione</span>
+        </div>
+      }
+      {valutazioneMedia === "error" &&
+        <div style={{ maxWidth: maxWidth }} className="flex items-center box-border pt-3 px-4 pb-1">
+          <span className={`text-red-500 ${truncateClassName}`}>Impossibile caricare le valutazioni</span>
+        </div>
+      }
+      {/* Autore e dettagli passaggio */}
+      <div style={{ maxWidth: maxWidth }} className="box-border pt-3 px-3 pb-0">
+        <div className={(props.utente ? " cursor-pointer" : " cursor-default")} onClick={props.utente ? () => { navigate("/utente?id=" + props.utente?.id) } : undefined}>
+          <span className={`${truncateClassName} pl-1`}>Pubblicato <ReactTimeAgo date={new Date(props.passaggio.data_pubblicazione)} locale="it" /> da</span>
+          {props.utente &&
+            <b className={`${truncateClassName} flex flex-row flex-wrap items-center`}><div className="pr-2 py-2 pl-1" ><img className="rounded-full" style={scaleTwProps("w-8 h-8 shadow-md", 1)} src={"src/assets/artista_empty.jpg"} alt={"Immagine di profilo"} /></div>{props.utente.nome} {props.utente.cognome} <span className={"font-normal " + truncateClassName}>(@{props.utente.username})</span></b>
           }
-          <ArrowRight size={16 * cardBranoScale} />
-          {props.brano2 &&
-            <CardBrano brano={props.brano2} scale={cardBranoScale} noButtons={props.insideModal} />
+          {!props.utente &&
+            <b className={`${truncateClassName} flex flex-row flex-wrap items-center`}><div className="pr-2 py-2 pl-1"><img className="rounded-full" style={scaleTwProps("w-8 h-8 shadow-md", 1)} src={"src/assets/artista_empty.jpg"} alt={"Immagine di profilo"} /></div>Utente eliminato</b>
           }
         </div>
-        {props.insideModal !== true &&
-          <div style={{ maxWidth: maxWidth }} className="flex flex-row justify-between flex-wrap">
-            <button className={"card-button"} style={scaleTwProps("p-1 rounded", 1)} onClick={() => { openPassaggioModal(); }}>Più dettagli <ExternalLink size={14} /></button>
-            <button className={"card-button"} style={scaleTwProps("p-1 rounded", 1)} onClick={() => {
-              dispatch(setBrano1ToNuovoPassaggio(props.brano1));
-              dispatch(setBrano2ToNuovoPassaggio(props.brano2));
-              openModalNuovoPassaggio();
-            }}><Copy size={14} /> Crea passaggio come questo</button>
-          </div>
-        }
-        {/* Stelle e azioni */}
-        {valutazioneMedia !== null && valutazioneMedia !== "error" &&
-          <div style={{ maxWidth: maxWidth }} className="flex items-center box-border pt-3 px-4 pb-0">
-            <Stelle
-              rating={valutazioneMedia.voto_medio}
-              bgColor="white"
-            />
-            <span className="ml-2 text-gray-500"><b>{String(valutazioneMedia.voto_medio).substring(0, 3)}/{5}</b> ({valutazioneMedia.numero_voti} {valutazioneMedia.numero_voti === 1 ? "voto" : "voti"})</span>
-            <div className="ml-auto">
+        {props.insideModal &&
+          <div className="text-gray-800 mt-2">
+            <div className="flex items-center gap-2 italic text-gray-500">
+              <MessageSquare size={14} />
+              <span className={`${truncateClassName}`}>{props.passaggio.testo ? props.passaggio.testo : "Nessuna descrizione fornita"}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Clock size={14} />
+              <span className={`${truncateClassName}`}>Posizione CUE secondo brano: <span className={"text-blue-600 " + truncateClassName}>{props.passaggio.cue_secondo_brano == null ? "Non specificato" : props.passaggio.cue_secondo_brano}</span></span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Clock size={14} />
+              <span className={`${truncateClassName}`}>Partenza secondo brano: <span className={"text-blue-600 " + truncateClassName}>{props.passaggio.inizio_secondo_brano == null ? "Non specificato" : props.passaggio.inizio_secondo_brano}</span></span>
             </div>
           </div>
         }
-        {valutazioneMedia === null && valutazioneMedia !== "error" &&
-          <div style={{ maxWidth: maxWidth }} className="flex items-center box-border pt-3 px-4 pb-1">
-            <span className={`text-gray-500 ${truncateClassName}`}>Nessuna valutazione</span>
-          </div>
-        }
-        {valutazioneMedia === "error" &&
-          <div style={{ maxWidth: maxWidth }} className="flex items-center box-border pt-3 px-4 pb-1">
-            <span className={`text-red-500 ${truncateClassName}`}>Impossibile caricare le valutazioni</span>
-          </div>
-        }
-        {/* Autore e dettagli passaggio */}
-        <div style={{ maxWidth: maxWidth }} className="box-border pt-3 px-3 pb-0">
-          <div className={(props.utente ? " cursor-pointer" : " cursor-default")} onClick={props.utente ? () => { navigate("/utente?id=" + props.utente?.id) } : undefined}>
-            <span className={`${truncateClassName} pl-1`}>Pubblicato <ReactTimeAgo date={new Date(props.passaggio.data_pubblicazione)} locale="it" /> da</span>
-            {props.utente &&
-              <b className={`${truncateClassName} flex flex-row flex-wrap items-center`}><div className="pr-2 py-2 pl-1" ><img className="rounded-full" style={scaleTwProps("w-8 h-8 shadow-md", 1)} src={"src/assets/artista_empty.jpg"} alt={"Immagine di profilo"} /></div>{props.utente.nome} {props.utente.cognome} <span className={"font-normal " + truncateClassName}>(@{props.utente.username})</span></b>
-            }
-            {!props.utente &&
-              <b className={`${truncateClassName} flex flex-row flex-wrap items-center`}><div className="pr-2 py-2 pl-1"><img className="rounded-full" style={scaleTwProps("w-8 h-8 shadow-md", 1)} src={"src/assets/artista_empty.jpg"} alt={"Immagine di profilo"} /></div>Utente eliminato</b>
-            }
-          </div>
-          {props.insideModal &&
-            <div className="text-gray-800 mt-2">
-              <div className="flex items-center gap-2 italic text-gray-500">
-                <MessageSquare size={14} />
-                <span className={`${truncateClassName}`}>{props.passaggio.testo ? props.passaggio.testo : "Nessuna descrizione fornita"}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Clock size={14} />
-                <span className={`${truncateClassName}`}>Posizione CUE secondo brano: <span className={"text-blue-600 " + truncateClassName}>{props.passaggio.cue_secondo_brano == null ? "Non specificato" : props.passaggio.cue_secondo_brano}</span></span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Clock size={14} />
-                <span className={`${truncateClassName}`}>Partenza secondo brano: <span className={"text-blue-600 " + truncateClassName}>{props.passaggio.inizio_secondo_brano == null ? "Non specificato" : props.passaggio.inizio_secondo_brano}</span></span>
-              </div>
-            </div>
-          }
-        </div>
       </div>
     </div>
   );

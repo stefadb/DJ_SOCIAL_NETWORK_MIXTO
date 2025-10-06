@@ -85,6 +85,7 @@ function Utente() {
               apiCall={`/passaggi?utente=${utente.id}`}
               schema={PassaggioConBraniSchema}
               component={(element: PassaggioConBrani) => (
+                <div className="p-3">
                 <CardPassaggio
                   key={element.id}
                   passaggio={element}
@@ -93,6 +94,7 @@ function Utente() {
                   
                   utente={utente}
                 />
+                </div>
               )}
               scrollMode="horizontal"
               emptyMessage="😮 L'utente non ha ancora pubblicato nessun passaggio"

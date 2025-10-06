@@ -13,6 +13,7 @@ export async function prepareMocksForDeezerResponse(mockDeezerResponseRaw: any, 
             return Promise.resolve({ status: 200, data: mockDeezerResponseRaw });
         }
         //E se ci sono URL inattesi...
+        console.log("URL deve essere " + deezerApiCallUrl + ", invece è " + url);
         return Promise.reject(new Error("Unexpected URL: " + url));
     });
     return Promise.resolve();
@@ -64,6 +65,7 @@ export async function initializeOrRestoreDb(insertQueriesAfterTablesTruncate: st
 export async function checkDbUpsert(sqlQuery: string, testApiCallUrl: string, app: Express, expectedQueryResult: Record<string, any>[]) {
     const res = await request(app).get(testApiCallUrl);
     //CONTROLLA CHE IL JSON RESTITUITO SIA QUELLO ATTESO
+    console.log(res.body);
     expect(res.status).toBe(200);
     //Controlla che sul db gli artisti siano esattamente quelli attesi
     const con = await mysql.createConnection({

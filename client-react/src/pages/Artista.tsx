@@ -92,6 +92,7 @@ function Artista() {
                             schema={PassaggioConBraniEUtenteSchema}
                             scrollMode="horizontal"
                             component={(element: PassaggioConBraniEUtente) => (
+                                <div className="p-3">
                                 <CardPassaggio
                                     key={element.id}
                                     passaggio={element}
@@ -100,6 +101,7 @@ function Artista() {
                                     utente={element.utente_array[0] ? element.utente_array[0] : null}
                                    
                                 />
+                                </div>
                             )}
                             emptyMessage="😮 Nessun passaggio trovato"
                         />
@@ -112,6 +114,7 @@ function Artista() {
                             schema={PassaggioConBraniEUtenteSchema}
                             scrollMode="horizontal"
                             component={(element: PassaggioConBraniEUtente) => (
+                                <div className="p-3">
                                 <CardPassaggio
                                     key={element.id}
                                     passaggio={element}
@@ -120,6 +123,7 @@ function Artista() {
                                     utente={element.utente_array[0] ? element.utente_array[0] : null}
                                     
                                 />
+                                </div>
                             )}
                             emptyMessage="😮 Nessun passaggio trovato"
                         />

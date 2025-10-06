@@ -70,7 +70,7 @@ function ModalArtistiOGeneri(props: { entity: "artista" | "genere", id: number }
         <ModalWrapper title={`Tutti ${props.entity == "artista" ? "gli artisti" : "i generi"} di questo ${props.entity == "artista" ? "brano" : "album"}`} onRequestClose={closeThisModal}>
             {list === null &&
                 <div className="flex flex-row justify-center">
-                    <Caricamento size="giant" status={status === null ? "loading" : status} />
+                    <Caricamento size="large" status={status === null ? "loading" : status} />
                 </div>
             }
             {list !== null && list.map((element) => {

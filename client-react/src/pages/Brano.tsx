@@ -92,6 +92,7 @@ function Brano() {
                 </div>
                 <div className="overflow-y-auto max-h-[300px]">
                   <PagedList
+                    caricamentoSize={"veryTiny"}
                     itemsPerPage={5}
                     apiCall={`/passaggi/conta?primoBrano=${brano.id}`}
                     schema={ContaPassaggiBrano2Schema}
@@ -116,6 +117,7 @@ function Brano() {
                 </div>
                 <div className="overflow-y-auto max-h-[300px]">
                   <PagedList
+                    caricamentoSize={"veryTiny"}
                     itemsPerPage={5}
                     apiCall={`/passaggi/conta?secondoBrano=${brano.id}`}
                     schema={ContaPassaggiBrano1Schema}
@@ -134,14 +136,16 @@ function Brano() {
           <div>
             <h2>Brani mixati dopo di <i>{brano.titolo}</i></h2>
             <PagedList itemsPerPage={2} apiCall={`/passaggi?primoBrano=${brano.id}`} schema={PassaggioDbSchema} scrollMode="horizontal" component={(element: PassaggioDb) => (
-              <CardPassaggio
-                key={element.id}
-                passaggio={element}
-                brano1={brano}
-                brano2={(element.brano_2_array as BranoDb[])[0] as BranoDb}
-                utente={element.utente_array[0] ? element.utente_array[0] : null}
-                
-              />
+              <div className="p-3">
+                <CardPassaggio
+                  key={element.id}
+                  passaggio={element}
+                  brano1={brano}
+                  brano2={(element.brano_2_array as BranoDb[])[0] as BranoDb}
+                  utente={element.utente_array[0] ? element.utente_array[0] : null}
+
+                />
+              </div>
             )}
               emptyMessage="😮 Nessun passaggio trovato"
             />
@@ -149,14 +153,16 @@ function Brano() {
           <div>
             <h2>Brani mixati prima di <i>{brano.titolo}</i></h2>
             <PagedList itemsPerPage={2} apiCall={`/passaggi?secondoBrano=${brano.id}`} schema={PassaggioDbSchema} scrollMode="horizontal" component={(element: PassaggioDb) => (
-              <CardPassaggio
-                key={element.id}
-                passaggio={element}
-                brano1={(element.brano_1_array as BranoDb[])[0] as BranoDb}
-                brano2={brano}
-                
-                utente={element.utente_array[0] ? element.utente_array[0] : null}
-              />
+              <div className="p-3">
+                <CardPassaggio
+                  key={element.id}
+                  passaggio={element}
+                  brano1={(element.brano_1_array as BranoDb[])[0] as BranoDb}
+                  brano2={brano}
+
+                  utente={element.utente_array[0] ? element.utente_array[0] : null}
+                />
+              </div>
             )}
               emptyMessage="😮 Nessun passaggio trovato"
             />

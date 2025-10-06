@@ -1,7 +1,7 @@
 {
-  "deezerApiCallUrl": "https://api.deezer.com/genre/106/artists?limit=5&index=0",
+  "deezerApiCallUrl": "https://api.deezer.com/genre/106/artists",
   "apiName": "/artisti/genere",
-  "testApiCallUrl": "/artisti/genere?genreId=106&limit=5&index=0",
+  "testApiCallUrl": "/artisti/genere?genreId=106",
   "entityName": "artists",
   "dbUpsertTests": [
     {

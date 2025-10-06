@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
-import { deezerColor, mPoints, scaleTwProps } from "../../functions/functions";
+import { deezerColor, getRandomGreyScale, mPoints, scaleTwProps } from "../../functions/functions";
 import type { Scratch } from "../../types/types";
 
-function Caricamento(props: { size: "tiny" | "small" | "large" | "giant", status: "loading" | "error" | "not-found" }) {
+function Caricamento(props: { size: "veryTiny" | "tiny" | "small" | "large" | "giant", status: "loading" | "error" | "not-found" }) {
     const scales = {
+        veryTiny: 0.5,
         tiny: 0.75,
         small: 1,
         large: 1.5,
@@ -53,17 +54,10 @@ function Caricamento(props: { size: "tiny" | "small" | "large" | "giant", status
         88, 3
     ];
 
-    const minimumGreyScale = 32;
-    const maximumGreyScale = 64;
     const scratchesNumber = 128;
     const holeWidth = Math.floor(radius / 10); //Simula il buco del disco
     const segments = Array.from({ length: radius - holeWidth }, (_, i) => i + 1);
     const [scratches, setScratches] = useState<Scratch[]>([]);
-
-    function getRandomGreyScale() {
-        const greyValue = Math.floor(Math.random() * (maximumGreyScale - minimumGreyScale + 1)) + minimumGreyScale;
-        return `rgb(${greyValue}, ${greyValue}, ${greyValue})`;
-    }
 
     useEffect(() => {
         if (props.status == "error") {

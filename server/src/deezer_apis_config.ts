@@ -41,7 +41,7 @@ type GeneriAPIsConfig = {
 export const artistiAPIsConfig: ArtistiAPIsConfig = {
     search: {
         paramName: "query",
-        deezerAPICallback: (res: import("express").Response, param: string, limit: number | undefined, index: number | undefined) => makeDeezerApiCall(res, "search", null, "artist", {...limitAndIndex(limit, index), q: param}),
+        deezerAPICallback: (res: import("express").Response, param: string, limit: number | undefined, index: number | undefined) => makeDeezerApiCall(res, "search", null, "artist", {q: param, ...limitAndIndex(limit, index)}),
         entities: [{
             tableName: "Artista",
             deezerEntitySchema: ArtistaDeezerBasicSchema,
@@ -95,7 +95,7 @@ export const artistiAPIsConfig: ArtistiAPIsConfig = {
 export const albumAPIsConfig: AlbumAPIsConfig = {
     search: {
         paramName: "query",
-        deezerAPICallback: (res: import("express").Response, param: string, limit: number | undefined, index: number | undefined) => makeDeezerApiCall(res, "search", null, "album", {...limitAndIndex(limit, index), q: param}),
+        deezerAPICallback: (res: import("express").Response, param: string, limit: number | undefined, index: number | undefined) => makeDeezerApiCall(res, "search", null, "album", {q: param, ...limitAndIndex(limit, index)}),
         entities: [{
             tableName: "Album",
             deezerEntitySchema: AlbumDeezerBasicSchema,
@@ -225,7 +225,7 @@ export const braniAPIsConfig: BraniAPIsConfig = {
     },
     search: {
         paramName: "query",
-        deezerAPICallback: (res: import("express").Response, param: string, limit: number | undefined, index: number | undefined) => makeDeezerApiCall(res, "search", null, "track", {...limitAndIndex(limit, index), q: param}),
+        deezerAPICallback: (res: import("express").Response, param: string, limit: number | undefined, index: number | undefined) => makeDeezerApiCall(res, "search", null, "track", {q: param, ...limitAndIndex(limit, index)}),
         entities: [
             {
                 tableName: "Album",

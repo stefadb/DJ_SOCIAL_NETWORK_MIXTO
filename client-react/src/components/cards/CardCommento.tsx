@@ -10,14 +10,15 @@ import TimeAgo from 'javascript-time-ago';
 import it from 'javascript-time-ago/locale/it';
 import { checkConnError, checkUserNotLoggedError, getNoConnMessage, getUserNotLoggedMessage, inputTextClassName } from "../../functions/functions";
 import { cleargenericMessage, setGenericAlert } from "../../store/errorSlice";
-import { set } from "zod";
-import { Check, Edit3, MessageCircle, PenTool, X } from "react-feather";
+import { Check, Edit3, MessageCircle, X } from "react-feather";
+import CommentoTree from "../CommentoTree";
 
 TimeAgo.addLocale(it);
 
 function CardCommento(props: { commento: CommentoEUtente, livello: number }) {
+    const levelWidthStep = 10;
+    const maxLivello = 4;
     const [commento, setCommento] = useState(props.commento);
-    const minWidth = 60; // dimensione percentuale minima del commento (per il livello più profondo)
     const loggedUtente: UtenteDb | null = useSelector((state: RootState) => (state.user as any).utente as UtenteDb | null);
     const [showAnswerBox, setShowAnswerBox] = useState(false);
     const [editing, setEditing] = useState(false);
@@ -110,15 +111,12 @@ function CardCommento(props: { commento: CommentoEUtente, livello: number }) {
         return commento.utente_array[0] !== undefined && commento.utente_array.length == 1 ? commento.utente_array[0].nome + " " + commento.utente_array[0].cognome + (mioCommento() ? " (tu)" : "") : "Utente sconosciuto";
     }
 
-    function getCommentoWidth(livello: number){
-        return minWidth + ((1.0 / (1+(livello*0.5)))) * (100 - minWidth) + "%";
-    }
-
     return (
         <>
-            <div className="flex flex-col">
-                <div className="w-full flex justify-end box-border py-1 px-0">
-                    <div className="box-border p-2" style={{ width: getCommentoWidth(props.livello) }}>
+            <div className="flex flex-col w-full overflow-x-hidden">
+                <div className="w-full flex flex-row items-stretch justify-end box-border px-0">
+                    <CommentoTree livello={props.livello} />
+                    <div className="box-border p-2" style={{ width: 100 - props.livello * levelWidthStep + "%" }}>
                         <div className="flex flex-row items-center">
                             <div className="pr-2">
                                 <img className="rounded-full shadow-md w-8 h-8" src={"src/assets/artista_empty.jpg"} alt={"Immagine di profilo"} />
@@ -148,14 +146,15 @@ function CardCommento(props: { commento: CommentoEUtente, livello: number }) {
                                 </div>
                             </>
                         }
-                        {!showAnswerBox && !editing &&
+                        {!showAnswerBox && !editing && props.livello < maxLivello &&
                             <a className="hover-underline cursor-pointer text-blue-500" onClick={openAnswerBox}>Rispondi</a>
                         }
                     </div>
                 </div>
                 {showAnswerBox &&
-                    <div className="w-full flex justify-end box-border pt-1 pb-1 pl-0 pr-0">
-                        <div className="box-border p-2" style={{ width: getCommentoWidth(props.livello + 1) }}>
+                    <div className="w-full flex justify-end items-stretch box-border px-0">
+                        <CommentoTree livello={props.livello + 1} />
+                        <div className="box-border p-2" style={{ width: 100 - (props.livello + 1) * levelWidthStep + "%" }}>
                             <textarea rows={1} className={inputTextClassName()} placeholder="Scrivi una risposta..." value={answer} onChange={(e) => setAnswer(e.target.value)} />
                             <div className="flex flex-row flex-wrap">
                                 <div className="p-1">
@@ -171,10 +170,18 @@ function CardCommento(props: { commento: CommentoEUtente, livello: number }) {
                 {!sendingAnswer &&
                     <PagedList itemsPerPage={5} apiCall={`/commenti?commentoPadre=${commento.id}`} schema={CommentoEUtenteSchema} scrollMode="vertical" component={(element: CommentoEUtente) => {
                         return <CardCommento commento={element} livello={props.livello + 1} />;
-                    }} showMoreButton={(onClick) => <div className="flex justify-end px-2"><button className="card-button rounded p-1" style={{ width: getCommentoWidth(props.livello + 1) }} onClick={onClick}>Carica altre risposte</button></div>
-                    } emptyMessage={<></>} />
+                    }} showMoreButton={(onClick) => <div className="flex items-stretch justify-end px-0">
+                        <CommentoTree livello={props.livello + 1} />
+                        <div style={{ width: 100 - (props.livello + 1) * levelWidthStep + "%" }} className="box-border px-3 pb-2 pt-0">
+                            <button className="card-button rounded rounded-tl-none p-1 w-full" onClick={onClick}>Carica altre risposte</button>
+                        </div>
+                    </div>
+                    } emptyMessage={<></>} 
+                    customLoading={<p>Caricamento...</p>} 
+                    customError={<p>Impossibile caricare le risposte. Si è verificato un errore.</p>}
+                    />
                 }
-            </div>
+            </div >
         </>
     );
 
