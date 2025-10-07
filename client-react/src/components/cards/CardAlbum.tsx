@@ -52,14 +52,14 @@ function CardAlbum(props: { album: AlbumDb, size: "small" | "large" }) {
     const navigate = useNavigate();
     return (
         <div style={scaleTwProps("p-3",scale)}>
-            <div style={scaleTwProps("p-3 w-[150px] rounded-lg shadow-md",scale)}>
+            <div className="shadow-md-custom" style={scaleTwProps("p-3 w-[150px] rounded-lg",scale)}>
                 <div>
                     <div className="flex flex-row cursor-pointer" onClick={() => navigate(`/album?id=${props.album.id}`)}>
                         <div className="relative">
                             <Badge scale={scale}>
                                 <AlbumIcon size={14 * scale} color={deezerColor()} />
                             </Badge>
-                            <img style={scaleTwProps("w-[100px] h-[100px] shadow-md",scale)} src={props.album.url_immagine ? props.album.url_immagine : "src/assets/album_empty.jpg"} alt={"Cover album " + props.album.titolo} />
+                            <img style={scaleTwProps("w-[100px] h-[100px] shadow-md"/* no-custom*/,scale)} src={props.album.url_immagine ? props.album.url_immagine : "src/assets/album_empty.jpg"} alt={"Cover album " + props.album.titolo} />
                         </div>
                         {stableMezzoDisco}
                     </div>

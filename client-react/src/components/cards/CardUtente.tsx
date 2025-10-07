@@ -32,7 +32,7 @@ function CardUtente(props: { utente: UtenteDb, size: "small" | "large" }) {
                 <Badge scale={scale}>
                     <User size={14 * scale} />
                 </Badge>
-                <img style={scaleTwProps("w-[100px] h-[100px] rounded-full shadow-md",scale)} src={"src/assets/artista_empty.jpg"} alt={"Immagine di profilo di " + props.utente.nome + " " + props.utente.cognome} />
+                <img style={scaleTwProps("w-[100px] h-[100px] rounded-full shadow-md"/*no custom*/,scale)} src={"src/assets/artista_empty.jpg"} alt={"Immagine di profilo di " + props.utente.nome + " " + props.utente.cognome} />
             </div>
             <h3 style={scaleTwProps("w-full text-center mt-2 mb-2 text-lg",scale)}>{props.utente.nome + " " + props.utente.cognome}</h3>
             <h4 style={scaleTwProps("w-full text-xs my-2 text-center",scale)}>@{props.utente.username}</h4>

@@ -31,7 +31,7 @@ function ModalSignUp(props: { isOpen: boolean; onRequestClose: () => void; }) {
             await api.post("/utenti", {
                 newRowValues: { username, nome, cognome, password }
             });
-            dispatch(setGenericAlert({ message: "Registrazione avvenuta con successo. Effettua il login per continuare.", type: "info" }));
+            dispatch(setGenericAlert({ message: "Registrazione avvenuta con successo. Ora puoi accedere per pubblicare i tuoi mix e salvare i tuoi brani preferiti!", type: "info" }));
             setRegistrazioneDisabled(false);
             props.onRequestClose();
         } catch (error) {

@@ -107,7 +107,7 @@ function ModalPassaggio(props: { idPassaggio: number, onClose: () => void }) {
             }
         }
         if (!loggedUtente) {
-            dispatch(setGenericAlert({ message: "Accedi per commentare il passaggio.", type: "info" }));
+            dispatch(setGenericAlert({ message: "Accedi per commentare il mix.", type: "info" }));
         }
     }
 
@@ -141,17 +141,17 @@ function ModalPassaggio(props: { idPassaggio: number, onClose: () => void }) {
             }
         }
         if (!loggedUtente) {
-            dispatch(setGenericAlert({ message: "Accedi per valutare il passaggio.", type: "info" }));
+            dispatch(setGenericAlert({ message: "Accedi per valutare il mix.", type: "info" }));
         }
     }
 
     async function eliminaPassaggio() {
         if (loggedUtente && passaggio) {
             //Chiedi conferma prima di eliminare
-            if (!confirm("Sei sicuro di voler eliminare questo passaggio dalla community?")) return;
+            if (!confirm("Sei sicuro di voler eliminare questo mix dalla community?")) return;
             try {
                 setEliminaDisabled(true);
-                dispatch(setGenericAlert({ message: "Eliminazione del passaggio in corso...", type: "no-autoclose" }));
+                dispatch(setGenericAlert({ message: "Eliminazione del mix in corso...", type: "no-autoclose" }));
                 await api.delete(`/passaggi/${passaggio.id}`);
                 dispatch(cleargenericMessage());
                 setEliminaDisabled(false);
@@ -163,7 +163,7 @@ function ModalPassaggio(props: { idPassaggio: number, onClose: () => void }) {
                 } else if (checkUserNotLoggedError(error)) {
                     dispatch(setGenericAlert({ message: getUserNotLoggedMessage(), type: "error" }))
                 } else {
-                    dispatch(setGenericAlert({ message: "Impossibile eliminare il passaggio dalla community. Si è verificato un errore.", type: "error" }));
+                    dispatch(setGenericAlert({ message: "Impossibile eliminare il mix dalla community. Si è verificato un errore.", type: "error" }));
                 }
 
             }
@@ -193,7 +193,7 @@ function ModalPassaggio(props: { idPassaggio: number, onClose: () => void }) {
                         </div>
 
                         {/* Commenti o valutazioni */}
-                        <div className="border rounded-lg shadow-md">
+                        <div className="border rounded-lg shadow-md-custom">
                             <div className="flex items-center justify-between px-3 pt-2 border-b border-[#eee]">
                                 <b className="text-base">{showValutazioni ? "Voti" : "Commenti"}</b>
                                 <button className="card-button rounded p-1" onClick={() => setShowValutazioni(v => !v)}>
@@ -236,7 +236,7 @@ function ModalPassaggio(props: { idPassaggio: number, onClose: () => void }) {
                                         <PagedList itemsPerPage={10} apiCall={`/valutazioni?passaggio=${passaggio.id}`} schema={ValutazioneEUtenteSchema} scrollMode="vertical" passElementsToParent={setValutazioni} component={(element: ValutazioneEUtente) => {
                                             return <CardValutazione valutazione={element} />;
                                         }} showMoreButton={(onClick) => <div className="px-3"><button className="w-full card-button rounded p-1" onClick={onClick}>Carica altre valutazioni</button></div>}
-                                            emptyMessage="😮 Nessuno ha ancora valutato questo passaggio"
+                                            emptyMessage="😮 Nessuno ha ancora valutato questo mix"
                                             customLoading={<p>Caricamento...</p>}
                                             customError={<p>Impossibile caricare le risposte. Si è verificato un errore.</p>}
                                         />
@@ -269,13 +269,13 @@ function ModalPassaggio(props: { idPassaggio: number, onClose: () => void }) {
                                         </>
                                     }
                                     {nonPuoiVotare &&
-                                        <p className="text-gray-500">Hai già votato questo passaggio. Grazie!</p>
+                                        <p className="text-gray-500">Hai già valutato questo mix. Grazie!</p>
                                     }
                                 </div>
                             }
                         </div>
                         {loggedUtente && passaggio.id_utente === loggedUtente.id &&
-                            <button disabled={eliminaDisabled} onClick={eliminaPassaggio} className="m-4 px-3 py-2 bg-red-500 text-white border-none rounded cursor-pointer">Elimina il passaggio dalla community</button>
+                            <button disabled={eliminaDisabled} onClick={eliminaPassaggio} className="m-4 px-3 py-2 bg-red-500 text-white border-none rounded cursor-pointer">Elimina il mix dalla community</button>
                         }
                         <div className="h-4" />
                     </>

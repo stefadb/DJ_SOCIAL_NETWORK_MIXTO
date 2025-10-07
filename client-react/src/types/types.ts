@@ -23,6 +23,20 @@ export const PassaggioConBraniEUtenteSchema = PassaggioDbSchema.extend({
 export type PassaggioConBraniEUtente = z.infer<typeof PassaggioConBraniEUtenteSchema>;
 
 // Schema e type per /passaggi?albumPrimoBrano= e /passaggi?albumSecondoBrano=
+export const PassaggioConBrano1EUtenteSchema = PassaggioDbSchema.extend({
+    brano_1_array: z.array(BranoDbSchema),
+    utente_array: z.array(UtenteDbSchema)
+});
+export type PassaggioConBrano1EUtente = z.infer<typeof PassaggioConBrano1EUtenteSchema>;
+
+// Schema e type per /passaggi?albumPrimoBrano= e /passaggi?albumSecondoBrano=
+export const PassaggioConBrano2EUtenteSchema = PassaggioDbSchema.extend({
+    brano_2_array: z.array(BranoDbSchema),
+    utente_array: z.array(UtenteDbSchema)
+});
+export type PassaggioConBrano2EUtente = z.infer<typeof PassaggioConBrano2EUtenteSchema>;
+
+// Schema e type per /passaggi?albumPrimoBrano= e /passaggi?albumSecondoBrano=
 export const PassaggioConUtenteSchema = PassaggioDbSchema.extend({
     utente: UtenteDbSchema
 });

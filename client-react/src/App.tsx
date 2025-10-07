@@ -12,7 +12,7 @@ import ModalNuovoPassaggio from "./components/modals/ModalNuovoPassaggio";
 import ScrollToTop from "./components/ScrollToTop";
 import Ricerca from "./pages/Ricerca";
 import { toast, ToastContainer, type Id, type ToastIcon } from 'react-toastify';
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import type { RootState } from "./store/store";
 import { cleargenericMessage } from "./store/errorSlice";
@@ -25,12 +25,14 @@ import ModalSignUp from "./components/modals/ModalSignUp";
 import ModalSignIn from "./components/modals/ModalSignIn";
 import type { BranoDb, UtenteDb } from "./types/db_types";
 import { setBrano1, setBrano2 } from "./store/giradischiSlice";
+import ModalHelp from "./components/modals/ModalHelp";
 
 function App() {
   const genericMessage: { message: string, type: 'error' | 'warning' | 'info' | 'no-autoclose' } | null = useSelector((state: RootState) => state.error.genericMessage as any);
   const genericMessageToast = useRef<Id>(null);
   const dispatch = useDispatch();
   const [searchParams, setSearchParams] = useSearchParams();
+  const [helpOpen, setHelpOpen] = useState<boolean>(false);
   const idInModal = searchParams.get("idInModal");
   const toastClassName = "shadow-md font-['Roboto_Condensed']";
   const loggedUtente: UtenteDb | null = useSelector((state: RootState) => (state.user as any).utente as UtenteDb | null);
@@ -61,6 +63,12 @@ function App() {
       const brano2: BranoDb = JSON.parse(savedBrano2);
       dispatch(setBrano2(brano2));
     }
+    setTimeout(() => {
+      if(localStorage.getItem('giaAperto') !== "true"){
+        setHelpOpen(true);
+        localStorage.setItem('giaAperto', 'true');
+      }
+    },1000);
   }, [])
 
   function closeAnyModal() {
@@ -156,6 +164,9 @@ function App() {
       }
       {searchParams.get("modal") == "signUp" && loggedUtente == null &&
         <ModalSignUp isOpen={true} onRequestClose={closeAnyModal} />
+      }
+      {(helpOpen || searchParams.get("modal") == "guida") &&
+        <ModalHelp onClose={() => {setHelpOpen(false); closeAnyModal(); }} />
       }
       <ToastContainer limit={1} />
     </div>

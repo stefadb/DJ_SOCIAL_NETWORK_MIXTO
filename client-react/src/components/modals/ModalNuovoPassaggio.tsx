@@ -70,17 +70,17 @@ function ModalNuovoPassaggio(props: { onRequestClose: () => void }) {
     async function onSubmit(event: React.FormEvent) {
         event.preventDefault();
         if (!brano1 || !brano2) {
-            dispatch(setGenericAlert({ message: "Devi selezionare entrambi i brani sulla consolle prima di pubblicare un passaggio", type: "info" }));
+            dispatch(setGenericAlert({ message: "Devi selezionare entrambi i brani sulla consolle prima di pubblicare un mix", type: "info" }));
             return;
         }
         if (loggedUtente === null) {
-            dispatch(setGenericAlert({ message: "Devi essere loggato per pubblicare un passaggio", type: "info" }));
+            dispatch(setGenericAlert({ message: "Devi essere loggato per pubblicare un mix", type: "info" }));
             return;
         }
         try {
             const timestamp = new Date().toISOString().slice(0, 19).replace('T', ' ');
             setPubblicaDisabled(true);
-            dispatch(setGenericAlert({ message: "Pubblicazione del passaggio in corso...", type: "no-autoclose" }));
+            dispatch(setGenericAlert({ message: "Pubblicazione del mix in corso...", type: "no-autoclose" }));
             await api.post('/passaggi', {
                 newRowValues: {
                     testo: testo !== "" ? testo : null,
@@ -94,7 +94,7 @@ function ModalNuovoPassaggio(props: { onRequestClose: () => void }) {
             });
             dispatch(setBrano2(null));
             dispatch(setBrano1(null));
-            dispatch(setGenericAlert({ message: "Passaggio pubblicato con successo. Lo trovi nella pagina del tuo profilo!", type: "info" }));
+            dispatch(setGenericAlert({ message: "Mix pubblicato con successo. Lo trovi nella pagina del tuo profilo!", type: "info" }));
             setPubblicaDisabled(false);
             // Resetta i campi del form
             setTesto('');
@@ -108,7 +108,7 @@ function ModalNuovoPassaggio(props: { onRequestClose: () => void }) {
             } else if (checkUserNotLoggedError(error)) {
                 dispatch(setGenericAlert({ message: getUserNotLoggedMessage(), type: "error" }))
             } else {
-                dispatch(setGenericAlert({ message: "Impossibile pubblicare il passaggio. Si è verificato un errore.", type: "error" }));
+                dispatch(setGenericAlert({ message: "Impossibile pubblicare il mix. Si è verificato un errore.", type: "error" }));
             }
         }
     }
@@ -117,7 +117,7 @@ function ModalNuovoPassaggio(props: { onRequestClose: () => void }) {
         overlayClassName={modalsOverlayClassName()}
         className={modalsContentClassName()}
     >
-        <ModalWrapper title="Pubblica un nuovo passaggio" onRequestClose={props.onRequestClose}>
+        <ModalWrapper title="Pubblica un nuovo mix" onRequestClose={props.onRequestClose}>
             <div
                 id="riferimento"
                 ref={riferimentoRef}
@@ -133,7 +133,7 @@ function ModalNuovoPassaggio(props: { onRequestClose: () => void }) {
                             {brano1 === null &&
                                 <div className="p-3">
                                     <div className="p-3 w-full box-border border border-blue-500 border-solid rounded">
-                                        <span className="text-blue-500"><Info /> Il deck 1 è vuoto. Fai un giro su Mixto per trovare il primo brano del tuo passaggio!</span>
+                                        <span className="text-blue-500"><Info /> Il deck 1 è vuoto. Fai un giro su MixTo per trovare il primo brano per questo mix!</span>
                                     </div>
                                 </div>
                             }
@@ -148,7 +148,7 @@ function ModalNuovoPassaggio(props: { onRequestClose: () => void }) {
                             {brano2 === null &&
                                 <div className="p-3">
                                     <div className="p-3 w-full box-border border border-blue-500 border-solid rounded">
-                                        <span className="text-blue-500"><Info /> Il deck 2 è vuoto. Fai un giro su Mixto per trovare il secondo brano del tuo passaggio!</span>
+                                        <span className="text-blue-500"><Info /> Il deck 2 è vuoto. Fai un giro su MixTo per trovare il secondo brano per questo mix!</span>
                                     </div>
                                 </div>
                             }
@@ -160,7 +160,7 @@ function ModalNuovoPassaggio(props: { onRequestClose: () => void }) {
                     <div >
                         <form onSubmit={onSubmit}>
                             <div className={`flex flex-col mb-4`}>
-                                <label htmlFor="inizioSecondoBrano">Descrivi come eseguire questo passaggio:</label>
+                                <label htmlFor="inizioSecondoBrano">Descrivi come eseguire la transizione tra i due brani in questo mix:</label>
                                 <textarea className={inputTextClassName()}
                                     id="testo"
                                     value={testo}
@@ -199,7 +199,7 @@ function ModalNuovoPassaggio(props: { onRequestClose: () => void }) {
                                     <X size={16} />Annulla
                                 </button>
                                 <button type="submit" disabled={!brano1 || !brano2 || !loggedUtente || pubblicaDisabled} className="card-button p-2 rounded">
-                                    <UploadCloud size={16} />  Pubblica Passaggio
+                                    <UploadCloud size={16} />  Pubblica Mix
                                 </button>
                             </div>
                         </form>

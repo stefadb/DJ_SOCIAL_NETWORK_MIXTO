@@ -103,7 +103,7 @@ function ListaArtistiOGeneri(props: { list: ArtistaDb[], noClick?: boolean, enti
                             <>
                                 {
                                     shownList.map((element, index) => {
-                                        return <Fragment key={element.id}><Link className="text-base font-['Roboto_Condensed']" to={props.noClick ? "" : "/" + props.entity + "?id=" + element.id}>{element.nome}</Link>
+                                        return <Fragment key={element.id}><Link className={"text-base font-['Roboto_Condensed']" + (props.noClick ? " pointer-events-none" : " cursor-pointer")} to={props.noClick ? "" : "/" + props.entity + "?id=" + element.id}>{element.nome}</Link>
                                             {index < shownList.length - 1 && ", "}</Fragment>
                                     })
                                 }

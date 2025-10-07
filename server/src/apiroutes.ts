@@ -64,7 +64,7 @@ export async function getConnection() {
 export async function logout(req: import("express").Request, res: import("express").Response) {
   if (req.session.user) {
     req.session.user = undefined;
-    res.send();
+    res.status(200).json({});
   } else {
     res.status(400).json({ error: "Sessione non trovata" });
   }
@@ -628,7 +628,7 @@ export async function getBraniEsistentiPreferiti(req: import("express").Request,
   const id_utente = req.query.utente;
   const id_brano = req.query.brano;
   if (typeof id_utente !== "string" || typeof id_brano !== "string" || isNaN(Number(id_utente)) || isNaN(Number(id_brano))) {
-    res.status(401).json({ error: "I parametri id_utente e id_brano sono obbligatori e devono essere numerici" });
+    res.status(401).json({ error: "I parametri utente e brano sono obbligatori e devono essere numerici" });
     return;
   }
   const con = await getConnection();

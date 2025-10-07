@@ -17,6 +17,7 @@ import z from "zod";
 import CardBrano from "../components/cards/CardBrano";
 import Caricamento from "../components/icons/Caricamento";
 import { check404 } from "../functions/functions";
+import type { PassaggioConBrano1EUtente, PassaggioConBrano2EUtente } from "../types/types";
 
 // Schema e type per /passaggi/conta?primoBrano= e /passaggi/conta?secondoBrano=
 const ContaPassaggiBrano2Schema = z.object({
@@ -81,11 +82,11 @@ function Brano() {
       {brano !== null &&
         <>
           <div className="flex flex-row justify-evenly flex-wrap gap-5">
-            <div className="text-center p-3 rounded-lg shadow-md">
+            <div className="text-center p-3 rounded-lg shadow-md-custom">
               <h3>Top brani più mixati dopo di <i>{brano.titolo}</i></h3>
               <div>
                 <div className="classifica-row">
-                  <div className="classifica-cell classifica-cell-header"><b>#&nbsp;passaggi</b></div>
+                  <div className="classifica-cell classifica-cell-header"><b>#&nbsp;mix</b></div>
                   <div className="classifica-cell classifica-cell-header"><b>Titolo</b></div>
                   <div className="classifica-cell classifica-cell-header"><b>Durata</b></div>
                   <div className="classifica-cell classifica-cell-header"><b>Artisti</b></div>
@@ -101,16 +102,16 @@ function Brano() {
                       <BranoTableRow element={element} />
                     )}
                     showMoreButton={(onClick) => <div className="classifica-big-cell cursor-pointer" onClick={onClick}>Carica altri brani</div>}
-                    emptyMessage={<div className="classifica-big-cell">😮 Nessun passaggio trovato</div>}
+                    emptyMessage={<div className="classifica-big-cell">😮 Nessun mix trovato</div>}
                   />
                 </div>
               </div>
             </div>
-            <div className="text-center p-3 rounded-lg shadow-md">
+            <div className="text-center p-3 rounded-lg shadow-md-custom">
               <h3>Top brani più mixati prima di <i>{brano.titolo}</i></h3>
               <div>
                 <div className="classifica-row">
-                  <div className="classifica-cell classifica-cell-header"><b># passaggi</b></div>
+                  <div className="classifica-cell classifica-cell-header"><b># mix</b></div>
                   <div className="classifica-cell classifica-cell-header"><b>Titolo</b></div>
                   <div className="classifica-cell classifica-cell-header"><b>Durata</b></div>
                   <div className="classifica-cell classifica-cell-header"><b>Artisti</b></div>
@@ -126,7 +127,7 @@ function Brano() {
                       <BranoTableRow element={element} />
                     )}
                     showMoreButton={(onClick) => <div className="classifica-big-cell cursor-pointer" onClick={onClick}>Carica altri brani</div>}
-                    emptyMessage={<div className="classifica-big-cell">😮 Nessun passaggio trovato</div>}
+                    emptyMessage={<div className="classifica-big-cell">😮 Nessun mix trovato</div>}
                   />
                 </div>
               </div>
@@ -135,7 +136,7 @@ function Brano() {
 
           <div>
             <h2>Brani mixati dopo di <i>{brano.titolo}</i></h2>
-            <PagedList itemsPerPage={2} apiCall={`/passaggi?primoBrano=${brano.id}`} schema={PassaggioDbSchema} scrollMode="horizontal" component={(element: PassaggioDb) => (
+            <PagedList itemsPerPage={2} apiCall={`/passaggi?primoBrano=${brano.id}`} schema={PassaggioDbSchema} scrollMode="horizontal" component={(element: PassaggioConBrano2EUtente) => (
               <div className="p-3">
                 <CardPassaggio
                   key={element.id}
@@ -152,19 +153,18 @@ function Brano() {
           </div>
           <div>
             <h2>Brani mixati prima di <i>{brano.titolo}</i></h2>
-            <PagedList itemsPerPage={2} apiCall={`/passaggi?secondoBrano=${brano.id}`} schema={PassaggioDbSchema} scrollMode="horizontal" component={(element: PassaggioDb) => (
+            <PagedList itemsPerPage={2} apiCall={`/passaggi?secondoBrano=${brano.id}`} schema={PassaggioDbSchema} scrollMode="horizontal" component={(element: PassaggioConBrano1EUtente) => (
               <div className="p-3">
                 <CardPassaggio
                   key={element.id}
                   passaggio={element}
                   brano1={(element.brano_1_array as BranoDb[])[0] as BranoDb}
                   brano2={brano}
-
                   utente={element.utente_array[0] ? element.utente_array[0] : null}
                 />
               </div>
             )}
-              emptyMessage="😮 Nessun passaggio trovato"
+              emptyMessage="😮 Nessun mix trovato"
             />
           </div>
         </>

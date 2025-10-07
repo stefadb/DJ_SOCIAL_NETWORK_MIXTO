@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { deezerColor, getRandomGreyScale, mPoints, scaleTwProps } from "../../functions/functions";
 import type { Scratch } from "../../types/types";
 
-function Caricamento(props: { size: "veryTiny" | "tiny" | "small" | "large" | "giant", status: "loading" | "error" | "not-found" }) {
+function Caricamento(props: { size: "veryTiny" | "tiny" | "small" | "large" | "giant", status: "loading" | "error" | "not-found", noText?: boolean }) {
     const scales = {
         veryTiny: 0.5,
         tiny: 0.75,
@@ -164,14 +164,19 @@ function Caricamento(props: { size: "veryTiny" | "tiny" | "small" | "large" | "g
                 </div >
             </div>
         </div>
-        {props.status == "loading" &&
-            <h4 style={scaleTwProps("w-[125px] my-1 text-[21.3333px] text-center", scale)}>Caricamento...</h4>
-        }
-        {props.status == "error" &&
-            <h6 style={scaleTwProps("w-[125px] my-1 text-base text-red-500 text-center", scale)}>😢 Si è verificato un errore nel caricamento. Controlla la tua connessione a internet</h6>
-        }
-        {props.status == "not-found" &&
-            <h5 style={scaleTwProps("w-[125px] my-1 text-base text-red-500 text-center", scale)}>😲 Quello che stavi cercando non c'è. Ci dispiace!</h5>
+        {props.noText !== true &&
+            <>
+                {
+                    props.status == "loading" &&
+                    <h4 style={scaleTwProps("w-[125px] my-1 text-[21.3333px] text-center", scale)}>Caricamento...</h4>
+                }
+                {props.status == "error" &&
+                    <h6 style={scaleTwProps("w-[125px] my-1 text-base text-red-500 text-center", scale)}>😢 Si è verificato un errore nel caricamento. Controlla la tua connessione a internet</h6>
+                }
+                {props.status == "not-found" &&
+                    <h5 style={scaleTwProps("w-[125px] my-1 text-base text-red-500 text-center", scale)}>😲 Quello che stavi cercando non c'è. Ci dispiace!</h5>
+                }
+            </>
         }
     </div>);
 }

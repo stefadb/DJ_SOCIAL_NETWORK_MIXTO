@@ -97,7 +97,7 @@ function Utente() {
                 </div>
               )}
               scrollMode="horizontal"
-              emptyMessage="😮 L'utente non ha ancora pubblicato nessun passaggio"
+              emptyMessage="😮 L'utente non ha ancora pubblicato nessun mix"
             />
           </div>
         </div>

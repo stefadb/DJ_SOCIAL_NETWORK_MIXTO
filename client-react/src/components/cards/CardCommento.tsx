@@ -119,7 +119,7 @@ function CardCommento(props: { commento: CommentoEUtente, livello: number }) {
                     <div className="box-border p-2" style={{ width: 100 - props.livello * levelWidthStep + "%" }}>
                         <div className="flex flex-row items-center">
                             <div className="pr-2">
-                                <img className="rounded-full shadow-md w-8 h-8" src={"src/assets/artista_empty.jpg"} alt={"Immagine di profilo"} />
+                                <img className="rounded-full shadow-md w-8 h-8"/*no custom*/ src={"src/assets/artista_empty.jpg"} alt={"Immagine di profilo"} />
                             </div>
                             <div className="flex-grow">
                                 <b>{getNomeUtente()} <span className="font-normal truncate">(<ReactTimeAgo date={new Date(commento.data_pubblicazione)} locale="it" />)</span></b>

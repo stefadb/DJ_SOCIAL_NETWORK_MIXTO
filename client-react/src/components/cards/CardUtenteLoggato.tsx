@@ -50,7 +50,7 @@ function CardUtenteLoggato() {
         <>
             {loggedUtente &&
                 <div>
-                    <img className="rounded-full cursor-pointer" onClick={openAggiornaUtente} style={scaleTwProps("w-12 h-12 shadow-md", 1)} src={"src/assets/artista_empty.jpg"} alt={"Immagine di profilo di " + loggedUtente.nome + " " + loggedUtente.cognome} />
+                    <img className="rounded-full cursor-pointer shadow-md"/*no-custom*/ onClick={openAggiornaUtente} style={scaleTwProps("w-12 h-12", 1)} src={"src/assets/artista_empty.jpg"} alt={"Immagine di profilo di " + loggedUtente.nome + " " + loggedUtente.cognome} />
                 </div>
             }
             {!loggedUtente &&

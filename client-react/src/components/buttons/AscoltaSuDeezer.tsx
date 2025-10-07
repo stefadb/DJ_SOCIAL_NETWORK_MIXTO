@@ -20,7 +20,7 @@ function AscoltaSuDeezer(props: { id: number, entity: "track" | "album", scale: 
         <Tooltip
             anchorSelect={`#${randomId}`}
             place="top"
-            content={"Ascolta su Deezer"}
+            content={"Ascolta su DEEZER"}
         />
     </div>;
 }

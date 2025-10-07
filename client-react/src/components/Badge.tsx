@@ -8,7 +8,7 @@ function Badge(props: { children: React.ReactNode, scale: number }) {
         >
             <div
                 className="flex items-center justify-center bg-white rounded-full"
-                style={scaleTwProps("w-6 h-6 shadow-md", props.scale)}
+                style={scaleTwProps("w-6 h-6 shadow-md"/*no-custom*/, props.scale)}
             >
                 {props.children}
             </div>

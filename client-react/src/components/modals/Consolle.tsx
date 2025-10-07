@@ -86,7 +86,7 @@ function Consolle(props: { onRequestClose: () => void }) {
                                 {brano1 === null &&
                                     <div className="p-3">
                                         <div className="p-3 w-full box-border border border-blue-500 border-solid rounded">
-                                            <span className="text-blue-500"><Info /> Il deck 1 è vuoto. Fai un giro su Mixto per trovare il primo brano del tuo passaggio!</span>
+                                            <span className="text-blue-500"><Info /> Il deck 1 è vuoto. Fai un giro su MixTo per trovare il primo brano per questo mix!</span>
                                         </div>
                                     </div>
                                 }
@@ -104,7 +104,7 @@ function Consolle(props: { onRequestClose: () => void }) {
                                 {brano2 === null &&
                                     <div className="p-3">
                                         <div className="p-3 w-full box-border border border-blue-500 border-solid rounded">
-                                            <span className="text-blue-500"><Info /> Il deck 2 è vuoto. Fai un giro su Mixto per trovare il secondo brano del tuo passaggio!</span>
+                                            <span className="text-blue-500"><Info /> Il deck 2 è vuoto. Fai un giro su MixTo per trovare il secondo brano per questo mix!</span>
                                         </div>
                                     </div>
                                 }
@@ -122,7 +122,7 @@ function Consolle(props: { onRequestClose: () => void }) {
                             <button className="card-button rounded p-2 text-base" onClick={scambia}><Repeat size={16} />&nbsp;Scambia</button>
                         </div>
                         <div className="p-1">
-                            <button className="card-button rounded p-2 text-base" onClick={() => { if (loggedUtente) { openModalNuovoPassaggio(); } else { dispatch(setGenericAlert({ message: "Accedi per pubblicare un passaggio", type: "info" })); } }}><UploadCloud size={16} />&nbsp;Pubblica un nuovo passaggio</button>
+                            <button className="card-button rounded p-2 text-base" onClick={() => { if (loggedUtente) { openModalNuovoPassaggio(); } else { dispatch(setGenericAlert({ message: "Accedi per pubblicare un mix", type: "info" })); } }}><UploadCloud size={16} />&nbsp;Pubblica un nuovo mix</button>
                         </div>
                         <div className="p-1">
                             <button className="card-button rounded p-2 text-base" onClick={() => { dispatch(setBrano1(null)); dispatch(setBrano2(null)); localStorage.removeItem('brano1'); localStorage.removeItem('brano2'); }}><Trash size={16} />&nbsp;Libera entrambi i deck</button>

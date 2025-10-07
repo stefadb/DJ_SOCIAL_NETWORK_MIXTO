@@ -20,6 +20,14 @@ function Navbar() {
       return prev;
     });
   }
+
+  function openHelp() {
+    setSearchParams((prev) => {
+      prev.set("modal", "guida");
+      prev.delete("idInModal");
+      return prev;
+    });
+  }
   return (
     <>
       <div className="w-full bg-gray-100 text-center flex flex-row justify-center shadow-lg">
@@ -43,7 +51,7 @@ function Navbar() {
               }
             </div>
             <div>
-              <button onClick={() => { alert("Guida presto disponibile"); }} className="card-button rounded-lg p-1 md:p-3"><HelpCircle size={24} /></button>
+              <button onClick={openHelp} className="card-button rounded-lg p-1 md:p-3"><HelpCircle size={24} /></button>
             </div>
             <CardUtenteLoggato />
           </div>

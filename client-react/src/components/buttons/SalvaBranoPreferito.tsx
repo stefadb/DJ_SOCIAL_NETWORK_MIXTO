@@ -9,7 +9,7 @@ import { Tooltip } from "react-tooltip";
 import { v4 as uuidv4 } from 'uuid';
 import { setGenericAlert } from "../../store/errorSlice";
 
-function SalvaBranoPreferito(props: { idBrano: number, scale: number }) {
+function SalvaBranoPreferito(props: { idBrano?: number, scale: number }) {
   // ID stabile che non cambia ad ogni render
   const randomId = `preferiti-${uuidv4()}`;
   const dispatch = useDispatch();
@@ -17,9 +17,9 @@ function SalvaBranoPreferito(props: { idBrano: number, scale: number }) {
   const [buttonDisabled, setButtonDisabled] = useState<boolean>(false);
   const loggedUtente: UtenteDb | null = useSelector((state: RootState) => (state.user as any).utente as UtenteDb | null);
   async function loadPreferito() {
-    if (loggedUtente) {
-        const response = await api.get(`/brani/esistenti/preferiti?utente=${loggedUtente.id}&brano=${props.idBrano}`);
-        setPreferito(response.data === true);
+    if (props.idBrano && loggedUtente) {
+      const response = await api.get(`/brani/esistenti/preferiti?utente=${loggedUtente.id}&brano=${props.idBrano}`);
+      setPreferito(response.data === true);
     }
   }
   useEffect(() => {
@@ -33,8 +33,11 @@ function SalvaBranoPreferito(props: { idBrano: number, scale: number }) {
       className="card-button" style={scaleTwProps("py-2 px-1 rounded", props.scale)}
 
       onClick={async () => {
+        if (props.idBrano === undefined) {
+          return;
+        }
         if (loggedUtente === null) {
-          dispatch(setGenericAlert({message:"Accedi per salvare questo brano tra i preferiti", type: "info"}));
+          dispatch(setGenericAlert({ message: "Accedi per salvare questo brano tra i preferiti", type: "info" }));
           return;
         }
 
@@ -48,14 +51,14 @@ function SalvaBranoPreferito(props: { idBrano: number, scale: number }) {
             setPreferito(true);
           }
           setButtonDisabled(false);
-        } catch(error){
+        } catch (error) {
           setButtonDisabled(false);
-          if(checkConnError(error)){
-            dispatch(setGenericAlert({message:getNoConnMessage(), type: "error"}));
-          }else if(checkUserNotLoggedError(error)){
-            dispatch(setGenericAlert({message: getUserNotLoggedMessage(), type: "error"}))
-          }else{
-            dispatch(setGenericAlert({message:!preferito ? "Impossibile salvare il brano tra i preferiti. Si è verificato un errore." : "Impossibile rimuovere il brano dai preferiti. Si è verificato un errore.", type: "error"}));
+          if (checkConnError(error)) {
+            dispatch(setGenericAlert({ message: getNoConnMessage(), type: "error" }));
+          } else if (checkUserNotLoggedError(error)) {
+            dispatch(setGenericAlert({ message: getUserNotLoggedMessage(), type: "error" }))
+          } else {
+            dispatch(setGenericAlert({ message: !preferito ? "Impossibile salvare il brano tra i preferiti. Si è verificato un errore." : "Impossibile rimuovere il brano dai preferiti. Si è verificato un errore.", type: "error" }));
           }
         }
       }}
@@ -66,11 +69,13 @@ function SalvaBranoPreferito(props: { idBrano: number, scale: number }) {
         fill={loggedUtente === null ? "gray" : (preferito ? "gold" : "gray")}
       />
     </button>
-    <Tooltip
-      anchorSelect={`#${randomId}`}
-      place="top"
-      content={preferito ? "Rimuovi il brano dai preferiti" : "Salva il brano nei preferiti"}
-    />
+    {props.idBrano !== undefined &&
+      <Tooltip
+        anchorSelect={`#${randomId}`}
+        place="top"
+        content={preferito ? "Rimuovi il brano dai preferiti" : "Salva il brano nei preferiti"}
+      />
+    }
   </div>
 }
 

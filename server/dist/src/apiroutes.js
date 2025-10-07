@@ -36,7 +36,7 @@ async function getConnection() {
 async function logout(req, res) {
     if (req.session.user) {
         req.session.user = undefined;
-        res.send();
+        res.status(200).json({});
     }
     else {
         res.status(400).json({ error: "Sessione non trovata" });

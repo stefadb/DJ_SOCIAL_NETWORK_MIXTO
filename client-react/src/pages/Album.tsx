@@ -89,7 +89,7 @@ function Album() {
                         }
                     </div>
                     <div>
-                        <h2>Passaggi dove il primo brano è di questo album</h2>
+                        <h2>Mix dove il primo brano è di questo album</h2>
                         <PagedList
                             itemsPerPage={2}
                             apiCall={`/passaggi?albumPrimoBrano=${album.id}`}
@@ -107,11 +107,11 @@ function Album() {
                                     />
                                 </div>
                             )}
-                            emptyMessage="😮 Nessun passaggio trovato"
+                            emptyMessage="😮 Nessun mix trovato"
                         />
                     </div>
                     <div>
-                        <h2>Passaggi dove il secondo brano è di questo album</h2>
+                        <h2>Mix dove il secondo brano è di questo album</h2>
                         <PagedList
                             itemsPerPage={2}
                             apiCall={`/passaggi?albumSecondoBrano=${album.id}`}
@@ -129,7 +129,7 @@ function Album() {
                                 />
                                 </div>
                             )}
-                            emptyMessage="😮 Nessun passaggio trovato"
+                            emptyMessage="😮 Nessun mix trovato"
                         />
                     </div>
                 </>

@@ -86,6 +86,7 @@ function PagedList<T>(props: { itemsPerPage: number; apiCall: string; schema?: Z
     }, [props.apiCall, currentPage, props.itemsPerPage]);
 
     const containerRef = useRef<HTMLDivElement>(null);
+    const innerContainerRef = useRef<HTMLDivElement>(null);
 
     const handleScroll = () => {
         if (!props.noPaging && endNotReached && props.showMoreButton === undefined) { // Se non c'è il bottone "Carica altri", carica automaticamente quando si arriva alla fine
@@ -95,14 +96,15 @@ function PagedList<T>(props: { itemsPerPage: number; apiCall: string; schema?: Z
 
     function nextPageIfNecessary() {
         const div = containerRef.current;
-        if (!div || div.clientWidth === 0 || div.scrollWidth === 0) {
+        const innerDiv = innerContainerRef.current;
+        if (!div || !innerDiv || div.clientWidth === 0 || innerDiv.scrollWidth === 0) {
             setTimeout(nextPageIfNecessary, 10);
         } else {
             // Controlla se siamo alla fine
             //Se la larghezza del contenuto è minore della larghezza del contenitore, allora devi caricare un'altra pagina per riempire lo spazio
-            if (div.clientWidth > div.scrollWidth) {
+            if (div.clientWidth > innerDiv.scrollWidth) {
                 nextPage();
-            } else if (div.scrollLeft !== 0 && div.scrollLeft + div.clientWidth >= div.scrollWidth - 10) { /*Il -10 è per essere sicuri che nextPage venga chiamata */
+            } else if (div.scrollLeft !== 0 && div.scrollLeft + div.clientWidth >= innerDiv.scrollWidth - 10) { /*Il -10 è per essere sicuri che nextPage venga chiamata */
                 nextPage();
             }
         }
@@ -116,38 +118,40 @@ function PagedList<T>(props: { itemsPerPage: number; apiCall: string; schema?: Z
         }
     }, [props.noPaging, props.showMoreButton, endNotReached]);
 
-    return <div ref={containerRef} onScroll={handleScroll} className={"flex justify-start overscroll-x-contain" + (props.scrollMode === "vertical" ? " flex-col overflow-y-auto" : " flex-row overflow-x-auto")}>
-        {elements.map((element, index) => <Fragment key={index}>{props.component(element, index, elements.length)}</Fragment>)}
-        {empty && <>{props.emptyMessage}</>}
-        {!props.noPaging && endNotReached && <Fragment>
-            {props.showMoreButton &&
-                <>
-                    {props.showMoreButton(() => nextPage())}
-                </>
+    return <div ref={containerRef} onScroll={handleScroll} className={"overscroll-x-contain " + (props.scrollMode === "vertical" ? "overflow-y-auto" : "overflow-x-auto")}>
+        <div ref={innerContainerRef} className={"inline-flex justify-start" + (props.scrollMode === "vertical" ? " flex-col" : " flex-row")}>
+            {elements.map((element, index) => <Fragment key={index}>{props.component(element, index, elements.length)}</Fragment>)}
+            {empty && <>{props.emptyMessage}</>}
+            {!props.noPaging && endNotReached && <Fragment>
+                {props.showMoreButton &&
+                    <>
+                        {props.showMoreButton(() => nextPage())}
+                    </>
+                }
+                <div className={"m-auto flex justify-center " + (props.scrollMode === "vertical" ? "w-full flex-row" : "h-full flex-col") + (!loading ? " hidden" : "")}>
+                    {!props.customLoading &&
+                        <Caricamento size={props.caricamentoSize || "small"} status={"loading"} />
+                    }
+                    {props.customLoading &&
+                        <>
+                            {props.customLoading}
+                        </>
+                    }
+                </div>
+                <div className={"m-auto flex justify-center" + (props.scrollMode === "vertical" ? "w-full flex-row" : "h-full flex-col") + (!error ? " hidden" : "")}>
+                    {!props.customError &&
+                        <Caricamento size={props.caricamentoSize || "small"} status={"error"} />
+                    }
+                    {props.customError &&
+                        <>
+                            {props.customError}
+                        </>
+                    }
+                </div>
+            </Fragment>
             }
-            <div className={"m-auto flex justify-center " + (props.scrollMode === "vertical" ? "w-full flex-row" : "h-full flex-col") + (!loading ? " hidden" : "")}>
-                {!props.customLoading &&
-                    <Caricamento size={props.caricamentoSize || "small"} status={"loading"} />
-                }
-                {props.customLoading &&
-                    <>
-                        {props.customLoading}
-                    </>
-                }
-            </div>
-            <div className={"m-auto flex justify-center" + (props.scrollMode === "vertical" ? "w-full flex-row" : "h-full flex-col") + (!error ? " hidden" : "")}>
-                {!props.customError &&
-                    <Caricamento size={props.caricamentoSize || "small"} status={"error"} />
-                }
-                {props.customError &&
-                    <>
-                        {props.customError}
-                    </>
-                }
-            </div>
-        </Fragment>
-        }
-    </div >;
+        </div>
+    </div>;
 }
 
 export default PagedList;

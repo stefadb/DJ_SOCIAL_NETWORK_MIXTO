@@ -1,6 +1,7 @@
+import type { ReactNode } from "react";
 import { X } from "react-feather";
 
-function ModalWrapper(props: { children: React.ReactNode; title: string; onRequestClose: () => void; }) {
+function ModalWrapper(props: { children: React.ReactNode; title: ReactNode; onRequestClose: () => void; }) {
     return <div className="h-full w-full">
         <div className="flex flex-row w-full h-[30px]">
             <div className="flex-grow truncate text-xl">

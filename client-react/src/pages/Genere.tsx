@@ -59,7 +59,7 @@ function Genere() {
             {genere !== null &&
                 <>
                     <div>
-                        <h2>Artisti del genere più popolari su Deezer</h2>
+                        <h2>Artisti del genere più popolari su DEEZER</h2>
                         <PagedList noPaging itemsPerPage={5} apiCall={`/artisti/genere?genreId=${genere.id}`} schema={ArtistaDbSchema} scrollMode="horizontal" component={(element: ArtistaDb) => (
                             <CardArtista key={element.id} artista={element} size="small" />
                         )}
@@ -67,7 +67,7 @@ function Genere() {
                         />
                     </div>
                     <div>
-                        <h2>Brani del genere più popolari su Deezer</h2>
+                        <h2>Brani del genere più popolari su DEEZER</h2>
                         <PagedList itemsPerPage={5} apiCall={`/brani/genere?genreId=${genere.id}`} schema={BranoDbSchema} scrollMode="horizontal" component={(element: BranoDb) => (
                             <CardBrano key={element.id} brano={element} scale={1} />
                         )}
@@ -93,7 +93,7 @@ function Genere() {
                                 />
                                 </div>
                             )}
-                            emptyMessage="😮 Nessun passaggio trovato"
+                            emptyMessage="😮 Nessun mix trovato"
                         />
                     </div>
                     <div>
@@ -115,7 +115,7 @@ function Genere() {
                                 />
                                 </div>
                             )}
-                            emptyMessage="😮 Nessun passaggio trovato"
+                            emptyMessage="😮 Nessun mix trovato"
                         />
                     </div>
                 </>

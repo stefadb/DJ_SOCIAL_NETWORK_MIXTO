@@ -69,7 +69,7 @@ function Artista() {
                             emptyMessage="😮 Questo artista non ha pubblicato nessun album" />
                     </div>
                     <div>
-                        <h2>Brani dell'artista più popolari su Deezer</h2>
+                        <h2>Brani dell'artista più popolari su DEEZER</h2>
                         <PagedList itemsPerPage={5} apiCall={`/brani/artista?artistId=${artista.id}`} schema={BranoDbSchema} scrollMode="horizontal" component={(element: BranoDb) => (
                             <CardBrano key={element.id} brano={element} scale={1} />
                         )}
@@ -103,7 +103,7 @@ function Artista() {
                                 />
                                 </div>
                             )}
-                            emptyMessage="😮 Nessun passaggio trovato"
+                            emptyMessage="😮 Nessun mix trovato"
                         />
                     </div>
                     <div>
@@ -125,7 +125,7 @@ function Artista() {
                                 />
                                 </div>
                             )}
-                            emptyMessage="😮 Nessun passaggio trovato"
+                            emptyMessage="😮 Nessun mix trovato"
                         />
                     </div>
                 </>

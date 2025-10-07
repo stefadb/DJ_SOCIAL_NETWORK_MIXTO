@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { AlbumDbSchema, type AlbumDb, type ArtistaDb, type BranoDb } from "../../types/db_types";
 import { deezerColor, getNomiArtistiBrano, scaleTwProps } from "../../functions/functions";
 import { useNavigate } from "react-router-dom";
@@ -57,14 +57,14 @@ function CardBrano(props: { brano: BranoDb, noDeckButtons?: boolean, noButtons?:
     return (
         <div style={scaleTwProps("p-3", scale)}>
             {/* In scale = 1, questa card è larga esattamente 198px*/}
-            <div style={scaleTwProps("p-3 w-[150px] rounded-lg shadow-md", scale)}>
+            <div className="shadow-md-custom" style={scaleTwProps("p-3 w-[150px] rounded-lg", scale)}>
                 <div>
                     <div onClick={() => navigate(`/brano?id=${props.brano.id}`)} className="flex flex-row cursor-pointer">
                         <div className="relative">
                             <Badge scale={scale}>
                                 <Disc size={14 * scale} color={deezerColor()} />
                             </Badge>
-                            <img style={scaleTwProps("w-[100px] h-[100px] shadow-md", scale)} src={album && album.url_immagine ? album.url_immagine : "src/assets/album_empty.jpg"} alt={"Cover del brano " + props.brano.titolo} />
+                            <img style={scaleTwProps("w-[100px] h-[100px] shadow-md"/*no custom*/, scale)} src={album && album.url_immagine ? album.url_immagine : "src/assets/album_empty.jpg"} alt={"Cover del brano " + props.brano.titolo} />
                         </div>
                         <MezzoDisco radius={50 * scale} />
                     </div>
