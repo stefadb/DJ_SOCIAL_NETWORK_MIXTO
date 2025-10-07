@@ -7,7 +7,7 @@ import { dataItaliana, deezerColor, scaleTwProps} from "../../functions/function
 import { useEffect, useMemo, useState } from "react";
 import api from "../../api";
 import z from "zod";
-import ListaArtistiOGeneri from "../ListaArtistiOGeneri";
+import ListaArtistiOGeneriContainer from "../ListaArtistiOGeneriContainer";
 import AscoltaSuDeezer from "../buttons/AscoltaSuDeezer";
 import AlbumIcon from "../icons/AlbumIcon";
 import Badge from "../Badge";
@@ -84,10 +84,10 @@ function CardAlbum(props: { album: AlbumDb, size: "small" | "large" }) {
                         </div>
                         <div>
                             {generi &&
-                                <ListaArtistiOGeneri key={generi.map(genere => genere.id).join(",")} lines={3} list={generi} entity={"genere"} scale={scale} idAlbum={props.album.id}/>
+                                <ListaArtistiOGeneriContainer key={generi.map(genere => genere.id).join(",")} lines={3} list={generi} entity={"genere"} scale={scale} idAlbum={props.album.id}/>
                             }
                             {!generi &&
-                                <ListaArtistiOGeneri lines={3} list={[{ id: 0, nome: (erroreGeneri ? "Impossibile caricare i generi" : "Caricamento..."), url_immagine: "" }]} noClick={true} entity={"genere"} scale={scale} idAlbum={NaN}/>
+                                <ListaArtistiOGeneriContainer lines={3} list={[{ id: 0, nome: (erroreGeneri ? "Impossibile caricare i generi" : "Caricamento..."), url_immagine: "" }]} noClick={true} entity={"genere"} scale={scale} idAlbum={NaN}/>
                             }
                         </div>
                     </div>

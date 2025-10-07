@@ -74,7 +74,7 @@ function DynamicText(props: { text: string, width: number, scale: number}) {
         calcDivHeight();
     }, [calcDivHeight]); // Ricalcola quando calcDivHeight cambia
     return (
-    <div className="flex flex-col items-center justify-center transition-opacity duration-500" style={{ width: props.width, opacity: divHeight !== 0 && chosenFontSize !== 0 ? 1 : 0, height: divHeight }}>
+    <div className="flex flex-col items-center justify-center transition-opacity duration-500" style={{ width: props.width, opacity: divHeight !== 0 && chosenFontSize !== 0 ? 1 : 0, height: divHeight * props.scale}}>
             <div style={{ width: props.width }}>
                 <h3 ref={textRef} className="overflow-x-hidden whitespace-nowrap break-keep truncate m-0 p-0" style={{ width: props.width, maxWidth: props.width, fontFamily: fontFamily, fontSize: chosenFontSize}}>{props.text}</h3>
             </div>

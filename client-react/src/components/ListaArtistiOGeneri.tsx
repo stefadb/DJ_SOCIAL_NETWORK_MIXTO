@@ -3,20 +3,18 @@ import type { ArtistaDb, GenereDb } from "../types/db_types";
 import { Link, useSearchParams } from "react-router-dom";
 import { useLayoutEffect, useRef, useState } from "react";
 import Modal from "react-modal";
-import { scaleTwProps } from "../functions/functions";
 
-function ListaArtistiOGeneri(props: { list: ArtistaDb[], noClick?: boolean, entity: "artista", lines: number, scale: number, idBrano: number } | { list: GenereDb[], noClick?: boolean, entity: "genere", lines: number, scale: number, idAlbum: number }) {
+function ListaArtistiOGeneri(props: { list: ArtistaDb[], noClick?: boolean, entity: "artista", lines: number, scale: number, idBrano: number, passHeightToParent: (height: number) => void } | { list: GenereDb[], noClick?: boolean, entity: "genere", lines: number, scale: number, idAlbum: number, passHeightToParent: (height: number) => void }) {
     Modal.setAppElement('#root');
     const lines = props.lines;
     //ARRAY DI NUMERI DA 1 a lines
     const lineNumbers = Array.from({ length: lines }, (_, i) => i + 1);
     const [shownList, setShownList] = useState<ArtistaDb[] | GenereDb[]>(props.list);
-    const [searchParams, setSearchParams] = useSearchParams();
+    const setSearchParams = useSearchParams()[1];
 
     const testDivRef = useRef<HTMLDivElement>(null);
     const actualDivRef = useRef<HTMLDivElement>(null);
     const maxHeightDivRef = useRef<HTMLDivElement>(null);
-
     const maxHeight = useRef<number>(0);
 
     //Scrivere una funzione che, quando il testDivRef è completamente renderizzato, calcola la sua altezza e la salva in maxHeight
@@ -75,6 +73,7 @@ function ListaArtistiOGeneri(props: { list: ArtistaDb[], noClick?: boolean, enti
                     maxHeight.current = height;
                     maxHeightDivRef.current!.style.height = height + "px";
                     maxHeightDivRef.current!.style.maxHeight = height + "px";
+                    props.passHeightToParent(height);
                     //console.log("Altezza del div di test:", height);
                     adjustListToFitHeight();
                 } else {
@@ -96,31 +95,33 @@ function ListaArtistiOGeneri(props: { list: ArtistaDb[], noClick?: boolean, enti
     }, []); // Deve eseguire solo al mount
 
     return <>
-        <div ref={maxHeightDivRef} className="overflow-y-hidden">
-            <div ref={actualDivRef} className="flex flex-col justify-center hidden">
-                <div>
-                    {props.list.length > 0 &&
-                        <>
-                            {
-                                shownList.map((element, index) => {
-                                    return <Fragment key={element.id}><Link style={scaleTwProps("text-base font-['Roboto_Condensed']", props.scale)} to={props.noClick ? "" : "/" + props.entity + "?id=" + element.id}>{element.nome}</Link>
-                                        {index < shownList.length - 1 && ", "}</Fragment>
-                                })
-                            }
-                            {shownList.length < props.list.length &&
-                                <span onClick={showMore} style={scaleTwProps("cursor-pointer text-base font-['Roboto_Condensed']", props.scale)}> e altri {props.list.length - shownList.length}</span>
-                            }
-                        </>
-                    }
-                    {props.list.length === 0 &&
-                        <span style={scaleTwProps("text-base font-['Roboto_Condensed']", props.scale)}>Nessun {props.entity}</span>
-                    }
+        <div className="w-full" style={{ width: (100 / props.scale) + "%", transform: `scale(${props.scale})`, transformOrigin: "top left" }}>
+            <div ref={maxHeightDivRef} className="overflow-y-hidden">
+                <div ref={actualDivRef} className="flex flex-col justify-center hidden">
+                    <div>
+                        {props.list.length > 0 &&
+                            <>
+                                {
+                                    shownList.map((element, index) => {
+                                        return <Fragment key={element.id}><Link className="text-base font-['Roboto_Condensed']" to={props.noClick ? "" : "/" + props.entity + "?id=" + element.id}>{element.nome}</Link>
+                                            {index < shownList.length - 1 && ", "}</Fragment>
+                                    })
+                                }
+                                {shownList.length < props.list.length &&
+                                    <span onClick={showMore} className="cursor-pointer text-base font-['Roboto_Condensed']"> e altri {props.list.length - shownList.length}</span>
+                                }
+                            </>
+                        }
+                        {props.list.length === 0 &&
+                            <span className="text-base font-['Roboto_Condensed']">Nessun {props.entity}</span>
+                        }
+                    </div>
                 </div>
-            </div>
-            <div ref={testDivRef} className="opacity-0">
-                {lineNumbers.map((lineNumber) => {
-                    return <div className="block" key={lineNumber}><Link style={scaleTwProps("text-base font-['Roboto_Condensed']", props.scale)} to={"blablabla"}>Test</Link></div>
-                })}
+                <div ref={testDivRef} className="opacity-0">
+                    {lineNumbers.map((lineNumber) => {
+                        return <div className="block" key={lineNumber}><Link className="text-base font-['Roboto_Condensed']" to={"blablabla"}>Test</Link></div>
+                    })}
+                </div>
             </div>
         </div>
     </>;

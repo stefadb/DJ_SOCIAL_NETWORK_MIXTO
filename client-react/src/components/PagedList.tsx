@@ -18,8 +18,10 @@ function PagedList<T>(props: { itemsPerPage: number; apiCall: string; schema?: Z
         try {
             const response = await api.get(`${props.apiCall}${props.apiCall.includes("?") ? "&" : "?"}` + (!props.noPaging ? `limit=${props.itemsPerPage}&index=${(currentPage - 1) * props.itemsPerPage}` : ""), { headers: { "Cache-Control": "no-cache, no-store, must-revalidate", Pragma: "no-cache", Expires: "0" } })
             setError(false);
-            if (response.data.length == 0) {
+            if (response.data.length < props.itemsPerPage && !props.noPaging) {
                 setEndNotReached(false);
+            }
+            if (response.data.length == 0) {
                 if ((currentPage - 1) == 0 || props.noPaging) {
                     setEmpty(true);
                 } else {
@@ -46,7 +48,7 @@ function PagedList<T>(props: { itemsPerPage: number; apiCall: string; schema?: Z
             }
             const newElementsTemp = newElements.slice(0, maxIndex + 1);
             setElements(newElementsTemp);
-            if(props.passElementsToParent){
+            if (props.passElementsToParent) {
                 props.passElementsToParent(newElementsTemp);
             }
             props.setElementsLength?.(newElementsTemp.length);
@@ -83,9 +85,6 @@ function PagedList<T>(props: { itemsPerPage: number; apiCall: string; schema?: Z
         loadElements();
     }, [props.apiCall, currentPage, props.itemsPerPage]);
 
-
-
-
     const containerRef = useRef<HTMLDivElement>(null);
 
     const handleScroll = () => {
@@ -104,9 +103,6 @@ function PagedList<T>(props: { itemsPerPage: number; apiCall: string; schema?: Z
             if (div.clientWidth > div.scrollWidth) {
                 nextPage();
             } else if (div.scrollLeft !== 0 && div.scrollLeft + div.clientWidth >= div.scrollWidth - 10) { /*Il -10 è per essere sicuri che nextPage venga chiamata */
-                //Problema: questa funzione viene chiamata troppo!!!
-                //console.log("Next page perchè");
-                //console.log(div.scrollLeft + " + " + div.clientWidth + " >= " + div.scrollWidth);
                 nextPage();
             }
         }
@@ -125,7 +121,9 @@ function PagedList<T>(props: { itemsPerPage: number; apiCall: string; schema?: Z
         {empty && <>{props.emptyMessage}</>}
         {!props.noPaging && endNotReached && <Fragment>
             {props.showMoreButton &&
-                props.showMoreButton(() => nextPage())
+                <>
+                    {props.showMoreButton(() => nextPage())}
+                </>
             }
             <div className={"m-auto flex justify-center " + (props.scrollMode === "vertical" ? "w-full flex-row" : "h-full flex-col") + (!loading ? " hidden" : "")}>
                 {!props.customLoading &&
