@@ -23,7 +23,8 @@ import Consolle from "./components/modals/Consolle";
 import ModalAggiornaUtente from "./components/modals/ModalAggiornaUtente";
 import ModalSignUp from "./components/modals/ModalSignUp";
 import ModalSignIn from "./components/modals/ModalSignIn";
-import type { UtenteDb } from "./types/db_types";
+import type { BranoDb, UtenteDb } from "./types/db_types";
+import { setBrano1, setBrano2 } from "./store/giradischiSlice";
 
 function App() {
   const genericMessage: { message: string, type: 'error' | 'warning' | 'info' | 'no-autoclose' } | null = useSelector((state: RootState) => state.error.genericMessage as any);
@@ -48,6 +49,19 @@ function App() {
         return <></>;
     }
   }
+
+  useEffect(() => {
+    const savedBrano1 = localStorage.getItem('brano1');
+    const savedBrano2 = localStorage.getItem('brano2');
+    if (savedBrano1) {
+      const brano1: BranoDb = JSON.parse(savedBrano1);
+      dispatch(setBrano1(brano1));
+    }
+    if (savedBrano2) {
+      const brano2: BranoDb = JSON.parse(savedBrano2);
+      dispatch(setBrano2(brano2));
+    }
+  }, [])
 
   function closeAnyModal() {
     setSearchParams((prev) => {

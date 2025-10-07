@@ -50,19 +50,6 @@ function Consolle(props: { onRequestClose: () => void }) {
         }
     }
 
-    useEffect(() => {
-        const savedBrano1 = localStorage.getItem('brano1');
-        const savedBrano2 = localStorage.getItem('brano2');
-        if (savedBrano1) {
-            const brano1: BranoDb = JSON.parse(savedBrano1);
-            dispatch(setBrano1(brano1));
-        }
-        if (savedBrano2) {
-            const brano2: BranoDb = JSON.parse(savedBrano2);
-            dispatch(setBrano2(brano2));
-        }
-    }, []);
-
     function scambia() {
         const temp = brano1;
         dispatch(setBrano1(brano2));
