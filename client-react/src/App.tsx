@@ -1,3 +1,6 @@
+// MixTo - creato da Stefano Di Bisceglie
+// Portfolio di Stefano Di Bisceglie, Ottobre 2025
+
 import "./App.css";
 import MainContainer from "./components/MainContainer";
 import Navbar from "./components/Navbar";

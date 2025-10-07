@@ -1,3 +1,6 @@
+// MixTo - creato da Stefano Di Bisceglie
+// Portfolio di Stefano Di Bisceglie, Ottobre 2025
+
 //Import delle funzioni generiche delle API
 import { deezerEntityApi, deleteEntity, getBraniEsistentiPreferiti, getConnection, getEntityWithAssociations, getFilteredEntitiesList, logout, postEntity, postLogin, putEntity } from "./apiroutes";
 
