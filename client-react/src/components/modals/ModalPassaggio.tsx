@@ -5,7 +5,7 @@ import api from "../../api";
 import Modal from 'react-modal';
 import { useDispatch, useSelector } from 'react-redux';
 import type { RootState } from '../../store/store';
-import { CommentoEUtenteSchema, PassaggioConUtenteSchema, ValutazioneEUtenteSchema, type CommentoEUtente, type PassaggioConBraniEUtente, type PassaggioConUtente, type ValutazioneEUtente } from "../../types/types";
+import { CommentoEUtenteSchema, PassaggioConUtenteSchema, ValutazioneEUtenteSchema, type CommentoEUtente, type PassaggioConUtente, type ValutazioneEUtente } from "../../types/types";
 import PagedList from "../PagedList";
 import CardValutazione from "../cards/CardValutazione";
 import CardPassaggio from "../cards/CardPassaggio";

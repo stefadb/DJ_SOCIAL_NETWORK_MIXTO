@@ -7,7 +7,6 @@ import {
   BranoDbSchema,
   PassaggioDbSchema,
   type BranoDb,
-  type PassaggioDb,
 } from "../types/db_types";
 
 import CardPassaggio from "../components/cards/CardPassaggio";

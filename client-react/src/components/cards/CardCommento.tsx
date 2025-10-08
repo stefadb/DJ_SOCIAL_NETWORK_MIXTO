@@ -8,7 +8,7 @@ import type { RootState } from "../../store/store";
 import ReactTimeAgo from "react-time-ago";
 import TimeAgo from 'javascript-time-ago';
 import it from 'javascript-time-ago/locale/it';
-import { checkConnError, checkUserNotLoggedError, defaultArtistaPicture, defaultGenerePicture, getNoConnMessage, getUserNotLoggedMessage, inputTextClassName } from "../../functions/functions";
+import { checkConnError, checkUserNotLoggedError, defaultArtistaPicture, getNoConnMessage, getUserNotLoggedMessage, inputTextClassName } from "../../functions/functions";
 import { cleargenericMessage, setGenericAlert } from "../../store/errorSlice";
 import { Check, Edit3, MessageCircle, X } from "react-feather";
 import CommentoTree from "../CommentoTree";

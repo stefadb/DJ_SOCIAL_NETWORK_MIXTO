@@ -80,7 +80,7 @@ export function dataItaliana(data: string): string {
 }
 
 function scaleCssValues(cssValue: string, scale: number) {
-    return cssValue.replace(/(-?\d*\.?\d+)(px|rem)/g, (match, number, unit) => {
+    return cssValue.replace(/(-?\d*\.?\d+)(px|rem)/g, (_, number, unit) => {
         const scaledNumber = parseFloat(number) * scale;
         return `${scaledNumber}${unit}`;
     });

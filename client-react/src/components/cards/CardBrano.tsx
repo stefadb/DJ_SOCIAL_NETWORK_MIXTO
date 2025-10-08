@@ -7,7 +7,7 @@ import PosizionaBrano from "../buttons/PosizionaBrano";
 import api from "../../api";
 import DynamicText from "../DynamicText";
 import MezzoDisco from "../MezzoDisco";
-import { Clock, Disc, Users } from "react-feather";
+import { Clock, Disc } from "react-feather";
 import AscoltaSuDeezer from "../buttons/AscoltaSuDeezer";
 import Badge from "../Badge";
 import VediAlbum from "../buttons/VediAlbum";

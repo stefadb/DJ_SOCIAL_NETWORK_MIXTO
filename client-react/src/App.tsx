@@ -5,7 +5,7 @@ import "./App.css";
 import MainContainer from "./components/MainContainer";
 import Navbar from "./components/Navbar";
 import SideContainer from "./components/SideContainer";
-import { Routes, Route, useLocation, Navigate, useSearchParams } from "react-router-dom";
+import { Routes, Route, useLocation, useSearchParams } from "react-router-dom";
 import Brano from "./pages/Brano";
 import Album from "./pages/Album";
 import Artista from "./pages/Artista";
