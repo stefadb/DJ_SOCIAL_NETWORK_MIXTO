@@ -26,6 +26,7 @@ CREATE TABLE `album` (
   `id` int NOT NULL,
   `titolo` varchar(100) NOT NULL,
   `data_uscita` date DEFAULT NULL,
+  `url_immagine` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -57,6 +58,7 @@ DROP TABLE IF EXISTS `artista`;
 CREATE TABLE `artista` (
   `id` int NOT NULL,
   `nome` varchar(45) DEFAULT NULL,
+  `url_immagine` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -97,6 +99,23 @@ CREATE TABLE `brano_artista` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `brano_utente`
+--
+
+DROP TABLE IF EXISTS `brano_utente`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `brano_utente` (
+  `id_brano` bigint unsigned NOT NULL,
+  `id_utente` int NOT NULL,
+  PRIMARY KEY (`id_brano`,`id_utente`),
+  KEY `id_utente_brano_utente_idx` (`id_utente`),
+  CONSTRAINT `id_brano_brano_utente` FOREIGN KEY (`id_brano`) REFERENCES `brano` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `id_utente_brano_utente` FOREIGN KEY (`id_utente`) REFERENCES `utente` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `commento`
 --
 
@@ -117,7 +136,7 @@ CREATE TABLE `commento` (
   CONSTRAINT `commento_ibfk_1` FOREIGN KEY (`id_utente`) REFERENCES `utente` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
   CONSTRAINT `commento_ibfk_2` FOREIGN KEY (`id_passaggio`) REFERENCES `passaggio` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `commento_ibfk_3` FOREIGN KEY (`id_commento_padre`) REFERENCES `commento` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=40 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -130,6 +149,7 @@ DROP TABLE IF EXISTS `genere`;
 CREATE TABLE `genere` (
   `id` int NOT NULL,
   `nome` varchar(50) NOT NULL,
+  `url_immagine` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -143,21 +163,21 @@ DROP TABLE IF EXISTS `passaggio`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `passaggio` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `testo` text NOT NULL,
+  `testo` text,
   `inizio_secondo_brano` time DEFAULT NULL,
   `cue_secondo_brano` time DEFAULT NULL,
   `data_pubblicazione` datetime DEFAULT CURRENT_TIMESTAMP,
   `id_utente` int DEFAULT NULL,
-  `id_brano_1` bigint unsigned DEFAULT NULL,
-  `id_brano_2` bigint unsigned DEFAULT NULL,
+  `id_brano_1` bigint unsigned NOT NULL,
+  `id_brano_2` bigint unsigned NOT NULL,
   PRIMARY KEY (`id`),
   KEY `id_utente` (`id_utente`),
   KEY `id_brano_1` (`id_brano_1`),
   KEY `id_brano_2` (`id_brano_2`),
-  CONSTRAINT `passaggio_ibfk_1` FOREIGN KEY (`id_utente`) REFERENCES `utente` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
-  CONSTRAINT `passaggio_ibfk_2` FOREIGN KEY (`id_brano_1`) REFERENCES `brano` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
-  CONSTRAINT `passaggio_ibfk_3` FOREIGN KEY (`id_brano_2`) REFERENCES `brano` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  CONSTRAINT `id_brano_1_passaggio` FOREIGN KEY (`id_brano_1`) REFERENCES `brano` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  CONSTRAINT `id_brano_2_passaggio` FOREIGN KEY (`id_brano_2`) REFERENCES `brano` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  CONSTRAINT `passaggio_ibfk_1` FOREIGN KEY (`id_utente`) REFERENCES `utente` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -211,7 +231,7 @@ CREATE TABLE `utente` (
   `password` varchar(255) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -227,12 +247,13 @@ CREATE TABLE `valutazione` (
   `id_utente` int DEFAULT NULL,
   `id_passaggio` int DEFAULT NULL,
   PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_utente_passaggio` (`id_utente`,`id_passaggio`),
   KEY `id_utente` (`id_utente`),
   KEY `id_passaggio` (`id_passaggio`),
   CONSTRAINT `valutazione_ibfk_1` FOREIGN KEY (`id_utente`) REFERENCES `utente` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
-  CONSTRAINT `valutazione_ibfk_2` FOREIGN KEY (`id_passaggio`) REFERENCES `passaggio` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  CONSTRAINT `valutazione_ibfk_2` FOREIGN KEY (`id_passaggio`) REFERENCES `passaggio` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `valutazione_chk_1` CHECK (((`voto` >= 1) and (`voto` <= 5)))
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -246,7 +267,7 @@ CREATE TABLE `visualizzazione` (
   `id` int NOT NULL AUTO_INCREMENT,
   `data_visualizzazione` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `id_utente` int DEFAULT NULL,
-  `id_passaggio` int DEFAULT NULL,
+  `id_passaggio` int NOT NULL,
   PRIMARY KEY (`id`,`data_visualizzazione`),
   KEY `id_utente` (`id_utente`),
   KEY `id_passaggio` (`id_passaggio`),
@@ -264,4 +285,4 @@ CREATE TABLE `visualizzazione` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-09-13  8:07:32
+-- Dump completed on 2025-10-07 20:07:58

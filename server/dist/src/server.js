@@ -1,4 +1,6 @@
 "use strict";
+// MixTo - creato da Stefano Di Bisceglie
+// Portfolio di Stefano Di Bisceglie, Ottobre 2025
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };

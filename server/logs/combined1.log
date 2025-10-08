@@ -237,3 +237,4 @@
 {"error":{"code":800,"message":"no data","type":"DataException"},"level":"warn","message":"Deezer API: Object not found","service":"mixto-backend","timestamp":"2025-10-07 16:49:58","url":"https://api.deezer.com/album/758"}
 {"error":{"code":800,"message":"no data","type":"DataException"},"level":"warn","message":"Deezer API: Object not found","service":"mixto-backend","timestamp":"2025-10-07 16:49:58","url":"https://api.deezer.com/album/758"}
 {"error":{"code":800,"message":"no data","type":"DataException"},"level":"warn","message":"Deezer API: Object not found","service":"mixto-backend","timestamp":"2025-10-07 16:49:58","url":"https://api.deezer.com/album/758"}
+{"error":{"code":4,"message":"Quota limit exceeded","type":"Exception"},"level":"error","message":"Deezer API error","service":"mixto-backend","timestamp":"2025-10-07 20:17:19","url":"https://api.deezer.com/track/1574117112"}

@@ -512,7 +512,7 @@ async function getBraniEsistentiPreferiti(req, res) {
     const id_utente = req.query.utente;
     const id_brano = req.query.brano;
     if (typeof id_utente !== "string" || typeof id_brano !== "string" || isNaN(Number(id_utente)) || isNaN(Number(id_brano))) {
-        res.status(401).json({ error: "I parametri id_utente e id_brano sono obbligatori e devono essere numerici" });
+        res.status(401).json({ error: "I parametri utente e brano sono obbligatori e devono essere numerici" });
         return;
     }
     const con = await getConnection();
