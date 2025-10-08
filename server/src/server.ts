@@ -24,7 +24,7 @@ console.log("FRONTEND URL PASSATO DAVVERO: " + process.env.FRONTEND_URL);
 app.use(cors({
     origin: process.env.FRONTEND_URL, // Sostituisci con l'URL del tuo client React
     methods: ['GET', 'POST', 'PUT', 'DELETE'], // Metodi consentiti
-    /*credentials: true // Se hai bisogno di inviare cookie o credenziali*/
+    credentials: true // Se hai bisogno di inviare cookie o credenziali
 }));
 
 
