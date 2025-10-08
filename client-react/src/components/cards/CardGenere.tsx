@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import Badge from "../Badge";
 import { Music } from "react-feather";
 import { deezerColor, scaleTwProps} from "../../functions/functions";
+import genere_empty from "src/assets/genere_empty.jpg";
 
 function CardGenere(props: { genere: GenereDb, size: "small" | "large" }) {
     const navigate = useNavigate();
@@ -34,7 +35,7 @@ function CardGenere(props: { genere: GenereDb, size: "small" | "large" }) {
                     <Badge scale={scale}>
                         <Music size={14 * scale} color={deezerColor()} />
                     </Badge>
-                    <img  style={scaleTwProps("w-[100px] h-[100px] shadow-md"/*no custom*/,scale)} src={props.genere.url_immagine ? props.genere.url_immagine : "src/assets/genere_empty.jpg"} alt={"Immagine del genere musicale " + props.genere.nome} />
+                    <img  style={scaleTwProps("w-[100px] h-[100px] shadow-md"/*no custom*/,scale)} src={props.genere.url_immagine ? props.genere.url_immagine : genere_empty} alt={"Immagine del genere musicale " + props.genere.nome} />
                 </div>
                 <h3 style={scaleTwProps("w-full text-center mt-2 mb-2 text-base",scale)}>{props.genere.nome}</h3>
             </div>

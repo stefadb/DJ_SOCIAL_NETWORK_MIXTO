@@ -7,6 +7,7 @@ import api from '../../api';
 import { getNoConnMessage, scaleTwProps } from '../../functions/functions';
 import { setGenericAlert } from '../../store/errorSlice';
 import { useSearchParams } from 'react-router-dom';
+import artista_empty from "src/assets/artista_empty.jpg";
 
 function CardUtenteLoggato() {
     const dispatch = useDispatch();
@@ -50,7 +51,7 @@ function CardUtenteLoggato() {
         <>
             {loggedUtente &&
                 <div>
-                    <img  className="rounded-full cursor-pointer shadow-md"/*no-custom*/ onClick={openAggiornaUtente} style={scaleTwProps("w-12 h-12", 1)} src={"src/assets/artista_empty.jpg"} alt={"Immagine di profilo di " + loggedUtente.nome + " " + loggedUtente.cognome} />
+                    <img  className="rounded-full cursor-pointer shadow-md"/*no-custom*/ onClick={openAggiornaUtente} style={scaleTwProps("w-12 h-12", 1)} src={artista_empty} alt={"Immagine di profilo di " + loggedUtente.nome + " " + loggedUtente.cognome} />
                 </div>
             }
             {!loggedUtente &&

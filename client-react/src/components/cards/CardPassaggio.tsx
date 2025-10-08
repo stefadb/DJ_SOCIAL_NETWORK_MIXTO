@@ -12,6 +12,7 @@ import { useNavigate } from "react-router-dom";
 import {  scaleTwProps } from "../../functions/functions";
 import ReactTimeAgo from "react-time-ago";
 import { useSearchParams } from "react-router-dom";
+import artista_empty from "src/assets/artista_empty.jpg";
 
 type CardPassaggioProps = {
   passaggio: PassaggioDb;
@@ -157,10 +158,10 @@ function CardPassaggio(props: CardPassaggioProps) {
         <div className={(props.utente ? " cursor-pointer" : " cursor-default")} onClick={props.utente ? () => { navigate("/utente?id=" + props.utente?.id) } : undefined}>
           <span className={`${truncateClassName} pl-1`}>Pubblicato <ReactTimeAgo date={new Date(props.passaggio.data_pubblicazione)} locale="it" /> da</span>
           {props.utente &&
-            <b className={`${truncateClassName} flex flex-row flex-wrap items-center`}><div className="pr-2 py-2 pl-1" ><img  className="rounded-full shadow-md"/*no-custom*/ style={scaleTwProps("w-8 h-8", 1)} src={"src/assets/artista_empty.jpg"} alt={"Immagine di profilo"} /></div>{props.utente.nome} {props.utente.cognome} <span className={"font-normal " + truncateClassName}>(@{props.utente.username})</span></b>
+            <b className={`${truncateClassName} flex flex-row flex-wrap items-center`}><div className="pr-2 py-2 pl-1" ><img  className="rounded-full shadow-md"/*no-custom*/ style={scaleTwProps("w-8 h-8", 1)} src={artista_empty} alt={"Immagine di profilo"} /></div>{props.utente.nome} {props.utente.cognome} <span className={"font-normal " + truncateClassName}>(@{props.utente.username})</span></b>
           }
           {!props.utente &&
-            <b className={`${truncateClassName} flex flex-row flex-wrap items-center`}><div className="pr-2 py-2 pl-1"><img  className="rounded-full shadow-md"/*no-custom*/ style={scaleTwProps("w-8 h-8", 1)} src={"src/assets/artista_empty.jpg"} alt={"Immagine di profilo"} /></div>Utente eliminato</b>
+            <b className={`${truncateClassName} flex flex-row flex-wrap items-center`}><div className="pr-2 py-2 pl-1"><img  className="rounded-full shadow-md"/*no-custom*/ style={scaleTwProps("w-8 h-8", 1)} src={artista_empty} alt={"Immagine di profilo"} /></div>Utente eliminato</b>
           }
         </div>
         {props.insideModal &&

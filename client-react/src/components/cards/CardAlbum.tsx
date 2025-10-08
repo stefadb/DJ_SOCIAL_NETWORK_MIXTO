@@ -9,6 +9,7 @@ import AscoltaSuDeezer from "../buttons/AscoltaSuDeezer";
 import AlbumIcon from "../icons/AlbumIcon";
 import Badge from "../Badge";
 import VediArtistiOGeneri from "../buttons/VediArtistiOGeneri";
+import album_empty from "src/assets/album_empty.jpg";
 
 function CardAlbum(props: { album: AlbumDb, size: "small" | "large" }) {
     const scales = {
@@ -30,7 +31,7 @@ function CardAlbum(props: { album: AlbumDb, size: "small" | "large" }) {
                             <Badge scale={scale}>
                                 <AlbumIcon size={14 * scale} color={deezerColor()} />
                             </Badge>
-                            <img  style={scaleTwProps("w-[100px] h-[100px] shadow-md"/* no-custom*/, scale)} src={props.album.url_immagine ? props.album.url_immagine : "src/assets/album_empty.jpg"} alt={"Cover album " + props.album.titolo} />
+                            <img  style={scaleTwProps("w-[100px] h-[100px] shadow-md"/* no-custom*/, scale)} src={props.album.url_immagine ? props.album.url_immagine : album_empty} alt={"Cover album " + props.album.titolo} />
                         </div>
                         {stableMezzoDisco}
                     </div>
