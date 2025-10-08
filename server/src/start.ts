@@ -60,8 +60,8 @@ async function startServer() {
     console.log("Metti questo JSON nel file get_db_tables_and_columns.ts come valore di default della variabile dbTablesAndColumns:");
     console.log(dbTablesAndColumns);
     if (checkDbTablesAndColumns(dbTablesAndColumns) === true) {
-      app.listen(3000, () => {
-        console.log("Server is running on port 3000");
+      app.listen(process.env.PORT, () => {
+        console.log(`Server is running on port ${process.env.PORT}`);
       });
     }else{
       logger.error("Database schema validation failed - server startup aborted", {
