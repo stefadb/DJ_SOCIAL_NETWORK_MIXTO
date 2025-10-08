@@ -119,7 +119,7 @@ function PagedList<T>(props: { itemsPerPage: number; apiCall: string; schema?: Z
     }, [props.noPaging, props.showMoreButton, endNotReached]);
 
     return <div ref={containerRef} onScroll={handleScroll} className={"overscroll-x-contain " + (props.scrollMode === "vertical" ? "overflow-y-auto" : "overflow-x-auto")}>
-        <div ref={innerContainerRef} className={"inline-flex justify-start" + (props.scrollMode === "vertical" ? " flex-col" : " flex-row")}>
+        <div ref={innerContainerRef} className={"inline-flex justify-start" + (props.scrollMode === "vertical" ? " flex-col w-full" : " flex-row")}>
             {elements.map((element, index) => <Fragment key={index}>{props.component(element, index, elements.length)}</Fragment>)}
             {empty && <>{props.emptyMessage}</>}
             {!props.noPaging && endNotReached && <Fragment>
