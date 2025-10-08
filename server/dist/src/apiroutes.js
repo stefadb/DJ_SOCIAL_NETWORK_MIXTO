@@ -15,14 +15,11 @@ exports.getBraniEsistentiPreferiti = getBraniEsistentiPreferiti;
 exports.deezerEntityApi = deezerEntityApi;
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const promise_1 = __importDefault(require("mysql2/promise"));
-const dotenv_1 = __importDefault(require("dotenv"));
 const functions_1 = require("./functions");
 const upserts_1 = require("./upserts");
 const get_db_tables_and_columns_1 = require("./get_db_tables_and_columns");
 const logger_1 = __importDefault(require("./logger"));
 // Decidi quale file .env usare in base a NODE_ENV
-const envFile = process.env.NODE_ENV === "test" ? ".env.test" : ".env";
-dotenv_1.default.config({ path: envFile });
 const dbConfig = {
     host: process.env.HOST || "localhost",
     user: process.env.USER || "root",
@@ -31,6 +28,8 @@ const dbConfig = {
     dateStrings: true
 };
 async function getConnection() {
+    console.log("Connecting to database...");
+    console.log(dbConfig);
     return await promise_1.default.createConnection(dbConfig);
 }
 async function logout(req, res) {
@@ -47,7 +46,7 @@ async function postLogin(req, res) {
     const { username, password } = req.body;
     try {
         const con = await getConnection();
-        const [rows] = await con.execute("SELECT * FROM Utente WHERE username = ?", [username]);
+        const [rows] = await con.execute("SELECT * FROM utente WHERE username = ?", [username]);
         const utenti = rows;
         await con.end();
         if (utenti[0] === undefined) {
@@ -548,13 +547,13 @@ function fromDeezerEntityToDbEntity(entity, tableName, param) {
         pictureUrl = null;
     }
     switch (tableName) {
-        case "Artista":
+        case "artista":
             return { id: entity.id, nome: entity.name, url_immagine: pictureUrl };
-        case "Album":
+        case "album":
             return { id: entity.id, titolo: entity.title, data_uscita: entity.release_date !== undefined ? entity.release_date : null, url_immagine: pictureUrl };
-        case "Genere":
+        case "genere":
             return { id: entity.id, nome: entity.name, url_immagine: pictureUrl };
-        case "Brano":
+        case "brano":
             const brano = entity;
             const album = brano.album;
             if (album !== undefined) {
@@ -730,6 +729,8 @@ async function deezerEntityApi(req, res, apisConfig) {
             error: err instanceof Error ? err.message : String(err),
             stack: err instanceof Error ? err.stack : undefined
         });
+        console.log("Errore su questa Api legata a Deezer");
+        console.log(err);
         res.status(500).json({ error: "Errore su questa Api legata a Deezer" });
     }
 }

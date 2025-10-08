@@ -59,14 +59,15 @@ function checkDbTablesAndColumns(dbTablesAndColumns) {
 }
 async function startServer() {
     console.log("Funzione startServer chiamata");
+    console.log("FRONTEND URL: " + process.env.FRONTEND_URL);
     try {
         // Attendi che dbTablesAndColumns sia popolato
         await (0, get_db_tables_and_columns_1.getDbTablesAndColumns)();
         console.log("Metti questo JSON nel file get_db_tables_and_columns.ts come valore di default della variabile dbTablesAndColumns:");
         console.log(get_db_tables_and_columns_1.dbTablesAndColumns);
         if (checkDbTablesAndColumns(get_db_tables_and_columns_1.dbTablesAndColumns) === true) {
-            server_1.default.listen(3000, () => {
-                console.log("Server is running on port 3000");
+            server_1.default.listen(process.env.PORT, () => {
+                console.log(`Server is running on port ${process.env.PORT}`);
             });
         }
         else {

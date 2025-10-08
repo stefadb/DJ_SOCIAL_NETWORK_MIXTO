@@ -16,15 +16,19 @@ const get_multiple_apis_config_1 = require("./get_multiple_apis_config");
 const post_and_put_apis_config_1 = require("./post_and_put_apis_config");
 const cleanup_db_api_1 = __importDefault(require("./cleanup_db_api"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
+const dotenv_1 = __importDefault(require("dotenv"));
+const envFile = process.env.NODE_ENV === "test" ? ".env.test" : ".env";
+dotenv_1.default.config({ path: envFile });
 const app = (0, express_1.default)();
-app.use(express_1.default.json());
 //Configura il cors di app per permettere richieste dall'indirizzo http://localnost:5173 (dove gira il client React in dev)
 const cors_1 = __importDefault(require("cors"));
+console.log("FRONTEND URL PASSATO DAVVERO: " + process.env.FRONTEND_URL);
 app.use((0, cors_1.default)({
     origin: process.env.FRONTEND_URL, // Sostituisci con l'URL del tuo client React
     methods: ['GET', 'POST', 'PUT', 'DELETE'], // Metodi consentiti
     credentials: true // Se hai bisogno di inviare cookie o credenziali
 }));
+app.use(express_1.default.json());
 app.use((0, express_session_1.default)({
     secret: process.env.SESSION_SECRET || "default_secret",
     resave: false,

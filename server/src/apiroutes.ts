@@ -74,7 +74,7 @@ export async function postLogin(req: import("express").Request, res: import("exp
   try {
     const con = await getConnection();
     const [rows] = await con.execute(
-      "SELECT * FROM Utente WHERE username = ?",
+      "SELECT * FROM utente WHERE username = ?",
       [username]
     );
     const utenti = rows as UtenteDb[];
@@ -668,13 +668,13 @@ function fromDeezerEntityToDbEntity(entity: GenericDeezerEntityBasic, tableName:
     pictureUrl = null;
   }
   switch (tableName) {
-    case "Artista":
+    case "artista":
       return { id: entity.id, nome: (entity as ArtistaDeezerBasic).name, url_immagine: pictureUrl } as ArtistaDb;
-    case "Album":
+    case "album":
       return { id: entity.id, titolo: (entity as AlbumDeezerBasic).title, data_uscita: (entity as AlbumDeezerBasic).release_date !== undefined ? (entity as AlbumDeezerBasic).release_date : null, url_immagine: pictureUrl } as AlbumDb;
-    case "Genere":
+    case "genere":
       return { id: entity.id, nome: (entity as GenereDeezerBasic).name, url_immagine: pictureUrl } as GenereDb;
-    case "Brano":
+    case "brano":
       const brano = entity as BranoDeezerBasic;
       const album = brano.album;
       if (album !== undefined) {

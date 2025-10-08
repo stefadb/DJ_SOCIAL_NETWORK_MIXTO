@@ -43,7 +43,7 @@ export const artistiAPIsConfig: ArtistiAPIsConfig = {
         paramName: "query",
         deezerAPICallback: (res: import("express").Response, param: string, limit: number | undefined, index: number | undefined) => makeDeezerApiCall(res, "search", null, "artist", {q: param, ...limitAndIndex(limit, index)}),
         entities: [{
-            tableName: "Artista",
+            tableName: "artista",
             deezerEntitySchema: ArtistaDeezerBasicSchema,
             getEntityObjectsFromResponse: (response: axios.AxiosResponse<any, any>) => {
                 return response.data.data as GenericDeezerEntityBasic[];
@@ -55,7 +55,7 @@ export const artistiAPIsConfig: ArtistiAPIsConfig = {
         paramName: "artistId",
         deezerAPICallback: (res: import("express").Response, param: string, limit: number | undefined, index: number | undefined) => makeDeezerApiCall(res, "artist", param, "related", limitAndIndex(limit, index)),
         entities: [{
-            tableName: "Artista",
+            tableName: "artista",
             deezerEntitySchema: ArtistaDeezerBasicSchema,
             getEntityObjectsFromResponse: (response: axios.AxiosResponse<any, any>) => {
                 return response.data.data as GenericDeezerEntityBasic[];
@@ -68,7 +68,7 @@ export const artistiAPIsConfig: ArtistiAPIsConfig = {
         deezerAPICallback: (res: import("express").Response, param: string, limit: number | undefined, index: number | undefined) => makeDeezerApiCall(res, "genre", param, "artists", null),
         pagination: false,
         entities: [{
-            tableName: "Artista",
+            tableName: "artista",
             deezerEntitySchema: ArtistaDeezerBasicSchema,
             getEntityObjectsFromResponse: (response: axios.AxiosResponse<any, any>) => {
                 return response.data.data as GenericDeezerEntityBasic[];
@@ -82,7 +82,7 @@ export const artistiAPIsConfig: ArtistiAPIsConfig = {
         pagination: false,
         deezerAPICallback: (res: import("express").Response, param: string, limit: number | undefined, index: number | undefined) => makeDeezerApiCall(res, "artist", param, null, null),
         entities: [{
-            tableName: "Artista",
+            tableName: "artista",
             deezerEntitySchema: ArtistaDeezerBasicSchema,
             getEntityObjectsFromResponse: (response: axios.AxiosResponse<any, any>) => {
                 return [response.data] as GenericDeezerEntityBasic[];
@@ -97,7 +97,7 @@ export const albumAPIsConfig: AlbumAPIsConfig = {
         paramName: "query",
         deezerAPICallback: (res: import("express").Response, param: string, limit: number | undefined, index: number | undefined) => makeDeezerApiCall(res, "search", null, "album", {q: param, ...limitAndIndex(limit, index)}),
         entities: [{
-            tableName: "Album",
+            tableName: "album",
             deezerEntitySchema: AlbumDeezerBasicSchema,
             getEntityObjectsFromResponse: (response: axios.AxiosResponse<any, any>) => {
                 return response.data.data as GenericDeezerEntityBasic[];
@@ -112,7 +112,7 @@ export const albumAPIsConfig: AlbumAPIsConfig = {
         pagination: false,
         entities: [
             {
-                tableName: "Album",
+                tableName: "album",
                 deezerEntitySchema: AlbumDeezerBasicSchema,
                 getEntityObjectsFromResponse: (response: axios.AxiosResponse<any, any>) => {
                     return [response.data] as GenericDeezerEntityBasic[];
@@ -120,7 +120,7 @@ export const albumAPIsConfig: AlbumAPIsConfig = {
                 showEntityInResponse: true
             },
             {
-                tableName: "Genere",
+                tableName: "genere",
                 deezerEntitySchema: GenereDeezerSemplificatoSchema,
                 getEntityObjectsFromResponse: (response: axios.AxiosResponse<any, any>) => {
                     return response.data.genres.data as GenericDeezerEntityBasic[];
@@ -128,7 +128,7 @@ export const albumAPIsConfig: AlbumAPIsConfig = {
                 showEntityInResponse: false
             },
             {
-                tableName: "Brano",
+                tableName: "brano",
                 deezerEntitySchema: BranoDeezerBasicSchema,
                 getEntityObjectsFromResponse: (response: axios.AxiosResponse<any, any>) => {
                     return response.data.tracks.data as GenericDeezerEntityBasic[];
@@ -154,7 +154,7 @@ export const albumAPIsConfig: AlbumAPIsConfig = {
         deezerAPICallback: (res: import("express").Response, param: string, limit: number | undefined, index: number | undefined) => makeDeezerApiCall(res, "artist", param, "albums", limitAndIndex(limit, index)),
         entities: [
             {
-                tableName: "Album",
+                tableName: "album",
                 deezerEntitySchema: AlbumDeezerBasicSchema,
                 getEntityObjectsFromResponse: (response: axios.AxiosResponse<any, any>) => {
                     return response.data.data as GenericDeezerEntityBasic[];
@@ -168,7 +168,7 @@ export const albumAPIsConfig: AlbumAPIsConfig = {
         deezerAPICallback: (res: import("express").Response, param: string, limit: number | undefined, index: number | undefined) => makeDeezerApiCall(res, "chart", param, "albums", limitAndIndex(limit, index)),
         entities: [
             {
-                tableName: "Album",
+                tableName: "album",
                 deezerEntitySchema: AlbumDeezerBasicSchema,
                 getEntityObjectsFromResponse: (response: axios.AxiosResponse<any, any>) => {
                     return response.data.data as GenericDeezerEntityBasic[];
@@ -186,7 +186,7 @@ export const generiAPIsConfig: GeneriAPIsConfig = {
         deezerAPICallback: (res: import("express").Response, param: string, limit: number | undefined, index: number | undefined) => makeDeezerApiCall(res, "genre", param, null, null),
         pagination: false,
         entities: [{
-            tableName: "Genere",
+            tableName: "genere",
             deezerEntitySchema: GenereDeezerBasicSchema,
             getEntityObjectsFromResponse: (response: axios.AxiosResponse<any, any>) => {
                 return [response.data] as GenericDeezerEntityBasic[];
@@ -200,7 +200,7 @@ export const generiAPIsConfig: GeneriAPIsConfig = {
         deezerAPICallback: (res: import("express").Response, param: string, limit: number | undefined, index: number | undefined) => makeDeezerApiCall(res, "genre", null, null, null),
         pagination: false,
         entities: [{
-            tableName: "Genere",
+            tableName: "genere",
             deezerEntitySchema: GenereDeezerBasicSchema,
             getEntityObjectsFromResponse: (response: axios.AxiosResponse<any, any>) => {
                 return response.data.data as GenericDeezerEntityBasic[];
@@ -215,7 +215,7 @@ export const braniAPIsConfig: BraniAPIsConfig = {
         paramName: "albumId",
         deezerAPICallback: (res: import("express").Response, param: string, limit: number | undefined, index: number | undefined) => makeDeezerApiCall(res, "album", param, "tracks", limitAndIndex(limit, index)),
         entities: [{
-            tableName: "Brano",
+            tableName: "brano",
             deezerEntitySchema: BranoDeezerBasicSchema,
             getEntityObjectsFromResponse: (response: axios.AxiosResponse<any, any>) => {
                 return response.data.data as GenericDeezerEntityBasic[];
@@ -228,7 +228,7 @@ export const braniAPIsConfig: BraniAPIsConfig = {
         deezerAPICallback: (res: import("express").Response, param: string, limit: number | undefined, index: number | undefined) => makeDeezerApiCall(res, "search", null, "track", {q: param, ...limitAndIndex(limit, index)}),
         entities: [
             {
-                tableName: "Album",
+                tableName: "album",
                 deezerEntitySchema: AlbumDeezerBasicSchema,
                 getEntityObjectsFromResponse: (response: axios.AxiosResponse<any, any>) => {
                     return response.data.data.map((track: BranoDeezerBasic
@@ -237,7 +237,7 @@ export const braniAPIsConfig: BraniAPIsConfig = {
                 showEntityInResponse: false
             },
             {
-                tableName: "Brano",
+                tableName: "brano",
                 deezerEntitySchema: BranoDeezerBasicSchema,
                 getEntityObjectsFromResponse: (response: axios.AxiosResponse<any, any>) => {
                     return response.data.data as GenericDeezerEntityBasic[];
@@ -245,7 +245,7 @@ export const braniAPIsConfig: BraniAPIsConfig = {
                 showEntityInResponse: true
             },
             {
-                tableName: "Artista",
+                tableName: "artista",
                 deezerEntitySchema: ArtistaDeezerBasicSchema,
                 getEntityObjectsFromResponse: (response: axios.AxiosResponse<any, any>) => {
                     return response.data.data.map((track: BranoDeezerBasic) => track.artist) as GenericDeezerEntityBasic[];
@@ -271,7 +271,7 @@ export const braniAPIsConfig: BraniAPIsConfig = {
         deezerAPICallback: (res: import("express").Response, param: string, limit: number | undefined, index: number | undefined) => makeDeezerApiCall(res, "chart", param, "tracks", limitAndIndex(limit, index)),
         entities: [
             {
-                tableName: "Album",
+                tableName: "album",
                 deezerEntitySchema: AlbumDeezerBasicSchema,
                 getEntityObjectsFromResponse: (response: axios.AxiosResponse<any, any>) => {
                     return response.data.data.map((track: BranoDeezerBasic) => track.album) as GenericDeezerEntityBasic[];
@@ -279,7 +279,7 @@ export const braniAPIsConfig: BraniAPIsConfig = {
                 showEntityInResponse: false
             },
             {
-                tableName: "Brano",
+                tableName: "brano",
                 deezerEntitySchema: BranoDeezerBasicSchema,
                 getEntityObjectsFromResponse: (response: axios.AxiosResponse<any, any>) => {
                     return response.data.data as GenericDeezerEntityBasic[];
@@ -287,7 +287,7 @@ export const braniAPIsConfig: BraniAPIsConfig = {
                 showEntityInResponse: true
             },
             {
-                tableName: "Artista",
+                tableName: "artista",
                 deezerEntitySchema: ArtistaDeezerBasicSchema,
                 getEntityObjectsFromResponse: (response: axios.AxiosResponse<any, any>) => {
                     return response.data.data.map((track: BranoDeezerBasic) => track.artist) as GenericDeezerEntityBasic[];
@@ -313,7 +313,7 @@ export const braniAPIsConfig: BraniAPIsConfig = {
         deezerAPICallback: (res: import("express").Response, param: string, limit: number | undefined, index: number | undefined) => makeDeezerApiCall(res, "artist", param, "top", limitAndIndex(limit, index)),
         entities: [
             {
-                tableName: "Album",
+                tableName: "album",
                 deezerEntitySchema: AlbumDeezerBasicSchema,
                 getEntityObjectsFromResponse: (response: axios.AxiosResponse<any, any>) => {
                     return response.data.data.map((track: BranoDeezerBasic) => track.album) as GenericDeezerEntityBasic[];
@@ -321,7 +321,7 @@ export const braniAPIsConfig: BraniAPIsConfig = {
                 showEntityInResponse: false
             },
             {
-                tableName: "Brano",
+                tableName: "brano",
                 deezerEntitySchema: BranoDeezerBasicSchema,
                 getEntityObjectsFromResponse: (response: axios.AxiosResponse<any, any>) => {
                     return response.data.data as GenericDeezerEntityBasic[];
@@ -329,7 +329,7 @@ export const braniAPIsConfig: BraniAPIsConfig = {
                 showEntityInResponse: true
             },
             {
-                tableName: "Artista",
+                tableName: "artista",
                 deezerEntitySchema: ArtistaDeezerBasicSchema,
                 getEntityObjectsFromResponse: (response: axios.AxiosResponse<any, any>) => {
                     return ([] as ArtistaDeezerBasic[]).concat(...response.data.data.map((track: BranoDeezerBasic) => track.contributors as ArtistaDeezerBasic[] || [])) as GenericDeezerEntityBasic[];
@@ -363,7 +363,7 @@ export const braniAPIsConfig: BraniAPIsConfig = {
         pagination: false,
         entities: [
             {
-                tableName: "Album",
+                tableName: "album",
                 deezerEntitySchema: AlbumDeezerBasicSchema,
                 getEntityObjectsFromResponse: (response: axios.AxiosResponse<any, any>) => {
                     return [response.data.album] as GenericDeezerEntityBasic[];
@@ -371,7 +371,7 @@ export const braniAPIsConfig: BraniAPIsConfig = {
                 showEntityInResponse: false
             },
             {
-                tableName: "Brano",
+                tableName: "brano",
                 deezerEntitySchema: BranoDeezerBasicSchema,
                 getEntityObjectsFromResponse: (response: axios.AxiosResponse<any, any>) => {
                     return [response.data] as GenericDeezerEntityBasic[];
@@ -379,7 +379,7 @@ export const braniAPIsConfig: BraniAPIsConfig = {
                 showEntityInResponse: true
             },
             {
-                tableName: "Artista",
+                tableName: "artista",
                 deezerEntitySchema: ArtistaDeezerBasicSchema,
                 getEntityObjectsFromResponse: (response: axios.AxiosResponse<any, any>) => {
                     return response.data.contributors as GenericDeezerEntityBasic[];
