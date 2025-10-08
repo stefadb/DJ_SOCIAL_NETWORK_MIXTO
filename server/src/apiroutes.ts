@@ -30,7 +30,6 @@ import {
   DeezerEntityTableName
 } from './types';
 import z, { ZodIntersection, ZodObject } from 'zod';
-import dotenv from "dotenv";
 import { isValidDeezerObject, makeDeezerApiCall } from './functions';
 import { upsertEntitaDeezer } from './upserts';
 import { dbTablesAndColumns } from "./get_db_tables_and_columns";
@@ -44,9 +43,6 @@ declare module 'express-session' {
 }
 
 // Decidi quale file .env usare in base a NODE_ENV
-const envFile = process.env.NODE_ENV === "test" ? ".env.test" : ".env";
-
-dotenv.config({ path: envFile });
 
 const dbConfig = {
   host: process.env.HOST || "localhost",

@@ -13,6 +13,9 @@ import { getMultipleApisConfig } from "./get_multiple_apis_config";
 import { postAndPutApisConfig } from "./post_and_put_apis_config";
 import cleanupDbRouter from "./cleanup_db_api";
 import bcrypt from "bcrypt";
+import dotenv from "dotenv";
+const envFile = process.env.NODE_ENV === "test" ? ".env.test" : ".env";
+dotenv.config({ path: envFile });
 const app = express();
 app.use(express.json());
 
