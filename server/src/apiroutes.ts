@@ -58,6 +58,8 @@ const dbConfig = {
 
 
 export async function getConnection() {
+  console.log("Connecting to database...");
+  console.log(dbConfig);
   return await mysql.createConnection(dbConfig);
 }
 
