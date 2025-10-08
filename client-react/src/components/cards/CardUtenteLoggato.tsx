@@ -4,10 +4,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useEffect} from 'react';
 import { setUtente } from '../../store/userSlice';
 import api from '../../api';
-import { getNoConnMessage, scaleTwProps } from '../../functions/functions';
+import { artistaEmptyPictureUrl, getNoConnMessage, scaleTwProps } from '../../functions/functions';
 import { setGenericAlert } from '../../store/errorSlice';
 import { useSearchParams } from 'react-router-dom';
-import artista_empty from "src/assets/artista_empty.jpg";
 
 function CardUtenteLoggato() {
     const dispatch = useDispatch();
@@ -51,7 +50,7 @@ function CardUtenteLoggato() {
         <>
             {loggedUtente &&
                 <div>
-                    <img  className="rounded-full cursor-pointer shadow-md"/*no-custom*/ onClick={openAggiornaUtente} style={scaleTwProps("w-12 h-12", 1)} src={artista_empty} alt={"Immagine di profilo di " + loggedUtente.nome + " " + loggedUtente.cognome} />
+                    <img  className="rounded-full cursor-pointer shadow-md"/*no-custom*/ onClick={openAggiornaUtente} style={scaleTwProps("w-12 h-12", 1)} src={artistaEmptyPictureUrl()} alt={"Immagine di profilo di " + loggedUtente.nome + " " + loggedUtente.cognome} />
                 </div>
             }
             {!loggedUtente &&

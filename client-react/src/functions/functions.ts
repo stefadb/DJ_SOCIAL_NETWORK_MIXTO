@@ -195,3 +195,16 @@ export function getRandomGreyScale() {
     const greyValue = Math.floor(Math.random() * (maximumGreyScale - minimumGreyScale + 1)) + minimumGreyScale;
     return `rgb(${greyValue}, ${greyValue}, ${greyValue})`;
 }
+
+export function genereEmptyPictureUrl(){
+    return "https://cdn-images.dzcdn.net/images/misc//500x500-000000-80-0-0.jpg";
+}
+
+
+export function artistaEmptyPictureUrl(){
+    return "https://cdn-images.dzcdn.net/images/artist//500x500-000000-80-0-0.jpg";
+}
+
+export function albumEmptyPictureUrl(){
+    return "https://cdn-images.dzcdn.net/images/cover//500x500-000000-80-0-0.jpg";
+}
