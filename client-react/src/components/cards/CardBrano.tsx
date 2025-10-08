@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { AlbumDbSchema, type AlbumDb, type ArtistaDb, type BranoDb } from "../../types/db_types";
-import { deezerColor, getNomiArtistiBrano, scaleTwProps } from "../../functions/functions";
+import { AlbumDbSchema, type AlbumDb, type BranoDb } from "../../types/db_types";
+import { deezerColor, scaleTwProps } from "../../functions/functions";
 import { useNavigate } from "react-router-dom";
 import SalvaBranoPreferito from "../buttons/SalvaBranoPreferito";
 import PosizionaBrano from "../buttons/PosizionaBrano";
@@ -8,20 +8,17 @@ import api from "../../api";
 import DynamicText from "../DynamicText";
 import MezzoDisco from "../MezzoDisco";
 import { Clock, Disc, Users } from "react-feather";
-import ListaArtistiOGeneriContainer from "../ListaArtistiOGeneriContainer";
 import AscoltaSuDeezer from "../buttons/AscoltaSuDeezer";
 import Badge from "../Badge";
 import VediAlbum from "../buttons/VediAlbum";
+import VediArtistiOGeneri from "../buttons/VediArtistiOGeneri";
 
-function CardBrano(props: { brano: BranoDb, noDeckButtons?: boolean, noButtons?: boolean, scale: number }) {
-    const [artisti, setArtisti] = useState<ArtistaDb[] | null>(null);
+function CardBrano(props: { brano: BranoDb, noDeckButtons?: boolean, noButtons?: boolean, scale: number, insideModal?: boolean }) {
     const [album, setAlbum] = useState<AlbumDb | null>(null);
-    const [erroreArtisti, setErroreArtisti] = useState<boolean>(false);
 
     const navigate = useNavigate();
 
     useEffect(() => {
-        loadArtisti();
         loadAlbum();
     }, []);
 
@@ -29,20 +26,8 @@ function CardBrano(props: { brano: BranoDb, noDeckButtons?: boolean, noButtons?:
 
 
     useEffect(() => {
-        loadArtisti();
         loadAlbum();
     }, [props.brano]);
-
-
-    async function loadArtisti() {
-        try {
-            setErroreArtisti(false);
-            const nomi = await getNomiArtistiBrano(props.brano.id);
-            setArtisti(nomi);
-        } catch {
-            setErroreArtisti(true);
-        }
-    }
 
     async function loadAlbum() {
         try {
@@ -79,19 +64,11 @@ function CardBrano(props: { brano: BranoDb, noDeckButtons?: boolean, noButtons?:
                             {props.brano.durata.substring(0, 8)}
                         </div>
                     </div>
-                    <div style={scaleTwProps("flex flex-row items-center pt-px pb-2", scale)}>
-                        <div style={scaleTwProps("pr-2", scale)}>
-                            <Users size={14 * scale} color={deezerColor()} />
+                    {props.insideModal !== true &&
+                        <div style={scaleTwProps("flex flex-row items-center pt-px pb-2", scale)}>
+                            <VediArtistiOGeneri entity="artista" id={props.brano.id} scale={scale} />
                         </div>
-                        <div>
-                            {artisti &&
-                                <ListaArtistiOGeneriContainer key={artisti.map(artista => artista.id).join(",")} lines={3} list={artisti} entity={"artista"} scale={scale} idBrano={props.brano.id} />
-                            }
-                            {!artisti &&
-                                <ListaArtistiOGeneriContainer lines={3} list={[{ id: 0, nome: (erroreArtisti ? "Impossibile caricare gli artisti" : "Caricamento..."), url_immagine: "" }]} noClick={true} entity={"artista"} scale={scale} idBrano={NaN} />
-                            }
-                        </div>
-                    </div>
+                    }
                 </div>
                 {props.noButtons !== true &&
                     <div className="flex items-start flex-wrap">

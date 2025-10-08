@@ -128,7 +128,7 @@ function ModalNuovoPassaggio(props: { onRequestClose: () => void }) {
                     <div className={`flex flex-row`}>
                         <div>
                             {brano1 !== null &&
-                                <CardBrano brano={brano1} noDeckButtons scale={scale} />
+                                <CardBrano brano={brano1} noDeckButtons scale={scale} insideModal/>
                             }
                             {brano1 === null &&
                                 <div className="p-3">
@@ -143,7 +143,7 @@ function ModalNuovoPassaggio(props: { onRequestClose: () => void }) {
                         </div>
                         <div >
                             {brano2 !== null &&
-                                <CardBrano brano={brano2} noDeckButtons scale={scale} />
+                                <CardBrano brano={brano2} noDeckButtons scale={scale} insideModal/>
                             }
                             {brano2 === null &&
                                 <div className="p-3">

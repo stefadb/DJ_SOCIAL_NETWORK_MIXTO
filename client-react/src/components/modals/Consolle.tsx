@@ -81,7 +81,7 @@ function Consolle(props: { onRequestClose: () => void }) {
                             <div>
                                 <h3 className="pl-3 mb-0">Deck 1</h3>
                                 {brano1 !== null &&
-                                    <CardBrano brano={brano1} noDeckButtons scale={scale} />
+                                    <CardBrano brano={brano1} noDeckButtons scale={scale} insideModal/>
                                 }
                                 {brano1 === null &&
                                     <div className="p-3">
@@ -99,7 +99,7 @@ function Consolle(props: { onRequestClose: () => void }) {
                             <div>
                                 <h3 className="pl-3 mb-0">Deck 2</h3>
                                 {brano2 !== null &&
-                                    <CardBrano brano={brano2} noDeckButtons scale={scale} />
+                                    <CardBrano brano={brano2} noDeckButtons scale={scale} insideModal/>
                                 }
                                 {brano2 === null &&
                                     <div className="p-3">

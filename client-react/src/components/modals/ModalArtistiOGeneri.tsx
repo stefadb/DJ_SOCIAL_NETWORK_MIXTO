@@ -1,6 +1,6 @@
 import Modal from "react-modal"
 import ModalWrapper from "./ModalWrapper"
-import { check404, checkConnError, deezerColor, getNoConnMessage, getNomiArtistiAlbum, getNomiArtistiBrano, modalsContentClassName, modalsOverlayClassName } from "../../functions/functions"
+import { check404, checkConnError, deezerColor, getNoConnMessage, modalsContentClassName, modalsOverlayClassName } from "../../functions/functions"
 import { useSearchParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { ArtistaDbSchema, GenereDbSchema, type ArtistaDb, type GenereDb } from "../../types/db_types";
@@ -70,7 +70,7 @@ function ModalArtistiOGeneri(props: { entity: "artista" | "genere", id: number }
         <ModalWrapper title={`Tutti ${props.entity == "artista" ? "gli artisti" : "i generi"} di questo ${props.entity == "artista" ? "brano" : "album"}`} onRequestClose={closeThisModal}>
             {list === null &&
                 <div className="flex flex-row justify-center">
-                    <Caricamento size="large" status={status === null ? "loading" : status} />
+                    <Caricamento size="small" status={status === null ? "loading" : status} />
                 </div>
             }
             {list !== null && list.map((element) => {

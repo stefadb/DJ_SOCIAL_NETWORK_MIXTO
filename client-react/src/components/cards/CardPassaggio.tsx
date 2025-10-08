@@ -110,11 +110,11 @@ function CardPassaggio(props: CardPassaggioProps) {
         ref={cardPassaggioRef}
       >
         {props.brano1 &&
-          <CardBrano brano={props.brano1} scale={cardBranoScale} noButtons={props.insideModal} />
+          <CardBrano brano={props.brano1} scale={cardBranoScale} noButtons={props.insideModal} insideModal={props.insideModal}/>
         }
         <ArrowRight size={16 * cardBranoScale} />
         {props.brano2 &&
-          <CardBrano brano={props.brano2} scale={cardBranoScale} noButtons={props.insideModal} />
+          <CardBrano brano={props.brano2} scale={cardBranoScale} noButtons={props.insideModal} insideModal={props.insideModal}/>
         }
       </div>
       {props.insideModal &&

@@ -10,12 +10,13 @@ import {
 import CardPassaggio from "../components/cards/CardPassaggio";
 import PagedList from "../components/PagedList";
 import CardBrano from "../components/cards/CardBrano";
-import { check404, getNomiArtistiAlbum } from "../functions/functions";
+import { check404, deezerColor, getNomiArtistiAlbum } from "../functions/functions";
 import api from "../api";
 import CardAlbum from "../components/cards/CardAlbum";
 import CardArtista from "../components/cards/CardArtista";
 import { PassaggioConBraniEUtenteSchema, type PassaggioConBraniEUtente } from "../types/types";
 import Caricamento from "../components/icons/Caricamento";
+import { Users } from "react-feather";
 
 function Album() {
     //Il componente deve prendere in input l'id del brano (da passare come parametro di query nell'URL) e fare una chiamata al backend per ottenere i dati del brano
@@ -23,6 +24,7 @@ function Album() {
     const query = new URLSearchParams(search);
     const id = query.get("id");
     const [album, setAlbum] = useState<AlbumDb | null>(null);
+    const [mostraArtistiAlbum, setMostraArtistiAlbum] = useState<boolean>(false);
     const [artistiAlbum, setArtistiAlbum] = useState<ArtistaDb[] | null>(null);
     const [albumLoaded, setAlbumLoaded] = useState(false);
     const [errore, setErrore] = useState<"error" | "not-found" | null>(null);
@@ -30,6 +32,14 @@ function Album() {
     useEffect(() => {
         loadAlbum();
     }, []);
+
+    useEffect(() => {
+        if (mostraArtistiAlbum && id) {
+            (async () => {
+                setArtistiAlbum(await getNomiArtistiAlbum(undefined, parseInt(id)));
+            })();
+        }
+    }, [mostraArtistiAlbum]);
 
     async function loadAlbum() {
         try {
@@ -39,7 +49,6 @@ function Album() {
             const responseAlbum = await api.get(`/album/esistenti/${id}`, { headers: { "Cache-Control": "no-cache, no-store, must-revalidate", Pragma: "no-cache", Expires: "0" } });
             const responseAlbumData: AlbumDb = AlbumDbSchema.parse(responseAlbum.data) as AlbumDb;
             setAlbum(responseAlbumData);
-            setArtistiAlbum(await getNomiArtistiAlbum(undefined, responseAlbumData.id));
             //L'album è stato caricato con successo, ora si possono caricare i passaggi
         } catch (error) {
             if (check404(error)) {
@@ -65,15 +74,24 @@ function Album() {
                 <>
                     <div>
                         <h2>Artisti dell'album</h2>
-                        {artistiAlbum &&
-                            <div className="flex flex-row justify-start overscroll-x-contain">
-                                {artistiAlbum.map((artista, index) => {
-                                    return <CardArtista key={index} artista={artista} size={"small"} />;
-                                })}
-                            </div>
+                        {mostraArtistiAlbum &&
+                            <>
+                                {artistiAlbum &&
+                                    <div className="flex flex-row justify-start overscroll-x-contain">
+                                        {artistiAlbum.map((artista, index) => {
+                                            return <CardArtista key={index} artista={artista} size={"small"} />;
+                                        })}
+                                    </div>
+                                }
+                                {!artistiAlbum &&
+                                    <Caricamento size="tiny" status={"loading"} />
+                                }
+                            </>
                         }
-                        {!artistiAlbum &&
-                            <Caricamento size="tiny" status={"loading"} />
+                        {!mostraArtistiAlbum &&
+                            <button onClick={() => { setMostraArtistiAlbum(true); }} className="rounded p-2 text-base card-button">
+                                <Users size={16} color={deezerColor()} />  Vedi artisti
+                            </button >
                         }
                     </div>
                     <div>
@@ -119,14 +137,14 @@ function Album() {
                             scrollMode="horizontal"
                             component={(element: PassaggioConBraniEUtente) => (
                                 <div className="p-3">
-                                <CardPassaggio
-                                    key={element.id}
-                                    passaggio={element}
-                                    brano1={element.brano_1_array[0]}
-                                    brano2={element.brano_2_array[0]}
-                                    utente={element.utente_array[0] ? element.utente_array[0] : null}
+                                    <CardPassaggio
+                                        key={element.id}
+                                        passaggio={element}
+                                        brano1={element.brano_1_array[0]}
+                                        brano2={element.brano_2_array[0]}
+                                        utente={element.utente_array[0] ? element.utente_array[0] : null}
 
-                                />
+                                    />
                                 </div>
                             )}
                             emptyMessage="😮 Nessun mix trovato"
