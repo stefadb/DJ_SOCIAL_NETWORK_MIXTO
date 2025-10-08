@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import DynamicText from "../DynamicText";
 import MezzoDisco from "../MezzoDisco";
 import { Calendar, Music } from "react-feather";
-import { dataItaliana, deezerColor, scaleTwProps } from "../../functions/functions";
+import { dataItaliana, deezerColor, defaultAlbumPicture, scaleTwProps } from "../../functions/functions";
 import { useMemo } from "react";
 import AscoltaSuDeezer from "../buttons/AscoltaSuDeezer";
 import AlbumIcon from "../icons/AlbumIcon";
@@ -30,7 +30,7 @@ function CardAlbum(props: { album: AlbumDb, size: "small" | "large" }) {
                             <Badge scale={scale}>
                                 <AlbumIcon size={14 * scale} color={deezerColor()} />
                             </Badge>
-                            <img style={scaleTwProps("w-[100px] h-[100px] shadow-md"/* no-custom*/, scale)} src={props.album.url_immagine ? props.album.url_immagine : "src/assets/album_empty.jpg"} alt={"Cover album " + props.album.titolo} />
+                            <img onError={defaultAlbumPicture} style={scaleTwProps("w-[100px] h-[100px] shadow-md"/* no-custom*/, scale)} src={props.album.url_immagine ? props.album.url_immagine : "src/assets/album_empty.jpg"} alt={"Cover album " + props.album.titolo} />
                         </div>
                         {stableMezzoDisco}
                     </div>

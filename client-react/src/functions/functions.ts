@@ -196,4 +196,14 @@ export function getRandomGreyScale() {
     return `rgb(${greyValue}, ${greyValue}, ${greyValue})`;
 }
 
+export function defaultArtistaPicture(event: React.SyntheticEvent<HTMLImageElement, Event>) {
+    (event.target as HTMLImageElement).src = "src/assets/artista_empty.jpg";
+}
 
+export function defaultAlbumPicture(event: React.SyntheticEvent<HTMLImageElement, Event>) {
+    (event.target as HTMLImageElement).src = "src/assets/album_empty.jpg";
+}
+
+export function defaultGenerePicture(event: React.SyntheticEvent<HTMLImageElement, Event>) {
+    (event.target as HTMLImageElement).src = "src/assets/genere_empty.jpg";
+}

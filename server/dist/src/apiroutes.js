@@ -493,7 +493,6 @@ async function putEntity(req, res, config) {
             }
         }
         await con.end();
-        // 4. Risposta con id della nuova entità
         res.status(200).json();
     }
     catch (err) {

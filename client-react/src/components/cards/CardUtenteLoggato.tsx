@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useEffect} from 'react';
 import { setUtente } from '../../store/userSlice';
 import api from '../../api';
-import { getNoConnMessage, scaleTwProps } from '../../functions/functions';
+import { defaultArtistaPicture, getNoConnMessage, scaleTwProps } from '../../functions/functions';
 import { setGenericAlert } from '../../store/errorSlice';
 import { useSearchParams } from 'react-router-dom';
 
@@ -50,7 +50,7 @@ function CardUtenteLoggato() {
         <>
             {loggedUtente &&
                 <div>
-                    <img className="rounded-full cursor-pointer shadow-md"/*no-custom*/ onClick={openAggiornaUtente} style={scaleTwProps("w-12 h-12", 1)} src={"src/assets/artista_empty.jpg"} alt={"Immagine di profilo di " + loggedUtente.nome + " " + loggedUtente.cognome} />
+                    <img onError={defaultArtistaPicture} className="rounded-full cursor-pointer shadow-md"/*no-custom*/ onClick={openAggiornaUtente} style={scaleTwProps("w-12 h-12", 1)} src={"src/assets/artista_empty.jpg"} alt={"Immagine di profilo di " + loggedUtente.nome + " " + loggedUtente.cognome} />
                 </div>
             }
             {!loggedUtente &&

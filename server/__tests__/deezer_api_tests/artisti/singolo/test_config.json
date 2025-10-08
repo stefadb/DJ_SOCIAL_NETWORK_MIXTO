@@ -3,9 +3,6 @@
   "apiName": "/artisti/singolo",
   "testApiCallUrl": "/artisti/singolo?artistId=5359276&limit=1&index=0",
   "entityName": "artist",
-  "photosIdToDownload": {
-    "artisti_pictures": [5359276]
-  },
   "dbUpsertTests": [
     {
       "sqlQuery": "SELECT * FROM artista ORDER BY id ASC",

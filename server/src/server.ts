@@ -19,7 +19,7 @@ app.use(express.json());
 //Configura il cors di app per permettere richieste dall'indirizzo http://localnost:5173 (dove gira il client React in dev)
 import cors from "cors";
 app.use(cors({
-    origin: 'http://192.168.1.164:5173', // Sostituisci con l'URL del tuo client React
+    origin: process.env.FRONTEND_URL, // Sostituisci con l'URL del tuo client React
     methods: ['GET', 'POST', 'PUT', 'DELETE'], // Metodi consentiti
     credentials: true // Se hai bisogno di inviare cookie o credenziali
 }));

@@ -21,7 +21,7 @@ app.use(express_1.default.json());
 //Configura il cors di app per permettere richieste dall'indirizzo http://localnost:5173 (dove gira il client React in dev)
 const cors_1 = __importDefault(require("cors"));
 app.use((0, cors_1.default)({
-    origin: 'http://192.168.1.164:5173', // Sostituisci con l'URL del tuo client React
+    origin: process.env.FRONTEND_URL, // Sostituisci con l'URL del tuo client React
     methods: ['GET', 'POST', 'PUT', 'DELETE'], // Metodi consentiti
     credentials: true // Se hai bisogno di inviare cookie o credenziali
 }));
@@ -121,7 +121,7 @@ app.put("/utenti/:id", async (req, res) => {
         const con = await (0, apiroutes_1.getConnection)();
         const [rows] = await con.query("SELECT password FROM utente WHERE id = ? ", [req.params.id]);
         if (rows[0] === undefined) {
-            res.status(401).json({ error: "Utente non trovato." });
+            res.status(404).json({ error: "Utente non trovato." });
             return;
         }
         const match = await bcrypt_1.default.compare(req.body.oldPassword, rows[0].password);
@@ -145,7 +145,7 @@ app.put("/utenti/:id", async (req, res) => {
         const con = await (0, apiroutes_1.getConnection)();
         const [rows] = await con.query("SELECT password FROM utente WHERE id = ?", [req.params.id]);
         if (rows[0] === undefined) {
-            res.status(401).json({ error: "Utente non trovato." });
+            res.status(404).json({ error: "Utente non trovato." });
             return;
         }
         req.body.newRowValues.password = rows[0].password; //mantieni la password vecchia
