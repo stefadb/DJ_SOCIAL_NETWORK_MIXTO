@@ -63,7 +63,7 @@ function ModalHelp(props: { onClose: () => void }) {
                 {!mostraGuida &&
                     <>
                         <h1>Contatti</h1>
-                        <img  width={180} height={180} className="rounded-full shadow-lg" src="src/assets/stefano_di_bisceglie.png" alt="Stefano Di Bisceglie. sviluppatore di MixTo" />
+                        <img  width={180} height={180} className="rounded-full shadow-lg" src="/assets/stefano_di_bisceglie.png" alt="Stefano Di Bisceglie. sviluppatore di MixTo" />
                         <h2 className="mb-0">Stefano Di Bisceglie</h2>
                         <h4 className="mt-2 mb-2"><User size={24} />  Sviluppatore di MixTo</h4>
                         <div className="flex flex-row flex-wrap justify-center">
