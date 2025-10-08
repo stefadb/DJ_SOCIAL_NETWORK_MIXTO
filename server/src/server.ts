@@ -18,21 +18,15 @@ const envFile = process.env.NODE_ENV === "test" ? ".env.test" : ".env";
 dotenv.config({ path: envFile });
 const app = express();
 
-//Configura il cors di app per permettere richieste dall'indirizzo http://localnost:5173 (dove gira il client React in dev)
-import cors from "cors";
 console.log("FRONTEND URL PASSATO DAVVERO: " + process.env.FRONTEND_URL);
-app.use(cors({
-    origin: process.env.FRONTEND_URL, // Sostituisci con l'URL del tuo client React
-    methods: ['GET', 'POST', 'PUT', 'DELETE'], // Metodi consentiti
-    credentials: true // Se hai bisogno di inviare cookie o credenziali
-}));
 
-/*
-app.options('*', cors({
-  origin: process.env.FRONTEND_URL,
-  credentials: true
-}));
-*/
+app.options('*', (req, res) => {
+  res.header('Access-Control-Allow-Origin', process.env.FRONTEND_URL);
+  res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
+  res.header('Access-Control-Allow-Credentials', 'true');
+  res.sendStatus(204); // No Content
+});
+
 
 app.use(express.json());
 
