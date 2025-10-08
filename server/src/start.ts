@@ -54,6 +54,7 @@ function checkDbTablesAndColumns(dbTablesAndColumns: Record<string, string[]>): 
 
 async function startServer() {
   console.log("Funzione startServer chiamata");
+  console.log("FRONTEND URL: " + process.env.FRONTEND_URL);
   try {
     // Attendi che dbTablesAndColumns sia popolato
     await getDbTablesAndColumns();
