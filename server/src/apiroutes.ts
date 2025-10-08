@@ -609,7 +609,6 @@ export async function putEntity(
       }
     }
     await con.end();
-    // 4. Risposta con id della nuova entità
     res.status(200).json();
   } catch (err) {
     logger.error('Entity update error', {

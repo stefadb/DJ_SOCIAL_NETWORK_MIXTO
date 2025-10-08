@@ -28,7 +28,6 @@ function Ricerca() {
     const [erroreGeneri, setErroreGeneri] = useState<boolean>(false);
     const ultimeRicercheLength = 10;
 
-    //console.log(JSON.parse(localStorage.getItem('ultimeRicerche') || '[]'));
 
     //Se ancora non esiste, crea un array di 10 elementi per le ultime ricerche
     useEffect(() => {

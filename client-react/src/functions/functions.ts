@@ -122,6 +122,10 @@ export function check404(error: unknown) {
     return typeof error == "object" && error && "response" in error && typeof error.response == "object" && error.response && "status" in error.response && error.response.status == "404";
 }
 
+export function check403(error: unknown){
+    return typeof error == "object" && error && "response" in error && typeof error.response == "object" && error.response && "status" in error.response && error.response.status == "403";
+}
+
 export function checkConnError(error: unknown): boolean {
     return (
         axios.isAxiosError(error) &&
@@ -178,6 +182,10 @@ export function getUserNotLoggedMessage(): string {
 
 export function checkUserNotLoggedError(error: unknown): boolean {
     return axios.isAxiosError(error) && error.response !== undefined && error.response.status === 401 && error.response.data === "Utente non loggato";
+}
+
+export function checkUnauthorizedError(error: unknown): boolean {
+    return axios.isAxiosError(error) && error.response !== undefined && error.response.status === 401;
 }
 
 const minimumGreyScale = 32;

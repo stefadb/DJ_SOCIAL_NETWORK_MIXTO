@@ -5,7 +5,7 @@ import { setUtente } from '../../store/userSlice';
 import { useSelector } from 'react-redux';
 import type { RootState } from '../../store/store';
 import api from '../../api';
-import { checkConnError, checkUserNotLoggedError, getNoConnMessage, getUserNotLoggedMessage, inputTextClassName, modalsContentClassName, modalsOverlayClassName} from '../../functions/functions';
+import { check403, check404, checkConnError, checkUnauthorizedError, checkUserNotLoggedError, getNoConnMessage, getUserNotLoggedMessage, inputTextClassName, modalsContentClassName, modalsOverlayClassName } from '../../functions/functions';
 import { cleargenericMessage, setGenericAlert } from '../../store/errorSlice';
 import ModalWrapper from './ModalWrapper';
 import { useRef, useState } from 'react';
@@ -27,11 +27,15 @@ function ModalAggiornaUtente(props: { isOpen: boolean; onRequestClose: () => voi
             const username = (event.target as any)[0].value;
             const nome = (event.target as any)[1].value;
             const cognome = (event.target as any)[2].value;
-            const password = (event.target as any)[3].value;
+            const password = (event.target as any)[5].value;
             const confermaPassword = (event.target as any)[4].value;
-            const vecchiaPassword = (event.target as any)[5].value;
+            const vecchiaPassword = (event.target as any)[3].value;
+            if (vecchiaPassword != "" && confermaPassword == "" && password == "") {
+                dispatch(setGenericAlert({ message: "Hai digitato la vecchia password senza digitare quella nuova. Se non desideri modificare la password, non compilare i 3 campi dedicati", type: "error" }));
+                return;
+            }
             if (password && password !== confermaPassword) {
-                dispatch(setGenericAlert({ message: "Le password non coincidono", type: "error" }));
+                dispatch(setGenericAlert({ message: "Le password non coincidono.", type: "error" }));
                 return;
             }
             if (vecchiaPassword == "" && (password !== "" || confermaPassword !== "")) {
@@ -41,7 +45,7 @@ function ModalAggiornaUtente(props: { isOpen: boolean; onRequestClose: () => voi
                 const newRowValues = { username, nome, cognome, password };
                 setAggiornaDisabled(true);
                 dispatch(setGenericAlert({ message: "Aggiornamento in corso...", type: "no-autoclose" }));
-                const response = await api.put(`/utenti/${loggedUtente.id}`, {
+                await api.put(`/utenti/${loggedUtente.id}`, {
                     newRowValues,
                     assocTablesAndIds: {
                         brano: [] //Non inserire nuovi brani associati all'utente in questo caso
@@ -51,13 +55,12 @@ function ModalAggiornaUtente(props: { isOpen: boolean; onRequestClose: () => voi
                 });
                 dispatch(cleargenericMessage());
                 setAggiornaDisabled(false);
-                const utente = UtenteDbSchema.parse(response.data);
                 dispatch(setUtente({
                     id: loggedUtente.id,
-                    username: utente.username,
-                    nome: utente.nome,
-                    cognome: utente.cognome,
-                    password: utente.password
+                    username: username,
+                    nome: nome,
+                    cognome: cognome,
+                    password: password
                 }));
                 props.onRequestClose();
             } catch (error) {
@@ -66,6 +69,12 @@ function ModalAggiornaUtente(props: { isOpen: boolean; onRequestClose: () => voi
                     dispatch(setGenericAlert({ message: getNoConnMessage(), type: "error" }));
                 } else if (checkUserNotLoggedError(error)) {
                     dispatch(setGenericAlert({ message: getUserNotLoggedMessage(), type: "error" }))
+                } else if (checkUnauthorizedError(error)) {
+                    dispatch(setGenericAlert({ message: "La password attuale non è corretta.", type: "error" }));
+                } else if (check404(error)) {
+                    dispatch(setGenericAlert({ message: "Utente non trovato. Impossibile aggiornare le informazioni.", type: "error" }));
+                } else if (check403(error)) {
+                    dispatch(setGenericAlert({ message: "Hai effettuato il logout o la sessione è scaduta. Esegui di nuovo l'accesso e riprova.", type: "error" }));
                 } else {
                     dispatch(setGenericAlert({ message: "Impossibile salvare le informazioni del tuo utente. Si è verificato un errore.", type: "error" }));
                 }
@@ -138,10 +147,10 @@ function ModalAggiornaUtente(props: { isOpen: boolean; onRequestClose: () => voi
             <ModalWrapper title="" onRequestClose={props.onRequestClose}>
                 <div className="py-2 flex flex-row flex-wrap">
                     <div className="p-2">
-                        <button className="card-button rounded p-2" onClick={() => { navigate("/utente?id="+loggedUtente?.id);}} disabled={logoutDisabled}><User size={16}/> Il mio profilo</button>
+                        <button className="card-button rounded p-2" onClick={() => { navigate("/utente?id=" + loggedUtente?.id); }} disabled={logoutDisabled}><User size={16} /> Il mio profilo</button>
                     </div>
                     <div className="p-2">
-                        <button className="card-button rounded p-2" onClick={() => { logout(); }} disabled={logoutDisabled}><LogOut size={16}/> Logout</button>
+                        <button className="card-button rounded p-2" onClick={() => { logout(); }} disabled={logoutDisabled}><LogOut size={16} /> Logout</button>
                     </div>
                 </div>
                 <h2>Le mie informazioni</h2>
@@ -163,13 +172,13 @@ function ModalAggiornaUtente(props: { isOpen: boolean; onRequestClose: () => voi
                         <input maxLength={100} type="text" className={inputTextClassName()} defaultValue={loggedUtente ? loggedUtente.cognome : ''} placeholder="Cognome" required />
                     </div>
                     <div className="py-2">
+                        <input maxLength={255} type="password" className={inputTextClassName()} placeholder="Password Attuale" />
+                    </div>
+                    <div className="py-2">
                         <input maxLength={255} type="password" className={inputTextClassName()} placeholder="Nuova Password" />
                     </div>
                     <div className="py-2">
                         <input maxLength={255} type="password" className={inputTextClassName()} placeholder="Conferma Nuova Password" />
-                    </div>
-                    <div className="py-2">
-                        <input maxLength={255} type="password" className={inputTextClassName()} placeholder="Password Attuale" />
                     </div>
                     <div className="py-2">
                         <button className="card-button rounded p-2 w-full" disabled={aggiornaDisabled || usernameAvailable !== "available"} type="submit">Aggiorna</button>

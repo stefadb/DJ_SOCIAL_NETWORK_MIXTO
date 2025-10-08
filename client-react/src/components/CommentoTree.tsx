@@ -7,7 +7,7 @@ function CommentoTree(props: { livello: number }) {
         {levels.map((level) => {
             return (
                 <div key={level} className="overflow-hidden" style={{ width: (100 / props.livello) + "%"}}>
-                    <div style={{borderLeft: "1px solid #f8f8f8"}} className="relative left-3 h-full w-full"></div>
+                    <div style={{borderLeft: "1px solid #f0f0f0"}} className="relative left-3 h-full w-full"></div>
                 </div>
             );
         })}

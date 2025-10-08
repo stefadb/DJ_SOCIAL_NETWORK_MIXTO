@@ -124,7 +124,7 @@ app.put("/utenti/:id", async (req, res) => {
         const con = await getConnection();
         const [rows] = await con.query("SELECT password FROM utente WHERE id = ? ", [req.params.id]);
         if ((rows as any[])[0] === undefined) {
-            res.status(401).json({ error: "Utente non trovato." });
+            res.status(404).json({ error: "Utente non trovato." });
             return;
         }
         const match = await bcrypt.compare(req.body.oldPassword, (rows as any[])[0].password);
@@ -147,7 +147,7 @@ app.put("/utenti/:id", async (req, res) => {
         const con = await getConnection();
         const [rows] = await con.query("SELECT password FROM utente WHERE id = ?", [req.params.id]);
         if ((rows as any[])[0] === undefined) {
-            res.status(401).json({ error: "Utente non trovato." });
+            res.status(404).json({ error: "Utente non trovato." });
             return;
         }
         req.body.newRowValues.password = (rows as any[])[0].password; //mantieni la password vecchia
