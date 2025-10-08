@@ -880,6 +880,8 @@ export async function deezerEntityApi(
       error: err instanceof Error ? err.message : String(err),
       stack: err instanceof Error ? err.stack : undefined
     });
+    console.log("Errore su questa Api legata a Deezer");
+    console.log(err);
     res.status(500).json({ error: "Errore su questa Api legata a Deezer" });
   }
 }
