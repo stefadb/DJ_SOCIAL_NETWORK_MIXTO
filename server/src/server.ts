@@ -27,10 +27,12 @@ app.use(cors({
     credentials: true // Se hai bisogno di inviare cookie o credenziali
 }));
 
+/*
 app.options('*', cors({
   origin: process.env.FRONTEND_URL,
   credentials: true
 }));
+*/
 
 app.use(express.json());
 
