@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useEffect} from 'react';
 import { setUtente } from '../../store/userSlice';
 import api from '../../api';
-import { defaultArtistaPicture, getNoConnMessage, scaleTwProps } from '../../functions/functions';
+import { getNoConnMessage, scaleTwProps } from '../../functions/functions';
 import { setGenericAlert } from '../../store/errorSlice';
 import { useSearchParams } from 'react-router-dom';
 

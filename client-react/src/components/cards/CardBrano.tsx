@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { AlbumDbSchema, type AlbumDb, type BranoDb } from "../../types/db_types";
-import { deezerColor, defaultAlbumPicture, scaleTwProps } from "../../functions/functions";
+import { deezerColor, scaleTwProps } from "../../functions/functions";
 import { useNavigate } from "react-router-dom";
 import SalvaBranoPreferito from "../buttons/SalvaBranoPreferito";
 import PosizionaBrano from "../buttons/PosizionaBrano";

@@ -3,7 +3,7 @@ import type { ArtistaDb } from "../../types/db_types";
 import { useEffect, useRef } from "react";
 import Badge from "../Badge";
 import { User } from "react-feather";
-import {deezerColor, defaultArtistaPicture, scaleTwProps} from "../../functions/functions";
+import {deezerColor, scaleTwProps} from "../../functions/functions";
 
 function CardArtista(props: { artista: ArtistaDb, size: "small" | "large" }) {
     const navigate = useNavigate();

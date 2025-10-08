@@ -1,5 +1,5 @@
 import Modal from "react-modal";
-import { deezerColor, defaultArtistaPicture, modalsContentClassName, modalsOverlayClassName } from "../../functions/functions";
+import { deezerColor, modalsContentClassName, modalsOverlayClassName } from "../../functions/functions";
 import ModalWrapper from "./ModalWrapper";
 import Caricamento from "../icons/Caricamento";
 import { GitHub, HelpCircle, Linkedin, Mail, Search, User } from "react-feather";

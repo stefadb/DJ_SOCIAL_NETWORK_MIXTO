@@ -1,7 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import type { ValutazioneEUtente } from "../../types/types";
 import Stelle from "../Stelle";
-import { defaultArtistaPicture } from "../../functions/functions";
 
 function CardValutazione(props: { valutazione: ValutazioneEUtente }) {
     const navigate = useNavigate();

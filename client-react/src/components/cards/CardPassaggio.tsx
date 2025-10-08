@@ -9,7 +9,7 @@ import api from "../../api";
 import z from "zod";
 import { ArrowRight, Clock, Copy, ExternalLink, MessageSquare } from "react-feather";
 import { useNavigate } from "react-router-dom";
-import { defaultArtistaPicture, scaleTwProps } from "../../functions/functions";
+import {  scaleTwProps } from "../../functions/functions";
 import ReactTimeAgo from "react-time-ago";
 import { useSearchParams } from "react-router-dom";
 

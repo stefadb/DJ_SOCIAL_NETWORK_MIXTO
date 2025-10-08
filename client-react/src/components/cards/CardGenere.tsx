@@ -3,7 +3,7 @@ import type { GenereDb } from "../../types/db_types";
 import { useEffect, useRef } from "react";
 import Badge from "../Badge";
 import { Music } from "react-feather";
-import { deezerColor, defaultGenerePicture, scaleTwProps} from "../../functions/functions";
+import { deezerColor, scaleTwProps} from "../../functions/functions";
 
 function CardGenere(props: { genere: GenereDb, size: "small" | "large" }) {
     const navigate = useNavigate();

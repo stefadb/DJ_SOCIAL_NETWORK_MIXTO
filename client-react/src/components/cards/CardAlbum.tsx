@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import DynamicText from "../DynamicText";
 import MezzoDisco from "../MezzoDisco";
 import { Calendar } from "react-feather";
-import { dataItaliana, deezerColor, defaultAlbumPicture, scaleTwProps } from "../../functions/functions";
+import { dataItaliana, deezerColor, scaleTwProps } from "../../functions/functions";
 import { useMemo } from "react";
 import AscoltaSuDeezer from "../buttons/AscoltaSuDeezer";
 import AlbumIcon from "../icons/AlbumIcon";

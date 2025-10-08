@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import type { UtenteDb } from "../../types/db_types";
 import Badge from "../Badge";
 import { User } from "react-feather";
-import {  defaultArtistaPicture, scaleTwProps} from "../../functions/functions";
+import {  scaleTwProps} from "../../functions/functions";
 function CardUtente(props: { utente: UtenteDb, size: "small" | "large" }) {
     const navigate = useNavigate();
     const containerRef = useRef<HTMLDivElement>(null);
