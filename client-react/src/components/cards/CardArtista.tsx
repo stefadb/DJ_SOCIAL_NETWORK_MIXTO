@@ -33,7 +33,7 @@ function CardArtista(props: { artista: ArtistaDb, size: "small" | "large" }) {
                 <Badge scale={scale}>
                     <User size={14 * scale} color={deezerColor()} />
                 </Badge>
-                <img onError={defaultArtistaPicture} style={scaleTwProps("w-[100px] h-[100px] rounded-full shadow-md"/*no-custom*/,scale)} src={props.artista.url_immagine ? props.artista.url_immagine : "src/assets/artista_empty.jpg"} alt={"Immagine di profilo di " + props.artista.nome} />
+                <img  style={scaleTwProps("w-[100px] h-[100px] rounded-full shadow-md"/*no-custom*/,scale)} src={props.artista.url_immagine ? props.artista.url_immagine : "src/assets/artista_empty.jpg"} alt={"Immagine di profilo di " + props.artista.nome} />
             </div>
             <h3 style={scaleTwProps("w-full text-center mt-2 mb-2 text-base",scale)}>{props.artista.nome}</h3>
         </div>

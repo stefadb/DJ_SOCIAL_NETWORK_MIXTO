@@ -121,7 +121,7 @@ function CardCommento(props: { commento: CommentoEUtente, livello: number }) {
                     <div className="box-border p-2" style={{ width: 100 - props.livello * levelWidthStep + "%" }}>
                         <div className={"flex flex-row items-center " + (commento.utente_array[0] ? ("cursor-pointer") : "")} onClick={commento.utente_array[0] ? () => {navigate(`/utente?id=${commento.utente_array[0].id}`); } : () => {}} >
                             <div className="pr-2">
-                                <img onError={defaultArtistaPicture} className="rounded-full shadow-md w-8 h-8"/*no custom*/ src={"src/assets/artista_empty.jpg"} alt={"Immagine di profilo"} />
+                                <img  className="rounded-full shadow-md w-8 h-8"/*no custom*/ src={"src/assets/artista_empty.jpg"} alt={"Immagine di profilo"} />
                             </div>
                             <div className="flex-grow">
                                 <b>{getNomeUtente()} <span className="font-normal truncate">(<ReactTimeAgo date={new Date(commento.data_pubblicazione)} locale="it" />)</span></b>

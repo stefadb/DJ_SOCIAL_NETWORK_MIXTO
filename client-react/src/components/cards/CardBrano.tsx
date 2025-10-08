@@ -49,7 +49,7 @@ function CardBrano(props: { brano: BranoDb, noDeckButtons?: boolean, noButtons?:
                             <Badge scale={scale}>
                                 <Disc size={14 * scale} color={deezerColor()} />
                             </Badge>
-                            <img onError={defaultAlbumPicture} style={scaleTwProps("w-[100px] h-[100px] shadow-md"/*no custom*/, scale)} src={album && album.url_immagine ? album.url_immagine : "src/assets/album_empty.jpg"} alt={"Cover del brano " + props.brano.titolo} />
+                            <img  style={scaleTwProps("w-[100px] h-[100px] shadow-md"/*no custom*/, scale)} src={album && album.url_immagine ? album.url_immagine : "src/assets/album_empty.jpg"} alt={"Cover del brano " + props.brano.titolo} />
                         </div>
                         <MezzoDisco radius={50 * scale} />
                     </div>
