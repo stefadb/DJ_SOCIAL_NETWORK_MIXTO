@@ -4,17 +4,19 @@
 
 ## [🌐 Puoi visitare MixTo qui](https://mixto.up.railway.app)
 
-### ℹ️ Che cos'è MixTo?
+## ℹ️ Introduzione
 
 MixTo è una web app **dedicata ai DJ** che permette sia di scroprire nuovi **mix** da provare nelle loro esibizioni sia di condividerli con gli altri utenti della piattaforma.
 I DJ possono dare la loro opinione sui mix pubblicati **scrivendo commenti o votando**.
 Tutti i **brani**, gli **album**, gli **artisti** e i **generi** musicali, vengono restituiti dalla [API pubblica di DEEZER developers](https://developers.deezer.com/login?redirect=/api)
 
-![Screenshot](./Screen 1.png)
+## Dati di esempio
 
-### 🧑🏻‍💻 Come è stato realizzato?
 
-Seguono le librerie, i framework e i linguaggi più importanti nella realizzazione di questa web app:
+
+## Implementazione
+
+### 🧑🏻‍💻 Tecnologie usate
 
 - **Front-end**
   - **React** con **React Router** per una navigazione rapida tra le pagine e le modal dell'app
@@ -29,8 +31,12 @@ Seguono le librerie, i framework e i linguaggi più importanti nella realizzazio
 - **Database**
   - **MySQL** per la persistenza di tutti i dati, comprese le copie locali dei brani associati ai mix pubblicati e alle liste di brani preferiti degli utenti
 
-
-
-
-
 ### 🛠️ Funzioni e codice ancora da sviluppare
+
+- Possibilità di pubblicare e generare automaticamente le **tracklist**, cioè le **sequenze complete di mix**, che diventano quindi liste di brani complete per i DJ.
+- Test automatici sul front-end con qualche libreria dedicata, ad esempio **Jest**
+- Test automatici delle API di ```POST```, ```PUT``` e ```DELETE``` sul back-end
+- Ordinamento personalizzato delle liste di mix
+
+- 
+
