@@ -4,7 +4,7 @@
 
 ## [🌐 Puoi visitare MixTo qui](https://mixto.up.railway.app)
 
-## ℹ️ Introduzione
+## Introduzione
 
 MixTo è una web app **dedicata ai DJ** che permette sia di scroprire nuovi **mix** da provare nelle loro esibizioni sia di condividerli con gli altri utenti della piattaforma.
 I DJ possono dare la loro opinione sui mix pubblicati **scrivendo commenti o votando**.
@@ -12,11 +12,15 @@ Tutti i **brani**, gli **album**, gli **artisti** e i **generi** musicali, vengo
 
 ## Dati di esempio
 
+### 🧑🏻‍💻 Utenti di test
+
+Sono presenti i seguenti **username di test**: *alerossi90, beawhite89, dineri2000, fragialli95, gioverdi78, giuwhite75, manurossii, marossi99, marros99, paneri98, stefadb*
+Tutti questi utenti entrano con la password *ABCDE*
 
 
 ## Implementazione
 
-### 🧑🏻‍💻 Tecnologie usate
+### ⚛️ Tecnologie usate
 
 - **Front-end**
   - **React** con **React Router** per una navigazione rapida tra le pagine e le modal dell'app
