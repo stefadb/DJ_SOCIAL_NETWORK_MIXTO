@@ -1,4 +1,4 @@
-# 🪩 MixTo: Un social network dedicato ai DJ
+# 🪩 MixTo: Una web app dedicata ai DJ
 
 ## Web app del mio portfolio sviluppata in **React** + Express + MySQL
 
