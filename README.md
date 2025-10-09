@@ -1,6 +1,6 @@
 # 🪩 MixTo: Un social network dedicato ai DJ
 
-## Web app del mio portfolio sviluppata in **React** + Express + MySQL
+# Web app del mio portfolio sviluppata in **React** + Express + MySQL
 
 ## [🌐 Puoi visitare MixTo qui](https://mixto.up.railway.app)
 
@@ -17,6 +17,15 @@ Tutti i **brani**, gli **album**, gli **artisti** e i **generi** musicali, vengo
 Sono presenti i seguenti **username di test**: *alerossi90, beawhite89, dineri2000, fragialli95, gioverdi78, giuwhite75, manurossii, marossi99, marros99, paneri98, stefadb*
 Tutti questi utenti entrano con la password *ABCDE*
 
+### 🎶 Mix, commenti e valutazioni di test
+
+L'app contiene molti **mix**, **commenti** e **valutazioni** di test in diverse pagine. Seguono alcune tra quelle più rilevanti:
+
+[Pagina dell'artista 'Chris Stussy'](https://mixto.up.railway.app/artista?id=5359276)
+
+[Pagina dell'artista 'Kolter'](https://mixto.up.railway.app/artista?id=6164532)
+
+[Pagina dell'utente @stefadb](https://mixto.up.railway.app/utente?id=5)
 
 ## Implementazione
 
@@ -37,10 +46,14 @@ Tutti questi utenti entrano con la password *ABCDE*
 
 ### 🛠️ Funzioni e codice ancora da sviluppare
 
-- Possibilità di pubblicare e generare automaticamente le **tracklist**, cioè le **sequenze complete di mix**, che diventano quindi liste di brani complete per i DJ.
-- Test automatici sul front-end con qualche libreria dedicata, ad esempio **Jest**
-- Test automatici delle API di ```POST```, ```PUT``` e ```DELETE``` sul back-end
-- Ordinamento personalizzato delle liste di mix
+- Possibilità di **pubblicare** e **generare** automaticamente le **tracklist**, cioè le **sequenze complete di mix**, che diventano quindi liste di brani complete per i DJ.
+- **Test** automatici sul front-end con qualche libreria dedicata, ad esempio **Jest**
+- **Test** automatici delle API di ```POST```, ```PUT``` e ```DELETE``` sul back-end
+- **Ordinamento** personalizzato delle liste di **mix** e **tracklist**
 
-- 
+## Come eseguire l'app localmente
+
+
+
+
 
