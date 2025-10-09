@@ -1,6 +1,6 @@
 # 🪩 MixTo: Un social network dedicato ai DJ
 
-# Web app del mio portfolio sviluppata in **React** + Express + MySQL
+## Web app del mio portfolio sviluppata in **React** + Express + MySQL
 
 ## [🌐 Puoi visitare MixTo qui](https://mixto.up.railway.app)
 
@@ -53,7 +53,10 @@ L'app contiene molti **mix**, **commenti** e **valutazioni** di test in diverse 
 
 ## Come eseguire l'app localmente
 
+Una volta scaricato o clonato il repository:
 
+1) Aprire sia la cartella ```client-react``` che ```server``` sul command prompt ed eseguire i due comandi ```npm install``` e ```npm run dev``` su entrambe le cartelle.
 
+2) Creare lo schema ```mixto``` sul db MySQL e importare i dati dal file ```DUMP_mixto.sql```
 
-
+3) Creare lo schema ```mixto_api_calls``` sul db MySQL e importare i dati dal file ```DUMP_mixto_api_calls.sql```
