@@ -1,4 +1,5 @@
 # 🪩 MixTo: Un social network dedicato ai DJ
+
 ## Web app del mio portfolio sviluppata in **React** + Express + MySQL
 
 ## [🌐 Puoi visitare MixTo qui](https://mixto.up.railway.app)
@@ -14,8 +15,10 @@ Tutti i **brani**, gli **album**, gli **artisti** e i **generi** musicali, vengo
 La web app è stata realizzata utilizzando i linguaggi, le librerie e i framework seguenti:
 
 - **Front-end**
-
-    - **React** con **React Router** per una navigazione rapida tra le pagine 
+  - **React** con **React Router** per una navigazione rapida tra le pagine e le modal dell'app
+  - **Typescript** con **Zod** per una validazione completa dei tipi di dato nel codice, soprattutto per i dati restituiti dal back-end
+  - **Tailwind CSS** per rendere il codice dello stile più leggibile e avere padding più coerenti
+  
 
 
 
