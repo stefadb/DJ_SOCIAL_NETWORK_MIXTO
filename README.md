@@ -1,4 +1,4 @@
-# 🪩 MixTo: Una web app dedicata ai DJ
+# [🪩 MixTo: Una web app dedicata ai DJ](https://github.com/stefadb/DJ_SOCIAL_NETWORK_MIXTO)
 
 ## Web app del mio portfolio sviluppata in **React** + Express + MySQL
 
