@@ -2,8 +2,6 @@
 
 ## Web app del mio portfolio sviluppata in **React** + Express + MySQL
 
-## [🌐 Puoi visitare MixTo qui](https://mixto.up.railway.app)
-
 ## Introduzione
 
 MixTo è una web app **dedicata ai DJ** che permette sia di scroprire nuovi **mix** da provare nelle loro esibizioni sia di condividerli con gli altri utenti della piattaforma.
