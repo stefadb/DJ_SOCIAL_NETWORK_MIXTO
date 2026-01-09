@@ -19,11 +19,11 @@ Tutti questi utenti entrano con la password *ABCDE*
 
 L'app contiene molti **mix**, **commenti** e **valutazioni** di test in diverse pagine. Seguono alcune tra quelle più rilevanti:
 
-[Pagina dell'artista 'Chris Stussy'](https://mixto.up.railway.app/artista?id=5359276)
+Pagina dell'artista 'Chris Stussy'
 
-[Pagina dell'artista 'Kolter'](https://mixto.up.railway.app/artista?id=6164532)
+Pagina dell'artista 'Kolter'
 
-[Pagina dell'utente @stefadb](https://mixto.up.railway.app/utente?id=5)
+Pagina dell'utente @stefadb
 
 ## Implementazione
 
